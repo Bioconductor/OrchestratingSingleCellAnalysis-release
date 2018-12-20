@@ -1,0 +1,33 @@
+---
+title: "Usage Statistics for Bioconductor Packages"
+author: "Stephanie Hicks"
+output: 
+    html_document:
+        theme: cosmo 
+        toc: true
+        toc_float: true
+        highlight: tango
+        number_sections: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(BiocPkgTools)
+library(tidyverse)
+
+pkg_data <- BiocPkgTools::biocPkgList()
+names(pkg_data)
+
+```
+
+Packages with `SingleCell` BiocViews (currently 60 packages)
+
+```{r}
+pkg_data %>% 
+  filter(str_detect(biocViews, "SingleCell"))
+```
+
