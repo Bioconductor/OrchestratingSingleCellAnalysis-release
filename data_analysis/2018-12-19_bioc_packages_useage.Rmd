@@ -11,13 +11,22 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
+
+# Goal
+
+Create a figure of growth of R, Bioconductor share of 
+that (growth over time), usage statistics, dependencies, 
+citations, what makes Bioconductor high quality (review process,
+vignettes required, review process for devs, slack is :fire:
 
 
 ```{r}
 library(BiocPkgTools)
 library(tidyverse)
+library(lubridate)
+library(cowplot)
 
 pkg_data <- BiocPkgTools::biocPkgList()
 names(pkg_data)
@@ -27,7 +36,77 @@ names(pkg_data)
 Packages with `SingleCell` BiocViews (currently 60 packages)
 
 ```{r}
-pkg_data %>% 
-  filter(str_detect(biocViews, "SingleCell"))
+sc_pkgs <- pkg_data %>% 
+  filter(str_detect(biocViews, "SingleCell")) %>% 
+  pull(Package)
+```
+
+
+```{r}
+pkgs <- biocDownloadStats()
+```
+
+```{r}
+p_number_pkgs <- pkgs %>% filter(Month != "all") %>% 
+  filter(repo=="Software", 
+         Package %in% sc_pkgs) %>%
+  select(Package, Year) %>%
+  distinct() %>%
+  group_by(Year) %>%
+  summarize(total_packages = n()) %>%
+  arrange(desc(Year)) %>%
+  ggplot(aes(x=Year,y=total_packages)) + 
+  geom_point(size=3) + 
+  xlab("Year") + ylab("Total Packages Contributed") +
+  # ggtitle("Single-Cell Bioconductor Software Packages") + 
+   geom_smooth(method="glm",
+              method.args=list(family=gaussian(link="log")))
+```
+
+```{r}
+# pdf("figs/bioc-singlecell-downloads-distinct-IPs.pdf", width=6, height=4)
+p_distinct_IPs <- 
+  pkgs %>% filter(Month == "all", # repo=="Software", 
+                Package %in% sc_pkgs) %>% 
+  group_by(Year) %>%
+  summarize(Nb_of_distinct_IPs = sum(Nb_of_distinct_IPs), 
+            Nb_of_downloads = sum(Nb_of_downloads)) %>% 
+  ggplot(aes(x=Year,y=Nb_of_distinct_IPs)) + 
+  geom_point(size=3) + 
+  xlab("Year") + ylab("Downloads (distinct IPs)") +
+  # ggtitle(" ") + 
+  geom_smooth(method="glm",
+              method.args=list(family=gaussian(link="log")))
+# dev.off()
+```
+
+
+
+```{r}
+pdf("figs/bioc-singlecell.pdf", width=10, height=4)
+p <- plot_grid(p_number_pkgs, p_distinct_IPs, ncol=2, labels = LETTERS[1:2])
+title <- ggdraw() + draw_label("Usage and impact statistics for single-cell Bioconductor software packages", fontface='bold')
+plot_grid(title, p, ncol=1, rel_heights=c(0.1, 1)) # rel_heights values control title margins
+dev.off()
+```
+
+
+
+```{r delete-me-monthly-data}
+pdf("figs/bioc-singlecell-downloads-distinct-IPs-monthly.pdf", width=6, height=4)
+pkgs %>% filter(Month != "all", # repo=="Software", 
+                Package %in% sc_pkgs) %>% 
+  group_by(Month, Year) %>%
+  summarize(Nb_of_distinct_IPs = sum(Nb_of_distinct_IPs), 
+            Nb_of_downloads = sum(Nb_of_downloads)) %>% 
+  mutate("date" = ymd(paste(Year, Month, "01", sep="-"))) %>% 
+  ggplot(aes(x=date,y=Nb_of_distinct_IPs)) + 
+  geom_point(size=3) + scale_y_log10() + 
+  xlab("Year") + ylab("Count") +
+  ggtitle("Number of Single-Cell Bioconductor Software\nPackages Downloaded (distinct IPs)") + 
+  geom_smooth(method="glm",
+              method.args=list(family=gaussian(link="log")))
+dev.off()
+
 ```
 
