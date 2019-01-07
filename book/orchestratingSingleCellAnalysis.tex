@@ -24,8 +24,8 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={A Minimal Book Example},
-            pdfauthor={Yihui Xie},
+            pdftitle={Orchestrating Single-Cell Analysis},
+            pdfauthor={Bioconductor},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -117,15 +117,15 @@
 
 \setlength{\droptitle}{-2em}
 
-  \title{A Minimal Book Example}
+  \title{Orchestrating Single-Cell Analysis}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-    \author{Yihui Xie}
+    \author{Bioconductor}
     \preauthor{\centering\large\emph}
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2018-12-20}
+    \date{2019-01-07}
 
 \usepackage{booktabs}
 
@@ -225,6 +225,551 @@ Sepal.Length & Sepal.Width & Petal.Length & Petal.Width & Species\\
 \end{table}
 
 You can write citations, too. For example, we are using the \textbf{bookdown} package \citep{R-bookdown} in this sample book, which was built on top of R Markdown and \textbf{knitr} \citep{xie2015}.
+
+\hypertarget{clustering-and-differential-expression-workflow}{%
+\chapter{Clustering and Differential Expression Workflow}\label{clustering-and-differential-expression-workflow}}
+
+\emph{Author}: Robert A. Amezquita, Fred Hutchinson Cancer Research Center
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Introduce the main purpose of this vignette in paragraph form, why these steps are important, what the end products allow for.
+
+\hypertarget{learning-objectives}{%
+\section{Learning objectives}\label{learning-objectives}}
+
+\begin{itemize}
+\tightlist
+\item
+  In bullet form, illustrate what the main outputs are of this vignette
+\item
+  A couple of bullet points are fine
+\end{itemize}
+
+\hypertarget{package-requirements}{%
+\section{Package requirements}\label{package-requirements}}
+
+Packages that are required to go through the vignette and how to install them, should largely be through BiocManager interface.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BiocManager}\OperatorTok{::}\KeywordTok{install}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{'SC3'}\NormalTok{, }\StringTok{'clusterExperiment'}\NormalTok{, }\StringTok{'BiocParallel'}\NormalTok{, }\StringTok{'BEARscc'}\NormalTok{, }\StringTok{'zinbwave'}\NormalTok{, }\StringTok{'edgeR'}\NormalTok{, }\StringTok{'DESeq2'}\NormalTok{, }\StringTok{'MAST'}\NormalTok{, }\StringTok{'scDD'}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{loading-the-data}{%
+\section{Loading the data}\label{loading-the-data}}
+
+Here the data should be loaded if in package form and briefly explored to illustrate the contents of the data.
+
+If data comes from ``raw'' form, then a simple pipeline for creating the processed data should be illustrated as succinctly as possible.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(TENxPBMCData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: SingleCellExperiment
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: SummarizedExperiment
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: GenomicRanges
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: stats4
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: BiocGenerics
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: parallel
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'BiocGenerics'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:parallel':
+## 
+##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+##     clusterExport, clusterMap, parApply, parCapply, parLapply,
+##     parLapplyLB, parRapply, parSapply, parSapplyLB
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     IQR, mad, sd, var, xtabs
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     anyDuplicated, append, as.data.frame, basename, cbind,
+##     colMeans, colnames, colSums, dirname, do.call, duplicated,
+##     eval, evalq, Filter, Find, get, grep, grepl, intersect,
+##     is.unsorted, lapply, Map, mapply, match, mget, order, paste,
+##     pmax, pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce,
+##     rowMeans, rownames, rowSums, sapply, setdiff, sort, table,
+##     tapply, union, unique, unsplit, which, which.max, which.min
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: S4Vectors
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'S4Vectors'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:base':
+## 
+##     expand.grid
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: IRanges
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: GenomeInfoDb
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: Biobase
+\end{verbatim}
+
+\begin{verbatim}
+## Welcome to Bioconductor
+## 
+##     Vignettes contain introductory material; view with
+##     'browseVignettes()'. To cite Bioconductor, see
+##     'citation("Biobase")', and for packages 'citation("pkgname")'.
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: DelayedArray
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: matrixStats
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'matrixStats'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:Biobase':
+## 
+##     anyMissing, rowMedians
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: BiocParallel
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'DelayedArray'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:matrixStats':
+## 
+##     colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     aperm, apply
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: HDF5Array
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: rhdf5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{TENxPBMCData}\NormalTok{(}\StringTok{'pbmc4k'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## snapshotDate(): 2019-01-04
+\end{verbatim}
+
+\begin{verbatim}
+## see ?TENxPBMCData and browseVignettes('TENxPBMCData') for documentation
+\end{verbatim}
+
+\begin{verbatim}
+## downloading 0 resources
+\end{verbatim}
+
+\begin{verbatim}
+## loading from cache 
+##     '/Users/ramezqui//.ExperimentHub/1613'
+\end{verbatim}
+
+\begin{verbatim}
+## class: SingleCellExperiment 
+## dim: 33694 4340 
+## metadata(0):
+## assays(1): counts
+## rownames(33694): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000277475 ENSG00000268674
+## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
+## colnames: NULL
+## colData names(11): Sample Barcode ... Individual Date_published
+## reducedDimNames(0):
+## spikeNames(0):
+\end{verbatim}
+
+\hypertarget{preprocessing}{%
+\section{Preprocessing}\label{preprocessing}}
+
+All steps required to preprocess the data into the clean expression matrix, split it up into subsections as necessary. Subsection splits should be informed by the paper (sub)sections. This is all steps prior to the main strategy of interest.
+
+\hypertarget{cell-and-gene-quality-control}{%
+\subsection{Cell and gene quality control}\label{cell-and-gene-quality-control}}
+
+Removal of ``bad cells'', low abundance genes.
+
+\hypertarget{normalization}{%
+\subsection{Normalization}\label{normalization}}
+
+Application of normalization approach, even if its just a log normalization on the count data. Cell cycle normalization may be applicable here.
+
+\hypertarget{feature-selection}{%
+\subsection{Feature selection}\label{feature-selection}}
+
+Identifying the subset of the clean matrix to work with.
+
+\hypertarget{dimensionality-reduction}{%
+\subsection{Dimensionality reduction}\label{dimensionality-reduction}}
+
+Calculating PCs and UMAP/tSNE representation.
+
+\hypertarget{clustering}{%
+\section{Clustering}\label{clustering}}
+
+Strategy 1 of interest. Use BiocParallel. May need to save intermediate data within package to facilitate fast construction of Rmd.
+
+\begin{itemize}
+\tightlist
+\item
+  SC3
+\item
+  clusterExperiment
+\item
+  clustree
+\item
+  BEARscc \# uses ERCC spike ins
+\item
+  BiocNeighbors \# more for devs
+\end{itemize}
+
+\hypertarget{differential-expression}{%
+\section{Differential Expression}\label{differential-expression}}
+
+Strategy 2 of interest. Differential expression approaches. Use one of the outputs from above to perform differential expression analyses comparison.
+
+\begin{itemize}
+\tightlist
+\item
+  zinbwave + edgeR/DESeq2 (may exclude as workflow is very different or highlight as an ``advanced section'')
+\item
+  MAST
+\item
+  scDD
+\item
+  SC3
+\end{itemize}
+
+\hypertarget{session-info}{%
+\section{Session Info}\label{session-info}}
+
+\hypertarget{trajectory-analysis-workflow}{%
+\chapter{Trajectory Analysis Workflow}\label{trajectory-analysis-workflow}}
+
+\emph{Author}: Robert A. Amezquita, Fred Hutchinson Cancer Research Center
+
+\hypertarget{introduction-1}{%
+\section{Introduction}\label{introduction-1}}
+
+Introduce the main purpose of this vignette in paragraph form, why these steps are important, what the end products allow for.
+
+\hypertarget{learning-objectives-1}{%
+\section{Learning objectives}\label{learning-objectives-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  In bullet form, illustrate what the main outputs are of this vignette
+\item
+  A couple of bullet points are fine
+\end{itemize}
+
+\hypertarget{package-requirements-1}{%
+\section{Package requirements}\label{package-requirements-1}}
+
+Packages that are required to go through the vignette and how to install them, should largely be through BiocManager interface.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BiocManager}\OperatorTok{::}\KeywordTok{install}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{'SC3'}\NormalTok{, }\StringTok{'clusterExperiment'}\NormalTok{, }\StringTok{'BiocParallel'}\NormalTok{, }\StringTok{'BEARscc'}\NormalTok{, }\StringTok{'zinbwave'}\NormalTok{, }\StringTok{'edgeR'}\NormalTok{, }\StringTok{'DESeq2'}\NormalTok{, }\StringTok{'MAST'}\NormalTok{, }\StringTok{'scDD'}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{loading-the-data-1}{%
+\section{Loading the data}\label{loading-the-data-1}}
+
+Here the data should be loaded if in package form and briefly explored to illustrate the contents of the data.
+
+If data comes from ``raw'' form, then a simple pipeline for creating the processed data should be illustrated as succinctly as possible.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(TENxPBMCData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: SingleCellExperiment
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: SummarizedExperiment
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: GenomicRanges
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: stats4
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: BiocGenerics
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: parallel
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'BiocGenerics'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:parallel':
+## 
+##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+##     clusterExport, clusterMap, parApply, parCapply, parLapply,
+##     parLapplyLB, parRapply, parSapply, parSapplyLB
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     IQR, mad, sd, var, xtabs
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     anyDuplicated, append, as.data.frame, basename, cbind,
+##     colMeans, colnames, colSums, dirname, do.call, duplicated,
+##     eval, evalq, Filter, Find, get, grep, grepl, intersect,
+##     is.unsorted, lapply, Map, mapply, match, mget, order, paste,
+##     pmax, pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce,
+##     rowMeans, rownames, rowSums, sapply, setdiff, sort, table,
+##     tapply, union, unique, unsplit, which, which.max, which.min
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: S4Vectors
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'S4Vectors'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:base':
+## 
+##     expand.grid
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: IRanges
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: GenomeInfoDb
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: Biobase
+\end{verbatim}
+
+\begin{verbatim}
+## Welcome to Bioconductor
+## 
+##     Vignettes contain introductory material; view with
+##     'browseVignettes()'. To cite Bioconductor, see
+##     'citation("Biobase")', and for packages 'citation("pkgname")'.
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: DelayedArray
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: matrixStats
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'matrixStats'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:Biobase':
+## 
+##     anyMissing, rowMedians
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: BiocParallel
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'DelayedArray'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:matrixStats':
+## 
+##     colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     aperm, apply
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: HDF5Array
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: rhdf5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{TENxPBMCData}\NormalTok{(}\StringTok{'pbmc4k'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## snapshotDate(): 2019-01-04
+\end{verbatim}
+
+\begin{verbatim}
+## see ?TENxPBMCData and browseVignettes('TENxPBMCData') for documentation
+\end{verbatim}
+
+\begin{verbatim}
+## downloading 0 resources
+\end{verbatim}
+
+\begin{verbatim}
+## loading from cache 
+##     '/Users/ramezqui//.ExperimentHub/1613'
+\end{verbatim}
+
+\begin{verbatim}
+## class: SingleCellExperiment 
+## dim: 33694 4340 
+## metadata(0):
+## assays(1): counts
+## rownames(33694): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000277475 ENSG00000268674
+## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
+## colnames: NULL
+## colData names(11): Sample Barcode ... Individual Date_published
+## reducedDimNames(0):
+## spikeNames(0):
+\end{verbatim}
+
+\hypertarget{preprocessing-1}{%
+\section{Preprocessing}\label{preprocessing-1}}
+
+All steps required to preprocess the data into the clean expression matrix, split it up into subsections as necessary. Subsection splits should be informed by the paper (sub)sections. This is all steps prior to the main strategy of interest.
+
+\hypertarget{cell-and-gene-quality-control-1}{%
+\subsection{Cell and gene quality control}\label{cell-and-gene-quality-control-1}}
+
+Removal of ``bad cells'', low abundance genes.
+
+\hypertarget{normalization-1}{%
+\subsection{Normalization}\label{normalization-1}}
+
+Application of normalization approach, even if its just a log normalization on the count data. Cell cycle normalization may be applicable here.
+
+\hypertarget{feature-selection-1}{%
+\subsection{Feature selection}\label{feature-selection-1}}
+
+Identifying the subset of the clean matrix to work with.
+
+\hypertarget{dimensionality-reduction-1}{%
+\subsection{Dimensionality reduction}\label{dimensionality-reduction-1}}
+
+Calculating PCs and UMAP/tSNE representation. This may not be necessary for certain software or may differ between packages.
+
+\hypertarget{trajectory-analysis}{%
+\section{Trajectory Analysis}\label{trajectory-analysis}}
+
+\begin{itemize}
+\tightlist
+\item
+  slingshot
+\item
+  ouija
+\item
+  celltrails
+\end{itemize}
+
+\hypertarget{session-info-1}{%
+\section{Session Info}\label{session-info-1}}
 
 \bibliography{book.bib,packages.bib}
 

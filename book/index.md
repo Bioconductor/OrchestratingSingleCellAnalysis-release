@@ -1,13 +1,13 @@
 --- 
-title: "A Minimal Book Example"
-author: "Yihui Xie"
-date: "2018-12-20"
+title: "Orchestrating Single-Cell Analysis"
+author: "Bioconductor"
+date: "2019-01-07"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+description: "This is a companion of workflows to the 'Orchestrating Single-Cell Analysis' paper by the Bioconductor team."
 ---
 
 # Prerequisites

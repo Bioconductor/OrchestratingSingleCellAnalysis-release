@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Orchestrating Single-Cell Analysis</title>
+  <title>Chapter 4 Trajectory Analysis Workflow | Orchestrating Single-Cell Analysis</title>
   <meta name="description" content="This is a companion of workflows to the ‘Orchestrating Single-Cell Analysis’ paper by the Bioconductor team.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Orchestrating Single-Cell Analysis" />
+  <meta property="og:title" content="Chapter 4 Trajectory Analysis Workflow | Orchestrating Single-Cell Analysis" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Orchestrating Single-Cell Analysis" />
+  <meta name="twitter:title" content="Chapter 4 Trajectory Analysis Workflow | Orchestrating Single-Cell Analysis" />
   
   <meta name="twitter:description" content="This is a companion of workflows to the ‘Orchestrating Single-Cell Analysis’ paper by the Bioconductor team." />
   
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="intro.html">
+<link rel="prev" href="clustering-and-differential-expression-workflow.html">
+<link rel="next" href="references.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -182,29 +182,145 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Orchestrating Single-Cell Analysis</h1>
-<p class="author"><em>Bioconductor</em></p>
-<p class="date"><em>2019-01-07</em></p>
+<div id="trajectory-analysis-workflow" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Trajectory Analysis Workflow</h1>
+<p><em>Author</em>: Robert A. Amezquita, Fred Hutchinson Cancer Research Center</p>
+<div id="introduction-1" class="section level2">
+<h2><span class="header-section-number">4.1</span> Introduction</h2>
+<p>Introduce the main purpose of this vignette in paragraph form, why these steps are important, what the end products allow for.</p>
 </div>
-<div id="prerequisites" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Prerequisites</h1>
-<p>This is a <em>sample</em> book written in <strong>Markdown</strong>. You can use anything that Pandoc’s Markdown supports, e.g., a math equation <span class="math inline">\(a^2 + b^2 = c^2\)</span>.</p>
-<p>The <strong>bookdown</strong> package can be installed from CRAN or Github:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;bookdown&quot;</span>)
-<span class="co"># or the development version</span>
-<span class="co"># devtools::install_github(&quot;rstudio/bookdown&quot;)</span></code></pre>
-<p>Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading <code>#</code>.</p>
-<p>To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <a href="https://yihui.name/tinytex/" class="uri">https://yihui.name/tinytex/</a>.</p>
+<div id="learning-objectives-1" class="section level2">
+<h2><span class="header-section-number">4.2</span> Learning objectives</h2>
+<ul>
+<li>In bullet form, illustrate what the main outputs are of this vignette</li>
+<li>A couple of bullet points are fine</li>
+</ul>
+</div>
+<div id="package-requirements-1" class="section level2">
+<h2><span class="header-section-number">4.3</span> Package requirements</h2>
+<p>Packages that are required to go through the vignette and how to install them, should largely be through BiocManager interface.</p>
+<pre class="sourceCode r"><code class="sourceCode r">BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="kw">c</span>(<span class="st">&#39;SC3&#39;</span>, <span class="st">&#39;clusterExperiment&#39;</span>, <span class="st">&#39;BiocParallel&#39;</span>, <span class="st">&#39;BEARscc&#39;</span>, <span class="st">&#39;zinbwave&#39;</span>, <span class="st">&#39;edgeR&#39;</span>, <span class="st">&#39;DESeq2&#39;</span>, <span class="st">&#39;MAST&#39;</span>, <span class="st">&#39;scDD&#39;</span>))</code></pre>
+</div>
+<div id="loading-the-data-1" class="section level2">
+<h2><span class="header-section-number">4.4</span> Loading the data</h2>
+<p>Here the data should be loaded if in package form and briefly explored to illustrate the contents of the data.</p>
+<p>If data comes from “raw” form, then a simple pipeline for creating the processed data should be illustrated as succinctly as possible.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(TENxPBMCData)</code></pre>
+<pre><code>## Loading required package: SingleCellExperiment</code></pre>
+<pre><code>## Loading required package: SummarizedExperiment</code></pre>
+<pre><code>## Loading required package: GenomicRanges</code></pre>
+<pre><code>## Loading required package: stats4</code></pre>
+<pre><code>## Loading required package: BiocGenerics</code></pre>
+<pre><code>## Loading required package: parallel</code></pre>
+<pre><code>## 
+## Attaching package: &#39;BiocGenerics&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:parallel&#39;:
+## 
+##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+##     clusterExport, clusterMap, parApply, parCapply, parLapply,
+##     parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     IQR, mad, sd, var, xtabs</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     anyDuplicated, append, as.data.frame, basename, cbind,
+##     colMeans, colnames, colSums, dirname, do.call, duplicated,
+##     eval, evalq, Filter, Find, get, grep, grepl, intersect,
+##     is.unsorted, lapply, Map, mapply, match, mget, order, paste,
+##     pmax, pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce,
+##     rowMeans, rownames, rowSums, sapply, setdiff, sort, table,
+##     tapply, union, unique, unsplit, which, which.max, which.min</code></pre>
+<pre><code>## Loading required package: S4Vectors</code></pre>
+<pre><code>## 
+## Attaching package: &#39;S4Vectors&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     expand.grid</code></pre>
+<pre><code>## Loading required package: IRanges</code></pre>
+<pre><code>## Loading required package: GenomeInfoDb</code></pre>
+<pre><code>## Loading required package: Biobase</code></pre>
+<pre><code>## Welcome to Bioconductor
+## 
+##     Vignettes contain introductory material; view with
+##     &#39;browseVignettes()&#39;. To cite Bioconductor, see
+##     &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
+<pre><code>## Loading required package: DelayedArray</code></pre>
+<pre><code>## Loading required package: matrixStats</code></pre>
+<pre><code>## 
+## Attaching package: &#39;matrixStats&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:Biobase&#39;:
+## 
+##     anyMissing, rowMedians</code></pre>
+<pre><code>## Loading required package: BiocParallel</code></pre>
+<pre><code>## 
+## Attaching package: &#39;DelayedArray&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:matrixStats&#39;:
+## 
+##     colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     aperm, apply</code></pre>
+<pre><code>## Loading required package: HDF5Array</code></pre>
+<pre><code>## Loading required package: rhdf5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</code></pre>
+<pre><code>## snapshotDate(): 2019-01-04</code></pre>
+<pre><code>## see ?TENxPBMCData and browseVignettes(&#39;TENxPBMCData&#39;) for documentation</code></pre>
+<pre><code>## downloading 0 resources</code></pre>
+<pre><code>## loading from cache 
+##     &#39;/Users/ramezqui//.ExperimentHub/1613&#39;</code></pre>
+<pre><code>## class: SingleCellExperiment 
+## dim: 33694 4340 
+## metadata(0):
+## assays(1): counts
+## rownames(33694): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000277475 ENSG00000268674
+## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
+## colnames: NULL
+## colData names(11): Sample Barcode ... Individual Date_published
+## reducedDimNames(0):
+## spikeNames(0):</code></pre>
+</div>
+<div id="preprocessing-1" class="section level2">
+<h2><span class="header-section-number">4.5</span> Preprocessing</h2>
+<p>All steps required to preprocess the data into the clean expression matrix, split it up into subsections as necessary. Subsection splits should be informed by the paper (sub)sections. This is all steps prior to the main strategy of interest.</p>
+<div id="cell-and-gene-quality-control-1" class="section level3">
+<h3><span class="header-section-number">4.5.1</span> Cell and gene quality control</h3>
+<p>Removal of “bad cells”, low abundance genes.</p>
+</div>
+<div id="normalization-1" class="section level3">
+<h3><span class="header-section-number">4.5.2</span> Normalization</h3>
+<p>Application of normalization approach, even if its just a log normalization on the count data. Cell cycle normalization may be applicable here.</p>
+</div>
+<div id="feature-selection-1" class="section level3">
+<h3><span class="header-section-number">4.5.3</span> Feature selection</h3>
+<p>Identifying the subset of the clean matrix to work with.</p>
+</div>
+<div id="dimensionality-reduction-1" class="section level3">
+<h3><span class="header-section-number">4.5.4</span> Dimensionality reduction</h3>
+<p>Calculating PCs and UMAP/tSNE representation. This may not be necessary for certain software or may differ between packages.</p>
+</div>
+</div>
+<div id="trajectory-analysis" class="section level2">
+<h2><span class="header-section-number">4.6</span> Trajectory Analysis</h2>
+<ul>
+<li>slingshot</li>
+<li>ouija</li>
+<li>celltrails</li>
+</ul>
+</div>
+<div id="session-info-1" class="section level2">
+<h2><span class="header-section-number">4.7</span> Session Info</h2>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="intro.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="clustering-and-differential-expression-workflow.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
