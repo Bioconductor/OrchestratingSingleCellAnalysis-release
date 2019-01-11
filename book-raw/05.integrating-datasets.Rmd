@@ -4,7 +4,8 @@ _Author_: Stephanie Hicks
 
 ## Introduction
 
-Introduce the main purpose of this vignette in paragraph form, why these steps are important, what the end products allow for.
+The purpose of this case study is to demonstrate how to integrate 
+multiple scRNA-seq datasets using the R/Bioconductor package. 
 
 ## Learning objectives
 
@@ -16,7 +17,12 @@ Introduce the main purpose of this vignette in paragraph form, why these steps a
 Packages that are required to go through the vignette and how to install them, should largely be through BiocManager interface.
 
 ```{r preamble, eval=FALSE}
-BiocManager::install(c('SC3', 'clusterExperiment', 'BiocParallel', 'BEARscc', 'zinbwave', 'edgeR', 'DESeq2', 'MAST', 'scDD'))
+BiocManager::install(c('scater', 'scran'))
+```
+
+```{r}
+library(scater)
+library(scran)
 ```
 
 ## Data
@@ -31,28 +37,200 @@ If data comes from "raw" form, then a simple pipeline for creating the processed
 
 ```{r}
 library(TENxPBMCData)
-TENxPBMCData('pbmc4k')
+tenx_pbmc3k <- TENxPBMCData('pbmc3k')
+tenx_pbmc4k <- TENxPBMCData('pbmc4k')
 ```
+
+Find intersection of gene names and keep only intersection 
+to have same rows or features. 
+```{r}
+keep_genes <- intersect(rownames(tenx_pbmc3k), rownames(tenx_pbmc4k))
+tenx_pbmc3k <- tenx_pbmc3k[match(keep_genes, rownames(tenx_pbmc3k)), ]
+tenx_pbmc4k <- tenx_pbmc4k[na.omit(match(keep_genes, rownames(tenx_pbmc4k))), ]
+```
+
+We will also create a combined SCE object
+```{r}
+counts_pbmc <- cbind(counts(tenx_pbmc3k), counts(tenx_pbmc4k))
+sce <- SingleCellExperiment(assays=list(counts=counts_pbmc), 
+                     rowData = rowData(tenx_pbmc3k),
+                     colData = rbind(colData(tenx_pbmc3k), 
+                                     colData(tenx_pbmc4k)))
+```
+
 
 ## Preprocessing
 
 All steps required to preprocess the data into the clean expression matrix, split it up into subsections as necessary. Subsection splits should be informed by the paper (sub)sections. This is all steps prior to the main strategy of interest.
 
+
 ### Cell and gene quality control
 
 Removal of "bad cells", low abundance genes. 
+
+```{r}
+sce <- calculateQCMetrics(sce)
+low_lib_sce <- isOutlier(sce$log10_total_counts, type="lower", nmad=3)
+low_genes_sce <- isOutlier(sce$log10_total_features_by_counts, type="lower", nmad=3)
+data.frame(LowLib=sum(low_lib_sce), LowNgenes=sum(low_genes_sce))
+```
+
+```{r}
+tenx_pbmc3k <- calculateQCMetrics(tenx_pbmc3k)
+low_lib_tenx_pbmc3k <- isOutlier(tenx_pbmc3k$log10_total_counts, type="lower", nmad=3)
+low_genes_tenx_pbmc3k <- isOutlier(tenx_pbmc3k$log10_total_features_by_counts, type="lower", nmad=3)
+data.frame(LowLib=sum(low_lib_tenx_pbmc3k), 
+           LowNgenes=sum(low_genes_tenx_pbmc3k))
+```
+
+```{r}
+tenx_pbmc4k <- calculateQCMetrics(tenx_pbmc4k)
+low_lib_tenx_pbmc4k <- isOutlier(tenx_pbmc4k$log10_total_counts, type="lower", nmad=3)
+low_genes_tenx_pbmc4k <- isOutlier(tenx_pbmc4k$log10_total_features_by_counts, type="lower", nmad=3)
+data.frame(LowLib=sum(low_lib_tenx_pbmc4k), 
+           LowNgenes=sum(low_genes_tenx_pbmc4k))
+```
+
+
+```{r}
+sce <- sce[,!(low_lib_sce | low_genes_sce)]
+tenx_pbmc3k <- tenx_pbmc3k[,!(low_lib_tenx_pbmc3k | low_genes_tenx_pbmc3k)]
+tenx_pbmc4k <- tenx_pbmc4k[,!(low_lib_tenx_pbmc4k | low_genes_tenx_pbmc4k)]
+```
+
 
 ### Normalization
 
 Application of normalization approach, even if its just a log normalization on the count data. Cell cycle normalization may be applicable here.
 
+```{r}
+sce <- computeSumFactors(sce)
+summary(sizeFactors(sce))
+```
+
+```{r}
+tenx_pbmc3k <- computeSumFactors(tenx_pbmc3k)
+summary(sizeFactors(tenx_pbmc3k))
+```
+
+```{r}
+tenx_pbmc4k <- computeSumFactors(tenx_pbmc4k)
+summary(sizeFactors(tenx_pbmc4k))
+```
+
+```{r}
+sce <- normalize(sce)
+tenx_pbmc3k <- normalize(tenx_pbmc3k)
+tenx_pbmc4k <- normalize(tenx_pbmc4k)
+```
+
 ### Feature selection
 
 Identifying the subset of the clean matrix to work with.
 
+We order genes by decreasing biological component. We will be 
+using this information later when performing feature selection
+prior to running mnnCorrect().
+
+```{r}
+fit_sce <- trendVar(sce, use.spikes=FALSE) 
+dec_sce <- decomposeVar(sce, fit_sce)
+dec_sce$Symbol_TENx <- rowData(sce)$Symbol_TENx
+dec_sce <- dec_sce[order(dec_sce$bio, decreasing = TRUE), ]
+
+plot(dec_sce$mean, dec_sce$total, 
+     xlab="Mean log-expression", 
+     ylab="Variance of log-expression", pch=16)
+curve(fit_sce$trend(x), col="dodgerblue", add=TRUE)
+```
+
+```{r}
+fit_tenx_pbmc3k <- trendVar(tenx_pbmc3k, use.spikes=FALSE) 
+dec_tenx_pbmc3k <- decomposeVar(tenx_pbmc3k, fit_tenx_pbmc3k)
+dec_tenx_pbmc3k$Symbol_TENx <- rowData(tenx_pbmc3k)$Symbol_TENx
+dec_tenx_pbmc3k <- dec_tenx_pbmc3k[order(dec_tenx_pbmc3k$bio, decreasing = TRUE), ]
+
+plot(dec_tenx_pbmc3k$mean, dec_tenx_pbmc3k$total, 
+     xlab="Mean log-expression", 
+     ylab="Variance of log-expression", pch=16)
+curve(fit_tenx_pbmc3k$trend(x), col="dodgerblue", add=TRUE)
+```
+
+```{r}
+fit_tenx_pbmc4k <- trendVar(tenx_pbmc4k, use.spikes=FALSE) 
+dec_tenx_pbmc4k <- decomposeVar(tenx_pbmc4k, fit_tenx_pbmc4k)
+dec_tenx_pbmc4k$Symbol_TENx <- rowData(tenx_pbmc4k)$Symbol_TENx
+dec_tenx_pbmc4k <- dec_tenx_pbmc4k[order(dec_tenx_pbmc4k$bio, decreasing = TRUE), ]
+
+plot(dec_tenx_pbmc4k$mean, dec_tenx_pbmc4k$total, 
+     xlab="Mean log-expression", 
+     ylab="Variance of log-expression", pch=16)
+curve(fit_tenx_pbmc4k$trend(x), col="dodgerblue", add=TRUE)
+```
+
+
 ## Integrating Datasets
 
-Strategy 1 of interest. Use BiocParallel. May need to save intermediate data within package to facilitate fast construction of Rmd.
+PCA plot of log normalized data with no batch correction
+```{r}
+sce <- runPCA(sce)
+plotReducedDim(sce, use_dimred="PCA",
+               colour_by="Sample") + ggtitle("Without batch correction")
+```
+
+PCA plot after using `removeBatchEffect()` from the `limma` package. 
+```{r}
+library(limma) 
+corrected <- removeBatchEffect(logcounts(sce), batch=sce$Sample)
+assay(sce, "corrected_logcounts_limma") <- corrected
+rm(corrected)
+
+plotPCASCE(sce, by_exprs_values = "corrected_logcounts_limma", 
+        colour_by="Sample")
+```
+
+PCA plot after using `fastMNN()` from the `scran`
+
+```{r}
+universe <- intersect(rownames(dec_tenx_pbmc3k), rownames(dec_tenx_pbmc4k))
+mean.bio <- (dec_tenx_pbmc3k[universe,"bio"] + dec_tenx_pbmc4k[universe,"bio"])/2
+chosen <- universe[mean.bio > 0]
+length(chosen)
+```
+
+We also rescale each batch to adjust for differences in 
+sequencing depth between batches. The `multiBatchNorm()` function
+recomputes log-normalized expression values after adjusting the
+size factors for systematic differences in coverage between 
+`SingleCellExperiment` objects. (Keep in mind that the previously 
+computed size factors only remove biases between cells within 
+a single batch.) This improves the quality of the correction by
+removing one aspect of the technical differences between batches.
+
+```{r}
+rescaled <- multiBatchNorm(tenx_pbmc3k[universe,], tenx_pbmc4k[universe,])
+rescaled_tenx_pbmc3k <- rescaled[[1]]
+rescaled_tenx_pbmc4k <- rescaled[[2]]
+```
+
+
+```{r}
+out <- fastMNN(rescaled_tenx_pbmc3k[chosen, ], 
+               rescaled_tenx_pbmc4k[chosen, ])
+dim(out$corrected)
+
+
+combined <- cbind(b1, b2)
+reducedDim(combined, "corrected") <- out$correct
+combined$batch <- gl(2, ncol(b1))
+
+sce <- runPCA(sce, exprs_values = "corrected_logcounts_limma")
+
+plotReducedDim(sce, use_dimred="PCA",by_exprs_values = corrected_logcounts_limma, 
+               colour_by="Sample") + ggtitle("Without correction")
+
+```
+
 
 
 ## Session Info
