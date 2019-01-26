@@ -161,11 +161,11 @@ p_distinct_IPs <- pkgs %>%
 
 
 ```{r}
-pdf("figs/bioc-three-assays.pdf", width=10, height=4)
+pdf("figs/bioc-three-assays.pdf", width=9, height=4)
 p <- plot_grid(p_number_pkgs + theme(legend.position = "none"), 
                p_distinct_IPs + theme(legend.position = "none"), ncol=2, labels = LETTERS[1:2])
-legend <- get_legend(p_number_pkgs)
-p2 <- plot_grid(p, legend, rel_widths = c(1.25, .23))
+legend <- get_legend(p_number_pkgs + theme(legend.position = "bottom"))
+p2 <- plot_grid(p,legend, rel_heights = c(2,.15), ncol=1) # c(1.25, .23))
 title <- ggdraw() + draw_label("Usage and impact statistics for Bioconductor software packages", fontface='bold')
 plot_grid(title, p2, ncol=1, rel_heights=c(0.1, 1)) # rel_heights values control title margins
 dev.off()
