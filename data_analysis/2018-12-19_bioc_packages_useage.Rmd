@@ -33,22 +33,31 @@ names(pkg_data)
 
 ```
 
-Packages with `SingleCell` BiocViews (currently 60 packages)
+Packages with `SingleCell`, `RNASeq` and `Microarray` BiocViews
 
 ```{r}
 sc_pkgs <- pkg_data %>% 
   filter(str_detect(biocViews, "SingleCell")) %>% 
   pull(Package)
+
+bulk_pkgs <- pkg_data %>% 
+  filter(str_detect(biocViews, "RNASeq")) %>% 
+  pull(Package)
+
+microarray_pkgs <- pkg_data %>% 
+  filter(str_detect(biocViews, "Microarray")) %>% 
+  pull(Package)
 ```
 
 
 ```{r}
-pkgs <- biocDownloadStats()
+pkgs <- BiocPkgTools::biocDownloadStats()
 ```
 
 ```{r}
-p_number_pkgs <- pkgs %>% filter(Month != "all") %>% 
-  filter(repo=="Software", 
+p_number_pkgs <- pkgs %>% 
+  filter(Month != "all", Year != 2019, 
+         repo=="Software", 
          Package %in% sc_pkgs) %>%
   select(Package, Year) %>%
   distinct() %>%
@@ -65,9 +74,9 @@ p_number_pkgs <- pkgs %>% filter(Month != "all") %>%
 
 ```{r}
 # pdf("figs/bioc-singlecell-downloads-distinct-IPs.pdf", width=6, height=4)
-p_distinct_IPs <- 
-  pkgs %>% filter(Month == "all", # repo=="Software", 
-                Package %in% sc_pkgs) %>% 
+p_distinct_IPs <- pkgs %>% 
+  filter(Month != "all", Year != 2019, 
+         repo=="Software", Package %in% sc_pkgs) %>% 
   group_by(Year) %>%
   summarize(Nb_of_distinct_IPs = sum(Nb_of_distinct_IPs), 
             Nb_of_downloads = sum(Nb_of_downloads)) %>% 
@@ -75,7 +84,7 @@ p_distinct_IPs <-
   geom_point(size=3) + 
   xlab("Year") + ylab("Downloads (distinct IPs)") +
   # ggtitle(" ") + 
-  geom_smooth(method="glm",
+  geom_smooth(method="glm", level = 0.99,
               method.args=list(family=gaussian(link="log")))
 # dev.off()
 ```
@@ -110,3 +119,54 @@ dev.off()
 
 ```
 
+
+## Trying with three assays
+
+
+```{r}
+p_number_pkgs <- pkgs %>% 
+  filter(Month != "all", Year != 2019, 
+         repo=="Software", 
+         Package %in% c(sc_pkgs, bulk_pkgs, microarray_pkgs)) %>%
+  mutate(Assay=fct_relevel(factor(ifelse(Package %in% sc_pkgs, "Single Cell", 
+                     ifelse(Package %in% bulk_pkgs, "Bulk RNA-Seq", "Microarray"))), 
+                        "Microarray")) %>% 
+  select(Package, Year, Assay) %>%
+  distinct() %>%
+  group_by(Year, Assay) %>%
+  summarize(total_packages = n()) %>%
+  arrange(desc(Year)) %>%
+  ggplot(aes(x=Year,y=total_packages, color=Assay)) + 
+  geom_point(size=4) + scale_y_log10() + 
+  xlab("Year") + ylab("Total Packages Contributed") 
+```
+
+
+```{r}
+p_distinct_IPs <- pkgs %>% 
+  filter(Month != "all", Year != 2019, 
+         repo=="Software", 
+         Package %in% c(sc_pkgs, bulk_pkgs, microarray_pkgs)) %>%
+   mutate(Assay=fct_relevel(factor(ifelse(Package %in% sc_pkgs, "Single Cell", 
+                     ifelse(Package %in% bulk_pkgs, "Bulk RNA-Seq", "Microarray"))), 
+                        "Microarray")) %>% 
+  group_by(Year, Assay) %>%
+  summarize(Nb_of_distinct_IPs = sum(Nb_of_distinct_IPs), 
+            Nb_of_downloads = sum(Nb_of_downloads)) %>% 
+  ggplot(aes(x=Year,y=Nb_of_distinct_IPs, color=Assay)) + 
+  geom_point(size=4) + scale_y_log10() + 
+  xlab("Year") + ylab("Downloads (distinct IPs)")
+```
+
+
+
+```{r}
+pdf("figs/bioc-three-assays.pdf", width=10, height=4)
+p <- plot_grid(p_number_pkgs + theme(legend.position = "none"), 
+               p_distinct_IPs + theme(legend.position = "none"), ncol=2, labels = LETTERS[1:2])
+legend <- get_legend(p_number_pkgs)
+p2 <- plot_grid(p, legend, rel_widths = c(1.25, .23))
+title <- ggdraw() + draw_label("Usage and impact statistics for Bioconductor software packages", fontface='bold')
+plot_grid(title, p2, ncol=1, rel_heights=c(0.1, 1)) # rel_heights values control title margins
+dev.off()
+```
