@@ -23,6 +23,7 @@ BiocManager::install(c('scater', 'scran', 'TENxPBMCData'))
 ```{r}
 library(scater)
 library(scran)
+setwd("/users/shicks1/projects/orchestratingSingleCellAnalysis")
 ```
 
 ## Data
@@ -101,7 +102,9 @@ tenx_pbmc4k <- tenx_pbmc4k[,!(low_lib_tenx_pbmc4k | low_genes_tenx_pbmc4k)]
 
 ### Normalization
 
-Application of normalization approach, even if its just a log normalization on the count data. Cell cycle normalization may be applicable here.
+Application of normalization approach, even if its just a 
+log normalization on the count data. 
+Cell cycle normalization may be applicable here.
 
 ```{r}
 sce <- computeSumFactors(sce)
@@ -124,7 +127,23 @@ tenx_pbmc3k <- normalize(tenx_pbmc3k)
 tenx_pbmc4k <- normalize(tenx_pbmc4k)
 ```
 
+Save files on clusters
+```{r}
+saveRDS(sce, file="data/05.integrating-datasets-sce.rds")
+saveRDS(tenx_pbmc3k, file="data/05.integrating-datasets-tenx_pbmc3k.rds")
+saveRDS(tenx_pbmc4k, file="data/05.integrating-datasets-tenx_pbmc4k.rds")
+```
+
+
 ### Feature selection
+
+
+Read files from clusters
+```{r}
+sce <- readRDS("data/05.integrating-datasets-sce.rds")
+tenx_pbmc3k <- readRDS("data/05.integrating-datasets-tenx_pbmc3k.rds")
+tenx_pbmc3k <- readRDS("data/05.integrating-datasets-tenx_pbmc4k.rds")
+```
 
 Identifying the subset of the clean matrix to work with.
 
