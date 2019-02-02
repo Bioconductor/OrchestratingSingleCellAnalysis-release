@@ -1,0 +1,269 @@
+---
+title: "Usage Statistics for Bioconductor Packages"
+author: "Stephanie Hicks, Rob Amezquita"
+output: 
+    html_document:
+        theme: cosmo 
+        toc: true
+        toc_float: true
+        highlight: tango
+        number_sections: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(BiocPkgTools)
+library(tidyverse)
+library(lubridate)
+library(cowplot)
+library(ggsci)
+```
+
+Objective of this doc is to create a figure of growth of single-cell Bioconductor packages (contributions and downloads) over time (2009-2018). 
+
+
+# Data Preprocessing
+
+## Term Definition 
+
+First, we must define the relevant terms for our interests. Here, we use the BiocViews interface to select Sequencing technology, limiting our terms to those with greater than 10 packages associated under the Sequencing header, and also add FlowCytometry, MassSpectrometry, and SingleCell outside of that. Note that some of these terms, such as RNASeq and SingleCell, may and will exhibit overlap.
+
+```{r}
+terms <- c('SingleCell', 'RNASeq', 'Microarray', 'ChIPSeq',
+          'DNASeq', 'MethylSeq', 'Microbiome', 'WholeGenome',
+          'HiC', 'ATACSeq', 'ExomeSeq', 'miRNA',
+          'FlowCytometry', 'MassSpectrometry') # separate tech
+```
+
+## Data Acquisition
+
+Load data from `BiocPkgTools`. The first dataset has information about the BiocViews and the second dataset has information about the number of downloads. 
+
+```{r}
+pkg_metadata <- BiocPkgTools::biocPkgList()
+pkg_stats <- BiocPkgTools::biocDownloadStats()
+```
+
+Next is to lightly filter the dataset to remove the 'all' month, to limit to only software, and to correct the date format of the `pkgs` object.
+
+```{r}
+pkg_stats <- pkg_stats[pkg_stats$Month != 'all' & pkg_stats$repo == 'Software', ] # exclude the all time points
+
+pkg_stats$Date <- as.Date(
+    paste0(
+        '1', tolower(as.character(pkg_stats$Month)), as.character(pkg_stats$Year)
+    ), "%d%b%Y"
+)
+pkg_stats <- pkg_stats[, c(-2, -3)]
+pkg_stats <- pkg_stats[pkg_stats$Date < as.Date('2019-02-01'), ] # or use Sys.Date()
+```
+
+Next, we subset and search for Bioconductor packages associated with our terms of interest defined above. This will be used to limit our dataset to only those packages of interest (`poi`) that match our desired terms. We use the `pkg_metadata`, which contains information about the biocViews, to filter our dataset using the `.pullPkgData` function.
+
+## Filtering to Relevant Packages by Term Association
+
+```{r}
+.pullPkgData <- function(term, pkgData) {
+    pkgData %>%
+        dplyr::filter(str_detect(biocViews, !!term)) %>% 
+        dplyr::pull(Package)
+}
+
+poi_l <- map(terms, .pullPkgData, pkgData = pkg_metadata)
+names(poi_l) <- terms
+poi_df <- poi_l %>% reshape2::melt(value.name = 'Package')
+colnames(poi_df)[2] <- 'Assay'
+```
+
+The `poi_df` (package of interest data frame) is used to filter down our original dataset, `pkg_stats`, to only those fitting our term search, as well as annotate the assay associated to them. This is done using an inner join.
+
+```{r}
+pkg_tbl <- inner_join(pkg_stats, poi_df, by = 'Package') %>%
+    arrange(Package, Date) %>%
+    select(-repo)
+```
+
+## Cleaning Up Cross-Listed Packages
+
+Next, we need to remove any entries for packages where they are crosslisted for multiple assays, and reassign them to their original or most relevant assay. While in some cases, such as DESeq2, they are certainly applicable to multiple assay types, here we will limit our scope to avoid misrepresenting total distinct IPs. The full list of duplicates are shown below:
+
+### Reclassifying methods
+
+First, the following assays will be reclassified as `GenomicSeq`: ExomeSeq, WholeGenome, DNASeq. The reason for this is because these technologies are generally crosslisted with one another, and furthermore generally rely on similar methodologies where variant calling is the primary objective.
+
+```{r}
+pkg_tbl <- pkg_tbl %>%
+    mutate(Assay = case_when(
+               Assay == 'ExomeSeq' ~ 'GenomicSeq',
+               Assay == 'WholeGenome' ~ 'GenomicSeq',
+               Assay == 'DNASeq' ~ 'GenomicSeq',
+               TRUE ~ as.character(Assay)
+           )) %>%
+    unique()
+```
+
+Next, the following assays will be reclassifed as `EpigeneticSeq`: ATACSeq, ChIPSeq, HiC, MethylSeq. The reason being that many of these methods rely on similar approaches for peak calling/enrichment, annotation of genomic regions, and such.
+
+```{r}
+pkg_tbl <- pkg_tbl %>%
+    mutate(Assay = case_when(
+               Assay == 'HiC' ~ 'EpigenomicSeq',
+               Assay == 'ATACSeq' ~ 'EpigenomicSeq',
+               Assay == 'ChIPSeq' ~ 'EpigenomicSeq',
+               Assay == 'MethylSeq' ~ 'EpigenomicSeq',
+               TRUE ~ as.character(Assay)
+           )) %>%
+    unique()
+```
+
+Lastly, the following assays will be reclassified as `TranscriptomicSeq`: miRNA, RNASeq.
+
+```{r}
+pkg_tbl <- pkg_tbl %>%
+    mutate(Assay = case_when(
+               Assay == 'miRNA' ~ 'TranscriptomicSeq',
+               Assay == 'RNASeq' ~ 'TranscriptomicSeq',
+               TRUE ~ as.character(Assay)
+           )) %>%
+    unique()
+```
+
+### Manual Annotation of Primary Assay
+
+After reclassifying methods, we now turn to packages which are still crosslisted across multiple assays to do manual reclassification. The objective here is to annotate a package to its primary assay of interest. The remaining assays are: TranscriptomicSeq, EpigenomicSeq, GenomicSeq, FlowCytometry, MassSpectrometry, Microarray, Microbiome, and SingleCell.
+
+Generally, the following criteria were loosely applied:
+
+* if a package is annotated to "TranscriptomicSeq" and "Microarray", microarray is generally designated the primary assay unless there is strong reason to believe it was designed with TranscriptomicSeq (RNA-seq, miRNA-seq) as the primary development purpose; vignette, subtitle of package were the evidence sources looked at
+* if a package is annotated to "EpigenomicSeq" and "Microarray", many of these are methylation arrays; these are annotated to "EpigenomicSeq" in this case; Microarray for our purposes focuses on _RNA expression_ based assays
+* if a package is annotated to "TranscriptomicSeq" and "EpigenomicSeq", the vignette, subtitle of package, are assessed to determine primary development purpose
+* packages labeled under "GenomicSeq" and "EpigenomicSeq" are labeled based on if they focus on genomic variants (the former) or otherwise (the latter)
+* packages labeled under "SingleCell" and "FlowCytometry" are classified to be primarily "FlowCytometry"; similarly for "MassSpectrometry"; despite these being single-cell technologies, "SingleCell" here focuses on RNA expression and only makes limited exceptions (Cicero, being a single-cell ATAC-seq method, will qualify as "SingleCell" here)
+* for a package to be labeled under "SingleCell", there must be strong evidence (vignette, package subtitle/title) that it was developed for the primary purpose of analyzing single-cell (expression) data derived from single-cell platforms such as Fluidigm, 10X, SMART-seq2, Dropseq, etc.; generally, these are packages that are contributed and were published on within the last 2-3 years. Generally also, these packages are only annotated to "TranscriptomicSeq" and "SingleCell", and make solid references to single-cell technologies in their documentation.
+
+Note that this was a minority of all packages (154 of 875 had multiple assays annotated after automatic reclassification described before), and that this being difficult a task to accurately assign, the results should be loosely interpreted as more trends than concrete facts. Indeed, many of the methods are general purpose frameworks that work across multiple assays, and this reclassification serves primarily for the purposes of visualization.
+
+First, the duplicated packages are extracted to an excel sheet for subsequent manual classification.
+
+```{r}
+tmp <- pkg_tbl %>%
+    select(Package, Assay) %>%
+    arrange(Package) %>%
+    unique()
+
+dupes <- tmp$Package[duplicated(tmp$Package)]
+dupe_pkgs <- tmp %>%
+    filter(Package %in% dupes)
+
+write_tsv(dupe_pkgs, here::here('data_analysis/duplicated-packages.tsv'))
+```
+
+The manual classification results are read-in, and then used to remove the duplicated entries that are deemed to be secondary assay annotations.
+
+```{r}
+keep <- read_tsv(here::here('data_analysis/duplicated-packages_anno.txt'))
+
+tmp <- left_join(pkg_tbl, keep, by = c('Package', 'Assay')) %>%
+    mutate(Keep = ifelse(is.na(Keep), TRUE, Keep)) %>%
+    filter(Keep == TRUE) %>%
+    select(-Keep)
+
+pkg_tbl <- tmp
+
+## ## To double check all dupes are gone:
+## tmp2 <- tmp %>% select(Package, Assay) %>% unique
+## sum(duplicated(tmp2$Package))
+## tmp2$Package[duplicated(tmp2$Package)]
+```
+
+
+## MassSpectrometry and FlowCytometry Spikes
+
+In each of these technologies, there was a spike at about 2014 of a massive amount of distinct IPs and downloads, which appears artifactual. 
+
+```{r}
+pkg_tbl %>%
+    filter(Assay %in% c('FlowCytometry', 'MassSpectrometry'),
+           ## Package %in% c('flowCore', 'ProtGenerics'),
+           Date > as.Date('2013-01-01'), Date < as.Date('2015-01-01'),
+           Nb_of_distinct_IPs > 4000) %>%
+    arrange(desc(Nb_of_distinct_IPs)) %>%
+    print(n = Inf)
+```
+
+The offenders here appear to be `flowCore`, `mzR`, and `xcms`.
+
+```{r}
+pkg_tbl %>%
+    filter(Package %in% c('flowCore', 'mzR', 'xcms')) %>%
+    ggplot(aes(x = Date, y = Nb_of_distinct_IPs, group = Package, colour = Package)) +
+    geom_line()
+```
+
+In the grand scheme of things, these are probably not problematic, but do somewhat inflate the flow and mass spec views.
+
+
+## Defining Colours
+
+Lastly, before getting into real plots, we define colours based on technologies.
+
+## Defining Colours per Term
+
+Lastly, for aesthetics, we define a colour scale based on the number of terms searched against, using the nature palette from `ggsci`. 
+
+```{r}
+new_terms <- unique(pkg_tbl$Assay)
+colours_terms <- colorRampPalette(pal_npg()(10))(length(new_terms))
+names(colours_terms) <- new_terms
+```
+
+# Initial Plots
+
+An initial plot here shows all the terms selected, with each line representing an individual package. However, they all overlap with one another, which makes it hard to compare them.
+
+```{r}
+pkg_tbl %>%
+    ggplot(aes(x = Date, y = Nb_of_distinct_IPs, colour = Assay, group = Package)) +
+    geom_ribbon(aes(ymax = Nb_of_distinct_IPs, ymin = 0, fill = Assay), alpha = 0.1, size = 0) +
+    geom_line(alpha = 0.1) +
+    scale_colour_manual(values = colours_terms) +
+    scale_fill_manual(values = colours_terms) +    
+##    scale_y_log10() +
+    facet_wrap(~ Assay, scales = 'free_y', ncol = 4)
+```
+
+As such, we need a transform to take the data and stack the layers together, e.g., for each technology, define a ymin and ymax that is _relative_ to the other technologies to enable stacking.
+
+```{r}
+## Convert to wide (matrix) format; convert NA's to 0 for math purposes
+mat <- pkg_tbl %>%
+    select(Assay, Package, Date, Nb_of_distinct_IPs) %>%
+    arrange(Assay, Package, Date) %>%
+    spread(Date, Nb_of_distinct_IPs) %>%
+    mutate_all(~ ifelse(is.na(.), 0, .))
+
+## Apply a cumulative sum across the rows to position each package and gather
+tbl_cs <- mat %>%
+    mutate_at(vars(`2009-01-01`:`2019-01-01`), cumsum) %>%
+    gather(Date, Nb_of_distinct_IPs, -Assay, -Package) %>%
+    arrange(desc(Nb_of_distinct_IPs))
+    
+tbl_cs %>%
+##    filter(Assay == 'SingleCell') %>%
+    ggplot(aes(x = Date, y = Nb_of_distinct_IPs,
+               colour = Assay, group = Package)) +
+    geom_line(size = 1) +
+    ## geom_ribbon(aes(ymax = Nb_of_distinct_IPs, ymin = 0, colour = Assay, fill = Assay),
+    ##             alpha = 0.1, size = 0) +
+    scale_colour_manual(values = colours_terms) +
+    scale_fill_manual(values = colours_terms) +
+    coord_cartesian(expand = FALSE) +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+    scale_x_discrete(breaks = paste0(2009:2019, '-01-01')) +
+    labs(x = '', y = 'Number of Distinct IPs')
+
+
+```
