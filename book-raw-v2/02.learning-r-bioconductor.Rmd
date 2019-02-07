@@ -2,7 +2,7 @@
 
 ## A Brief Overview
 
-[R](http://www.r-project.org/) is a high-level programming language that was initially designed for statistical applications. While there is much to be said [about R](https://www.r-project.org/about.html) as a programming language, one of the key advantages of using R is that it is highly extensible through _packages_. The ease of development and distribution of packages for R has made it a rich environment for many fields of study and application.
+[R](http://www.r-project.org/) is a high-level programming language that was initially designed for statistical applications. While there is much to be said [about R](https://www.r-project.org/about.html) as a programming language, one of the key advantages of using R is that it is highly extensible through _packages_. Packages are collections of functions, data, and documentation that extends the capabilities of base R. The ease of development and distribution of packages for R has made it a rich environment for many fields of study and application.
 
 One of the primary ways in which packages are distributed is through centralized repositories. The first R repository a user typically runs into is the [Comprehensive R Archive Network](https://cran.r-project.org/mirrors.html) (CRAN), which hosts over 13,000 packages to date, and is home to many of the most popular R packages. 
 
@@ -11,10 +11,40 @@ Similar to CRAN, [Bioconductor](https://bioconductor.org) is a repository of R p
 
 ## Prerequisites
 
-To follow along with the analysis workflows in this book, there are necessary software prerequisites that must be fulfilled. These workflows are written in the [R](http://www.r-project.org/) programming language.
+Prior to getting started with this book, some prior programming experience with R is helpful. We especially recommend exploring [Datacamp](https://www.datacamp.com/), and specifically their [introductory R](https://www.datacamp.com/courses/tech:r) programming courses to learn the basics of R. Datacamp is completely online, and has a source code editor and console for running code interactively, making it a great learning resource.
+
+To follow along with the analysis workflows in this book on your personal computer, it is first necessary to install the [R](http://www.r-project.org/) programming language. Additionally, we recommend a graphical user interface such as [RStudio](http://www.rstudio.com/download) for programming in R and visualization. For more details, please see the online book _R for Data Science_ [prerequisites](https://r4ds.had.co.nz/introduction.html#prerequisites) section.
+
+A special note for Mac OS users: we highly recommend using the [Homebrew](https://brew.sh/) package manager for managing your R installation. Follow the website directions to install homebrew, and install R via the commandline with `brew install R`, and it will automatically configure your installation for you. Upgrading to new R versions can also be done by running `brew upgrade`.
+
+### Installing Bioconductor Packages
+
+After installing R, the next step is to install R packages. In the R console, you can install packages from CRAN via the `install.packages()` function. In order to [install Bioconductor packages](https://www.bioconductor.org/install/), we will first need the _BiocManager_ package which is hosted on CRAN. This can be done by running:
+
+```{r, eval=FALSE}
+install.packages("BiocManager")
+```
+
+The _BiocManager_ package makes it easy to install packages from the Bioconductor repository. For example, to install the [_SingleCellExperiment_](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) package, we run:
+
+```{r, eval=FALSE}
+## the command below is a one-line shortcut for:
+## library(BiocManager)
+## install("SingleCellExperiment")
+BiocManager::install("SingleCellExperiment")
+```
+
+Throughout the book, we can load packages via the `library()` function, which by convention usually comes at the top of scripts to alert readers as to what packages are required. For example, to load the _SingleCellExperiment_ package, we run:
+
+```{r, eval=FALSE}
+library(SingleCellExperiment)
+```
+
+Many packages will be referenced throughout the book within the workflows, and similar to the above, can be installed using the `BiocManager::install()` function. 
 
 
 ## Learning more {#learning-more}
+
 
 R for Data Science 
 
