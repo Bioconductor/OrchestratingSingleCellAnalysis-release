@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <title>Chapter 3 Using R &amp; Bioconductor | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:title" content="Chapter 3 Using R &amp; Bioconductor | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta name="twitter:title" content="Chapter 3 Using R &amp; Bioconductor | Orchestrating Single-Cell Analysis with Bioconductor" />
   
   <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="introduction.html">
+<link rel="prev" href="learning-r-and-more.html">
+<link rel="next" href="data-infrastructure.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -191,27 +191,72 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Orchestrating Single-Cell Analysis with Bioconductor</h1>
-<p class="author"><em>Bioconductor</em></p>
-<p class="date"><em>2019-02-07</em></p>
+<div id="using-r-and-bioconductor" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Using R &amp; Bioconductor</h1>
+<div id="a-brief-overview" class="section level2">
+<h2><span class="header-section-number">3.1</span> A Brief Overview</h2>
+<p><a href="http://www.r-project.org/">R</a> is a high-level programming language that was initially designed for statistical applications. While there is much to be said <a href="https://www.r-project.org/about.html">about R</a> as a programming language, one of the key advantages of using R is that it is highly extensible through <em>packages</em>. Packages are collections of functions, data, and documentation that extends the capabilities of base R. The ease of development and distribution of packages for R has made it a rich environment for many fields of study and application.</p>
+<p>One of the primary ways in which packages are distributed is through centralized repositories. The first R repository a user typically runs into is the <a href="https://cran.r-project.org/mirrors.html">Comprehensive R Archive Network</a> (CRAN), which hosts over 13,000 packages to date, and is home to many of the most popular R packages.</p>
+<p>Similar to CRAN, <a href="https://bioconductor.org">Bioconductor</a> is a repository of R packages as well. However, whereas CRAN is a general purpose repository, Bioconductor focuses on software tailored for genomic analysis. Furthermore, Bioconductor has stricter requirements for a package to be accepted into the repository. Of particular interest to us is the inclusion of <a href="#learning-more">high quality documentation</a> and the use of common <a href="data-infrastructure.html#data-infrastructure">data infrastructure</a> to promote package interoperability.</p>
 </div>
-<div id="welcome" class="section level1 unnumbered">
-<h1>Welcome</h1>
-<p><a href="https://bioconductor.org"><img src="_img/Bioconductor5.png" width="200" alt="Bioconductor Sticker" align="right" style="margin: 0 1em 0 1em" /></a></p>
-<p>This is the website for <strong>“Orchestrating Single-Cell Analysis with Bioconductor”</strong>, a book that teaches users some common workflows for the analysis of single-cell RNA-seq data (scRNA-seq). This book will teach you how to make use of cutting-edge Bioconductor tools to process, analyze, visualize, and explore scRNA-seq data. Additionally, it serves as an online companion for the manuscript <strong>“Orchestrating Single-Cell Analysis with Bioconductor”</strong>.</p>
-<p>While we focus here on scRNA-seq data, a newer technology that profiles transcriptomes at the single-cell level, many of the tools, conventions, and analysis strategies utilized throughout this book are broadly applicable to other types of assays. By learning the grammar of Bioconductor workflows, we hope to provide you a starting point for the exploration of your own data, whether it be scRNA-seq or otherwise.</p>
-<p>The book is written in <a href="https://rmarkdown.rstudio.com">RMarkdown</a> with <a href="https://bookdown.org">bookdown</a>. OSCA is a collaborative effort and many people have contributed workflows, fixes, and improvements.</p>
-<p>This website is (and will always be) <strong>free to use</strong>, and is licensed under the <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/us/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0</a> License.</p>
+<div id="prerequisites" class="section level2">
+<h2><span class="header-section-number">3.2</span> Prerequisites</h2>
+<div id="installing-r" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Installing R</h3>
+<p>Prior to getting started with this book, some prior programming experience with R is helpful. Check out the <a href="learning-r-and-more.html#learning-r-and-more"><em>Learning R and More</em></a> chapter for a list of resources to get started with R and other useful tools for bioinformatic analysis.</p>
+<p>To follow along with the analysis workflows in this book on your personal computer, it is first necessary to install the <a href="http://www.r-project.org/">R</a> programming language. Additionally, we recommend a graphical user interface such as <a href="http://www.rstudio.com/download">RStudio</a> for programming in R and visualization. For more details, please see the online book <a href="https://r4ds.had.co.nz/introduction.html#prerequisites"><em>R for Data Science</em> prerequisites</a> section.</p>
+<p>A special note for Mac OS users: we highly recommend using the <a href="https://brew.sh/">Homebrew</a> package manager for managing your R installation. Follow the website directions to install homebrew, and install R via the commandline with <code>brew install R</code>, and it will automatically configure your installation for you. Upgrading to new R versions can also be done by running <code>brew upgrade</code>.</p>
+</div>
+<div id="installing-r-bioconductor-packages" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Installing R &amp; Bioconductor Packages</h3>
+<p>After installing R, the next step is to install R packages. In the R console, you can install packages from CRAN via the <code>install.packages()</code> function. In order to <a href="https://www.bioconductor.org/install/">install Bioconductor packages</a>, we will first need the <em>BiocManager</em> package which is hosted on CRAN. This can be done by running:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</code></pre>
+<p>The <em>BiocManager</em> package makes it easy to install packages from the Bioconductor repository. For example, to install the <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html"><em>SingleCellExperiment</em></a> package, we run:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">## the command below is a one-line shortcut for:</span>
+<span class="co">## library(BiocManager)</span>
+<span class="co">## install(&quot;SingleCellExperiment&quot;)</span>
+BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">&quot;SingleCellExperiment&quot;</span>)</code></pre>
+<p>Throughout the book, we can load packages via the <code>library()</code> function, which by convention usually comes at the top of scripts to alert readers as to what packages are required. For example, to load the <em>SingleCellExperiment</em> package, we run:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SingleCellExperiment)</code></pre>
+<p>Many packages will be referenced throughout the book within the workflows, and similar to the above, can be installed using the <code>BiocManager::install()</code> function.</p>
+</div>
+</div>
+<div id="getting-help-in-and-out-of-r" class="section level2">
+<h2><span class="header-section-number">3.3</span> Getting Help In (and Out) of R</h2>
+<p>One of the most helpful parts of R is being able to get help <em>inside</em> of R. For example, to get the manual associated with a function, class, dataset, or package, you can prepend the code of interest with a <code>?</code> to retrieve the relevant help page. For example, to get information about the <code>data.frame()</code> function, the <em>SingleCellExperiment</em> class, the in-built <em>iris</em> dataset, or for the <em>BiocManager</em> package, you can type:</p>
+<pre class="sourceCode r"><code class="sourceCode r">?data.frame
+?SingleCellExperiment
+?iris
+?BiocManager</code></pre>
+<p>Beyond R, there are myriad online resources to get help. The R for Data Science book has a great section dedicated to looking for help <a href="https://r4ds.had.co.nz/introduction.html#getting-help-and-learning-more">outside of R</a>.</p>
+</div>
+<div id="bioconductor-documentation" class="section level2">
+<h2><span class="header-section-number">3.4</span> Bioconductor Documentation</h2>
+<p>One of the key tenets of Bioconductor software is the rich documentation of packages and workflows. Here, we cover some of the key resources</p>
+<p>Bioconductor package vignettes and reference manuals
+Bioconductor BiocViews and workflows
+Bioconductor forum
+Stackoverflow and Google for more generic R programming advice</p>
+</div>
+<div id="becoming-a-bioconductor-expert" class="section level2">
+<h2><span class="header-section-number">3.5</span> Becoming a Bioconductor Expert</h2>
+<p>While <a href="using-r-and-bioconductor.html#bioconductor-documentation">learning to use Bioconductor</a> tools is a very welcoming experience, there is unfortunately, no central resource for navigating the plethora of gotchas and paradigms associated with developing for Bioconductor. Based on conversations with folks involved in developing for Bioconductor, much of this knowledge is hard won and fairly spread out. This however is beginning to change with more recent efforts led by the Bioconductor team, and this book represents an earnest effort towards addressing this concern.</p>
+<p>The <a href="https://github.com/Bioconductor/BiocWorkshops">BiocWorkshops</a> repository under the <a href="https://github.com/Bioconductor/">Bioconductor Github</a> provides a book composed of workshops that have been hosted by Bioconductor team members and contributors. These workshops center around learning, using, and developing for Bioconductor.</p>
+<p>A host of topics are also available via the <a href="http://bioconductor.org/help/course-materials/">Learn</a> module on the Bioconductor website as well.</p>
+</div>
+<div id="conventions-used-in-this-book" class="section level2">
+<h2><span class="header-section-number">3.6</span> Conventions used in this book</h2>
+<p>Talk about code font, code blocks, function references, objects, classes.</p>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="introduction.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="learning-r-and-more.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-infrastructure.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
