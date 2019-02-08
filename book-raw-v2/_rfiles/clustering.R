@@ -80,12 +80,11 @@ rsec <- RSEC(sce[sig_genes, ], reduceMethod = "PCA", nReducedDims = 20,
             alphas = 0.1,
             consensusMinSize = 100, k0s = 2:4)
 
-
 plotCoClustering(rsec, whichClusters = c("mergeClusters", "makeConsensus"))
 
 
 
-save(sce, sce_sc3, rsec, file = "_rfiles/_data/clustering.RData")
+save(sce, sce_sc3, rsec, file = "_rfiles/_data/clustering.RData", compress = 'xz')
 
 
 
