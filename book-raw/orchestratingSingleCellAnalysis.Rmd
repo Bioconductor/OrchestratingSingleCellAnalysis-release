@@ -1,0 +1,290 @@
+--- 
+title: "Orchestrating Single-Cell Analysis"
+author: "Bioconductor"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "This is a companion of workflows to the 'Orchestrating Single-Cell Analysis' paper by the Bioconductor team."
+---
+
+# Prerequisites
+
+Placeholder
+
+
+
+<!--chapter:end:index.Rmd-->
+
+# Introduction {#intro}
+
+## Prerequisites
+
+You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
+
+Figures and tables with captions will be placed in `figure` and `table` environments, respectively.
+
+```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center'}
+```
+
+Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Figure \@ref(fig:nice-fig). Similarly, you can reference tables generated from `knitr::kable()`, e.g., see Table \@ref(tab:nice-tab).
+
+```{r nice-tab, tidy=FALSE}
+knitr::kable(
+  head(iris, 20), caption = 'Here is a nice table!',
+  booktabs = TRUE
+)
+```
+
+You can write citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].
+
+<!--chapter:end:01-intro.Rmd-->
+
+# Clustering and Differential Expression Workflow
+
+_Author_: Robert A. Amezquita, Fred Hutchinson Cancer Research Center
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, 
+                     echo=TRUE, warning=FALSE, message=FALSE)
+
+library(knitr)
+library(kableExtra)
+## kable(dt) %>%
+##     kable_styling(bootstrap_options = "striped", font_size = 7)
+
+.pretty_table <- function(x, caption = NULL) {
+    x %>%
+        kable(caption = caption) %>%
+        kable_styling(bootstrap_options = "striped", full_width = TRUE)
+}
+
+```
+
+## Introduction
+
+Introduce the main purpose of this vignette in paragraph form, why these steps are important, what the end products allow for.
+
+## Learning objectives
+
+* In bullet form, illustrate what the main outputs are of this vignette
+* A couple of bullet points are fine
+
+## Package requirements
+
+Packages that are required to go through the vignette and how to install them, should largely be through BiocManager interface.
+
+```{r preamble, eval=FALSE}
+bioc_pkgs <- c("TENxPBMCData",
+         "scater")
+
+cran_pkgs <- c("tidyverse")
+
+BiocManager::install(pkgs)
+install.packages(cran_pkgs)
+```
+
+## Preamble
+
+```{r}
+library(tidyverse)
+```
+
+## Data
+
+### Description of Data
+
+
+### Loading the Data
+
+```{r, message=FALSE}
+library(TENxPBMCData)
+pbmc4k <- TENxPBMCData('pbmc4k')
+
+## optional: increases memory for loading data into memory
+## options(DelayedArray.block.size=8e9) 
+```
+
+### Exploring the Raw Data
+
+Initial state of the rowdata and coldata.
+
+```{r, eval=FALSE}
+colData(pbmc4k)[1, ]
+```
+```{r, echo=FALSE}
+colData(pbmc4k)[1:2, 1:5] %>% .pretty_table("Column data of SingleCellExperiment object.")
+colData(pbmc4k)[1:2, 6:11] %>% .pretty_table()
+```
+
+```{r, eval=FALSE}
+rowData(pbmc4k)[1:5, ]
+```
+```{r, echo=FALSE}
+rowData(pbmc4k)[1:5, ] %>% .pretty_table("Row data of SingleCellExperiment object.")
+```
+
+```{r, eval=FALSE}
+counts(pbmc4k)[1:5, 1:5]
+```
+```{r, echo=FALSE}
+counts(pbmc4k)[1:3, 1:5] %>% .pretty_table("Count data of SingleCellExperiment object.")
+```
+
+## Preprocessing
+
+### Rename features
+
+Remaps rownames to unique TENx based symbols. 
+
+```{r}
+rownames(pbmc4k) <- scater::uniquifyFeatureNames(ID = rowData(pbmc4k)$ENSEMBL_ID,
+                                               names = rowData(pbmc4k)$Symbol_TENx)
+```
+
+```{r}
+counts(pbmc4k)[1:5, 1:5] %>% .pretty_table("Count data with transformed row identifiers.")
+```
+
+### Cell and gene quality control
+
+Initial QC metrics appended to the SCE object.
+
+```{r}
+library(scater)
+pbmc4k <- scater::calculateQCMetrics(pbmc4k)
+```
+
+```{r}
+knitr::kable(colData(pbmc4k)[1, ], digits = 2, booktabs = TRUE,
+            caption = "Column data with new entries from `scater::calculateQCMetrics`.")
+
+knitr::kable(rowData(pbmc4k)[1, ], digits = 2, booktabs = TRUE,
+            caption = "Row data with new entries from `scater::calculateQCMetrics`.")
+```
+
+```{r}
+scater::plotExprsFreqVsMean(pbmc4k)
+scater::plotRowData(pbmc4k, x = 'n_cells_by_counts', y = 'mean_counts')
+
+library(DropletUtils)
+bcrank <- DropletUtils::barcodeRanks(as.matrix(counts(pbmc4k)))
+
+## this takes a while...might not ever finish
+## e.out <- DropletUtils::emptyDrops(as.matrix(counts(pbmc4k)))
+
+
+plot(bcrank$rank, bcrank$total, log = 'xy')
+abline(h = metadata(bcrank)$inflection, col = 'darkgreen')
+abline(h = metadata(bcrank)$knee, col = 'dodgerblue') # use as filtering threshold!
+
+```
+
+### Normalization
+
+Application of normalization approach, even if its just a log normalization on the count data. Cell cycle normalization may be applicable here.
+
+### Feature selection
+
+Identifying the subset of the clean matrix to work with.
+
+### Dimensionality reduction
+
+Calculating PCs and UMAP/tSNE representation.
+
+## Clustering
+
+Strategy 1 of interest. Use BiocParallel. May need to save intermediate data within package to facilitate fast construction of Rmd.
+
+* SC3
+* clusterExperiment
+* clustree
+* BEARscc # uses ERCC spike ins
+* BiocNeighbors # more for devs
+
+## Differential Expression
+
+Strategy 2 of interest. Differential expression approaches. Use one of the outputs from above to perform differential expression analyses comparison.
+
+* zinbwave + edgeR/DESeq2 (may exclude as workflow is very different or highlight as an "advanced section")
+* MAST
+* scDD
+* SC3
+
+## Session Info
+
+```{r}
+
+```
+
+<!--chapter:end:02.clustering-and-de.Rmd-->
+
+
+# Trajectory Analysis Workflow
+
+Placeholder
+
+
+## Introduction
+## Learning objectives
+## Package requirements
+## Loading the data
+## Preprocessing
+### Cell and gene quality control
+### Normalization
+### Feature selection
+### Dimensionality reduction
+## Trajectory Analysis
+## Session Info
+
+<!--chapter:end:03.trajectory-analysis.Rmd-->
+
+
+# Geneset Analysis and Gene Expression Networks
+
+Placeholder
+
+
+## Introduction
+## Learning objectives
+## Package requirements
+## Loading the data
+## Preprocessing
+### Cell and gene quality control
+### Normalization
+### Feature selection
+## Geneset Analysis
+## Gene Expression Networks
+## Session Info
+
+<!--chapter:end:04.geneset-analysis.Rmd-->
+
+
+# Integrating Datasets
+
+Placeholder
+
+
+## Introduction
+## Learning objectives
+## Package requirements
+## Data
+### Description of Data
+### Loading the Data
+## Preprocessing
+### Cell and gene quality control
+### Normalization
+### Feature selection
+## Integrating Datasets
+## Session Info
+
+<!--chapter:end:05.integrating-datasets.Rmd-->
+
+`r if (knitr::is_html_output()) '
+# References {-}
+'`
+
+<!--chapter:end:06-references.Rmd-->
+
