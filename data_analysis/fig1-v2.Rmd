@@ -18,7 +18,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(BiocPkgTools)
 library(tidyverse)
 library(lubridate)
-library(cowplot)
 library(ggsci)
 ```
 
@@ -58,7 +57,7 @@ pkg_stats$Date <- as.Date(
     ), "%d%b%Y"
 )
 pkg_stats <- pkg_stats[, c(-2, -3)]
-pkg_stats <- pkg_stats[pkg_stats$Date < as.Date('2019-02-01'), ] # or use Sys.Date()
+pkg_stats <- pkg_stats[pkg_stats$Date < as.Date('2019-02-15'), ] # or use Sys.Date()
 ```
 
 Next, we subset and search for Bioconductor packages associated with our terms of interest defined above. This will be used to limit our dataset to only those packages of interest (`poi`) that match our desired terms. We use the `pkg_metadata`, which contains information about the biocViews, to filter our dataset using the `.pullPkgData` function.
@@ -216,7 +215,7 @@ Lastly, for aesthetics, we define a colour scale based on the number of terms se
 
 ```{r}
 new_terms <- unique(pkg_tbl$Assay)
-colours_terms <- colorRampPalette(pal_npg()(10))(length(new_terms))
+colours_terms <- colorRampPalette(pal_npg()(8))(length(new_terms))
 names(colours_terms) <- new_terms
 ```
 
@@ -237,33 +236,61 @@ pkg_tbl %>%
 
 As such, we need a transform to take the data and stack the layers together, e.g., for each technology, define a ymin and ymax that is _relative_ to the other technologies to enable stacking.
 
+
+# Plot of Number of Distinct IPs
+
+Focusing only on sequencing technologies on Bioconductor here.
+
 ```{r}
 ## Convert to wide (matrix) format; convert NA's to 0 for math purposes
 mat <- pkg_tbl %>%
+    filter(!(Assay %in% c('Microarray', 'FlowCytometry', 'MassSpectrometry'))) %>%    
     select(Assay, Package, Date, Nb_of_distinct_IPs) %>%
+    mutate(Assay = fct_relevel(Assay, new_terms)) %>%
     arrange(Assay, Package, Date) %>%
     spread(Date, Nb_of_distinct_IPs) %>%
-    mutate_all(~ ifelse(is.na(.), 0, .))
+    mutate_at(vars(-Assay, -Package), ~ ifelse(is.na(.), 0, .))
 
 ## Apply a cumulative sum across the rows to position each package and gather
 tbl_cs <- mat %>%
     mutate_at(vars(`2009-01-01`:`2019-01-01`), cumsum) %>%
     gather(Date, Nb_of_distinct_IPs, -Assay, -Package) %>%
-    arrange(desc(Nb_of_distinct_IPs))
-    
-tbl_cs %>%
-##    filter(Assay == 'SingleCell') %>%
-    ggplot(aes(x = Date, y = Nb_of_distinct_IPs,
-               colour = Assay, group = Package)) +
-    geom_line(size = 1) +
-    ## geom_ribbon(aes(ymax = Nb_of_distinct_IPs, ymin = 0, colour = Assay, fill = Assay),
-    ##             alpha = 0.1, size = 0) +
+    arrange(Nb_of_distinct_IPs)
+
+tbl_rib <- tbl_cs %>%
+    group_by(Assay, Date) %>%
+    summarise(min = min(Nb_of_distinct_IPs),
+              max = max(Nb_of_distinct_IPs)) 
+
+
+new_terms <- unique(pkg_tbl$Assay)
+new_terms <- c('SingleCell', 'TranscriptomicSeq', 'EpigenomicSeq', 'GenomicSeq','Microbiome')
+              #'MassSpectrometry',,'FlowCytometry', 'Microarray')
+colours_terms <- pal_npg(alpha = 0.75)(length(new_terms))
+names(colours_terms) <- new_terms
+
+
+## Figure for distinct number of IPs
+tbl_rib %>%
+#    filter(!(Assay %in% c('Microarray', 'FlowCytometry', 'MassSpectrometry'))) %>%
+    ggplot(aes(x = Date,
+               ymin = min, ymax = max,
+               group = Assay,
+               colour = Assay, fill = Assay)) +
+    geom_ribbon() +
     scale_colour_manual(values = colours_terms) +
     scale_fill_manual(values = colours_terms) +
     coord_cartesian(expand = FALSE) +
+    theme_classic() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
     scale_x_discrete(breaks = paste0(2009:2019, '-01-01')) +
     labs(x = '', y = 'Number of Distinct IPs')
+```
+
+# Number of Packages contributed
+
+```{r}
+
 
 
 ```
