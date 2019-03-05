@@ -25,7 +25,7 @@
 <meta name="author" content="Bioconductor">
 
 
-<meta name="date" content="2019-02-28">
+<meta name="date" content="2019-03-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -203,7 +203,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6.7" data-path="workflow-integrating-datasets.html"><a href="workflow-integrating-datasets.html#session-info"><i class="fa fa-check"></i><b>6.7</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="workflow-clustering.html"><a href="workflow-clustering.html"><i class="fa fa-check"></i><b>7</b> Workflow: Clustering</a></li>
+<li class="chapter" data-level="7" data-path="workflow-clustering.html"><a href="workflow-clustering.html"><i class="fa fa-check"></i><b>7</b> Workflow: Clustering</a><ul>
+<li class="chapter" data-level="7.1" data-path="workflow-clustering.html"><a href="workflow-clustering.html#package-requirements-1"><i class="fa fa-check"></i><b>7.1</b> Package Requirements</a></li>
+<li class="chapter" data-level="7.2" data-path="workflow-clustering.html"><a href="workflow-clustering.html#loading-the-data-1"><i class="fa fa-check"></i><b>7.2</b> Loading the Data</a></li>
+<li class="chapter" data-level="7.3" data-path="workflow-clustering.html"><a href="workflow-clustering.html#understanding-the-data"><i class="fa fa-check"></i><b>7.3</b> Understanding the Data</a></li>
+<li class="chapter" data-level="7.4" data-path="workflow-clustering.html"><a href="workflow-clustering.html#preprocessing-1"><i class="fa fa-check"></i><b>7.4</b> Preprocessing</a></li>
+<li class="chapter" data-level="7.5" data-path="workflow-clustering.html"><a href="workflow-clustering.html#feature-selection-1"><i class="fa fa-check"></i><b>7.5</b> Feature Selection</a></li>
+<li class="chapter" data-level="7.6" data-path="workflow-clustering.html"><a href="workflow-clustering.html#dimension-reduction"><i class="fa fa-check"></i><b>7.6</b> Dimension Reduction</a></li>
+<li class="chapter" data-level="7.7" data-path="workflow-clustering.html"><a href="workflow-clustering.html#clustering"><i class="fa fa-check"></i><b>7.7</b> Clustering</a><ul>
+<li class="chapter" data-level="7.7.1" data-path="workflow-clustering.html"><a href="workflow-clustering.html#sc3"><i class="fa fa-check"></i><b>7.7.1</b> SC3</a></li>
+<li class="chapter" data-level="7.7.2" data-path="workflow-clustering.html"><a href="workflow-clustering.html#clusterexperiment"><i class="fa fa-check"></i><b>7.7.2</b> clusterExperiment</a></li>
+<li class="chapter" data-level="7.7.3" data-path="workflow-clustering.html"><a href="workflow-clustering.html#biocneighbors"><i class="fa fa-check"></i><b>7.7.3</b> BiocNeighbors</a></li>
+</ul></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
 
@@ -403,7 +415,7 @@ mnn_out &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce[hvg_ge
 ##  [1] BiocNeighbors_1.1.12        TENxPBMCData_1.1.0         
 ##  [3] HDF5Array_1.11.10           rhdf5_2.27.12              
 ##  [5] limma_3.39.12               scran_1.11.20              
-##  [7] scater_1.11.10              ggplot2_3.1.0              
+##  [7] scater_1.11.12              ggplot2_3.1.0              
 ##  [9] SingleCellExperiment_1.5.2  SummarizedExperiment_1.13.0
 ## [11] DelayedArray_0.9.8          BiocParallel_1.17.17       
 ## [13] matrixStats_0.54.0          Biobase_2.43.1             
@@ -415,40 +427,41 @@ mnn_out &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce[hvg_ge
 ##  [1] bitops_1.0-6                  bit64_0.9-7                  
 ##  [3] httr_1.4.0                    dynamicTreeCut_1.63-1        
 ##  [5] tools_3.6.0                   R6_2.4.0                     
-##  [7] vipor_0.4.5                   DBI_1.0.0                    
-##  [9] lazyeval_0.2.1                colorspace_1.4-0             
-## [11] withr_2.1.2                   tidyselect_0.2.5             
-## [13] gridExtra_2.3                 bit_1.1-14                   
-## [15] compiler_3.6.0                labeling_0.3                 
-## [17] bookdown_0.9                  scales_1.0.0                 
-## [19] stringr_1.4.0                 digest_0.6.18                
-## [21] rmarkdown_1.11                XVector_0.23.0               
-## [23] pkgconfig_2.0.2               htmltools_0.3.6              
-## [25] rlang_0.3.1                   RSQLite_2.1.1                
-## [27] shiny_1.2.0                   DelayedMatrixStats_1.5.2     
-## [29] dplyr_0.8.0.1                 RCurl_1.95-4.11              
-## [31] magrittr_1.5                  GenomeInfoDbData_1.2.0       
-## [33] Matrix_1.2-15                 Rcpp_1.0.0                   
-## [35] ggbeeswarm_0.6.0              munsell_0.5.0                
-## [37] Rhdf5lib_1.5.1                viridis_0.5.1                
-## [39] stringi_1.3.1                 yaml_2.2.0                   
-## [41] edgeR_3.25.3                  zlibbioc_1.29.0              
-## [43] plyr_1.8.4                    AnnotationHub_2.15.7         
-## [45] grid_3.6.0                    blob_1.1.1                   
-## [47] promises_1.0.1                ExperimentHub_1.9.1          
-## [49] crayon_1.3.4                  lattice_0.20-38              
-## [51] cowplot_0.9.4                 locfit_1.5-9.1               
-## [53] knitr_1.21                    pillar_1.3.1                 
-## [55] igraph_1.2.4                  glue_1.3.0                   
-## [57] evaluate_0.13                 BiocManager_1.30.4           
-## [59] httpuv_1.4.5.1                gtable_0.2.0                 
-## [61] purrr_0.3.0                   assertthat_0.2.0             
-## [63] xfun_0.5                      mime_0.6                     
-## [65] xtable_1.8-3                  later_0.8.0                  
-## [67] viridisLite_0.3.0             tibble_2.0.1                 
-## [69] AnnotationDbi_1.45.0          beeswarm_0.2.3               
-## [71] memoise_1.1.0                 statmod_1.4.30               
-## [73] interactiveDisplayBase_1.21.0</code></pre>
+##  [7] irlba_2.3.3                   vipor_0.4.5                  
+##  [9] DBI_1.0.0                     lazyeval_0.2.1               
+## [11] colorspace_1.4-0              withr_2.1.2                  
+## [13] tidyselect_0.2.5              gridExtra_2.3                
+## [15] bit_1.1-14                    compiler_3.6.0               
+## [17] labeling_0.3                  bookdown_0.9                 
+## [19] scales_1.0.0                  stringr_1.4.0                
+## [21] digest_0.6.18                 rmarkdown_1.11               
+## [23] XVector_0.23.0                pkgconfig_2.0.2              
+## [25] htmltools_0.3.6               rlang_0.3.1                  
+## [27] RSQLite_2.1.1                 shiny_1.2.0                  
+## [29] DelayedMatrixStats_1.5.2      dplyr_0.8.0.1                
+## [31] RCurl_1.95-4.11               magrittr_1.5                 
+## [33] BiocSingular_0.99.12          GenomeInfoDbData_1.2.0       
+## [35] Matrix_1.2-15                 Rcpp_1.0.0                   
+## [37] ggbeeswarm_0.6.0              munsell_0.5.0                
+## [39] Rhdf5lib_1.5.1                viridis_0.5.1                
+## [41] stringi_1.3.1                 yaml_2.2.0                   
+## [43] edgeR_3.25.3                  zlibbioc_1.29.0              
+## [45] plyr_1.8.4                    AnnotationHub_2.15.7         
+## [47] grid_3.6.0                    blob_1.1.1                   
+## [49] promises_1.0.1                ExperimentHub_1.9.1          
+## [51] crayon_1.3.4                  lattice_0.20-38              
+## [53] cowplot_0.9.4                 locfit_1.5-9.1               
+## [55] knitr_1.21                    pillar_1.3.1                 
+## [57] igraph_1.2.4                  glue_1.3.0                   
+## [59] evaluate_0.13                 BiocManager_1.30.4           
+## [61] httpuv_1.4.5.1                gtable_0.2.0                 
+## [63] purrr_0.3.1                   assertthat_0.2.0             
+## [65] xfun_0.5                      rsvd_1.0.0                   
+## [67] mime_0.6                      xtable_1.8-3                 
+## [69] later_0.8.0                   viridisLite_0.3.0            
+## [71] tibble_2.0.1                  AnnotationDbi_1.45.0         
+## [73] beeswarm_0.2.3                memoise_1.1.0                
+## [75] statmod_1.4.30                interactiveDisplayBase_1.21.0</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">saveRDS</span>(sce, <span class="st">&quot;_rfiles/_data/integration_sce.rds&quot;</span>, <span class="dt">compress =</span> <span class="st">&quot;xz&quot;</span>)</code></pre>
 
 </div>
