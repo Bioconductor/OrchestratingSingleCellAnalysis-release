@@ -1,7 +1,7 @@
 --- 
 title: "Orchestrating Single-Cell Analysis with Bioconductor"
 author: ["Robert A. Amezquita", "Bioconductor"]
-date: "`r Sys.Date()`"
+date: "2019-03-04"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -31,9 +31,4 @@ The book is written in [RMarkdown](https://rmarkdown.rstudio.com) with [bookdown
 This website is (and will always be) __free to use__, and is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivs 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/us/) License.
 
 
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```
+
