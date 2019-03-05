@@ -240,14 +240,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 7</span> Workflow: Clustering</h1>
 <p>The purpose of this case study is to demonstrate various approaches to clustering scRNA-seq datasets using R/Bioconductor packages. In this workflow, we go from preprocessing the data to clustering the data. Furthermore, we highlight methods which are especially suitable for large datasets.</p>
 <p>Here we will be working with a dataset from the <a href="https://github.com/LuyiTian/CellBench_data">CellBench</a> scRNA-seq benchmarking dataset collection. Specifically, we will be working with the <code>sc_10x_5cl</code> dataset, which contains 5 sorted cell lines that were sequencing on the 10X Genomics platform. We will use this to showcase our different clustering strategies.</p>
-<pre><code>## class: MulticoreParam
-##   bpisup: FALSE; bpnworkers: 8; bptasks: 0; bpjobname: BPJOB
-##   bplog: FALSE; bpthreshold: INFO; bpstopOnError: TRUE
-##   bpRNGseed: ; bptimeout: 2592000; bpprogressbar: FALSE
-##   bpexportglobals: TRUE
-##   bplogdir: NA
-##   bpresultdir: NA
-##   cluster type: FORK</code></pre>
 <div id="package-requirements-1" class="section level2">
 <h2><span class="header-section-number">7.1</span> Package Requirements</h2>
 <p>These packages will be required for working through the vignette, and can be installed by running the code below:</p>
@@ -342,7 +334,7 @@ g3 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <sp
 g4 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <span class="dt">use_dimred =</span> <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;sc3_4_clusters&quot;</span>)
 g5 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <span class="dt">use_dimred =</span> <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;sc3_5_clusters&quot;</span>)
 g6 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <span class="dt">use_dimred =</span> <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;sc3_6_clusters&quot;</span>)
-patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(g3, g4, g5, g6, <span class="dt">widths =</span> <span class="dv">1</span>, <span class="dt">heights =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre>
+patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(g3, g4, g5, g6, <span class="dt">widths =</span> <span class="dv">1</span>, <span class="dt">heights =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre>
 <p><img src="0Y.clustering-datasets_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>The <code>sc3</code> package contains many more utilities for exploring the stability of clustering and can even produce differential expression analysis results using the <code>biology = TRUE</code> argument within the <code>sc3()</code> function. We leave it to the interested reader to <a href="https://bioconductor.org/packages/release/bioc/html/SC3.html">learn more about <code>sc3</code></a> via their vignette.</p>
 </div>

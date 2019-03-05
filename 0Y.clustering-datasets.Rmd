@@ -7,7 +7,6 @@ Here we will be working with a dataset from the [CellBench](https://github.com/L
 ```{r echo=FALSE, message=FALSE}
 ## precalculated essential results for plots at end
 sce <- readRDS("_rfiles/_data/clustering_sce_v2.rds")
-BiocParallel::MulticoreParam(8)
 ```
 
 ## Package Requirements
@@ -135,7 +134,7 @@ g3 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_3_clusters")
 g4 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_4_clusters")
 g5 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_5_clusters")
 g6 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_6_clusters")
-patchwork::wrap_plots(g3, g4, g5, g6, widths = 1, heights = 1, ncol = 2)
+patchwork::wrap_plots(g3, g4, g5, g6, widths = 1, heights = 1, ncol = 1)
 ```
 
 The `sc3` package contains many more utilities for exploring the stability of clustering and can even produce differential expression analysis results using the `biology = TRUE` argument within the `sc3()` function. We leave it to the interested reader to [learn more about `sc3`](https://bioconductor.org/packages/release/bioc/html/SC3.html) via their vignette.
