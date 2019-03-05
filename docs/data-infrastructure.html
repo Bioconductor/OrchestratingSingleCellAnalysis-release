@@ -25,7 +25,7 @@
 <meta name="author" content="Bioconductor">
 
 
-<meta name="date" content="2019-02-28">
+<meta name="date" content="2019-03-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -203,7 +203,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6.7" data-path="workflow-integrating-datasets.html"><a href="workflow-integrating-datasets.html#session-info"><i class="fa fa-check"></i><b>6.7</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="workflow-clustering.html"><a href="workflow-clustering.html"><i class="fa fa-check"></i><b>7</b> Workflow: Clustering</a></li>
+<li class="chapter" data-level="7" data-path="workflow-clustering.html"><a href="workflow-clustering.html"><i class="fa fa-check"></i><b>7</b> Workflow: Clustering</a><ul>
+<li class="chapter" data-level="7.1" data-path="workflow-clustering.html"><a href="workflow-clustering.html#package-requirements-1"><i class="fa fa-check"></i><b>7.1</b> Package Requirements</a></li>
+<li class="chapter" data-level="7.2" data-path="workflow-clustering.html"><a href="workflow-clustering.html#loading-the-data-1"><i class="fa fa-check"></i><b>7.2</b> Loading the Data</a></li>
+<li class="chapter" data-level="7.3" data-path="workflow-clustering.html"><a href="workflow-clustering.html#understanding-the-data"><i class="fa fa-check"></i><b>7.3</b> Understanding the Data</a></li>
+<li class="chapter" data-level="7.4" data-path="workflow-clustering.html"><a href="workflow-clustering.html#preprocessing-1"><i class="fa fa-check"></i><b>7.4</b> Preprocessing</a></li>
+<li class="chapter" data-level="7.5" data-path="workflow-clustering.html"><a href="workflow-clustering.html#feature-selection-1"><i class="fa fa-check"></i><b>7.5</b> Feature Selection</a></li>
+<li class="chapter" data-level="7.6" data-path="workflow-clustering.html"><a href="workflow-clustering.html#dimension-reduction"><i class="fa fa-check"></i><b>7.6</b> Dimension Reduction</a></li>
+<li class="chapter" data-level="7.7" data-path="workflow-clustering.html"><a href="workflow-clustering.html#clustering"><i class="fa fa-check"></i><b>7.7</b> Clustering</a><ul>
+<li class="chapter" data-level="7.7.1" data-path="workflow-clustering.html"><a href="workflow-clustering.html#sc3"><i class="fa fa-check"></i><b>7.7.1</b> SC3</a></li>
+<li class="chapter" data-level="7.7.2" data-path="workflow-clustering.html"><a href="workflow-clustering.html#clusterexperiment"><i class="fa fa-check"></i><b>7.7.2</b> clusterExperiment</a></li>
+<li class="chapter" data-level="7.7.3" data-path="workflow-clustering.html"><a href="workflow-clustering.html#biocneighbors"><i class="fa fa-check"></i><b>7.7.3</b> BiocNeighbors</a></li>
+</ul></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
 
@@ -277,16 +289,16 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">counts</span>(sce)</code></pre>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1       4     11     36
-## gene_2      12     15     31
-## gene_3       6      6     28
-## gene_4      11      9     44
-## gene_5       8      7     36
-## gene_6      10     13     28
-## gene_7       7     10     31
-## gene_8      14      5     30
-## gene_9      13     10     42
-## gene_10     12      4     18</code></pre>
+## gene_1      13     12     26
+## gene_2      14     14     19
+## gene_3       8     11     29
+## gene_4      11     10     25
+## gene_5       7     10     27
+## gene_6       7      6     30
+## gene_7       5      9     24
+## gene_8      15      5     31
+## gene_9      13     11     35
+## gene_10     11      8     37</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">## assay(sce, &quot;counts&quot;) ## same as above in this special case</span></code></pre>
 </div>
 <div id="extending-the-assays-slot" class="section level3">
@@ -310,16 +322,16 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <p>Specifically, we see that the <code>assays</code> slot has grown to be comprised of two entries: <code>counts</code> (our initial data) and <code>logcounts</code> (the normalized data). Similar to <code>counts</code>, the <code>logcounts</code> name is a special name which lets us access it simply by typing <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logcounts</span>(sce)</code></pre>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1    3.00   4.45   4.32
-## gene_2    4.46   4.88   4.11
-## gene_3    3.53   3.63   3.97
-## gene_4    4.34   4.17   4.59
-## gene_5    3.91   3.83   4.32
-## gene_6    4.21   4.68   3.97
-## gene_7    3.73   4.32   4.11
-## gene_8    4.68   3.39   4.07
-## gene_9    4.57   4.32   4.53
-## gene_10   4.46   3.10   3.39</code></pre>
+## gene_1    4.40   4.40   3.98
+## gene_2    4.50   4.61   3.56
+## gene_3    3.74   4.28   4.13
+## gene_4    4.17   4.15   3.93
+## gene_5    3.57   4.15   4.03
+## gene_6    3.57   3.47   4.18
+## gene_7    3.13   4.01   3.87
+## gene_8    4.60   3.23   4.22
+## gene_9    4.40   4.28   4.39
+## gene_10   4.17   3.85   4.46</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">## assay(sce, &quot;logcounts&quot;) ## same as above</span></code></pre>
 <p>Notice that the data before had a severe discrepancy in counts between cells 1/2 versus 3, and that normalization has ameliorated this difference.</p>
 <p>To look at all the available assays within <code>sce</code>, we can type:</p>
@@ -396,9 +408,9 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             &lt;numeric&gt;    &lt;integer&gt;
-## cell_1               1.04139268515823           97
-## cell_2               1.04139268515823           90
-## cell_3               1.04139268515823          324</code></pre>
+## cell_1               1.04139268515823          104
+## cell_2               1.04139268515823           96
+## cell_3               1.04139268515823          283</code></pre>
 <div id="using-coldata-for-subsetting" class="section level4">
 <h4><span class="header-section-number">4.2.3.1</span> Using <code>colData</code> for Subsetting</h4>
 <p>A common operation with <code>colData</code> is its use in subsetting. One simple way to access <code>colData</code> is through the use of the <code>$</code> operator, which is a shortcut for accessing a variable within the <code>colData</code> slot:</p>
@@ -457,15 +469,15 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  &lt;logical&gt;        &lt;numeric&gt;         &lt;numeric&gt;
 ## gene_1               FALSE               17  1.25527250510331
-## gene_2               FALSE 19.3333333333333   1.3082085802911
-## gene_3               FALSE 13.3333333333333  1.15634720085992
-## gene_4               FALSE 21.3333333333333  1.34895354798116
-## gene_5               FALSE               17  1.25527250510331
-## gene_6               FALSE               17  1.25527250510331
-## gene_7               FALSE               16  1.23044892137827
-## gene_8               FALSE 16.3333333333333  1.23888208891514
-## gene_9               FALSE 21.6666666666667  1.35538765798657
-## gene_10              FALSE 11.3333333333333  1.09108046934733</code></pre>
+## gene_2               FALSE 15.6666666666667  1.22184874961636
+## gene_3               FALSE               16  1.23044892137827
+## gene_4               FALSE 15.3333333333333  1.21307482530885
+## gene_5               FALSE 14.6666666666667  1.19497660321605
+## gene_6               FALSE 14.3333333333333  1.18563657696191
+## gene_7               FALSE 12.6666666666667  1.13566260200007
+## gene_8               FALSE               17  1.25527250510331
+## gene_9               FALSE 19.6666666666667  1.31527043477859
+## gene_10              FALSE 18.6666666666667  1.29373075692248</code></pre>
 <p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <code>SingleCellExperiment</code> object, which we leave up to the reader as an exercise.</p>
 <div id="subsetting-with-on-rows" class="section level4">
 <h4><span class="header-section-number">4.2.4.1</span> Subsetting with on Rows</h4>
@@ -495,7 +507,7 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)
 sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)
 <span class="kw">sizeFactors</span>(sce)</code></pre>
-<pre><code>## [1] 0.569 0.528 1.902</code></pre>
+<pre><code>## [1] 0.646 0.596 1.758</code></pre>
 </div>
 </div>
 <div id="a-brief-recap-from-se-to-sce" class="section level2">
@@ -514,20 +526,20 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <p>In our example, we can calculate a PCA representation of our data as follows using the <code>scater</code> package function <code>runPCA()</code>. We see that the <code>sce</code> now shows a new <code>reducedDim</code> and that the accessor <code>reducedDim()</code> produces the results of running PCA on the normalized data from <code>logcounts(sce)</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</code></pre>
-<pre><code>##          PC1     PC2
-## cell_1  1.48  1.9812
-## cell_2 -2.81  0.0748
-## cell_3  1.33 -2.0561
+<pre><code>##           PC1   PC2
+## cell_1 -0.108  2.48
+## cell_2 -2.263 -1.33
+## cell_3  2.372 -1.15
 ## attr(,&quot;percentVar&quot;)
-## [1] 5.92e-01 4.08e-01 3.98e-31</code></pre>
+## [1] 0.538 0.462</code></pre>
 <p>From this, we can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>, and see that it can be seen both in the default view of <code>sce</code> and via accession:</p>
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</code></pre>
 <pre><code>## Perplexity should be lower than K!</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</code></pre>
 <pre><code>##         [,1]  [,2]
-## cell_1  5667  -558
-## cell_2 -2349  5188
-## cell_3 -3318 -4630</code></pre>
+## cell_1 -3457  4528
+## cell_2 -2192 -5254
+## cell_3  5648   726</code></pre>
 <p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code> (notice that this is plural, and thus not the same as <code>reducedDim()</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre>
 <pre><code>## List of length 2
@@ -538,12 +550,12 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) &lt;-<span class="st"> </span>u
 
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>)</code></pre>
-<pre><code>##          [,1]   [,2]
-## cell_1 -0.617 -0.639
-## cell_2  1.719  1.734
-## cell_3 -1.102 -1.095
+<pre><code>##          [,1]    [,2]
+## cell_1 -0.697  0.0681
+## cell_2  0.508 -0.4228
+## cell_3  0.189  0.3547
 ## attr(,&quot;scaled:center&quot;)
-## [1]  -6.36 -22.33</code></pre>
+## [1]  1.27 -1.07</code></pre>
 <p>And we can also see its entry when we look at the <code>reducedDims()</code> accessor output:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre>
 <pre><code>## List of length 3
