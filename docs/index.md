@@ -1,17 +1,17 @@
 --- 
 title: "Orchestrating Single-Cell Analysis with Bioconductor"
-author: ["Robert A. Amezquita", "Stephanie C. Hicks", "Bioconductor"]
+author: ["Robert A. Amezquita", "Stephanie C. Hicks"]
 date: "2019-03-06"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
+favicon: "favicon.ico"
 description: "Online companion to 'Orchestrating Single-Cell Analysis with Bioconductor' manuscript by the Bioconductor team."
 ---
 
-# Orchestrating Single-Cell Analysis with Bioconductor {-}
-
+# Welcome {-}
 
 <a href="https://bioconductor.org"><img src="cover.png" width="200" alt="Bioconductor Sticker" align="right" style="margin: 0 1em 0 1em" /></a> 
 
