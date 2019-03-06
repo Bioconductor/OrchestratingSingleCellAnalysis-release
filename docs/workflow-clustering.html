@@ -23,10 +23,11 @@
   
 
 <meta name="author" content="Robert A. Amezquita">
+<meta name="author" content="Stephanie C. Hicks">
 <meta name="author" content="Bioconductor">
 
 
-<meta name="date" content="2019-03-05">
+<meta name="date" content="2019-03-06">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -312,7 +313,7 @@ sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce,
 <pre class="sourceCode r"><code class="sourceCode r">gPCA &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;cell_line&quot;</span>)
 gTSNE &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;cell_line&quot;</span>)
 gUMAP &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;UMAP&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;cell_line&quot;</span>)
-patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(gPCA, gTSNE, gUMAP, <span class="dt">heights =</span> <span class="dv">1</span>, <span class="dt">widths =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre>
+patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(gPCA, gTSNE, gUMAP, <span class="dt">heights =</span> <span class="dv">1</span>, <span class="dt">widths =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre>
 <p><img src="0Y.clustering-datasets_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="clustering" class="section level2">
@@ -342,14 +343,16 @@ patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(g3, g4, g5
 <div id="clusterexperiment" class="section level3">
 <h3><span class="header-section-number">7.7.2</span> clusterExperiment</h3>
 <p>The <code>clusterExperiment</code> package uses the function <code>RSEC()</code> to calculate clusters across various parametrizations, and contains multiple parameters to do so. Here, we specify the parametrizations to iterate over using the <code>alphas</code> and <code>k0s</code> arguments below. We refer the reader to the help page for <code>?RSEC</code> to learn more about the different parameters. In the end, this exhaustive exercise is used to ultimately determine a consensus clustering that combines the information learned from the various parametrizations.</p>
+<p>Note that <code>clusterExperiment</code> takes a long time to run, even with the reduced search space parametrized below. We recommend utilizing cluster resources for this job.</p>
 <pre class="sourceCode r"><code class="sourceCode r">rsec &lt;-<span class="st"> </span><span class="kw">RSEC</span>(sce[<span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes, ],
             <span class="dt">reduceMethod =</span> <span class="st">&quot;PCA&quot;</span>,
             <span class="dt">nReducedDims =</span> <span class="dv">20</span>,
             <span class="dt">alphas =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>), <span class="dt">k0s =</span> <span class="dv">4</span><span class="op">:</span><span class="dv">6</span>,
-            <span class="dt">consensusMinSize =</span> <span class="dv">50</span>)
+            <span class="dt">consensusMinSize =</span> <span class="dv">50</span>,
+            <span class="dt">ncores =</span> <span class="dv">8</span>)
 
 <span class="kw">metadata</span>(sce)<span class="op">$</span>rsec &lt;-<span class="st"> </span>rsec
-<span class="kw">colData</span>(sce)<span class="op">$</span>rsec_consensus_clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">clusterMatrix</span>(rsec)<span class="op">$</span>mergeClusters)</code></pre>
+<span class="kw">colData</span>(sce)<span class="op">$</span>rsec_consensus_clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">clusterMatrix</span>(rsec)[, <span class="st">&quot;mergeClusters&quot;</span>])</code></pre>
 <p>Once again, we refer the interested reader to the <a href="https://bioconductor.org/packages/release/bioc/html/clusterExperiment.html">vignette for <code>clusterExperiment</code></a> to learn more about extended functionality for visualizing the data and about the specifics of the clustering workflow.</p>
 </div>
 <div id="biocneighbors" class="section level3">

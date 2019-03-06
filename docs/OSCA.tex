@@ -25,7 +25,7 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Orchestrating Single-Cell Analysis with Bioconductor},
-            pdfauthor={Robert A. Amezquita; Bioconductor},
+            pdfauthor={Robert A. Amezquita; Stephanie C. Hicks; Bioconductor},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -120,12 +120,12 @@
   \title{Orchestrating Single-Cell Analysis with Bioconductor}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-    \author{Robert A. Amezquita \\ Bioconductor}
+    \author{Robert A. Amezquita \\ Stephanie C. Hicks \\ Bioconductor}
     \preauthor{\centering\large\emph}
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2019-03-05}
+    \date{2019-03-06}
 
 \usepackage{booktabs}
 
@@ -527,16 +527,16 @@ To access the count data we just supplied, we can do any one of the following:
 
 \begin{verbatim}
 ##         cell_1 cell_2 cell_3
-## gene_1      10     12     41
-## gene_2       9      6     40
-## gene_3      13     10     25
-## gene_4       9      5     45
-## gene_5       8     11     32
-## gene_6       6     11     44
-## gene_7      15      7     30
-## gene_8       4     10     40
-## gene_9       7     11     27
-## gene_10     13      7     30
+## gene_1      20     12     30
+## gene_2      12     14     34
+## gene_3       9     12     27
+## gene_4       9      9     23
+## gene_5       6     12     31
+## gene_6      12      9     24
+## gene_7      16      4     36
+## gene_8       9     11     35
+## gene_9      13     10     24
+## gene_10     18     13     31
 \end{verbatim}
 
 \begin{Shaded}
@@ -590,16 +590,16 @@ Specifically, we see that the \texttt{assays} slot has grown to be comprised of 
 
 \begin{verbatim}
 ##         cell_1 cell_2 cell_3
-## gene_1    4.33   4.64   4.44
-## gene_2    4.18   3.70   4.41
-## gene_3    4.69   4.39   3.77
-## gene_4    4.18   3.45   4.57
-## gene_5    4.02   4.52   4.11
-## gene_6    3.64   4.52   4.54
-## gene_7    4.89   3.90   4.02
-## gene_8    3.11   4.39   4.41
-## gene_9    3.84   4.52   3.88
-## gene_10   4.69   3.90   4.02
+## gene_1    4.87   4.38   4.23
+## gene_2    4.16   4.59   4.40
+## gene_3    3.78   4.38   4.09
+## gene_4    3.78   3.99   3.87
+## gene_5    3.24   4.38   4.28
+## gene_6    4.16   3.99   3.93
+## gene_7    4.56   2.93   4.48
+## gene_8    3.78   4.26   4.44
+## gene_9    4.27   4.13   3.93
+## gene_10   4.72   4.49   4.28
 \end{verbatim}
 
 \begin{Shaded}
@@ -761,9 +761,9 @@ Finally, some packages automatically add to the \texttt{colData} slot, for examp
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             <numeric>    <integer>
-## cell_1               1.04139268515823           94
-## cell_2               1.04139268515823           90
-## cell_3               1.04139268515823          354
+## cell_1               1.04139268515823          124
+## cell_2               1.04139268515823          106
+## cell_3               1.04139268515823          295
 \end{verbatim}
 
 \hypertarget{using-coldata-for-subsetting}{%
@@ -870,16 +870,16 @@ However, our call to \texttt{calculateQCMetrics(sce)} in the prior section fille
 ## DataFrame with 10 rows and 3 columns
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  <logical>        <numeric>         <numeric>
-## gene_1               FALSE               21  1.34242268082221
-## gene_2               FALSE 18.3333333333333  1.28630673884327
+## gene_1               FALSE 20.6666666666667  1.33579210192319
+## gene_2               FALSE               20  1.32221929473392
 ## gene_3               FALSE               16  1.23044892137827
-## gene_4               FALSE 19.6666666666667  1.31527043477859
-## gene_5               FALSE               17  1.25527250510331
-## gene_6               FALSE 20.3333333333333  1.32905871926422
-## gene_7               FALSE 17.3333333333333  1.26324143477458
-## gene_8               FALSE               18  1.27875360095283
-## gene_9               FALSE               15  1.20411998265592
-## gene_10              FALSE 16.6666666666667  1.24715461488113
+## gene_4               FALSE 13.6666666666667  1.16633142176653
+## gene_5               FALSE 16.3333333333333  1.23888208891514
+## gene_6               FALSE               15  1.20411998265592
+## gene_7               FALSE 18.6666666666667  1.29373075692248
+## gene_8               FALSE 18.3333333333333  1.28630673884327
+## gene_9               FALSE 15.6666666666667  1.22184874961636
+## gene_10              FALSE 20.6666666666667  1.33579210192319
 \end{verbatim}
 
 In a similar fashion to the \texttt{colData} slot, such feature metadata could be provided at the onset when creating the \texttt{SingleCellExperiment} object, which we leave up to the reader as an exercise.
@@ -936,7 +936,7 @@ Briefly, we already encountered this via the \texttt{scran::computeSumFactors(sc
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.524 0.502 1.974
+## [1] 0.709 0.606 1.686
 \end{verbatim}
 
 \hypertarget{a-brief-recap-from-se-to-sce}{%
@@ -971,12 +971,12 @@ In our example, we can calculate a PCA representation of our data as follows usi
 \end{Shaded}
 
 \begin{verbatim}
-##            PC1   PC2
-## cell_1 -2.6135 -1.02
-## cell_2  2.5861 -1.06
-## cell_3  0.0275  2.08
+##          PC1     PC2
+## cell_1 -3.23 -0.0646
+## cell_2  1.72 -1.4395
+## cell_3  1.51  1.5041
 ## attr(,"percentVar")
-## [1] 0.676 0.324
+## [1] 0.783 0.217
 \end{verbatim}
 
 From this, we can also calculate a tSNE representation using the \texttt{scater} package function \texttt{runTSNE()}, and see that it can be seen both in the default view of \texttt{sce} and via accession:
@@ -999,9 +999,9 @@ From this, we can also calculate a tSNE representation using the \texttt{scater}
 
 \begin{verbatim}
 ##         [,1]  [,2]
-## cell_1  5231  2225
-## cell_2 -4555  3431
-## cell_3  -676 -5656
+## cell_1  4341  3687
+## cell_2 -5363  1916
+## cell_3  1023 -5603
 \end{verbatim}
 
 We can view the names of all our entries in the \texttt{reducedDims} slot via the accessor, \texttt{reducedDims()} (notice that this is plural, and thus not the same as \texttt{reducedDim()}:
@@ -1031,12 +1031,12 @@ Similar to how we extended the \texttt{assays} slot with our own custom entry of
 \end{Shaded}
 
 \begin{verbatim}
-##          [,1]    [,2]
-## cell_1  0.521  0.4150
-## cell_2 -0.642 -0.0446
-## cell_3  0.121 -0.3704
+##             [,1]   [,2]
+## cell_1 -0.383542  0.521
+## cell_2 -0.000386 -0.677
+## cell_3  0.383928  0.156
 ## attr(,"scaled:center")
-## [1] -7.72 -8.38
+## [1] -15.57  -7.32
 \end{verbatim}
 
 And we can also see its entry when we look at the \texttt{reducedDims()} accessor output:
@@ -1130,6 +1130,8 @@ Bioconductor access.
 
 \hypertarget{workflow-integrating-datasets}{%
 \chapter{Workflow: Integrating Datasets}\label{workflow-integrating-datasets}}
+
+\emph{authors}: Stephanie C. Hicks, Robert A. Amezquita
 
 The purpose of this case study is to demonstrate how to integrate multiple scRNA-seq datasets using R/Bioconductor packages. In this workflow, we go from preprocessing the data to integrating the data and visualizing it in a reduced dimensionality space to showcase the success of the integration approach using mutual nearest neighbors relative to a naive approach. This approach is helpful for ameliorating batch effects that can be introduced when combining data from different sequencing runs and/or platforms.
 
@@ -1614,7 +1616,7 @@ However, clustering performance indeed \emph{may} be reflected in the dimensiona
 \NormalTok{gPCA <-}\StringTok{ }\KeywordTok{plotReducedDim}\NormalTok{(sce, }\StringTok{"PCA"}\NormalTok{, }\DataTypeTok{colour_by =} \StringTok{"cell_line"}\NormalTok{)}
 \NormalTok{gTSNE <-}\StringTok{ }\KeywordTok{plotReducedDim}\NormalTok{(sce, }\StringTok{"TSNE"}\NormalTok{, }\DataTypeTok{colour_by =} \StringTok{"cell_line"}\NormalTok{)}
 \NormalTok{gUMAP <-}\StringTok{ }\KeywordTok{plotReducedDim}\NormalTok{(sce, }\StringTok{"UMAP"}\NormalTok{, }\DataTypeTok{colour_by =} \StringTok{"cell_line"}\NormalTok{)}
-\NormalTok{patchwork}\OperatorTok{::}\KeywordTok{wrap_plots}\NormalTok{(gPCA, gTSNE, gUMAP, }\DataTypeTok{heights =} \DecValTok{1}\NormalTok{, }\DataTypeTok{widths =} \DecValTok{1}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{3}\NormalTok{)}
+\NormalTok{patchwork}\OperatorTok{::}\KeywordTok{wrap_plots}\NormalTok{(gPCA, gTSNE, gUMAP, }\DataTypeTok{heights =} \DecValTok{1}\NormalTok{, }\DataTypeTok{widths =} \DecValTok{1}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{1}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1666,16 +1668,19 @@ The \texttt{sc3} package contains many more utilities for exploring the stabilit
 
 The \texttt{clusterExperiment} package uses the function \texttt{RSEC()} to calculate clusters across various parametrizations, and contains multiple parameters to do so. Here, we specify the parametrizations to iterate over using the \texttt{alphas} and \texttt{k0s} arguments below. We refer the reader to the help page for \texttt{?RSEC} to learn more about the different parameters. In the end, this exhaustive exercise is used to ultimately determine a consensus clustering that combines the information learned from the various parametrizations.
 
+Note that \texttt{clusterExperiment} takes a long time to run, even with the reduced search space parametrized below. We recommend utilizing cluster resources for this job.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{rsec <-}\StringTok{ }\KeywordTok{RSEC}\NormalTok{(sce[}\KeywordTok{metadata}\NormalTok{(sce)}\OperatorTok{$}\NormalTok{hvg_genes, ],}
             \DataTypeTok{reduceMethod =} \StringTok{"PCA"}\NormalTok{,}
             \DataTypeTok{nReducedDims =} \DecValTok{20}\NormalTok{,}
             \DataTypeTok{alphas =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.3}\NormalTok{), }\DataTypeTok{k0s =} \DecValTok{4}\OperatorTok{:}\DecValTok{6}\NormalTok{,}
-            \DataTypeTok{consensusMinSize =} \DecValTok{50}\NormalTok{)}
+            \DataTypeTok{consensusMinSize =} \DecValTok{50}\NormalTok{,}
+            \DataTypeTok{ncores =} \DecValTok{8}\NormalTok{)}
 
 \KeywordTok{metadata}\NormalTok{(sce)}\OperatorTok{$}\NormalTok{rsec <-}\StringTok{ }\NormalTok{rsec}
-\KeywordTok{colData}\NormalTok{(sce)}\OperatorTok{$}\NormalTok{rsec_consensus_clusters <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}\KeywordTok{clusterMatrix}\NormalTok{(rsec)}\OperatorTok{$}\NormalTok{mergeClusters)}
+\KeywordTok{colData}\NormalTok{(sce)}\OperatorTok{$}\NormalTok{rsec_consensus_clusters <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}\KeywordTok{clusterMatrix}\NormalTok{(rsec)[, }\StringTok{"mergeClusters"}\NormalTok{])}
 \end{Highlighting}
 \end{Shaded}
 
