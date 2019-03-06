@@ -290,16 +290,16 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">counts</span>(sce)</code></pre>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1      12     10     20
-## gene_2       6      9     33
-## gene_3      13     10     35
-## gene_4      10     10     27
-## gene_5       6     13     36
-## gene_6       6     11     30
-## gene_7      16      8     33
-## gene_8       8      8     37
-## gene_9       7     12     23
-## gene_10      9     11     32</code></pre>
+## gene_1       5      5     29
+## gene_2       7     11     41
+## gene_3      11     11     40
+## gene_4      16      3     31
+## gene_5      14      7     29
+## gene_6      10     12     29
+## gene_7       7     12     23
+## gene_8      11      5     29
+## gene_9      13      7     20
+## gene_10     12      7     24</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">## assay(sce, &quot;counts&quot;) ## same as above in this special case</span></code></pre>
 </div>
 <div id="extending-the-assays-slot" class="section level3">
@@ -323,16 +323,16 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <p>Specifically, we see that the <code>assays</code> slot has grown to be comprised of two entries: <code>counts</code> (our initial data) and <code>logcounts</code> (the normalized data). Similar to <code>counts</code>, the <code>logcounts</code> name is a special name which lets us access it simply by typing <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logcounts</span>(sce)</code></pre>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1    4.49   4.12   3.57
-## gene_2    3.56   3.98   4.25
-## gene_3    4.61   4.12   4.33
-## gene_4    4.24   4.12   3.98
-## gene_5    3.56   4.48   4.37
-## gene_6    3.56   4.25   4.12
-## gene_7    4.89   3.82   4.25
-## gene_8    3.94   3.82   4.41
-## gene_9    3.76   4.37   3.76
-## gene_10   4.10   4.25   4.21</code></pre>
+## gene_1    3.10   3.46   4.07
+## gene_2    3.53   4.53   4.54
+## gene_3    4.14   4.53   4.51
+## gene_4    4.66   2.81   4.16
+## gene_5    4.47   3.91   4.07
+## gene_6    4.01   4.65   4.07
+## gene_7    3.53   4.65   3.75
+## gene_8    4.14   3.46   4.07
+## gene_9    4.37   3.91   3.57
+## gene_10   4.26   3.91   3.81</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">## assay(sce, &quot;logcounts&quot;) ## same as above</span></code></pre>
 <p>Notice that the data before had a severe discrepancy in counts between cells 1/2 versus 3, and that normalization has ameliorated this difference.</p>
 <p>To look at all the available assays within <code>sce</code>, we can type:</p>
@@ -409,9 +409,9 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             &lt;numeric&gt;    &lt;integer&gt;
-## cell_1               1.04139268515823           93
-## cell_2               1.04139268515823          102
-## cell_3               1.04139268515823          306</code></pre>
+## cell_1               1.04139268515823          106
+## cell_2               1.04139268515823           80
+## cell_3               1.04139268515823          295</code></pre>
 <div id="using-coldata-for-subsetting" class="section level4">
 <h4><span class="header-section-number">4.2.3.1</span> Using <code>colData</code> for Subsetting</h4>
 <p>A common operation with <code>colData</code> is its use in subsetting. One simple way to access <code>colData</code> is through the use of the <code>$</code> operator, which is a shortcut for accessing a variable within the <code>colData</code> slot:</p>
@@ -469,16 +469,16 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  &lt;logical&gt;        &lt;numeric&gt;         &lt;numeric&gt;
-## gene_1               FALSE               14  1.17609125905568
-## gene_2               FALSE               16  1.23044892137827
-## gene_3               FALSE 19.3333333333333   1.3082085802911
-## gene_4               FALSE 15.6666666666667  1.22184874961636
-## gene_5               FALSE 18.3333333333333  1.28630673884327
-## gene_6               FALSE 15.6666666666667  1.22184874961636
-## gene_7               FALSE               19  1.30102999566398
-## gene_8               FALSE 17.6666666666667  1.27106677228654
-## gene_9               FALSE               14  1.17609125905568
-## gene_10              FALSE 17.3333333333333  1.26324143477458</code></pre>
+## gene_1               FALSE               13  1.14612803567824
+## gene_2               FALSE 19.6666666666667  1.31527043477859
+## gene_3               FALSE 20.6666666666667  1.33579210192319
+## gene_4               FALSE 16.6666666666667  1.24715461488113
+## gene_5               FALSE 16.6666666666667  1.24715461488113
+## gene_6               FALSE               17  1.25527250510331
+## gene_7               FALSE               14  1.17609125905568
+## gene_8               FALSE               15  1.20411998265592
+## gene_9               FALSE 13.3333333333333  1.15634720085992
+## gene_10              FALSE 14.3333333333333  1.18563657696191</code></pre>
 <p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <code>SingleCellExperiment</code> object, which we leave up to the reader as an exercise.</p>
 <div id="subsetting-with-on-rows" class="section level4">
 <h4><span class="header-section-number">4.2.4.1</span> Subsetting with on Rows</h4>
@@ -508,7 +508,7 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)
 sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)
 <span class="kw">sizeFactors</span>(sce)</code></pre>
-<pre><code>## [1] 0.557 0.611 1.832</code></pre>
+<pre><code>## [1] 0.661 0.499 1.840</code></pre>
 </div>
 </div>
 <div id="a-brief-recap-from-se-to-sce" class="section level2">
@@ -527,20 +527,20 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <p>In our example, we can calculate a PCA representation of our data as follows using the <code>scater</code> package function <code>runPCA()</code>. We see that the <code>sce</code> now shows a new <code>reducedDim</code> and that the accessor <code>reducedDim()</code> produces the results of running PCA on the normalized data from <code>logcounts(sce)</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</code></pre>
-<pre><code>##          PC1     PC2
-## cell_1 -3.08 -0.0691
-## cell_2  1.63 -1.6650
-## cell_3  1.44  1.7341
+<pre><code>##           PC1    PC2
+## cell_1 -2.991 -0.516
+## cell_2  2.218 -1.345
+## cell_3  0.773  1.861
 ## attr(,&quot;percentVar&quot;)
-## [1] 0.711 0.289</code></pre>
+## [1] 0.723 0.277</code></pre>
 <p>From this, we can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>, and see that it can be seen both in the default view of <code>sce</code> and via accession:</p>
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</code></pre>
 <pre><code>## Perplexity should be lower than K!</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</code></pre>
 <pre><code>##         [,1]  [,2]
-## cell_1 -1016  5603
-## cell_2  5360 -1918
-## cell_3 -4344 -3686</code></pre>
+## cell_1  3331 -4621
+## cell_2 -5666  -571
+## cell_3  2335  5192</code></pre>
 <p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code> (notice that this is plural, and thus not the same as <code>reducedDim()</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre>
 <pre><code>## List of length 2
@@ -551,12 +551,12 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) &lt;-<span class="st"> </span>u
 
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>)</code></pre>
-<pre><code>##           [,1]    [,2]
-## cell_1 -0.2759 -0.6169
-## cell_2 -0.0759  0.6532
-## cell_3  0.3518 -0.0363
+<pre><code>##          [,1]   [,2]
+## cell_1 -0.269  0.581
+## cell_2  0.569 -0.348
+## cell_3 -0.300 -0.233
 ## attr(,&quot;scaled:center&quot;)
-## [1] -11.62  -9.72</code></pre>
+## [1] -11.88  -2.51</code></pre>
 <p>And we can also see its entry when we look at the <code>reducedDims()</code> accessor output:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre>
 <pre><code>## List of length 3
@@ -617,11 +617,11 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
+"github": true,
+"facebook": false,
 "twitter": true,
 "google": false,
-"linkedin": false,
+"linkedin": true,
 "weibo": false,
 "instapaper": false,
 "vk": false,
@@ -633,8 +633,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/robertamezquita/orchestratingSingleCellAnalysis/04.data-infrastructure.Rmd",
+"text": "Edit"
 },
 "history": {
 "link": null,
@@ -643,7 +643,9 @@ gitbook.start({
 "download": ["OSCA.pdf", "OSCA.epub"],
 "toc": {
 "collapse": "subsection"
-}
+},
+"bookdown::epub_book": "default",
+"cover": "images/cover.png"
 });
 });
 </script>

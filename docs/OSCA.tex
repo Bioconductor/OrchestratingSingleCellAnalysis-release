@@ -527,16 +527,16 @@ To access the count data we just supplied, we can do any one of the following:
 
 \begin{verbatim}
 ##         cell_1 cell_2 cell_3
-## gene_1      13      8     19
-## gene_2      10      9     34
-## gene_3      10      8     29
-## gene_4      14      8     33
-## gene_5       8     10     28
-## gene_6      15     12     33
-## gene_7       7     19     37
-## gene_8       8     12     34
-## gene_9       5      8     31
-## gene_10      9     12     27
+## gene_1      10     13     33
+## gene_2      13     14     29
+## gene_3      12      9     31
+## gene_4       9      9     25
+## gene_5      11     12     33
+## gene_6      10      9     30
+## gene_7      18      8     35
+## gene_8       7     13     29
+## gene_9       8      8     27
+## gene_10      8      6     32
 \end{verbatim}
 
 \begin{Shaded}
@@ -590,16 +590,16 @@ Specifically, we see that the \texttt{assays} slot has grown to be comprised of 
 
 \begin{verbatim}
 ##         cell_1 cell_2 cell_3
-## gene_1    4.54   3.79   3.53
-## gene_2    4.18   3.95   4.32
-## gene_3    4.18   3.79   4.10
-## gene_4    4.65   3.79   4.28
-## gene_5    3.88   4.09   4.05
-## gene_6    4.74   4.34   4.28
-## gene_7    3.70   4.98   4.43
-## gene_8    3.88   4.34   4.32
-## gene_9    3.26   3.79   4.19
-## gene_10   4.04   4.34   4.00
+## gene_1    4.09   4.52   4.28
+## gene_2    4.45   4.62   4.11
+## gene_3    4.34   4.02   4.20
+## gene_4    3.95   4.02   3.91
+## gene_5    4.22   4.41   4.28
+## gene_6    4.09   4.02   4.15
+## gene_7    4.90   3.86   4.37
+## gene_8    3.61   4.52   4.11
+## gene_9    3.79   3.86   4.01
+## gene_10   3.79   3.47   4.24
 \end{verbatim}
 
 \begin{Shaded}
@@ -761,9 +761,9 @@ Finally, some packages automatically add to the \texttt{colData} slot, for examp
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             <numeric>    <integer>
-## cell_1               1.04139268515823           99
-## cell_2               1.04139268515823          106
-## cell_3               1.04139268515823          305
+## cell_1               1.04139268515823          106
+## cell_2               1.04139268515823          101
+## cell_3               1.04139268515823          304
 \end{verbatim}
 
 \hypertarget{using-coldata-for-subsetting}{%
@@ -870,16 +870,16 @@ However, our call to \texttt{calculateQCMetrics(sce)} in the prior section fille
 ## DataFrame with 10 rows and 3 columns
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  <logical>        <numeric>         <numeric>
-## gene_1               FALSE 13.3333333333333  1.15634720085992
-## gene_2               FALSE 17.6666666666667  1.27106677228654
-## gene_3               FALSE 15.6666666666667  1.22184874961636
-## gene_4               FALSE 18.3333333333333  1.28630673884327
-## gene_5               FALSE 15.3333333333333  1.21307482530885
-## gene_6               FALSE               20  1.32221929473392
-## gene_7               FALSE               21  1.34242268082221
-## gene_8               FALSE               18  1.27875360095283
-## gene_9               FALSE 14.6666666666667  1.19497660321605
-## gene_10              FALSE               16  1.23044892137827
+## gene_1               FALSE 18.6666666666667  1.29373075692248
+## gene_2               FALSE 18.6666666666667  1.29373075692248
+## gene_3               FALSE 17.3333333333333  1.26324143477458
+## gene_4               FALSE 14.3333333333333  1.18563657696191
+## gene_5               FALSE 18.6666666666667  1.29373075692248
+## gene_6               FALSE 16.3333333333333  1.23888208891514
+## gene_7               FALSE 20.3333333333333  1.32905871926422
+## gene_8               FALSE 16.3333333333333  1.23888208891514
+## gene_9               FALSE 14.3333333333333  1.18563657696191
+## gene_10              FALSE 15.3333333333333  1.21307482530885
 \end{verbatim}
 
 In a similar fashion to the \texttt{colData} slot, such feature metadata could be provided at the onset when creating the \texttt{SingleCellExperiment} object, which we leave up to the reader as an exercise.
@@ -936,7 +936,7 @@ Briefly, we already encountered this via the \texttt{scran::computeSumFactors(sc
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.582 0.624 1.794
+## [1] 0.622 0.593 1.785
 \end{verbatim}
 
 \hypertarget{a-brief-recap-from-se-to-sce}{%
@@ -972,11 +972,11 @@ In our example, we can calculate a PCA representation of our data as follows usi
 
 \begin{verbatim}
 ##          PC1    PC2
-## cell_1 -2.96 -0.588
-## cell_2  2.31 -1.277
-## cell_3  0.65  1.864
+## cell_1 -1.55 -1.756
+## cell_2  3.03 -0.027
+## cell_3 -1.48  1.783
 ## attr(,"percentVar")
-## [1] 0.727 0.273
+## [1] 0.687 0.313
 \end{verbatim}
 
 From this, we can also calculate a tSNE representation using the \texttt{scater} package function \texttt{runTSNE()}, and see that it can be seen both in the default view of \texttt{sce} and via accession:
@@ -999,9 +999,9 @@ From this, we can also calculate a tSNE representation using the \texttt{scater}
 
 \begin{verbatim}
 ##         [,1]  [,2]
-## cell_1  4762  3127
-## cell_2   325 -5684
-## cell_3 -5087  2556
+## cell_1  2459  5135
+## cell_2 -5676  -433
+## cell_3  3217 -4701
 \end{verbatim}
 
 We can view the names of all our entries in the \texttt{reducedDims} slot via the accessor, \texttt{reducedDims()} (notice that this is plural, and thus not the same as \texttt{reducedDim()}:
@@ -1031,12 +1031,12 @@ Similar to how we extended the \texttt{assays} slot with our own custom entry of
 \end{Shaded}
 
 \begin{verbatim}
-##           [,1]   [,2]
-## cell_1  0.6524  0.208
-## cell_2 -0.6103  0.184
-## cell_3 -0.0422 -0.392
+##            [,1]    [,2]
+## cell_1  0.53921  0.5421
+## cell_2 -0.53436 -0.5276
+## cell_3 -0.00485 -0.0145
 ## attr(,"scaled:center")
-## [1]  6.56 -5.17
+## [1] 24.42  2.24
 \end{verbatim}
 
 And we can also see its entry when we look at the \texttt{reducedDims()} accessor output:
