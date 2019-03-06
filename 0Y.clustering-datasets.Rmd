@@ -6,7 +6,7 @@ Here we will be working with a dataset from the [CellBench](https://github.com/L
 
 ```{r echo=FALSE, message=FALSE}
 ## precalculated essential results for plots at end
-sce <- readRDS("_rfiles/_data/clustering_sce_v2.rds")
+sce <- readRDS("_rfiles/_data/clustering_sce_min.rds")
 ```
 
 ## Package Requirements
@@ -103,7 +103,7 @@ However, clustering performance indeed _may_ be reflected in the dimensionality 
 gPCA <- plotReducedDim(sce, "PCA", colour_by = "cell_line")
 gTSNE <- plotReducedDim(sce, "TSNE", colour_by = "cell_line")
 gUMAP <- plotReducedDim(sce, "UMAP", colour_by = "cell_line")
-patchwork::wrap_plots(gPCA, gTSNE, gUMAP, heights = 1, widths = 1, ncol = 3)
+patchwork::wrap_plots(gPCA, gTSNE, gUMAP, heights = 1, widths = 1, ncol = 1)
 ```
 
 ## Clustering 
@@ -142,17 +142,20 @@ The `sc3` package contains many more utilities for exploring the stability of cl
 
 ### clusterExperiment
 
-The `clusterExperiment` package uses the function `RSEC()` to calculate clusters across various parametrizations, and contains multiple parameters to do so. Here, we specify the parametrizations to iterate over using the `alphas` and `k0s` arguments below. We refer the reader to the help page for `?RSEC` to learn more about the different parameters. In the end, this exhaustive exercise is used to ultimately determine a consensus clustering that combines the information learned from the various parametrizations.
+The `clusterExperiment` package uses the function `RSEC()` to calculate clusters across various parametrizations, and contains multiple parameters to do so. Here, we specify the parametrizations to iterate over using the `alphas` and `k0s` arguments below. We refer the reader to the help page for `?RSEC` to learn more about the different parameters. In the end, this exhaustive exercise is used to ultimately determine a consensus clustering that combines the information learned from the various parametrizations. 
+
+Note that `clusterExperiment` takes a long time to run, even with the reduced search space parametrized below. We recommend utilizing cluster resources for this job.
 
 ```{r eval=FALSE}
 rsec <- RSEC(sce[metadata(sce)$hvg_genes, ],
             reduceMethod = "PCA",
             nReducedDims = 20,
             alphas = c(0.1, 0.3), k0s = 4:6,
-            consensusMinSize = 50)
+            consensusMinSize = 50,
+            ncores = 8)
 
 metadata(sce)$rsec <- rsec
-colData(sce)$rsec_consensus_clusters <- as.factor(clusterMatrix(rsec)$mergeClusters)
+colData(sce)$rsec_consensus_clusters <- as.factor(clusterMatrix(rsec)[, "mergeClusters"])
 ```
 
 ```{r eval=FALSE}
@@ -175,5 +178,26 @@ The `BiocNeighbors` packaged is especially designed for developers to enable a u
 
 
 ```{r eval=FALSE, echo=FALSE, include=FALSE}
-saveRDS(sce, "_rfiles/_data/clustering_sce_v2.rds", compress = "xz")
+cols_keep <- c(
+    'cell_line', 
+    paste0('sc3_', 3:6, '_clusters'),
+    'rsec_consensus_clusters'
+)
+              
+## Trim sce object prior to saving to save space
+sce_min <- SingleCellExperiment(
+    assays = list(counts = counts(sce),
+                  logcounts = logcounts(sce)),
+    colData = colData(sce)[, cols_keep],
+    rowData = rowData(sce)[, c('feature_symbol', 'sc3_gene_filter')],
+    reducedDims = list(PCA = reducedDim(sce, 'PCA'),
+                       TSNE = reducedDim(sce, 'TSNE'),
+                       UMAP = reducedDim(sce, 'UMAP'))
+)
+
+
+## saveRDS(sce, "_rfiles/_data/clustering_sce_v2.rds", compress = "xz")
+## do NOT save the sce file with everything in one SCE!
+saveRDS(rsec, "_rfiles/_data/rsec.rds", compress = "xz")
+saveRDS(sce_min, "_rfiles/_data/clustering_sce_min.rds", compress = "xz")
 ```

@@ -23,10 +23,11 @@
   
 
 <meta name="author" content="Robert A. Amezquita">
+<meta name="author" content="Stephanie C. Hicks">
 <meta name="author" content="Bioconductor">
 
 
-<meta name="date" content="2019-03-05">
+<meta name="date" content="2019-03-06">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -290,16 +291,16 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">counts</span>(sce)</code></pre>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1       6      8     30
-## gene_2      10      8     33
-## gene_3       9     15     33
-## gene_4       9      8     31
-## gene_5      14      6     29
-## gene_6      10     10     42
-## gene_7       9     11     26
-## gene_8      10      8     25
-## gene_9      10      7     30
-## gene_10     13     10     27</code></pre>
+## gene_1      10     10     13
+## gene_2       7      9     24
+## gene_3      10      7     32
+## gene_4       9     14     29
+## gene_5      13     11     28
+## gene_6      17      7     39
+## gene_7      14     12     30
+## gene_8       9     14     24
+## gene_9      12     13     24
+## gene_10     11     19     39</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">## assay(sce, &quot;counts&quot;) ## same as above in this special case</span></code></pre>
 </div>
 <div id="extending-the-assays-slot" class="section level3">
@@ -323,16 +324,16 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <p>Specifically, we see that the <code>assays</code> slot has grown to be comprised of two entries: <code>counts</code> (our initial data) and <code>logcounts</code> (the normalized data). Similar to <code>counts</code>, the <code>logcounts</code> name is a special name which lets us access it simply by typing <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logcounts</span>(sce)</code></pre>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1    3.45   3.96   4.11
-## gene_2    4.13   3.96   4.24
-## gene_3    3.99   4.82   4.24
-## gene_4    3.99   3.96   4.15
-## gene_5    4.60   3.58   4.06
-## gene_6    4.13   4.26   4.57
-## gene_7    3.99   4.39   3.91
-## gene_8    4.13   3.96   3.86
-## gene_9    4.13   3.78   4.11
-## gene_10   4.49   4.26   3.97</code></pre>
+## gene_1    4.02   3.97   3.14
+## gene_2    3.54   3.83   3.95
+## gene_3    4.02   3.49   4.34
+## gene_4    3.87   4.43   4.21
+## gene_5    4.37   4.10   4.16
+## gene_6    4.74   3.49   4.62
+## gene_7    4.48   4.22   4.25
+## gene_8    3.87   4.43   3.95
+## gene_9    4.26   4.33   3.95
+## gene_10   4.15   4.85   4.62</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">## assay(sce, &quot;logcounts&quot;) ## same as above</span></code></pre>
 <p>Notice that the data before had a severe discrepancy in counts between cells 1/2 versus 3, and that normalization has ameliorated this difference.</p>
 <p>To look at all the available assays within <code>sce</code>, we can type:</p>
@@ -409,9 +410,9 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             &lt;numeric&gt;    &lt;integer&gt;
-## cell_1               1.04139268515823          100
-## cell_2               1.04139268515823           91
-## cell_3               1.04139268515823          306</code></pre>
+## cell_1               1.04139268515823          112
+## cell_2               1.04139268515823          116
+## cell_3               1.04139268515823          282</code></pre>
 <div id="using-coldata-for-subsetting" class="section level4">
 <h4><span class="header-section-number">4.2.3.1</span> Using <code>colData</code> for Subsetting</h4>
 <p>A common operation with <code>colData</code> is its use in subsetting. One simple way to access <code>colData</code> is through the use of the <code>$</code> operator, which is a shortcut for accessing a variable within the <code>colData</code> slot:</p>
@@ -469,16 +470,16 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  &lt;logical&gt;        &lt;numeric&gt;         &lt;numeric&gt;
-## gene_1               FALSE 14.6666666666667  1.19497660321605
-## gene_2               FALSE               17  1.25527250510331
-## gene_3               FALSE               19  1.30102999566398
-## gene_4               FALSE               16  1.23044892137827
-## gene_5               FALSE 16.3333333333333  1.23888208891514
-## gene_6               FALSE 20.6666666666667  1.33579210192319
-## gene_7               FALSE 15.3333333333333  1.21307482530885
-## gene_8               FALSE 14.3333333333333  1.18563657696191
-## gene_9               FALSE 15.6666666666667  1.22184874961636
-## gene_10              FALSE 16.6666666666667  1.24715461488113</code></pre>
+## gene_1               FALSE               11  1.07918124604762
+## gene_2               FALSE 13.3333333333333  1.15634720085992
+## gene_3               FALSE 16.3333333333333  1.23888208891514
+## gene_4               FALSE 17.3333333333333  1.26324143477458
+## gene_5               FALSE 17.3333333333333  1.26324143477458
+## gene_6               FALSE               21  1.34242268082221
+## gene_7               FALSE 18.6666666666667  1.29373075692248
+## gene_8               FALSE 15.6666666666667  1.22184874961636
+## gene_9               FALSE 16.3333333333333  1.23888208891514
+## gene_10              FALSE               23  1.38021124171161</code></pre>
 <p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <code>SingleCellExperiment</code> object, which we leave up to the reader as an exercise.</p>
 <div id="subsetting-with-on-rows" class="section level4">
 <h4><span class="header-section-number">4.2.4.1</span> Subsetting with on Rows</h4>
@@ -508,7 +509,7 @@ sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)
 sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)
 <span class="kw">sizeFactors</span>(sce)</code></pre>
-<pre><code>## [1] 0.604 0.549 1.847</code></pre>
+<pre><code>## [1] 0.659 0.682 1.659</code></pre>
 </div>
 </div>
 <div id="a-brief-recap-from-se-to-sce" class="section level2">
@@ -527,20 +528,20 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <p>In our example, we can calculate a PCA representation of our data as follows using the <code>scater</code> package function <code>runPCA()</code>. We see that the <code>sce</code> now shows a new <code>reducedDim</code> and that the accessor <code>reducedDim()</code> produces the results of running PCA on the normalized data from <code>logcounts(sce)</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</code></pre>
-<pre><code>##           PC1    PC2
-## cell_1  0.462  2.525
-## cell_2 -2.445 -0.868
-## cell_3  1.984 -1.657
+<pre><code>##           PC1   PC2
+## cell_1 -2.568 -1.02
+## cell_2  2.432 -1.21
+## cell_3  0.136  2.23
 ## attr(,&quot;percentVar&quot;)
-## [1] 0.506 0.494</code></pre>
+## [1] 0.626 0.374</code></pre>
 <p>From this, we can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>, and see that it can be seen both in the default view of <code>sce</code> and via accession:</p>
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</code></pre>
 <pre><code>## Perplexity should be lower than K!</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</code></pre>
 <pre><code>##         [,1]  [,2]
-## cell_1  3329 -4631
-## cell_2 -5671  -547
-## cell_3  2342  5178</code></pre>
+## cell_1  4756 -3138
+## cell_2   342  5682
+## cell_3 -5098 -2544</code></pre>
 <p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code> (notice that this is plural, and thus not the same as <code>reducedDim()</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre>
 <pre><code>## List of length 2
@@ -551,12 +552,12 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) &lt;-<span class="st"> </span>u
 
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>)</code></pre>
-<pre><code>##          [,1]    [,2]
-## cell_1 -0.645 -0.0761
-## cell_2  0.501  0.4412
-## cell_3  0.143 -0.3650
+<pre><code>##          [,1]   [,2]
+## cell_1  0.418  0.550
+## cell_2 -0.132 -0.662
+## cell_3 -0.286  0.112
 ## attr(,&quot;scaled:center&quot;)
-## [1] -1.33 -1.84</code></pre>
+## [1] -4.5 11.2</code></pre>
 <p>And we can also see its entry when we look at the <code>reducedDims()</code> accessor output:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre>
 <pre><code>## List of length 3
