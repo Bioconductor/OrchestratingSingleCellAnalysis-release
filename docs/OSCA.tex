@@ -25,7 +25,7 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Orchestrating Single-Cell Analysis with Bioconductor},
-            pdfauthor={Robert A. Amezquita; Stephanie C. Hicks; Bioconductor},
+            pdfauthor={Robert A. Amezquita; Stephanie C. Hicks},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -120,7 +120,7 @@
   \title{Orchestrating Single-Cell Analysis with Bioconductor}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-    \author{Robert A. Amezquita \\ Stephanie C. Hicks \\ Bioconductor}
+    \author{Robert A. Amezquita \\ Stephanie C. Hicks}
     \preauthor{\centering\large\emph}
   \postauthor{\par}
       \predate{\centering\large\emph}
@@ -136,9 +136,9 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
-\hypertarget{orchestrating-single-cell-analysis-with-bioconductor}{%
-\chapter*{Orchestrating Single-Cell Analysis with Bioconductor}\label{orchestrating-single-cell-analysis-with-bioconductor}}
-\addcontentsline{toc}{chapter}{Orchestrating Single-Cell Analysis with Bioconductor}
+\hypertarget{welcome}{%
+\chapter*{Welcome}\label{welcome}}
+\addcontentsline{toc}{chapter}{Welcome}
 
 This is the website for \textbf{``Orchestrating Single-Cell Analysis with Bioconductor''}, a book that teaches users some common workflows for the analysis of single-cell RNA-seq data (scRNA-seq). This book will teach you how to make use of cutting-edge Bioconductor tools to process, analyze, visualize, and explore scRNA-seq data. Additionally, it serves as an online companion for the manuscript \textbf{``Orchestrating Single-Cell Analysis with Bioconductor''}.
 
@@ -527,16 +527,16 @@ To access the count data we just supplied, we can do any one of the following:
 
 \begin{verbatim}
 ##         cell_1 cell_2 cell_3
-## gene_1      20     12     30
-## gene_2      12     14     34
-## gene_3       9     12     27
-## gene_4       9      9     23
-## gene_5       6     12     31
-## gene_6      12      9     24
-## gene_7      16      4     36
-## gene_8       9     11     35
-## gene_9      13     10     24
-## gene_10     18     13     31
+## gene_1      13      8     19
+## gene_2      10      9     34
+## gene_3      10      8     29
+## gene_4      14      8     33
+## gene_5       8     10     28
+## gene_6      15     12     33
+## gene_7       7     19     37
+## gene_8       8     12     34
+## gene_9       5      8     31
+## gene_10      9     12     27
 \end{verbatim}
 
 \begin{Shaded}
@@ -590,16 +590,16 @@ Specifically, we see that the \texttt{assays} slot has grown to be comprised of 
 
 \begin{verbatim}
 ##         cell_1 cell_2 cell_3
-## gene_1    4.87   4.38   4.23
-## gene_2    4.16   4.59   4.40
-## gene_3    3.78   4.38   4.09
-## gene_4    3.78   3.99   3.87
-## gene_5    3.24   4.38   4.28
-## gene_6    4.16   3.99   3.93
-## gene_7    4.56   2.93   4.48
-## gene_8    3.78   4.26   4.44
-## gene_9    4.27   4.13   3.93
-## gene_10   4.72   4.49   4.28
+## gene_1    4.54   3.79   3.53
+## gene_2    4.18   3.95   4.32
+## gene_3    4.18   3.79   4.10
+## gene_4    4.65   3.79   4.28
+## gene_5    3.88   4.09   4.05
+## gene_6    4.74   4.34   4.28
+## gene_7    3.70   4.98   4.43
+## gene_8    3.88   4.34   4.32
+## gene_9    3.26   3.79   4.19
+## gene_10   4.04   4.34   4.00
 \end{verbatim}
 
 \begin{Shaded}
@@ -761,9 +761,9 @@ Finally, some packages automatically add to the \texttt{colData} slot, for examp
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             <numeric>    <integer>
-## cell_1               1.04139268515823          124
+## cell_1               1.04139268515823           99
 ## cell_2               1.04139268515823          106
-## cell_3               1.04139268515823          295
+## cell_3               1.04139268515823          305
 \end{verbatim}
 
 \hypertarget{using-coldata-for-subsetting}{%
@@ -870,16 +870,16 @@ However, our call to \texttt{calculateQCMetrics(sce)} in the prior section fille
 ## DataFrame with 10 rows and 3 columns
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  <logical>        <numeric>         <numeric>
-## gene_1               FALSE 20.6666666666667  1.33579210192319
-## gene_2               FALSE               20  1.32221929473392
-## gene_3               FALSE               16  1.23044892137827
-## gene_4               FALSE 13.6666666666667  1.16633142176653
-## gene_5               FALSE 16.3333333333333  1.23888208891514
-## gene_6               FALSE               15  1.20411998265592
-## gene_7               FALSE 18.6666666666667  1.29373075692248
-## gene_8               FALSE 18.3333333333333  1.28630673884327
-## gene_9               FALSE 15.6666666666667  1.22184874961636
-## gene_10              FALSE 20.6666666666667  1.33579210192319
+## gene_1               FALSE 13.3333333333333  1.15634720085992
+## gene_2               FALSE 17.6666666666667  1.27106677228654
+## gene_3               FALSE 15.6666666666667  1.22184874961636
+## gene_4               FALSE 18.3333333333333  1.28630673884327
+## gene_5               FALSE 15.3333333333333  1.21307482530885
+## gene_6               FALSE               20  1.32221929473392
+## gene_7               FALSE               21  1.34242268082221
+## gene_8               FALSE               18  1.27875360095283
+## gene_9               FALSE 14.6666666666667  1.19497660321605
+## gene_10              FALSE               16  1.23044892137827
 \end{verbatim}
 
 In a similar fashion to the \texttt{colData} slot, such feature metadata could be provided at the onset when creating the \texttt{SingleCellExperiment} object, which we leave up to the reader as an exercise.
@@ -936,7 +936,7 @@ Briefly, we already encountered this via the \texttt{scran::computeSumFactors(sc
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.709 0.606 1.686
+## [1] 0.582 0.624 1.794
 \end{verbatim}
 
 \hypertarget{a-brief-recap-from-se-to-sce}{%
@@ -971,12 +971,12 @@ In our example, we can calculate a PCA representation of our data as follows usi
 \end{Shaded}
 
 \begin{verbatim}
-##          PC1     PC2
-## cell_1 -3.23 -0.0646
-## cell_2  1.72 -1.4395
-## cell_3  1.51  1.5041
+##          PC1    PC2
+## cell_1 -2.96 -0.588
+## cell_2  2.31 -1.277
+## cell_3  0.65  1.864
 ## attr(,"percentVar")
-## [1] 0.783 0.217
+## [1] 0.727 0.273
 \end{verbatim}
 
 From this, we can also calculate a tSNE representation using the \texttt{scater} package function \texttt{runTSNE()}, and see that it can be seen both in the default view of \texttt{sce} and via accession:
@@ -999,9 +999,9 @@ From this, we can also calculate a tSNE representation using the \texttt{scater}
 
 \begin{verbatim}
 ##         [,1]  [,2]
-## cell_1  4341  3687
-## cell_2 -5363  1916
-## cell_3  1023 -5603
+## cell_1  4762  3127
+## cell_2   325 -5684
+## cell_3 -5087  2556
 \end{verbatim}
 
 We can view the names of all our entries in the \texttt{reducedDims} slot via the accessor, \texttt{reducedDims()} (notice that this is plural, and thus not the same as \texttt{reducedDim()}:
@@ -1031,12 +1031,12 @@ Similar to how we extended the \texttt{assays} slot with our own custom entry of
 \end{Shaded}
 
 \begin{verbatim}
-##             [,1]   [,2]
-## cell_1 -0.383542  0.521
-## cell_2 -0.000386 -0.677
-## cell_3  0.383928  0.156
+##           [,1]   [,2]
+## cell_1  0.6524  0.208
+## cell_2 -0.6103  0.184
+## cell_3 -0.0422 -0.392
 ## attr(,"scaled:center")
-## [1] -15.57  -7.32
+## [1]  6.56 -5.17
 \end{verbatim}
 
 And we can also see its entry when we look at the \texttt{reducedDims()} accessor output:
@@ -1131,7 +1131,7 @@ Bioconductor access.
 \hypertarget{workflow-integrating-datasets}{%
 \chapter{Workflow: Integrating Datasets}\label{workflow-integrating-datasets}}
 
-\emph{authors}: Stephanie C. Hicks, Robert A. Amezquita
+\emph{authors: Stephanie C. Hicks, Robert A. Amezquita}
 
 The purpose of this case study is to demonstrate how to integrate multiple scRNA-seq datasets using R/Bioconductor packages. In this workflow, we go from preprocessing the data to integrating the data and visualizing it in a reduced dimensionality space to showcase the success of the integration approach using mutual nearest neighbors relative to a naive approach. This approach is helpful for ameliorating batch effects that can be introduced when combining data from different sequencing runs and/or platforms.
 
