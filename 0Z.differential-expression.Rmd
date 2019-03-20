@@ -1,0 +1,123 @@
+# Differential Expression
+
+_authors: Etienne Becht, Robert A. Amezquita_
+
+
+
+```{r}
+## Set-up multicore
+options("mc.cores"=8L)
+
+## Load an example dataset
+library(ExperimentHub)
+library(SingleCellExperiment)
+library(TabulaMurisData)
+library(scater)
+library(data.table)
+
+eh <- ExperimentHub()
+query(eh, "TabulaMurisData")
+sce <- eh[["EH1617"]]
+sce <- TabulaMurisDroplet()
+
+## Inspect our new SingleCellExperiment object
+sce
+
+## Subset the dataset to two cell populations and two mice
+pops <- colData(sce)[,"cell_ontology_class"]%in%c("granulocyte","monocyte")
+mice <- colData(sce)[,"mouse_id"]%in%c("3-F-56","3-F-57")
+sce <- sce[,mice&pops]
+
+## Add Count per million, log CPM and log Counts to the list of assay
+assays(sce)$cpm <- calculateTPM(sce)
+assays(sce)$logcpm <- log(1+assays(sce)$cpm)
+assays(sce)$logcounts <- log(1+assays(sce)$counts)
+
+## Calculate QC metrics
+sce <- calculateQCMetrics(sce)
+
+## Filter by low library/features detected
+low_lib_sce <- isOutlier(sce$log10_total_counts,
+                        type = "lower", nmad = 3)
+low_ftr_sce <- isOutlier(sce$log10_total_features_by_counts,
+                        type = "lower", nmad = 3)
+sce <- sce[, !(low_lib_sce | low_ftr_sce)]
+
+## Add new column and row metadata
+## Concatenated mouse and cell type
+colData(sce)$class_and_mouse <- paste0(colData(sce)$mouse_id,colData(sce)$cell_ontology_class)
+## Cellular detection raet: for each cell, what is the frequency of expressed (>0 counts) genes (informative covariate, see the MAST paper Finak et al, Genome Biology, 2015 for more detail)
+colData(sce)$CDR <- Matrix:::colSums(counts(sce)>0) ## MAST is conflicting with Matrix:::colSums so the extra syntax is potentially necessary here
+## Frequencies of expression for genes
+rowData(sce)$cncellson <- Matrix:::rowSums(counts(sce)>0)/ncol(sce)
+
+## Filter genes to those expressed in at least 10% of the cells
+sce <- sce[rowData(sce)$cncellson>=0.1,]
+
+library(MAST)
+## /!\ Please re-write with latest MAST to run it directly on SCE
+sca <- FromMatrix(exprsArray=as.matrix(assays(sce)$logcpm),cData=colData(sce),fData=rowData(sce))
+
+## First we model gene expression as a function of cell class and cellular detection rate, ignoring batch effects
+fmla <- as.formula("~cell_ontology_class + CDR") ## These variables have to be present in colData(sca)
+## Fit zero-inflated linear model
+zlmCond <- zlm(fmla,sca)
+
+## Testing for the significance of a given variable / factor value.
+LRT <- "cell_ontology_classmonocyte" ## The reference group is the first in alphabetical order
+summaryCond <- summary(zlmCond,doLRT=LRT)
+
+## Extract the results
+summaryDt <- summaryCond$datatable[component=="H"&contrast==LRT,]
+
+## Compute FDR-adjusted p-values
+summaryDt[,Q:=p.adjust(get("Pr(>Chisq)"),method="fdr")]
+
+## Print FDR<=0.05
+summaryDt[Q<=0.05,]
+head(summaryDt[order(Q),])
+
+## We now also include mouse_id (i.e. a potential batch counfounder) in our model
+fmla <- as.formula("~cell_ontology_class + CDR + mouse_id")
+
+## Fit zero-inflated linear model
+zlmCond_batch <- zlm(fmla,sca)
+
+## Testing for the significance of a given variable / factor value.
+LRT <- "cell_ontology_classmonocyte"
+summaryCond_batch <- summary(zlmCond_batch,doLRT=LRT)
+
+## Extract the results
+summaryDt_batch <- summaryCond_batch$datatable[component=="H"&contrast==LRT,]
+
+## Compute FDR-adjusted p-values
+summaryDt_batch[,Q:=p.adjust(get("Pr(>Chisq)"),method="fdr")]
+
+## Print FDR<=0.05
+summaryDt_batch[Q<=0.05,]
+head(summaryDt_batch[order(Q),])
+
+## Select gene where batch effect correction had the highest impact on significance
+setorder(summaryDt,keycol="primerid")
+setorder(summaryDt_batch,keycol="primerid")
+pids <- summaryDt[which(rank(log10(summaryDt_batch$`Q`)-log10(summaryDt$`Q`))%in%1),]$primerid
+
+## Print results for that particular gene
+summaryDt[primerid%in%pids,]
+summaryDt_batch[primerid%in%pids,]
+
+## Perform UMAP dimensionality reduction
+if(!require("umap")){
+    install.packages("umap")
+    library(umap)
+}
+
+## This dataset has limited batch effect as can be seen on the UMAP plot
+plotReducedDim(sce,"UMAP",colour_by="class_and_mouse")
+sce <- runUMAP(sce,exprs_values="logcpm")
+
+## Plot the gene most affected by batch correction (although not critical in this case)
+plot.new()
+plotExpression(sce[,sample(1:ncol(sce))],features=pids,x="class_and_mouse",colour_by="mouse_id",exprs_values="logcpm","shape_by"="cell_ontology_class")
+legend(x="topright",legend=paste0(c("Q (no _batch correction)","Q (batch correction)"),"= ",signif(c(unlist(summaryDt[primerid%in%pids,"Q"]),unlist(summaryDt_batch[primerid%in%pids,"Q"])),2)),bty="n",xpd=NA)
+```
