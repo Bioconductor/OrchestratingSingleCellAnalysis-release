@@ -1,4 +1,4 @@
-# Workflow: Clustering
+# Clustering
 
 The purpose of this case study is to demonstrate various approaches to clustering scRNA-seq datasets using R/Bioconductor packages. In this workflow, we go from preprocessing the data to clustering the data. Furthermore, we highlight methods which are especially suitable for large datasets. 
 
@@ -17,9 +17,6 @@ These packages will be required for working through the vignette, and can be ins
 BiocManager::install(c('scater', 'scran',
                       'SC3', 'clusterExperiment', 'BiocNeighbors',
                       'BiocParallel'))
-
-## suggested for combining plots
-devtools::install_github('thomasp85/patchwork')
 ```
 
 ```{r message=FALSE}
@@ -29,7 +26,6 @@ library(SC3)
 library(clusterExperiment)
 library(BiocNeighbors)
 library(BiocParallel)
-library(patchwork)
 ```
 
 ## Loading the Data
@@ -103,7 +99,10 @@ However, clustering performance indeed _may_ be reflected in the dimensionality 
 gPCA <- plotReducedDim(sce, "PCA", colour_by = "cell_line")
 gTSNE <- plotReducedDim(sce, "TSNE", colour_by = "cell_line")
 gUMAP <- plotReducedDim(sce, "UMAP", colour_by = "cell_line")
-patchwork::wrap_plots(gPCA, gTSNE, gUMAP, heights = 1, widths = 1, ncol = 1)
+
+gPCA
+gTSNE
+gUMAP
 ```
 
 ## Clustering 
@@ -134,7 +133,11 @@ g3 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_3_clusters")
 g4 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_4_clusters")
 g5 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_5_clusters")
 g6 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_6_clusters")
-patchwork::wrap_plots(g3, g4, g5, g6, widths = 1, heights = 1, ncol = 1)
+
+g3
+g4
+g5
+g6
 ```
 
 The `sc3` package contains many more utilities for exploring the stability of clustering and can even produce differential expression analysis results using the `biology = TRUE` argument within the `sc3()` function. We leave it to the interested reader to [learn more about `sc3`](https://bioconductor.org/packages/release/bioc/html/SC3.html) via their vignette.
