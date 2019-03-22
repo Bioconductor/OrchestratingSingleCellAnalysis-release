@@ -30,7 +30,6 @@ library(limma)
 library(TENxPBMCData)
 library(BiocParallel)
 library(BiocNeighbors)
-library(BiocSingular)
 ```
 
 ## Loading the Data
@@ -96,8 +95,6 @@ pbmc4k <- normalize(pbmc4k)
 ```
 
 
-
-
 ## Feature Selection
 
 A key step across many data integration methods is the selection of informative features across the different experiments. This helps to speed up computation and possibly improve the resulting integration.
@@ -159,21 +156,23 @@ The naive approach simply entails visualizing the combined `sce` object post-nor
 
 ```{r eval=FALSE}
 ## Manual assignment of PCA to sce object
-px <- prcomp(t(logcounts(sce)[hvg_genes, ]))
-reducedDim(sce, "PCA_naive") <- px$x[, 1:20]
+## px <- prcomp(t(logcounts(sce)[hvg_genes, ]))
+## reducedDim(sce, "PCA_naive") <- px$x[, 1:20]
 
 ## Method for automating PCA calculation/saving into sce with additional
 ## parameters for speeding up calculation via Irlba/parallelization
-## sce <- runPCA(sce,
-##               ncomponents = 20,
-##               feature_set = hvg_genes,
-##               BSPARAM = BiocSingular::IrlbaParam(),
-##               BPPARAM = MulticoreParam(8))
+sce <- runPCA(sce,
+              ncomponents = 20,
+              feature_set = hvg_genes,
+              method = "irlba",
+              BPPARAM = MulticoreParam(8))
+
+names(reducedDims(sce)) <- "PCA_naive" # rename for clarity; prevent overwriting
 ```
 
 ```{r}
 plotReducedDim(sce, use_dimred = "PCA_naive",
-               colour_by="Sample") + 
+               colour_by = "Sample") + 
     ggtitle("PCA Without batch correction")
 ```
 
@@ -185,13 +184,20 @@ The `limma` package, a popular framework for the statistical analysis of RNA-seq
 limma_corrected <- limma::removeBatchEffect(logcounts(sce), batch = sce$Sample)
 assay(sce, "logcounts_limma") <- limma_corrected ## add new assay
 
-pl <- prcomp(t(assay(sce, 'logcounts_limma')[hvg_genes, ]))
-reducedDim(sce, "PCA_limma") <- pl$x[, 1:20]
+## Automated way of running PCA
+sce <- runPCA(sce,
+              ncomponents = 20,
+              feature_set = hvg_genes,
+              exprs_values = "logcounts_limma",
+              method = "irlba",
+              BPPARAM = MulticoreParam(8))
+
+names(reducedDims(sce))[2] <- "PCA_limma" 
 ```
 
 ```{r}
 plotReducedDim(sce, use_dimred = "PCA_limma",
-               colour_by="Sample") + 
+               colour_by = "Sample") + 
     ggtitle("PCA With limma removeBatchEffect() correction")
 ```
 
@@ -213,8 +219,9 @@ A basic means of running the `fastMNN` method with mostly default parameters is 
 
 ```{r eval=FALSE}
 ## Basic method - not run
-mnn_out <- fastMNN(pbmc3k_rescaled[hvg_genes, ],
-                   pbmc4k_rescaled[hvg_genes, ],
+mnn_out <- fastMNN(pbmc3k_rescaled, 
+                   pbmc4k_rescaled, 
+                   subset.row = metadata(sce)$hvg_genes,
                    k = 20, d = 50, approximate = TRUE)
 ```
 
@@ -222,12 +229,13 @@ For finer-grained control of the algorithm, the `BNPARAM` can be specified to sp
 
 ```{r eval=FALSE}
 ## Adding parallelization and Annoy method for approximate nearest neighbors
-## this makes fastMNN significantly faster on large data
-mnn_out <- fastMNN(pbmc3k_rescaled[hvg_genes, ],
-                   pbmc4k_rescaled[hvg_genes, ],
+## this makes fastMNN faster on large data
+mnn_out <- fastMNN(pbmc3k_rescaled, #[hvg_genes, ],
+                   pbmc4k_rescaled, #[hvg_genes, ],
+                   subset.row = metadata(sce)$hvg_genes,
                    k = 20, d = 50, approximate = TRUE,
                    BNPARAM = BiocNeighbors::AnnoyParam(),
-                   BPPARAM = BiocParallel::MulticoreParam(2))
+                   BPPARAM = BiocParallel::MulticoreParam(8))
 
 reducedDim(sce, "MNN") <- mnn_out$correct
 ```
@@ -236,7 +244,7 @@ Now we can plot the result:
 
 ```{r}
 plotReducedDim(sce, use_dimred = "MNN",
-                    colour_by="Sample") + 
+                    colour_by = "Sample") + 
     ggtitle("MNN Ouput Reduced Dimensions")
 ```
 
@@ -250,5 +258,19 @@ sessionInfo()
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
-saveRDS(sce, "_rfiles/_data/integration_sce.rds", compress = "xz")
+## Trim sce object prior to saving to save space
+sce_min <- SingleCellExperiment(
+    assays = list(),
+    colData = colData(sce)[, c('Sample', 'Barcode')],
+    reducedDims = list(PCA_naive = reducedDim(sce, 'PCA_naive'),
+                       PCA_limma = reducedDim(sce, 'PCA_limma'),
+                       MNN = reducedDim(sce, 'MNN'))
+)
+
+## Save sce file
+saveRDS(sce_min, "_rfiles/_data/integration_sce.rds")
+## saveRDS(sce_min, "integration_sce.rds", compress = "xz")
+
+## Extract R code
+knitr::purl('0X.integrating-datasets.Rmd', '_rfiles/0X.integrating-datasets.R')
 ```
