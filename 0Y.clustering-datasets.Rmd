@@ -7,6 +7,7 @@ Here we will be working with a dataset from the [CellBench](https://github.com/L
 ```{r echo=FALSE, message=FALSE}
 ## precalculated essential results for plots at end
 sce <- readRDS("_rfiles/_data/clustering_sce_min.rds")
+rsec <- readRDS("_rfiles/_data/rsec_min.rds")
 ```
 
 ## Package Requirements
@@ -96,13 +97,9 @@ Note that clustering performance is _not_ necessarily dependent on the dimension
 However, clustering performance indeed _may_ be reflected in the dimensionality reduction results. For example, given the PCA result, we might expect some confusion between HCC827 and H1975, and based on the UMAP results, we might possibly even see two clusters within the H1975 cell line. Note however that these dimensionality reduction embeddings are also a function of the tuning parameters noted above.
 
 ```{r}
-gPCA <- plotReducedDim(sce, "PCA", colour_by = "cell_line")
-gTSNE <- plotReducedDim(sce, "TSNE", colour_by = "cell_line")
-gUMAP <- plotReducedDim(sce, "UMAP", colour_by = "cell_line")
-
-gPCA
-gTSNE
-gUMAP
+plotReducedDim(sce, "PCA", colour_by = "cell_line")
+plotReducedDim(sce, "TSNE", colour_by = "cell_line")
+plotReducedDim(sce, "UMAP", colour_by = "cell_line")
 ```
 
 ## Clustering 
@@ -119,8 +116,8 @@ rowData(sce)$feature_symbol <- rownames(sce)
 
 ## SC3 will return an SCE object with appended "sc3_" columns
 sce <- sc3(sce[metadata(sce)$hvg_genes, ],
-          ks = 3:6,
-          k_estimator = TRUE)
+           ks = 3:6,
+           k_estimator = TRUE)
 ```
 
 After using `sc3()`, the function returns the original `SingleCellExperiment` object, but with new columns in `colData(sce)` corresponding to the different `ks` supplied to the function, as well as a full representation of the analysis that is stored in `metadata(sce)$sc3`, which includes an estimate of the optimal `k` (as dictated by the `k_estimator = TRUE` argument above). 
@@ -128,16 +125,10 @@ After using `sc3()`, the function returns the original `SingleCellExperiment` ob
 Below, we show the clustering results of the `ks` we supplied, 3 through 6, shown on the TSNE representation of the data. We use the `scater` package function `plotReducedDim()` to produce the individual plots, and for the sake of this vignette, wrap them together into a single plot using the `patchwork` package.
 
 ```{r}
-## Basic code:
-g3 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_3_clusters")
-g4 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_4_clusters")
-g5 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_5_clusters")
-g6 <- plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_6_clusters")
-
-g3
-g4
-g5
-g6
+plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_3_clusters")
+plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_4_clusters")
+plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_5_clusters")
+plotReducedDim(sce, use_dimred = "TSNE", colour_by = "sc3_6_clusters")
 ```
 
 The `sc3` package contains many more utilities for exploring the stability of clustering and can even produce differential expression analysis results using the `biology = TRUE` argument within the `sc3()` function. We leave it to the interested reader to [learn more about `sc3`](https://bioconductor.org/packages/release/bioc/html/SC3.html) via their vignette.
@@ -151,32 +142,65 @@ Note that `clusterExperiment` takes a long time to run, even with the reduced se
 
 ```{r eval=FALSE}
 rsec <- RSEC(sce[metadata(sce)$hvg_genes, ],
-            reduceMethod = "PCA",
-            nReducedDims = 20,
-            alphas = c(0.1, 0.3), k0s = 4:6,
-            consensusMinSize = 50,
-            ncores = 8)
-
-metadata(sce)$rsec <- rsec
-colData(sce)$rsec_consensus_clusters <- as.factor(clusterMatrix(rsec)[, "mergeClusters"])
+             reduceMethod = "PCA",
+             nReducedDims = 20,
+             alphas = c(0.1, 0.3), k0s = 4:6,
+             consensusMinSize = 50,
+             ncores = 8)
 ```
+
+The `clusterExperiment` package contains many visualization tools for assessing the cluster assignment. Here we show two plots with the cluster assignments across our various parametrizations and a dendrogram showing the relatedness of the final consensus clustering. Note that white denotes unassigned cells that were not assigned to a cluster.
 
 ```{r eval=FALSE}
-
+plotClusters(rsec)
+plotDendrogram(rsec)
 ```
 
-Once again, we refer the interested reader to the [vignette for `clusterExperiment`](https://bioconductor.org/packages/release/bioc/html/clusterExperiment.html) to learn more about extended functionality for visualizing the data and about the specifics of the clustering workflow.
+Once again, we refer the interested reader to the [vignette for `clusterExperiment`](https://bioconductor.org/packages/release/bioc/html/clusterExperiment.html) to learn more about extended functionality for visualizing the data and about the specifics of the clustering workflow. 
 
-
-### BiocNeighbors
-
-The `BiocNeighbors` package provides a lower-level method for clustering of data. Under the hood, it provides various types of clustering algorithms, as specified through the `BNPARAM` class object. This `BNPARAM` object can be passed into the `BiocNeighbors` clustering function, `findKNN()`, as well as other functions that support `BNPARAM`. 
+To get our final, consensus clustering assignments out (as shown by the `plotDendrogram()` function) we use the `primaryCluster()` function to retrieve the labels. To save this result into our `sce` object, we add it to the `colData` slot as shown below.
 
 ```{r eval=FALSE}
+rsec_clusters <- primaryCluster(rsec)
+rsec_clusters <- as.factor(rsec_clusters) # convert to a categorical variable
 
+colData(sce)$rsec_clusters <- rsec_clusters
+## sce$rsec_clusters <- rsec_clusters  # same as above
 ```
 
-The `BiocNeighbors` packaged is especially designed for developers to enable a unified interface for clustering algorithm specification, allowing for the separation of clustering functionality from the main function. 
+We can now use the `scater` function `plotReducedDim()` to visualize our results from `clusterExperiment` on a t-SNE plot. Note that the `-1` assignment denotes that a cell was not assigned a cluster. 
+
+```{r}
+plotReducedDim(sce, use_dimred = "TSNE", colour_by = "rsec_clusters")
+```
+
+
+### Manual Clustering
+
+Low-level clustering relies on building the shared- or k-nearest neighbors graphs manually, and then applying a graph-based clustering algorithm based on the resulting graph. One such wrapper to construct the SNN/KNN graph comes from the `scran` package's `buildSNNGraph()` and `buildKNNGraph()` functions, respectively. The resulting `igraph` object from these functions can then be fed into any number of clustering algorithms provided by `igraph`. For example, louvain clustering is a popular algorithm that is implemented in the `cluster_louvain()` function.
+
+Further, one additional parameter to note in the `buildSNNGraph()` function below is the `BNPARAM`, which provides even finer control over nearest-neighbors detection via the `BiocNeighbors` package. This parameter allows the user to specify an implementation from `BiocNeighbors` to use that has been designed for high-dimensional data. Here, we highlight the use of an approximate method via the Annoy algorithm by way of providing `AnnoyParam()`. 
+
+Given the limited scope of the calculations and optimizations provided herein via the use of already calculated dimension reduction results (via `use.dimred`), the `BNPARAM` as explained above, and parallelization via `BPPARAM`, this manual clustering approach is quite speedy. We use the louvain clustering algorithm to cluster on the resulting graph and save the result into our sce object's `colData` slot.
+
+```{r eval=FALSE}
+g <- buildSNNGraph(sce, k = 50,
+                   use.dimred = 'PCA',
+                   BNPARAM = AnnoyParam(),
+                   BPPARAM = MulticoreParam(8))
+
+louvain_clusters <- igraph::cluster_louvain(g)$membership
+
+sce$louvain_clusters <- as.factor(louvain_clusters)
+```
+
+The results can then be plotted just as before:
+
+```{r}
+plotReducedDim(sce, use_dimred = "TSNE", colour_by = "louvain_clusters")
+```
+
+The `BiocNeighbors` package is especially designed for developers to enable a unified interface for clustering algorithm specification, allowing for the algorithm to be easily switched within a Bioconductor package or workflow. For more information, check out the [Bioconductor page for BiocNeighbors](https://bioconductor.org/packages/BiocNeighbors/).
 
 
 
@@ -184,13 +208,13 @@ The `BiocNeighbors` packaged is especially designed for developers to enable a u
 cols_keep <- c(
     'cell_line', 
     paste0('sc3_', 3:6, '_clusters'),
-    'rsec_consensus_clusters'
+    'rsec_clusters',
+    'louvain_clusters'
 )
               
 ## Trim sce object prior to saving to save space
 sce_min <- SingleCellExperiment(
-    assays = list(counts = counts(sce),
-                  logcounts = logcounts(sce)),
+    assays = list(),
     colData = colData(sce)[, cols_keep],
     rowData = rowData(sce)[, c('feature_symbol', 'sc3_gene_filter')],
     reducedDims = list(PCA = reducedDim(sce, 'PCA'),
@@ -198,9 +222,21 @@ sce_min <- SingleCellExperiment(
                        UMAP = reducedDim(sce, 'UMAP'))
 )
 
+## Trim rsec object
+rsec_min <- rsec
+rsec_min@assays$data@listData$counts <- 0
+rsec_min@assays$data@listData$cpm <- 0
+rsec_min@assays$data@listData$logcounts <- 0
+rsec_min@colData@listData <- list()
+rsec_min@coClustering <- matrix(0)
+rsec_min@reducedDims <- SimpleList()
+rsec_min@merge_nodeProp <- data.frame()
+rsec_min@merge_nodeMerge <- data.frame()
+rsec_min@rowRanges <- GRanges()
+rsec_min@colData <- DataFrame()
 
 ## saveRDS(sce, "_rfiles/_data/clustering_sce_v2.rds", compress = "xz")
 ## do NOT save the sce file with everything in one SCE!
-saveRDS(rsec, "_rfiles/_data/rsec.rds", compress = "xz")
-saveRDS(sce_min, "_rfiles/_data/clustering_sce_min.rds", compress = "xz")
+saveRDS(rsec_min, "_rfiles/_data/rsec_min.rds", compress = 'bz')
+saveRDS(sce_min, "_rfiles/_data/clustering_sce_min.rds")
 ```
