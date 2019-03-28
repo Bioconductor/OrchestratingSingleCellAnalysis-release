@@ -1,29 +1,60 @@
 # Large-scale Data
 
-_author: Davide Risso_
+_author: Davide Risso, Robert A. Amezquita_
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE,
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, error = FALSE,
                       message = FALSE, cache = FALSE)
 ```
 
-# Introduction
+```{r echo=FALSE, message=FALSE, eval=TRUE}
+sce <- readRDS("_rfiles/_data/largescale_sce_min.rds")
 
-This use case makes use of the latest Bioconductor infrastructure to analyze large single-cell datasets that may not entirely fit in memory.
+library(scater)
+library(pheatmap)
+```
 
-We focus on the most common application in exploratory single-cell analysis, namely to find subpopulations of cells.
-The proposed workflow consists of the following steps:
+This workflow illustrates the latest Bioconductor infrastructure to analyze large single-cell datasets that may not entirely fit in memory. We focus on the most common application in exploratory single-cell analysis, namely to find subpopulations of cells. The proposed workflow consists of the following steps:
 
-1. Normalization;
-2. Dimensionality reduction;
-3. Clustering.
+1. Normalization
+2. Dimensionality reduction
+3. Clustering
 
 We will exploit a number of Bioconductor packages able to interact with the HDF5 on-disk data representation, freeing us of the need to load the full dataset in memory.
 
-In this example, we will work with a small, toy dataset for the sake of (compilation) time. However, this workflow was specially designed to handle large datasets such as the 1.3 million cell Human Cell Atlas in the [`HCAData`](https://bioconductor.org/packages/devel/data/experiment/html/HCAData.html) scRNA-seq dataset.
+This workflow was specially designed to handle large datasets such as the 1.3 million cell Human Cell Atlas in the [`HCAData`](https://bioconductor.org/packages/devel/data/experiment/html/HCAData.html) scRNA-seq dataset. However, in our workflow, we will subsample the `HCAData` object down to a more manageable number solely for the sake of (compilation) time.
 
 
-## Interacting with HDF5 files in R/Bioconductor
+## Package Requirements
+
+These packages will be required for working through the vignette, and can be installed by running the code below:
+
+```{r}
+data_pkg <- c("HCAData", "ExperimentHub")
+calc_pkg <- c("scater", "scran", "mbkmeans", "BiocSingular", "uwot")
+visl_pkg <- c("RColorBrewer", "pheatmap", "ggplot2")
+infr_pkg <- c("DelayedMatrixStats", "pryr", "BiocParallel")
+
+BiocManager::install(c(data_pkg, calc_pkg, visl_pkg, infr_pkg))
+```
+
+```{r message=FALSE, eval=FALSE}
+library(HCAData)
+library(ExperimentHub)
+library(scater)
+library(scran)
+library(uwot)
+library(BiocSingular)
+library(mbkmeans)
+library(RColorBrewer)
+library(pheatmap)
+library(ggplot2)
+library(DelayedMatrixStats)
+library(pryr)
+library(BiocParallel)
+```
+
+## Interacting with HDF5 files
 
 At a low-level, the main interface between HDF5 and Bioconductor is implemented in the packages `rhdf5`, which provides read/write functionalities, `Rhdf5lib`, which provides C and C++ HDF5 libraries, and `beachmat`, which provides a consistent C++ class interface for a variety of commonly used matrix types, including sparse and HDF5-backed matrices.
 
@@ -33,196 +64,258 @@ The package `DelayedMatrixStats` deserves a special mention: it implements the r
 We invite the reader to find more details on all the mentioned packages in their relative vignettes. In the remainder of this use case, we will use these methods to find cell sub-populations in a real datasets.
 
 
-## The dataset
+## Loading the Data
 
-Here, we use one of the Human Cell Atlas preview datasets available in the `HCAData` Bioconductor package.
-
-The dataset consists of ....
+Here, we use one of the Human Cell Atlas preview datasets available in the `HCAData` Bioconductor package, the `ica_bone_marrow` dataset. 
 
 ```{r}
-start_time <- Sys.time()
-## library(HCAData)  
-library(ExperimentHub)
-library(SingleCellExperiment)
 eh <- ExperimentHub()
 query(eh, "HCAData")
 ##change to brain
 sce <- HCAData("ica_bone_marrow")
-sce
-assay(sce)
 ```
 
+In order to make the compilation time more manageable, here we will subsample the data to a more reasonable size. For our use, we will go down to 5000 cells.
 
-# Quality control and filtering of low-quality samples
+```{r}
+set.seed(1234)
+subsample <- sample(ncol(sce), 100) # super downsample temporary
+sce <- sce[, subsample]
+```
+
+One small bit of housekeeping - the initial gene IDs used as `rownames` for `sce` are in Ensembl Gene ID format. To make the gene ids human-readable, we convert the rownames to gene symbol. In this case, the mapping between Ensembl Gene ID's and symbols is kept in the `rowData` slot of our `sce`, and so we overwrite the current rownames as follows:
+
+```{r}
+rownames(sce) <- rowData(sce)$Symbol
+```
+
+We can inspect the resulting `sce` object's key characteristics:
+
+```{r eval=TRUE}
+sce[1:5, 1:5] # first 5x5 entries
+```
+
+As well as the `assay` slot of `sce`, which we see below that the data is indeed stored in an object of the `DelayedMatrix` class, and that the Ensembl gene ID's have been replaced with gene symbols:
+
+```{r eval=TRUE}
+assay(sce)[1:5, 1:5] # first 5x5 entries
+```
+
+## Preprocessing
 
 First, we use the `scater` package to compute a set of QC measures and filter out the low-quality samples.
 
 ```{r}
-library(scater)
-system.time(sce <- calculateQCMetrics(sce, 
-                          feature_controls=list(Mito=grep("^MT", rowData(sce)$Symbol)),
-                          BPPARAM=MulticoreParam(6)))
+ctrl <- list(Mito = grep("^MT", rowData(sce)$Symbol))
+
+sce <- calculateQCMetrics(sce, 
+                          feature_controls = ctrl,
+                          BPPARAM = MulticoreParam(2))
 ```
 
-We remove cells with high proportion of mitocondrial reads, using it as a proxy for cell damage. 
+### Remove Damaged Cells
+
+Here we calculate which cells have a high proportion of mitocondrial reads, using it as a proxy for cell damage, and save the result into the `metadata` slot.
 
 ```{r}
-high_mito <- isOutlier(sce$pct_counts_Mito, nmads=3, type="higher")
-table(high_mito)
-sce <- sce[,!high_mito]
-sce
+high_mito <- isOutlier(sce$pct_counts_Mito, nmads = 3, type = "higher")
+metadata(sce)$high_mito <- high_mito
+```
+
+The table below enumerates the cells which fail/pass this filter:
+
+```{r eval=TRUE}
+table(metadata(sce)$high_mito)
+```
+
+We can then filter cells in our `sce` object on this basis.
+
+```{r eval=FALSE}
+sce <- sce[, !metadata(sce)$high_mito]
 ```
 
 
-# Normalization
-
-## Removal of lowly expressed genes
+### Determine Lowly Expressed Genes
 
 Before proceding with the data analysis, we remove the lowly expressed genes. Here, we keep only those genes that have at least 1 UMI in at least 5% of the data. These threshold are dataset-specific and may need to be taylored to specific applications.
 
 ```{r}
 num_reads <- 1
 num_cells <- 0.05 * ncol(sce)
-system.time(keep <- which(DelayedArray::rowSums(counts(sce) >= num_reads ) >= num_cells))
-sce <- sce[keep, ]
+keep <- which(DelayedArray::rowSums(counts(sce) >= num_reads) >= num_cells)
+
+metadata(sce)$genes_keep <- keep
 ```
 
-This leaves us with `length(keep)` genes.
+We will use the `genes_keep` vector to subset our genespace in upcoming calculations.
+
 
 ## Normalization
 
 Normalization is a crucial step in the preprocessing of the results. Here, we use the `scran` package to compute size factors that we will use to compute the normalized log-expression values.
-It has been shown that the scran method works best if the size factors are computed within roughly homogeneous cell populations; hence, it is beneficial to run a quick clustering on the raw data to compute better size factors. This ensures that we do not pool cells that are very different. Note that this is not the final clustering to identify cell sub-populations.
+
+It has been shown that the `scran` method works best if the size factors are computed within roughly homogeneous cell populations; hence, it is beneficial to run a quick clustering on the raw data to compute better size factors. This ensures that we do not pool cells that are very different. Note that this is not the final clustering to identify cell sub-populations. 
+
+Here we use `mbkmeans` to perform an initial clustering based on the count data in the `sce` object. Note that given that this operates on counts rather than the principal components, and thus will take a longer amount of time to compute. A more thorough explanation of `mbkmeans` and its parameters will be covered in a subsequent section. 
+
+Note that we use the `set.seed()` function to ensure the reproducibility of the results. 
 
 ```{r}
-library(scran)
-library(mbkmeans)
-set.seed(1000)
-## use mbkmeans here?
-## system.time(clusters <- quickCluster(sce, method="igraph"))
-system.time(clusters <- mbkmeans(counts(sce), clusters=10, batch_size = 100))
-system.time(sce <- computeSumFactors(sce, min.mean=0.1, cluster=clusters$Clusters,
-                                     BPPARAM=MulticoreParam(6)))
-```
+set.seed(1234)
 
-It is useful to check whether the size factors are correlated with the total number of reads per cell.
+sub <- counts(sce)[metadata(sce)$genes_keep, ]
+clusters <- mbkmeans(sub,
+                     max_iters = 1, # reduced for faster clustering
+                     clusters = 5,
+                     batch_size = 50)
 
-```{r}
-plot(sce$total_counts, sizeFactors(sce), log="xy", xlab="Total reads", ylab="scran size factors")
-## plot(sizeFactors(sce2), sizeFactors(sce), log="xy", xlab="Total reads", ylab="scran size factors")
+metadata(sce)$prenorm_clusters <- clusters$Clusters
+                     
+sce <- computeSumFactors(sce, min.mean = 0.1, cluster = clusters$Clusters,
+                         BPPARAM = MulticoreParam(2))
 ```
 
 Finally, we compute normalized log-expression values with the `normalize()` function from the `scater` package.
 
+
 ```{r}
-sce <- scater::normalize(sce)
+sce <- normalize(sce)
 ```
 
-Note that the log-normalized data are stored in the `logcounts` assay of the object. Since the `counts` assay is a `DelayedMatrix` and we have only one set of size factors in the object, also the normalized data are stored as a `DelayedMatrix`.
+Note that the log-normalized data are stored in the `logcounts` assay of the object. Since the `counts` assay is a `DelayedMatrix` and we have only one set of size factors in the object, the normalized data are also stored as a `DelayedMatrix`.
 
-```{r}
+```{r eval=TRUE}
+## Verifying that our logcounts are also of DelayedMatrix class
 logcounts(sce)
 ```
 
-This allows us to store in memory only the `colData` and `rowData`, resulting in a fairly small object.
+This allows us to store in memory only the `colData` and `rowData`, resulting in a fairly small object. We can inspect the size of the object using the `pryr` package `object_size()` function. We leave it to the interested reader to compare the results to data that are fully loaded in-memory.
 
-```{r}
-library(pryr)
-object_size(sce)
+```{r eval=TRUE}
+pryr::object_size(sce)
 ```
 
-# Dimensionality reduction
+## Dimensionality reduction
+
+Here, we perform dimensionality reduction by first identifying the top 1000 most variable genes and then running PCA on the normalized log counts. 
+
+<!-- ## need to do this otherwise it takes forever -- ask Herve about this -->
+<!-- setRealizationBackend("HDF5Array") -->
+<!-- logcounts(sce) <- realize(logcounts(sce)) -->
 
 ```{r}
-library(BiocSingular)
-library(BiocParallel)
-library(DelayedMatrixStats)
+## Find most variable genes
+vars_genes <- DelayedMatrixStats::rowVars(logcounts(sce))
+names(vars_genes) <- rownames(sce)
+vars_genes <- sort(vars_genes, decreasing = TRUE)
 
-## need to do this otherwise it takes forever -- ask Herve about this
-setRealizationBackend("HDF5Array")
-system.time(logcounts(sce) <- realize(logcounts(sce)))
+## save our genes variances into the metadata slot for safekeeping
+metadata(sce)$vars_genes <- vars_genes
 
-## find most variable genes
-system.time(vars <- DelayedMatrixStats::rowVars(logcounts(sce)))
-names(vars) <- rownames(sce)
-vars <- sort(vars, decreasing = TRUE)
-for_pca <- t(logcounts(sce)[names(vars)[1:1000],])
-system.time(pca <- BiocSingular::runPCA(for_pca, rank = 30,
-                             scale = TRUE,
-                             BSPARAM = RandomParam(deferred = FALSE),
-                             BPPARAM = MulticoreParam(6)))
+## Specify the top 1000 most highly variable genes (hvg) by name
+metadata(sce)$hvg_genes <- names(metadata(sce)$vars_genes)[1:1000]
+```
+
+```{r}
+## transpose and subset by hvg the logcounts
+for_pca <- t(logcounts(sce)[metadata(sce)$hvg_genes, ])
+
+## Run PCA with parallelization + random svd (via rsvd())
+pca <- BiocSingular::runPCA(for_pca, rank = 20,
+                            BSPARAM = RandomParam(deferred = FALSE),
+                            BPPARAM = MulticoreParam(2))
+
+## Save PCA result into the reducedDims slot
 reducedDim(sce, "PCA") <- pca$x
-saveRDS(pca, file="pca.rds")
 ```
 
-# Mini-batch k-means
+## Clustering with Mini-batch k-means
 
-## Choose the number of clusters
+To perform an exploration of optimal clustering, we run `mbkmeans()` through multiple iterations of `k`. Here in particular, we've set the `calc_wcss` parameter to true to determine where our optimal number of `k` occurs. Further, we save the overall results once again into our `metadata` slot.
 
 ```{r}
-set.seed(222)
-system.time(wcss <- lapply(10:20, function(k) {
-  cl <- mbkmeans(sce, reduceMethod = "PCA", clusters = k,
-                 batch_size = 3000, num_init=10, max_iters=100,
-                 calc_wcss = TRUE)
-}))
+set.seed(1234)
+wcss <- lapply(10:20, function(k) {
+    cl <- mbkmeans(sce, reduceMethod = "PCA",
+                   clusters = k,
+                   batch_size = 50,
+                   num_init = 5, max_iters = 50,
+                   calc_wcss = TRUE)
+})
+
+metadata(sce)$wcss <- wcss
 ```
 
-```{r, eval=FALSE}
-set.seed(222)
-train_idx <- sample(colnames(sce), 15000)
-test_idx <- setdiff(colnames(sce), train_idx)
-train <- reducedDim(sce, "PCA")[train_idx,]
-test <- reducedDim(sce, "PCA")[test_idx,]
-system.time(wcss <- lapply(10:20, function(k) {
-  cl <- kmeans(train, centers = k, nstart = 10)
-  sum(compute_wcss(cl$cluster, cl$centers, test))
-}))
+We can then plot the corresponding within-clusters sum of squares to determine our optimal `k`.
+
+```{r eval=TRUE}
+plot(10:20, sapply(metadata(sce)$wcss, function(x) sum(x$WCSS_per_cluster)),
+     type = "b",
+     xlab = "Number of clusters K",
+     ylab = "Total within-clusters sum of squares")
 ```
 
-```{r}
-plot(10:20, sapply(wcss, function(x) sum(x$WCSS_per_cluster)),
-     type="b",
-     xlab="Number of clusters K",
-     ylab="Total within-clusters sum of squares")
-```
+Following that, we can once again perform clustering, but this time changing our parametrization to improve our results by increasing batch size, setting the desired number of clusters, and increasing the number of initializations and max iterations the algorithm goes through.
 
 ```{r}
-set.seed(122)
-system.time(clusters2 <- mbkmeans(sce, reduceMethod = "PCA", clusters=13, 
-                                  batch_size=15000,
-                                  num_init = 10, max_iters = 100))
+set.seed(1234)
+clusters_final <- mbkmeans(sce, reduceMethod = "PCA", clusters = 13, 
+                           batch_size = 200,
+                           num_init = 10, max_iters = 100)
+
+metadata(sce)$clusters_final <- clusters_final
+
+sce$clusters_final <- as.factor(clusters_final$Clusters)
 ```
+
 
 ## Visualization
 
-```{r}
-set.seed(12334)
-library(RColorBrewer)
-system.time(sce <- runTSNE(sce, use_dimred = "PCA",
-                           external_neighbors=TRUE, 
-                           BNPARAM = BiocNeighbors::AnnoyParam(),
-                           nthreads = 6,
-                           BPPARAM = BiocParallel::MulticoreParam(6)))
-pal <- c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"))
-plot(reducedDim(sce, "TSNE"), pch=19, col=pal[clusters2$Clusters], 
-     xlab="Dim 1", ylab = "Dim2")
-saveRDS(reducedDim(sce, "TSNE"), file="tsne.rds")
-```
+To visualize our final results, we can calculate the tSNE representation of our data, and then plot our final cluster designations. Note that here we use the `BNPARAM` argument of `runTSNE()` to supply a `BiocNeighbors` param, the `AnnoyParam()`
 
 ```{r}
-set.seed(12334)
-library(uwot)
-system.time(um <- umap(reducedDim(sce, "PCA"), nn_method = "annoy",
-                       approx_pow = TRUE, n_threads = 6))
-plot(um, pch=19, col=pal[clusters2$Clusters], 
-     xlab="Dim 1", ylab = "Dim2")
-saveRDS(um, file="umap.rds")
+set.seed(1234)
+
+sce <- runTSNE(sce, use_dimred = "PCA",
+               external_neighbors = TRUE, 
+               BNPARAM = BiocNeighbors::AnnoyParam(),
+               nthreads = 2,
+               BPPARAM = BiocParallel::MulticoreParam(2))
 ```
 
-# Marker genes
+We can then plot our resulting tSNE representation, here colouring by the final clustering assignment as well as adding a text overlay.
 
-```{r, eval=FALSE}
+```{r eval=TRUE}
+plotTSNE(sce,
+         colour_by = "clusters_final",
+         text_by = "clusters_final")
+```
+
+Furthermore, we can calculate the UMAP representation, using the very speedy `uwot` package implementation, manually assigning the results into the `reducedDims` slot as before.
+
+```{r}
+set.seed(1234)
+
+## Calculate umap representation and assign to reducedDims slot
+um <- uwot::umap(reducedDim(sce, "PCA"), nn_method = "annoy",
+                 approx_pow = TRUE, n_threads = 2)
+reducedDim(sce, 'UMAP') <- um
+```
+
+And subsequently plot our UMAP representation as well:
+
+```{r eval=TRUE}
+plotReducedDim(sce, "UMAP",
+               colour_by = "clusters_final",
+               text_by = "clusters_final")
+```
+
+
+### Marker genes
+
+As a final exercise, we show some expression plots on key marker genes in the form of a heatmap and expression plots on the UMAP representation.
+
+```{r, eval=TRUE}
 markers <- c("IL7R", #CD4
              "CD14",
              "LYZ", #CD14
@@ -239,29 +332,40 @@ markers <- c("IL7R", #CD4
              "CD3D"
              )
 
-means <- apply(counts(sce[which(rowData(sce)$Symbol %in% markers),]), 1, tapply, clusters2$Clusters, mean)
+## Calculate the mean expression of each marker w.r.t. cluster
+means <- apply(counts(sce[which(rowData(sce)$Symbol %in% markers),]), 1,
+               tapply, sce$clusters_final, mean)
 colnames(means) <- rowData(sce[colnames(means),])$Symbol
 
-library(pheatmap)
+## Plot the heatmap of all marker genes
 pheatmap(log2(t(means)+1), scale = "row", cluster_cols = FALSE)
 
-library(ggplot2)
-df <- data.frame(t(log2(counts(sce[which(rowData(sce)$Symbol %in% markers),])+1)), UMAP1=um[,1], UMAP2=um[,2])
-colnames(df)[1:ncol(means)] <- colnames(means)
 
-ggplot(df, aes(x = UMAP1, y = UMAP2, color = CD3D)) +
-  geom_point() + scale_color_continuous(low = "blue", high = "yellow")
+## Plot expression of select genes on UMAP
+plotReducedDim(sce, "UMAP", colour_by = "CD3D")
+plotReducedDim(sce, "UMAP", colour_by = "NKG7")
+plotReducedDim(sce, "UMAP", colour_by = "LYZ")
 ```
 
-# Time
 
-```{r}
-print(Sys.time() - start_time)
+
+
+
+<!-- Hidden code -->
+```{r eval=FALSE, echo=FALSE, include=FALSE}
+cols_keep <- c(
+    'Barcode', 'clusters_final'
+)
+              
+## Trim sce object prior to saving to save space
+sce_min <- SingleCellExperiment(
+    assays = list(logcounts = logcounts(sce)),
+    colData = colData(sce)[, cols_keep],
+    rowData = rowData(sce)[, c('ID', 'Symbol')],
+    reducedDims = list(PCA = reducedDim(sce, 'PCA'),
+                       TSNE = reducedDim(sce, 'TSNE'),
+                       UMAP = reducedDim(sce, 'UMAP'))
+)
+
+saveRDS(sce_min, "_rfiles/_data/largescale_sce_min.rds")
 ```
-
-# Session Info
-
-```{r}
-sessionInfo()
-```
-
