@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, error = FALSE,
 ```
 
 ```{r echo=FALSE, message=FALSE, eval=TRUE}
-sce <- readRDS("_rfiles/_data/largescale_sce_min.rds")
+sce <- readRDS("_rfiles/_data/largescale_sce.rds")
 
 library(scater)
 library(pheatmap)
@@ -79,7 +79,7 @@ In order to make the compilation time more manageable, here we will subsample th
 
 ```{r}
 set.seed(1234)
-subsample <- sample(ncol(sce), 100) # super downsample temporary
+subsample <- sample(ncol(sce), 5000) # super downsample temporary
 sce <- sce[, subsample]
 ```
 
@@ -106,10 +106,11 @@ assay(sce)[1:5, 1:5] # first 5x5 entries
 First, we use the `scater` package to compute a set of QC measures and filter out the low-quality samples.
 
 ```{r}
-ctrl <- list(Mito = grep("^MT", rowData(sce)$Symbol))
+ctrl <- list(Mito = grep("^MT", rowData(sce)$Symbol)) 
 
 sce <- calculateQCMetrics(sce, 
                           feature_controls = ctrl,
+                          compact = TRUE, # return as nested DF
                           BPPARAM = MulticoreParam(2))
 ```
 
@@ -118,7 +119,8 @@ sce <- calculateQCMetrics(sce,
 Here we calculate which cells have a high proportion of mitocondrial reads, using it as a proxy for cell damage, and save the result into the `metadata` slot.
 
 ```{r}
-high_mito <- isOutlier(sce$pct_counts_Mito, nmads = 3, type = "higher")
+high_mito <- isOutlier(colData(sce)$scater_qc$feature_control_Mito$pct_counts,
+                       nmads = 3, type = "higher")
 metadata(sce)$high_mito <- high_mito
 ```
 
@@ -163,20 +165,29 @@ Note that we use the `set.seed()` function to ensure the reproducibility of the 
 ```{r}
 set.seed(1234)
 
-sub <- counts(sce)[metadata(sce)$genes_keep, ]
-clusters <- mbkmeans(sub,
-                     max_iters = 1, # reduced for faster clustering
-                     clusters = 5,
+## Subset down based on kept genes; use only 1000 genes
+## to speed up prenorm clustering 
+subsample <- sample(length(metadata(sce)$genes_keep), 1000)
+genes_1k <- metadata(sce)$genes_keep[subsample]
+counts_genes_1k <- counts(sce)[genes_1k, ]
+
+## Cluster based on 1k genes x counts data
+clusters_prenorm <- mbkmeans(counts_genes_1k,
+                     max_iters = 1,   # reduced for faster clustering
+                     clusters = 10,   # guesstimate
                      batch_size = 50)
 
-metadata(sce)$prenorm_clusters <- clusters$Clusters
-                     
-sce <- computeSumFactors(sce, min.mean = 0.1, cluster = clusters$Clusters,
+## Save results into colData slot
+colData(sce)$clusters_prenorm <- clusters_prenorm$Clusters
+
+## Compute size factors w.r.t. prenorm clusters
+sce <- computeSumFactors(sce,
+                         min.mean = 0.1,
+                         cluster = sce$clusters_prenorm,
                          BPPARAM = MulticoreParam(2))
 ```
 
 Finally, we compute normalized log-expression values with the `normalize()` function from the `scater` package.
-
 
 ```{r}
 sce <- normalize(sce)
@@ -204,7 +215,7 @@ Here, we perform dimensionality reduction by first identifying the top 1000 most
 <!-- logcounts(sce) <- realize(logcounts(sce)) -->
 
 ```{r}
-## Find most variable genes
+## Find most variable genes based on logcounts
 vars_genes <- DelayedMatrixStats::rowVars(logcounts(sce))
 names(vars_genes) <- rownames(sce)
 vars_genes <- sort(vars_genes, decreasing = TRUE)
@@ -239,7 +250,7 @@ wcss <- lapply(10:20, function(k) {
     cl <- mbkmeans(sce, reduceMethod = "PCA",
                    clusters = k,
                    batch_size = 50,
-                   num_init = 5, max_iters = 50,
+                   num_init = 10, max_iters = 100,
                    calc_wcss = TRUE)
 })
 
@@ -259,13 +270,18 @@ Following that, we can once again perform clustering, but this time changing our
 
 ```{r}
 set.seed(1234)
+
+## Perform final clustering on clustering with k=13
 clusters_final <- mbkmeans(sce, reduceMethod = "PCA", clusters = 13, 
                            batch_size = 200,
                            num_init = 10, max_iters = 100)
 
+## Save full results into metadata
 metadata(sce)$clusters_final <- clusters_final
 
-sce$clusters_final <- as.factor(clusters_final$Clusters)
+## Save the clusters into colData as a factor for plotting
+colData(sce)$clusters_final <- as.factor(clusters_final$Clusters)
+## alternately: sce$cluster_final
 ```
 
 
@@ -276,7 +292,9 @@ To visualize our final results, we can calculate the tSNE representation of our 
 ```{r}
 set.seed(1234)
 
-sce <- runTSNE(sce, use_dimred = "PCA",
+## Calculate TSNE representation
+sce <- runTSNE(sce,
+               use_dimred = "PCA",
                external_neighbors = TRUE, 
                BNPARAM = BiocNeighbors::AnnoyParam(),
                nthreads = 2,
@@ -286,6 +304,7 @@ sce <- runTSNE(sce, use_dimred = "PCA",
 We can then plot our resulting tSNE representation, here colouring by the final clustering assignment as well as adding a text overlay.
 
 ```{r eval=TRUE}
+## Plot the TSNE
 plotTSNE(sce,
          colour_by = "clusters_final",
          text_by = "clusters_final")
@@ -353,19 +372,5 @@ plotReducedDim(sce, "UMAP", colour_by = "LYZ")
 
 <!-- Hidden code -->
 ```{r eval=FALSE, echo=FALSE, include=FALSE}
-cols_keep <- c(
-    'Barcode', 'clusters_final'
-)
-              
-## Trim sce object prior to saving to save space
-sce_min <- SingleCellExperiment(
-    assays = list(logcounts = logcounts(sce)),
-    colData = colData(sce)[, cols_keep],
-    rowData = rowData(sce)[, c('ID', 'Symbol')],
-    reducedDims = list(PCA = reducedDim(sce, 'PCA'),
-                       TSNE = reducedDim(sce, 'TSNE'),
-                       UMAP = reducedDim(sce, 'UMAP'))
-)
-
-saveRDS(sce_min, "_rfiles/_data/largescale_sce_min.rds")
+saveRDS(sce, "_rfiles/_data/largescale_sce.rds")
 ```
