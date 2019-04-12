@@ -2,11 +2,34 @@
 
 _authors: Etienne Becht, Robert A. Amezquita_
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, error = FALSE,
+                      message = FALSE, cache = FALSE)
+```
+
+```{r echo=FALSE, message=FALSE, eval=TRUE}
+sce <- readRDS("_rfiles/_data/diffexp_sce.rds")
+```
+
+This workflow demonstrates an example approach to differential expression analysis. In this workflow, we will be going from preprocessing the data through to differential expression analysis on different cell subsets. 
+
+Here we will be working with the [Tabula Muris](https://bioconductor.org/packages/TabulaMurisData/) data package, which provides access to the 10X and SMARTSeq2 single-cell RNA-seq data from the [Tabula Muris Consortium](https://tabula-muris.ds.czbiohub.org/). This compendium contains transcriptomic data from mouse model organism _Mus musculus_, containing nearly 100,000 cells across 20 organs and tissues. Here we will look at a small part of this data to demonstrate differential expression analysis using Bioconductor tools.
+
+## Package Requirements
+
+These packages will be required for working through the vignette and can be installed by running the code below. The data that we will be using comes from the `TabulaMurisData` package which is downloaded via the `ExperimentHub` package.
+
+```{r}
+
+```
+
 
 
 ```{r}
-## Set-up multicore
+## Set-up multicore for MAST
 options("mc.cores"=8L)
+register(BiocParallel::MulticoreParam(8))
+## removes need for explicit BPPARAM = MulticoreParam(8)
 
 ## Load an example dataset
 library(ExperimentHub)
@@ -15,6 +38,8 @@ library(TabulaMurisData)
 library(scater)
 library(data.table)
 
+
+## Loading the Main Data
 eh <- ExperimentHub()
 query(eh, "TabulaMurisData")
 sce <- eh[["EH1617"]]
@@ -23,39 +48,78 @@ sce <- TabulaMurisDroplet()
 ## Inspect our new SingleCellExperiment object
 sce
 
+## Take a look at colData annotation of interest - cell ontology
+colData(sce)[, c('tissue', 'cell_ontology_class')]
+
 ## Subset the dataset to two cell populations and two mice
-pops <- colData(sce)[,"cell_ontology_class"]%in%c("granulocyte","monocyte")
-mice <- colData(sce)[,"mouse_id"]%in%c("3-F-56","3-F-57")
-sce <- sce[,mice&pops]
+pops <- colData(sce)[,"cell_ontology_class"] %in% c("granulocyte","monocyte")
 
-## Add Count per million, log CPM and log Counts to the list of assay
-assays(sce)$cpm <- calculateTPM(sce)
-assays(sce)$logcpm <- log(1+assays(sce)$cpm)
-assays(sce)$logcounts <- log(1+assays(sce)$counts)
+## Note the populations are only present in these mice
+mice <- colData(sce)[,"mouse_id"] %in% c("3-F-56","3-F-57")
 
+## Subset down the SCE object to the 1250 cells of interest
+sce <- sce[, mice & pops]
+
+
+## Preprocessing
 ## Calculate QC metrics
-sce <- calculateQCMetrics(sce)
+sce <- calculateQCMetrics(sce, compact = TRUE)
 
-## Filter by low library/features detected
-low_lib_sce <- isOutlier(sce$log10_total_counts,
+## Determine low quality cells (by library/features)
+qc <- sce$scater_qc$all
+low_lib_sce <- isOutlier(qc$log10_total_counts,
                         type = "lower", nmad = 3)
-low_ftr_sce <- isOutlier(sce$log10_total_features_by_counts,
-                        type = "lower", nmad = 3)
+low_ftr_sce <- isOutlier(qc$log10_total_features_by_counts,
+                         type = "lower", nmad = 3)
+
+## Remove low quality cells
 sce <- sce[, !(low_lib_sce | low_ftr_sce)]
+
+
+## Perform a quick clustering
+## basic method:
+## quick_clusters <- quickClusters(sce)
+quick_clusters <- quickCluster(sce,
+                               use.ranks = FALSE,
+                               BSPARAM = BiocSingular::IrlbaParam())
+
+## Normalize sce with calculate size factors (w.r.t. quickCluster)
+sce <- computeSumFactors(sce, clusters = quick_clusters)
+sce <- normalize(sce)
+
+
+## Annotation
 
 ## Add new column and row metadata
 ## Concatenated mouse and cell type
-colData(sce)$class_and_mouse <- paste0(colData(sce)$mouse_id,colData(sce)$cell_ontology_class)
-## Cellular detection raet: for each cell, what is the frequency of expressed (>0 counts) genes (informative covariate, see the MAST paper Finak et al, Genome Biology, 2015 for more detail)
-colData(sce)$CDR <- Matrix:::colSums(counts(sce)>0) ## MAST is conflicting with Matrix:::colSums so the extra syntax is potentially necessary here
+colData(sce)$class_and_mouse <- paste0(colData(sce)$cell_ontology_class,
+                                       '_', colData(sce)$mouse_id)
+
+## Cellular detection rate:
+## for each cell, what is the frequency of expressed (>0 counts) genes
+## (informative covariate, see the MAST paper Finak et al, Genome Biology, 2015 for more detail)
+## sce$CDR <- colData(sce)$scater_qc$all$total_features_by_counts
+CDR <- Matrix:::colSums(counts(sce) > 0) # equivalent to above
+
 ## Frequencies of expression for genes
-rowData(sce)$cncellson <- Matrix:::rowSums(counts(sce)>0)/ncol(sce)
+## sce$pct_gene_on <- 100 - rowData(sce)$scater_qc$all$pct_dropout_by_counts
+sce$pct_gene_on <- Matrix:::rowSums(counts(sce) > 0)/ ncol(sce) # equivalent to above
+
+
+## Add Count per million, log CPM and log Counts to the list of assay
+assays(sce)$cpm <- calculateTPM(sce)
+assays(sce)$logcpm <- log(1 + assays(sce)$cpm)
+assays(sce)$logcounts <- log(1 + assays(sce)$counts)
+
+
+
 
 ## Filter genes to those expressed in at least 10% of the cells
-sce <- sce[rowData(sce)$cncellson>=0.1,]
+sce <- sce[rowData(sce)$pct_gene_on >=0.1,]
 
 library(MAST)
 ## /!\ Please re-write with latest MAST to run it directly on SCE
+
 sca <- FromMatrix(exprsArray=as.matrix(assays(sce)$logcpm),cData=colData(sce),fData=rowData(sce))
 
 ## First we model gene expression as a function of cell class and cellular detection rate, ignoring batch effects
