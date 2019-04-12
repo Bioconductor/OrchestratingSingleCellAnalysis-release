@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chapter 6 Large-scale Data | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="Chapter 6 Large-scale Data | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Large-scale Data | Orchestrating Single-Cell Analysis with Bioconductor" />
+  
+  <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+<meta name="author" content="Robert A. Amezquita">
+<meta name="author" content="Stephanie C. Hicks">
+
+
+<meta name="date" content="2019-04-12">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="prev" href="about-the-data.html">
+<link rel="next" href="integrating-datasets.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Orchestrating Single-Cell Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I Preamble</b></span></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#what-you-will-learn"><i class="fa fa-check"></i><b>1.1</b> What you will learn</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="introduction.html"><a href="introduction.html#preliminaries"><i class="fa fa-check"></i><b>1.1.1</b> Preliminaries</a></li>
+<li class="chapter" data-level="1.1.2" data-path="introduction.html"><a href="introduction.html#workflows"><i class="fa fa-check"></i><b>1.1.2</b> Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#what-you-wont-learn"><i class="fa fa-check"></i><b>1.2</b> What you won’t learn</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#who-we-wrote-this-for"><i class="fa fa-check"></i><b>1.3</b> Who we wrote this for</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#why-we-wrote-this"><i class="fa fa-check"></i><b>1.4</b> Why we wrote this</a></li>
+<li class="chapter" data-level="1.5" data-path="introduction.html"><a href="introduction.html#acknowledgements"><i class="fa fa-check"></i><b>1.5</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html"><i class="fa fa-check"></i><b>2</b> Learning R and Bioconductor</a><ul>
+<li class="chapter" data-level="2.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#the-benefits-of-r-and-bioconductor"><i class="fa fa-check"></i><b>2.1</b> The Benefits of R and Bioconductor</a></li>
+<li class="chapter" data-level="2.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-started-with-r"><i class="fa fa-check"></i><b>2.2</b> Learning R Online</a></li>
+<li class="chapter" data-level="2.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#running-r-locally"><i class="fa fa-check"></i><b>2.3</b> Running R Locally</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r"><i class="fa fa-check"></i><b>2.3.1</b> Installing R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r-bioconductor-packages"><i class="fa fa-check"></i><b>2.3.2</b> Installing R &amp; Bioconductor Packages</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-help-in-and-out-of-r"><i class="fa fa-check"></i><b>2.4</b> Getting Help In (and Out) of R</a></li>
+<li class="chapter" data-level="2.5" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-documentation"><i class="fa fa-check"></i><b>2.5</b> Bioconductor Help</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-packages"><i class="fa fa-check"></i><b>2.5.1</b> Bioconductor Packages</a></li>
+<li class="chapter" data-level="2.5.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#biocviews"><i class="fa fa-check"></i><b>2.5.2</b> biocViews</a></li>
+<li class="chapter" data-level="2.5.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-forums"><i class="fa fa-check"></i><b>2.5.3</b> Bioconductor Forums</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html"><i class="fa fa-check"></i><b>3</b> Beyond R Basics</a><ul>
+<li class="chapter" data-level="3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-an-r-expert"><i class="fa fa-check"></i><b>3.1</b> Becoming an R Expert</a></li>
+<li class="chapter" data-level="3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-a-bioconductor-developer"><i class="fa fa-check"></i><b>3.2</b> Becoming an R/Bioconductor Developer</a></li>
+<li class="chapter" data-level="3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#nice-companions-for-r"><i class="fa fa-check"></i><b>3.3</b> Nice Companions for R</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#shellbash"><i class="fa fa-check"></i><b>3.3.1</b> Shell/Bash</a></li>
+<li class="chapter" data-level="3.3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#git"><i class="fa fa-check"></i><b>3.3.2</b> Git</a></li>
+<li class="chapter" data-level="3.3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#other-languages"><i class="fa fa-check"></i><b>3.3.3</b> Other Languages</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-infrastructure.html"><a href="data-infrastructure.html"><i class="fa fa-check"></i><b>4</b> Data Infrastructure</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#prerequisites"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-essentials-of-sce"><i class="fa fa-check"></i><b>4.2</b> The Essentials of <code>sce</code></a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#primary-data-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Primary Data: The <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#extending-the-assays-slot"><i class="fa fa-check"></i><b>4.2.2</b> Extending the <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#column-metadata-coldata-slot"><i class="fa fa-check"></i><b>4.2.3</b> Column (Meta)Data: <code>colData</code> Slot</a></li>
+<li class="chapter" data-level="4.2.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#feature-metadata-rowdatarowranges"><i class="fa fa-check"></i><b>4.2.4</b> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></a></li>
+<li class="chapter" data-level="4.2.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors-slot-sizefactors"><i class="fa fa-check"></i><b>4.2.5</b> Size Factors Slot: <code>sizeFactors</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#a-brief-recap-from-se-to-sce"><i class="fa fa-check"></i><b>4.3</b> A Brief Recap: From <code>se</code> to <code>sce</code></a></li>
+<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-reduceddims-slot"><i class="fa fa-check"></i><b>4.4</b> The <code>reducedDims</code> Slot</a></li>
+<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#one-more-thing-metadata-slot"><i class="fa fa-check"></i><b>4.5</b> One More Thing: <code>metadata</code> Slot</a></li>
+<li class="chapter" data-level="4.6" data-path="data-infrastructure.html"><a href="data-infrastructure.html#about-spike-ins"><i class="fa fa-check"></i><b>4.6</b> About Spike-Ins</a></li>
+<li class="chapter" data-level="4.7" data-path="data-infrastructure.html"><a href="data-infrastructure.html#working-with-singlecellexperiment"><i class="fa fa-check"></i><b>4.7</b> Working with <em>SingleCellExperiment</em></a></li>
+</ul></li>
+<li class="part"><span><b>II Workflows</b></span></li>
+<li class="chapter" data-level="5" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>5</b> About the Data</a><ul>
+<li class="chapter" data-level="5.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>5.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="5.2" data-path="about-the-data.html"><a href="about-the-data.html#human-cell-atlas"><i class="fa fa-check"></i><b>5.2</b> Human Cell Atlas</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="large-scale-data.html"><a href="large-scale-data.html"><i class="fa fa-check"></i><b>6</b> Large-scale Data</a><ul>
+<li class="chapter" data-level="6.1" data-path="large-scale-data.html"><a href="large-scale-data.html#package-requirements"><i class="fa fa-check"></i><b>6.1</b> Package Requirements</a></li>
+<li class="chapter" data-level="6.2" data-path="large-scale-data.html"><a href="large-scale-data.html#interacting-with-hdf5-files"><i class="fa fa-check"></i><b>6.2</b> Interacting with HDF5 files</a></li>
+<li class="chapter" data-level="6.3" data-path="large-scale-data.html"><a href="large-scale-data.html#loading-the-data"><i class="fa fa-check"></i><b>6.3</b> Loading the Data</a></li>
+<li class="chapter" data-level="6.4" data-path="large-scale-data.html"><a href="large-scale-data.html#preprocessing"><i class="fa fa-check"></i><b>6.4</b> Preprocessing</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="large-scale-data.html"><a href="large-scale-data.html#remove-damaged-cells"><i class="fa fa-check"></i><b>6.4.1</b> Remove Damaged Cells</a></li>
+<li class="chapter" data-level="6.4.2" data-path="large-scale-data.html"><a href="large-scale-data.html#determine-lowly-expressed-genes"><i class="fa fa-check"></i><b>6.4.2</b> Determine Lowly Expressed Genes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="large-scale-data.html"><a href="large-scale-data.html#normalization"><i class="fa fa-check"></i><b>6.5</b> Normalization</a></li>
+<li class="chapter" data-level="6.6" data-path="large-scale-data.html"><a href="large-scale-data.html#dimensionality-reduction"><i class="fa fa-check"></i><b>6.6</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="6.7" data-path="large-scale-data.html"><a href="large-scale-data.html#clustering-with-mini-batch-k-means"><i class="fa fa-check"></i><b>6.7</b> Clustering with Mini-batch k-means</a></li>
+<li class="chapter" data-level="6.8" data-path="large-scale-data.html"><a href="large-scale-data.html#visualization"><i class="fa fa-check"></i><b>6.8</b> Visualization</a><ul>
+<li class="chapter" data-level="6.8.1" data-path="large-scale-data.html"><a href="large-scale-data.html#marker-genes"><i class="fa fa-check"></i><b>6.8.1</b> Marker genes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>7</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="7.1" data-path="integrating-datasets.html"><a href="integrating-datasets.html#package-requirements-1"><i class="fa fa-check"></i><b>7.1</b> Package Requirements</a></li>
+<li class="chapter" data-level="7.2" data-path="integrating-datasets.html"><a href="integrating-datasets.html#loading-the-data-1"><i class="fa fa-check"></i><b>7.2</b> Loading the Data</a></li>
+<li class="chapter" data-level="7.3" data-path="integrating-datasets.html"><a href="integrating-datasets.html#preprocessing-1"><i class="fa fa-check"></i><b>7.3</b> Preprocessing</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="integrating-datasets.html"><a href="integrating-datasets.html#working-with-common-genes"><i class="fa fa-check"></i><b>7.3.1</b> Working with Common Genes</a></li>
+<li class="chapter" data-level="7.3.2" data-path="integrating-datasets.html"><a href="integrating-datasets.html#cell-and-gene-quality-control"><i class="fa fa-check"></i><b>7.3.2</b> Cell and Gene Quality Control</a></li>
+<li class="chapter" data-level="7.3.3" data-path="integrating-datasets.html"><a href="integrating-datasets.html#normalization-1"><i class="fa fa-check"></i><b>7.3.3</b> Normalization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="integrating-datasets.html"><a href="integrating-datasets.html#feature-selection"><i class="fa fa-check"></i><b>7.4</b> Feature Selection</a></li>
+<li class="chapter" data-level="7.5" data-path="integrating-datasets.html"><a href="integrating-datasets.html#combining-the-datasets"><i class="fa fa-check"></i><b>7.5</b> Combining the Datasets</a></li>
+<li class="chapter" data-level="7.6" data-path="integrating-datasets.html"><a href="integrating-datasets.html#integrating-datasets-1"><i class="fa fa-check"></i><b>7.6</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="7.6.1" data-path="integrating-datasets.html"><a href="integrating-datasets.html#naive-approach"><i class="fa fa-check"></i><b>7.6.1</b> Naive Approach</a></li>
+<li class="chapter" data-level="7.6.2" data-path="integrating-datasets.html"><a href="integrating-datasets.html#limma-batch-correction"><i class="fa fa-check"></i><b>7.6.2</b> Limma Batch Correction</a></li>
+<li class="chapter" data-level="7.6.3" data-path="integrating-datasets.html"><a href="integrating-datasets.html#mnn-approach"><i class="fa fa-check"></i><b>7.6.3</b> MNN Approach</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="clustering.html"><a href="clustering.html"><i class="fa fa-check"></i><b>8</b> Clustering</a><ul>
+<li class="chapter" data-level="8.1" data-path="clustering.html"><a href="clustering.html#package-requirements-2"><i class="fa fa-check"></i><b>8.1</b> Package Requirements</a></li>
+<li class="chapter" data-level="8.2" data-path="clustering.html"><a href="clustering.html#loading-the-data-2"><i class="fa fa-check"></i><b>8.2</b> Loading the Data</a></li>
+<li class="chapter" data-level="8.3" data-path="clustering.html"><a href="clustering.html#understanding-the-data"><i class="fa fa-check"></i><b>8.3</b> Understanding the Data</a></li>
+<li class="chapter" data-level="8.4" data-path="clustering.html"><a href="clustering.html#preprocessing-2"><i class="fa fa-check"></i><b>8.4</b> Preprocessing</a></li>
+<li class="chapter" data-level="8.5" data-path="clustering.html"><a href="clustering.html#feature-selection-1"><i class="fa fa-check"></i><b>8.5</b> Feature Selection</a></li>
+<li class="chapter" data-level="8.6" data-path="clustering.html"><a href="clustering.html#dimensionality-reduction-1"><i class="fa fa-check"></i><b>8.6</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="8.7" data-path="clustering.html"><a href="clustering.html#clustering-1"><i class="fa fa-check"></i><b>8.7</b> Clustering</a><ul>
+<li class="chapter" data-level="8.7.1" data-path="clustering.html"><a href="clustering.html#sc3"><i class="fa fa-check"></i><b>8.7.1</b> SC3</a></li>
+<li class="chapter" data-level="8.7.2" data-path="clustering.html"><a href="clustering.html#clusterexperiment"><i class="fa fa-check"></i><b>8.7.2</b> clusterExperiment</a></li>
+<li class="chapter" data-level="8.7.3" data-path="clustering.html"><a href="clustering.html#manual-clustering"><i class="fa fa-check"></i><b>8.7.3</b> Manual Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Orchestrating Single-Cell Analysis with Bioconductor</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="large-scale-data" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Large-scale Data</h1>
+<p><em>author: Davide Risso, Robert A. Amezquita</em></p>
+<p>This workflow illustrates the latest Bioconductor infrastructure to analyze large single-cell datasets that may not entirely fit in memory. We focus on the most common application in exploratory single-cell analysis, namely to find subpopulations of cells. The proposed workflow consists of the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Normalization</li>
+<li>Dimensionality reduction</li>
+<li>Clustering</li>
+</ol>
+<p>We will exploit a number of Bioconductor packages able to interact with the HDF5 on-disk data representation, freeing us of the need to load the full dataset in memory.</p>
+<p>This workflow was specially designed to handle large datasets such as the 1.3 million cell Human Cell Atlas in the <a href="https://bioconductor.org/packages/devel/data/experiment/html/HCAData.html"><code>HCAData</code></a> scRNA-seq dataset. However, in our workflow, we will subsample the <code>HCAData</code> object down to a more manageable number solely for the sake of (compilation) time.</p>
+<div id="package-requirements" class="section level2">
+<h2><span class="header-section-number">6.1</span> Package Requirements</h2>
+<p>These packages will be required for working through the vignette, and can be installed by running the code below:</p>
+<pre class="sourceCode r"><code class="sourceCode r">data_pkg &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;HCAData&quot;</span>, <span class="st">&quot;ExperimentHub&quot;</span>)
+calc_pkg &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;scater&quot;</span>, <span class="st">&quot;scran&quot;</span>, <span class="st">&quot;mbkmeans&quot;</span>, <span class="st">&quot;BiocSingular&quot;</span>, <span class="st">&quot;uwot&quot;</span>)
+visl_pkg &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;RColorBrewer&quot;</span>, <span class="st">&quot;pheatmap&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>)
+infr_pkg &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;DelayedMatrixStats&quot;</span>, <span class="st">&quot;pryr&quot;</span>, <span class="st">&quot;BiocParallel&quot;</span>)
+
+BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="kw">c</span>(data_pkg, calc_pkg, visl_pkg, infr_pkg))</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(HCAData)
+<span class="kw">library</span>(ExperimentHub)
+<span class="kw">library</span>(scater)
+<span class="kw">library</span>(scran)
+<span class="kw">library</span>(uwot)
+<span class="kw">library</span>(BiocSingular)
+<span class="kw">library</span>(mbkmeans)
+<span class="kw">library</span>(RColorBrewer)
+<span class="kw">library</span>(pheatmap)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(DelayedMatrixStats)
+<span class="kw">library</span>(pryr)
+<span class="kw">library</span>(BiocParallel)</code></pre>
+</div>
+<div id="interacting-with-hdf5-files" class="section level2">
+<h2><span class="header-section-number">6.2</span> Interacting with HDF5 files</h2>
+<p>At a low-level, the main interface between HDF5 and Bioconductor is implemented in the packages <code>rhdf5</code>, which provides read/write functionalities, <code>Rhdf5lib</code>, which provides C and C++ HDF5 libraries, and <code>beachmat</code>, which provides a consistent C++ class interface for a variety of commonly used matrix types, including sparse and HDF5-backed matrices.</p>
+<p>These packages are useful for developers that want to develop methods able to interact with HDF5 data sets. However, for most Bioconductor users interested in the analysis of single-cell data, the entry point is represented by the high-level class <code>SingleCellExperiment</code> (implemented in the <code>SingleCellExperiment</code> package) and the lower level classes <code>HDF5Matrix</code> and <code>DelayedMatrix</code>, which can be stored in the <code>assay</code> slot of a <code>SingleCellExperiment</code> object. Once the data are stored in a <code>SingleCellExperiment</code> object with <code>HDF5Matrix</code> or <code>DelayedMatrix</code> as its assay, the packages <code>scater</code>, <code>scran</code>, <code>BiocSingular</code> and <code>mbkmeans</code> can be seamlessly used.
+The package <code>DelayedMatrixStats</code> deserves a special mention: it implements the rich API of the CRAN package <code>matrixStats</code> for <code>HDF5Matrix</code> and <code>DelayedMatrix</code> objects.</p>
+<p>We invite the reader to find more details on all the mentioned packages in their relative vignettes. In the remainder of this use case, we will use these methods to find cell sub-populations in a real datasets.</p>
+</div>
+<div id="loading-the-data" class="section level2">
+<h2><span class="header-section-number">6.3</span> Loading the Data</h2>
+<p>Here, we use one of the Human Cell Atlas preview datasets available in the <code>HCAData</code> Bioconductor package, the <code>ica_bone_marrow</code> dataset.</p>
+<pre class="sourceCode r"><code class="sourceCode r">eh &lt;-<span class="st"> </span><span class="kw">ExperimentHub</span>()
+<span class="kw">query</span>(eh, <span class="st">&quot;HCAData&quot;</span>)
+<span class="co">##change to brain</span>
+sce &lt;-<span class="st"> </span><span class="kw">HCAData</span>(<span class="st">&quot;ica_bone_marrow&quot;</span>)</code></pre>
+<p>In order to make the compilation time more manageable, here we will subsample the data to a more reasonable size. For our use, we will go down to 5000 cells.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+subsample &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">5000</span>) <span class="co"># super downsample temporary</span>
+sce &lt;-<span class="st"> </span>sce[, subsample]</code></pre>
+<p>One small bit of housekeeping - the initial gene IDs used as <code>rownames</code> for <code>sce</code> are in Ensembl Gene ID format. To make the gene ids human-readable, we convert the rownames to gene symbol. In this case, the mapping between Ensembl Gene ID’s and symbols is kept in the <code>rowData</code> slot of our <code>sce</code>, and so we overwrite the current rownames as follows:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol</code></pre>
+<p>We can inspect the resulting <code>sce</code> object’s key characteristics:</p>
+<pre class="sourceCode r"><code class="sourceCode r">sce[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="co"># first 5x5 entries</span></code></pre>
+<pre><code>## class: SingleCellExperiment 
+## dim: 5 5 
+## metadata(7): high_mito genes_keep ... wcss clusters_final
+## assays(2): counts logcounts
+## rownames(5): RP11-34P13.3 FAM138A OR4F5 RP11-34P13.7 RP11-34P13.8
+## rowData names(3): ID Symbol scater_qc
+## colnames(5): MantonBM1_HiSeq_8-AGGTCCGGTACCAGTT-1
+##   MantonBM5_HiSeq_8-ATCTACTAGCTCCTTC-1
+##   MantonBM5_HiSeq_7-CGATTGAGTCGAAAGC-1
+##   MantonBM5_HiSeq_8-CAGAGAGAGTATTGGA-1
+##   MantonBM7_HiSeq_8-CACAAACCAGCTGTTA-1
+## colData names(4): Barcode scater_qc clusters_prenorm
+##   clusters_final
+## reducedDimNames(3): PCA TSNE UMAP
+## spikeNames(0):</code></pre>
+<p>As well as the <code>assay</code> slot of <code>sce</code>, which we see below that the data is indeed stored in an object of the <code>DelayedMatrix</code> class, and that the Ensembl gene ID’s have been replaced with gene symbols:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">assay</span>(sce)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="co"># first 5x5 entries</span></code></pre>
+<pre><code>## &lt;5 x 5&gt; DelayedMatrix object of type &quot;integer&quot;:
+##              MantonBM1_HiSeq_8-AGGTCCGGTACCAGTT-1 ...
+## RP11-34P13.3                                    0   .
+## FAM138A                                         0   .
+## OR4F5                                           0   .
+## RP11-34P13.7                                    0   .
+## RP11-34P13.8                                    0   .
+##              MantonBM7_HiSeq_8-CACAAACCAGCTGTTA-1
+## RP11-34P13.3                                    0
+## FAM138A                                         0
+## OR4F5                                           0
+## RP11-34P13.7                                    0
+## RP11-34P13.8                                    0</code></pre>
+</div>
+<div id="preprocessing" class="section level2">
+<h2><span class="header-section-number">6.4</span> Preprocessing</h2>
+<p>First, we use the <code>scater</code> package to compute a set of QC measures and filter out the low-quality samples.</p>
+<pre class="sourceCode r"><code class="sourceCode r">ctrl &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Mito =</span> <span class="kw">grep</span>(<span class="st">&quot;^MT&quot;</span>, <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol)) 
+
+sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce, 
+                          <span class="dt">feature_controls =</span> ctrl,
+                          <span class="dt">compact =</span> <span class="ot">TRUE</span>, <span class="co"># return as nested DF</span>
+                          <span class="dt">BPPARAM =</span> <span class="kw">MulticoreParam</span>(<span class="dv">2</span>))</code></pre>
+<div id="remove-damaged-cells" class="section level3">
+<h3><span class="header-section-number">6.4.1</span> Remove Damaged Cells</h3>
+<p>Here we calculate which cells have a high proportion of mitocondrial reads, using it as a proxy for cell damage, and save the result into the <code>metadata</code> slot.</p>
+<pre class="sourceCode r"><code class="sourceCode r">high_mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(<span class="kw">colData</span>(sce)<span class="op">$</span>scater_qc<span class="op">$</span>feature_control_Mito<span class="op">$</span>pct_counts,
+                       <span class="dt">nmads =</span> <span class="dv">3</span>, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>)
+<span class="kw">metadata</span>(sce)<span class="op">$</span>high_mito &lt;-<span class="st"> </span>high_mito</code></pre>
+<p>The table below enumerates the cells which fail/pass this filter:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">metadata</span>(sce)<span class="op">$</span>high_mito)</code></pre>
+<pre><code>## 
+## FALSE  TRUE 
+##  4496   504</code></pre>
+<p>We can then filter cells in our <code>sce</code> object on this basis.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[, <span class="op">!</span><span class="kw">metadata</span>(sce)<span class="op">$</span>high_mito]</code></pre>
+</div>
+<div id="determine-lowly-expressed-genes" class="section level3">
+<h3><span class="header-section-number">6.4.2</span> Determine Lowly Expressed Genes</h3>
+<p>Before proceding with the data analysis, we remove the lowly expressed genes. Here, we keep only those genes that have at least 1 UMI in at least 5% of the data. These threshold are dataset-specific and may need to be taylored to specific applications.</p>
+<pre class="sourceCode r"><code class="sourceCode r">num_reads &lt;-<span class="st"> </span><span class="dv">1</span>
+num_cells &lt;-<span class="st"> </span><span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span><span class="kw">ncol</span>(sce)
+keep &lt;-<span class="st"> </span><span class="kw">which</span>(DelayedArray<span class="op">::</span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) <span class="op">&gt;=</span><span class="st"> </span>num_reads) <span class="op">&gt;=</span><span class="st"> </span>num_cells)
+
+<span class="kw">metadata</span>(sce)<span class="op">$</span>genes_keep &lt;-<span class="st"> </span>keep</code></pre>
+<p>We will use the <code>genes_keep</code> vector to subset our genespace in upcoming calculations.</p>
+</div>
+</div>
+<div id="normalization" class="section level2">
+<h2><span class="header-section-number">6.5</span> Normalization</h2>
+<p>Normalization is a crucial step in the preprocessing of the results. Here, we use the <code>scran</code> package to compute size factors that we will use to compute the normalized log-expression values.</p>
+<p>It has been shown that the <code>scran</code> method works best if the size factors are computed within roughly homogeneous cell populations; hence, it is beneficial to run a quick clustering on the raw data to compute better size factors. This ensures that we do not pool cells that are very different. Note that this is not the final clustering to identify cell sub-populations.</p>
+<p>Here we use <code>mbkmeans</code> to perform an initial clustering based on the count data in the <code>sce</code> object. Note that given that this operates on counts rather than the principal components, and thus will take a longer amount of time to compute. A more thorough explanation of <code>mbkmeans</code> and its parameters will be covered in a subsequent section.</p>
+<p>Note that we use the <code>set.seed()</code> function to ensure the reproducibility of the results.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co">## Subset down based on kept genes; use only 1000 genes</span>
+<span class="co">## to speed up prenorm clustering </span>
+subsample &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">length</span>(<span class="kw">metadata</span>(sce)<span class="op">$</span>genes_keep), <span class="dv">1000</span>)
+genes_1k &lt;-<span class="st"> </span><span class="kw">metadata</span>(sce)<span class="op">$</span>genes_keep[subsample]
+counts_genes_1k &lt;-<span class="st"> </span><span class="kw">counts</span>(sce)[genes_1k, ]
+
+<span class="co">## Cluster based on 1k genes x counts data</span>
+clusters_prenorm &lt;-<span class="st"> </span><span class="kw">mbkmeans</span>(counts_genes_1k,
+                     <span class="dt">max_iters =</span> <span class="dv">1</span>,   <span class="co"># reduced for faster clustering</span>
+                     <span class="dt">clusters =</span> <span class="dv">10</span>,   <span class="co"># guesstimate</span>
+                     <span class="dt">batch_size =</span> <span class="dv">50</span>)
+
+<span class="co">## Save results into colData slot</span>
+<span class="kw">colData</span>(sce)<span class="op">$</span>clusters_prenorm &lt;-<span class="st"> </span>clusters_prenorm<span class="op">$</span>Clusters
+
+<span class="co">## Compute size factors w.r.t. prenorm clusters</span>
+sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce,
+                         <span class="dt">min.mean =</span> <span class="fl">0.1</span>,
+                         <span class="dt">cluster =</span> sce<span class="op">$</span>clusters_prenorm,
+                         <span class="dt">BPPARAM =</span> <span class="kw">MulticoreParam</span>(<span class="dv">2</span>))</code></pre>
+<p>Finally, we compute normalized log-expression values with the <code>normalize()</code> function from the <code>scater</code> package.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce)</code></pre>
+<p>Note that the log-normalized data are stored in the <code>logcounts</code> assay of the object. Since the <code>counts</code> assay is a <code>DelayedMatrix</code> and we have only one set of size factors in the object, the normalized data are also stored as a <code>DelayedMatrix</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">## Verifying that our logcounts are also of DelayedMatrix class</span>
+<span class="kw">logcounts</span>(sce)</code></pre>
+<pre><code>## &lt;33694 x 4496&gt; DelayedMatrix object of type &quot;double&quot;:
+##              MantonBM1_HiSeq_8-AGGTCCGGTACCAGTT-1 ...
+## RP11-34P13.3                                    0   .
+##      FAM138A                                    0   .
+##        OR4F5                                    0   .
+## RP11-34P13.7                                    0   .
+## RP11-34P13.8                                    0   .
+##          ...                                    .   .
+##   AC233755.2                                    0   .
+##   AC233755.1                                    0   .
+##   AC240274.1                                    0   .
+##   AC213203.1                                    0   .
+##      FAM231B                                    0   .
+##              MantonBM7_HiSeq_1-GTCTTCGTCTGTCCGT-1
+## RP11-34P13.3                                    0
+##      FAM138A                                    0
+##        OR4F5                                    0
+## RP11-34P13.7                                    0
+## RP11-34P13.8                                    0
+##          ...                                    .
+##   AC233755.2                                    0
+##   AC233755.1                                    0
+##   AC240274.1                                    0
+##   AC213203.1                                    0
+##      FAM231B                                    0</code></pre>
+<p>This allows us to store in memory only the <code>colData</code> and <code>rowData</code>, resulting in a fairly small object. We can inspect the size of the object using the <code>pryr</code> package <code>object_size()</code> function. We leave it to the interested reader to compare the results to data that are fully loaded in-memory.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pryr<span class="op">::</span><span class="kw">object_size</span>(sce)</code></pre>
+<pre><code>## 15.8 MB</code></pre>
+</div>
+<div id="dimensionality-reduction" class="section level2">
+<h2><span class="header-section-number">6.6</span> Dimensionality reduction</h2>
+<p>Here, we perform dimensionality reduction by first identifying the top 1000 most variable genes and then running PCA on the normalized log counts.</p>
+<!-- ## need to do this otherwise it takes forever -- ask Herve about this -->
+<!-- setRealizationBackend("HDF5Array") -->
+<!-- logcounts(sce) <- realize(logcounts(sce)) -->
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">## Find most variable genes based on logcounts</span>
+vars_genes &lt;-<span class="st"> </span>DelayedMatrixStats<span class="op">::</span><span class="kw">rowVars</span>(<span class="kw">logcounts</span>(sce))
+<span class="kw">names</span>(vars_genes) &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce)
+vars_genes &lt;-<span class="st"> </span><span class="kw">sort</span>(vars_genes, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)
+
+<span class="co">## save our genes variances into the metadata slot for safekeeping</span>
+<span class="kw">metadata</span>(sce)<span class="op">$</span>vars_genes &lt;-<span class="st"> </span>vars_genes
+
+<span class="co">## Specify the top 1000 most highly variable genes (hvg) by name</span>
+<span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes &lt;-<span class="st"> </span><span class="kw">names</span>(<span class="kw">metadata</span>(sce)<span class="op">$</span>vars_genes)[<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>]</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">## transpose and subset by hvg the logcounts</span>
+for_pca &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">logcounts</span>(sce)[<span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes, ])
+
+<span class="co">## Run PCA with parallelization + random svd (via rsvd())</span>
+pca &lt;-<span class="st"> </span>BiocSingular<span class="op">::</span><span class="kw">runPCA</span>(for_pca, <span class="dt">rank =</span> <span class="dv">20</span>,
+                            <span class="dt">BSPARAM =</span> <span class="kw">RandomParam</span>(<span class="dt">deferred =</span> <span class="ot">FALSE</span>),
+                            <span class="dt">BPPARAM =</span> <span class="kw">MulticoreParam</span>(<span class="dv">2</span>))
+
+<span class="co">## Save PCA result into the reducedDims slot</span>
+<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>) &lt;-<span class="st"> </span>pca<span class="op">$</span>x</code></pre>
+</div>
+<div id="clustering-with-mini-batch-k-means" class="section level2">
+<h2><span class="header-section-number">6.7</span> Clustering with Mini-batch k-means</h2>
+<p>To perform an exploration of optimal clustering, we run <code>mbkmeans()</code> through multiple iterations of <code>k</code>. Here in particular, we’ve set the <code>calc_wcss</code> parameter to true to determine where our optimal number of <code>k</code> occurs. Further, we save the overall results once again into our <code>metadata</code> slot.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+wcss &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">10</span><span class="op">:</span><span class="dv">20</span>, <span class="cf">function</span>(k) {
+    cl &lt;-<span class="st"> </span><span class="kw">mbkmeans</span>(sce, <span class="dt">reduceMethod =</span> <span class="st">&quot;PCA&quot;</span>,
+                   <span class="dt">clusters =</span> k,
+                   <span class="dt">batch_size =</span> <span class="dv">50</span>,
+                   <span class="dt">num_init =</span> <span class="dv">10</span>, <span class="dt">max_iters =</span> <span class="dv">100</span>,
+                   <span class="dt">calc_wcss =</span> <span class="ot">TRUE</span>)
+})
+
+<span class="kw">metadata</span>(sce)<span class="op">$</span>wcss &lt;-<span class="st"> </span>wcss</code></pre>
+<p>We can then plot the corresponding within-clusters sum of squares to determine our optimal <code>k</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">10</span><span class="op">:</span><span class="dv">20</span>, <span class="kw">sapply</span>(<span class="kw">metadata</span>(sce)<span class="op">$</span>wcss, <span class="cf">function</span>(x) <span class="kw">sum</span>(x<span class="op">$</span>WCSS_per_cluster)),
+     <span class="dt">type =</span> <span class="st">&quot;b&quot;</span>,
+     <span class="dt">xlab =</span> <span class="st">&quot;Number of clusters K&quot;</span>,
+     <span class="dt">ylab =</span> <span class="st">&quot;Total within-clusters sum of squares&quot;</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>Following that, we can once again perform clustering, but this time changing our parametrization to improve our results by increasing batch size, setting the desired number of clusters, and increasing the number of initializations and max iterations the algorithm goes through.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co">## Perform final clustering on clustering with k=13</span>
+clusters_final &lt;-<span class="st"> </span><span class="kw">mbkmeans</span>(sce, <span class="dt">reduceMethod =</span> <span class="st">&quot;PCA&quot;</span>, <span class="dt">clusters =</span> <span class="dv">13</span>, 
+                           <span class="dt">batch_size =</span> <span class="dv">200</span>,
+                           <span class="dt">num_init =</span> <span class="dv">10</span>, <span class="dt">max_iters =</span> <span class="dv">100</span>)
+
+<span class="co">## Save full results into metadata</span>
+<span class="kw">metadata</span>(sce)<span class="op">$</span>clusters_final &lt;-<span class="st"> </span>clusters_final
+
+<span class="co">## Save the clusters into colData as a factor for plotting</span>
+<span class="kw">colData</span>(sce)<span class="op">$</span>clusters_final &lt;-<span class="st"> </span><span class="kw">as.factor</span>(clusters_final<span class="op">$</span>Clusters)
+<span class="co">## alternately: sce$cluster_final</span></code></pre>
+</div>
+<div id="visualization" class="section level2">
+<h2><span class="header-section-number">6.8</span> Visualization</h2>
+<p>To visualize our final results, we can calculate the tSNE representation of our data, and then plot our final cluster designations. Note that here we use the <code>BNPARAM</code> argument of <code>runTSNE()</code> to supply a <code>BiocNeighbors</code> param, the <code>AnnoyParam()</code></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co">## Calculate TSNE representation</span>
+sce &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce,
+               <span class="dt">use_dimred =</span> <span class="st">&quot;PCA&quot;</span>,
+               <span class="dt">external_neighbors =</span> <span class="ot">TRUE</span>, 
+               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),
+               <span class="dt">nthreads =</span> <span class="dv">2</span>,
+               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>(<span class="dv">2</span>))</code></pre>
+<p>We can then plot our resulting tSNE representation, here colouring by the final clustering assignment as well as adding a text overlay.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">## Plot the TSNE</span>
+<span class="kw">plotTSNE</span>(sce,
+         <span class="dt">colour_by =</span> <span class="st">&quot;clusters_final&quot;</span>,
+         <span class="dt">text_by =</span> <span class="st">&quot;clusters_final&quot;</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>Furthermore, we can calculate the UMAP representation, using the very speedy <code>uwot</code> package implementation, manually assigning the results into the <code>reducedDims</code> slot as before.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co">## Calculate umap representation and assign to reducedDims slot</span>
+um &lt;-<span class="st"> </span>uwot<span class="op">::</span><span class="kw">umap</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), <span class="dt">nn_method =</span> <span class="st">&quot;annoy&quot;</span>,
+                 <span class="dt">approx_pow =</span> <span class="ot">TRUE</span>, <span class="dt">n_threads =</span> <span class="dv">2</span>)
+<span class="kw">reducedDim</span>(sce, <span class="st">&#39;UMAP&#39;</span>) &lt;-<span class="st"> </span>um</code></pre>
+<p>And subsequently plot our UMAP representation as well:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;UMAP&quot;</span>,
+               <span class="dt">colour_by =</span> <span class="st">&quot;clusters_final&quot;</span>,
+               <span class="dt">text_by =</span> <span class="st">&quot;clusters_final&quot;</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<div id="marker-genes" class="section level3">
+<h3><span class="header-section-number">6.8.1</span> Marker genes</h3>
+<p>As a final exercise, we show some expression plots on key marker genes in the form of a heatmap and expression plots on the UMAP representation.</p>
+<pre class="sourceCode r"><code class="sourceCode r">markers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;IL7R&quot;</span>, <span class="co">#CD4</span>
+             <span class="st">&quot;CD14&quot;</span>,
+             <span class="st">&quot;LYZ&quot;</span>, <span class="co">#CD14</span>
+             <span class="st">&quot;MS4A1&quot;</span>, <span class="co">#B cells</span>
+             <span class="st">&quot;CD8A&quot;</span>, <span class="co">#CD8</span>
+             <span class="st">&quot;FCGR3A&quot;</span>, <span class="co">#Monocytes</span>
+             <span class="st">&quot;MS4A7&quot;</span>,
+             <span class="st">&quot;GNLY&quot;</span>,
+             <span class="st">&quot;NKG7&quot;</span>, <span class="co">#NK cells</span>
+             <span class="st">&quot;FCER1A&quot;</span>, <span class="co">#Dendritic</span>
+             <span class="st">&quot;CST3&quot;</span>,
+             <span class="st">&quot;PPBP&quot;</span>,
+             <span class="st">&quot;PF4&quot;</span>, <span class="co">#megakaryocyte</span>
+             <span class="st">&quot;CD3D&quot;</span>
+             )
+
+<span class="co">## Calculate the mean expression of each marker w.r.t. cluster</span>
+means &lt;-<span class="st"> </span><span class="kw">apply</span>(<span class="kw">counts</span>(sce[<span class="kw">which</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol <span class="op">%in%</span><span class="st"> </span>markers),]), <span class="dv">1</span>,
+               tapply, sce<span class="op">$</span>clusters_final, mean)
+<span class="kw">colnames</span>(means) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce[<span class="kw">colnames</span>(means),])<span class="op">$</span>Symbol
+
+<span class="co">## Plot the heatmap of all marker genes</span>
+<span class="kw">pheatmap</span>(<span class="kw">log2</span>(<span class="kw">t</span>(means)<span class="op">+</span><span class="dv">1</span>), <span class="dt">scale =</span> <span class="st">&quot;row&quot;</span>, <span class="dt">cluster_cols =</span> <span class="ot">FALSE</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">## Plot expression of select genes on UMAP</span>
+<span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;UMAP&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;CD3D&quot;</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;UMAP&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;NKG7&quot;</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-27-3.png" width="672" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotReducedDim</span>(sce, <span class="st">&quot;UMAP&quot;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;LYZ&quot;</span>)</code></pre>
+<p><img src="0W.large-scale-dataset_files/figure-html/unnamed-chunk-27-4.png" width="672" /></p>
+<!-- ## Session Info -->
+<!-- ```{r} -->
+<!-- sessionInfo() -->
+<!-- ``` -->
+<!-- Hidden code -->
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="about-the-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="integrating-datasets.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": true,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/robertamezquita/orchestratingSingleCellAnalysis/0W.large-scale-dataset.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["OSCA.pdf", "OSCA.epub"],
+"toc": {
+"collapse": "subsection"
+},
+"bookdown::epub_book": "default",
+"cover": "images/cover.png"
+});
+});
+</script>
+
+</body>
+
+</html>
