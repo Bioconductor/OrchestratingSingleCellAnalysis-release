@@ -1,14 +1,22 @@
 # Clustering
 
-The purpose of this case study is to demonstrate various approaches to clustering scRNA-seq datasets using R/Bioconductor packages. In this workflow, we go from preprocessing the data to clustering the data. Furthermore, we highlight methods which are especially suitable for large datasets. 
+_author: Robert A. Amezquita_
 
-Here we will be working with a dataset from the [CellBench](https://github.com/LuyiTian/CellBench_data) scRNA-seq benchmarking dataset collection. Specifically, we will be working with the `sc_10x_5cl` dataset, which contains 5 sorted cell lines that were sequencing on the 10X Genomics platform. We will use this to showcase our different clustering strategies.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, error = FALSE,
+                      message = FALSE, cache = FALSE)
+```
 
 ```{r echo=FALSE, message=FALSE}
 ## precalculated essential results for plots at end
 sce <- readRDS("_rfiles/_data/clustering_sce_min.rds")
 rsec <- readRDS("_rfiles/_data/rsec_min.rds")
 ```
+
+The purpose of this case study is to demonstrate various approaches to clustering scRNA-seq datasets using R/Bioconductor packages. In this workflow, we go from preprocessing the data to clustering the data. Furthermore, we highlight methods which are especially suitable for large datasets. 
+
+Here we will be working with a dataset from the [CellBench](https://github.com/LuyiTian/CellBench_data) scRNA-seq benchmarking dataset collection. Specifically, we will be working with the `sc_10x_5cl` dataset, which contains 5 sorted cell lines that were sequencing on the 10X Genomics platform. We will use this to showcase our different clustering strategies.
+
 
 ## Package Requirements
 
