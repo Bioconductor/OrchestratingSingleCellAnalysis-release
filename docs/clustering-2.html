@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 9 Clustering | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 9 Clustering | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 9 Clustering | Orchestrating Single-Cell Analysis with Bioconductor" />
+  
+  <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+<meta name="author" content="Robert A. Amezquita" />
+<meta name="author" content="Stephanie C. Hicks" />
+
+
+<meta name="date" content="2019-06-19" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="prev" href="annotation-2.html">
+<link rel="next" href="differential-expression-2.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Orchestrating Single-Cell Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I Preamble</b></span></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#what-you-will-learn"><i class="fa fa-check"></i><b>1.1</b> What you will learn</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="introduction.html"><a href="introduction.html#preliminaries"><i class="fa fa-check"></i><b>1.1.1</b> Preliminaries</a></li>
+<li class="chapter" data-level="1.1.2" data-path="introduction.html"><a href="introduction.html#workflows"><i class="fa fa-check"></i><b>1.1.2</b> Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#what-you-wont-learn"><i class="fa fa-check"></i><b>1.2</b> What you won’t learn</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#who-we-wrote-this-for"><i class="fa fa-check"></i><b>1.3</b> Who we wrote this for</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#why-we-wrote-this"><i class="fa fa-check"></i><b>1.4</b> Why we wrote this</a></li>
+<li class="chapter" data-level="1.5" data-path="introduction.html"><a href="introduction.html#acknowledgements"><i class="fa fa-check"></i><b>1.5</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html"><i class="fa fa-check"></i><b>2</b> Learning R and Bioconductor</a><ul>
+<li class="chapter" data-level="2.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#the-benefits-of-r-and-bioconductor"><i class="fa fa-check"></i><b>2.1</b> The Benefits of R and Bioconductor</a></li>
+<li class="chapter" data-level="2.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-started-with-r"><i class="fa fa-check"></i><b>2.2</b> Learning R Online</a></li>
+<li class="chapter" data-level="2.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#running-r-locally"><i class="fa fa-check"></i><b>2.3</b> Running R Locally</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r"><i class="fa fa-check"></i><b>2.3.1</b> Installing R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r-bioconductor-packages"><i class="fa fa-check"></i><b>2.3.2</b> Installing R &amp; Bioconductor Packages</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-help-in-and-out-of-r"><i class="fa fa-check"></i><b>2.4</b> Getting Help In (and Out) of R</a></li>
+<li class="chapter" data-level="2.5" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-documentation"><i class="fa fa-check"></i><b>2.5</b> Bioconductor Help</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-packages"><i class="fa fa-check"></i><b>2.5.1</b> Bioconductor Packages</a></li>
+<li class="chapter" data-level="2.5.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#biocviews"><i class="fa fa-check"></i><b>2.5.2</b> biocViews</a></li>
+<li class="chapter" data-level="2.5.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-forums"><i class="fa fa-check"></i><b>2.5.3</b> Bioconductor Forums</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html"><i class="fa fa-check"></i><b>3</b> Beyond R Basics</a><ul>
+<li class="chapter" data-level="3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-an-r-expert"><i class="fa fa-check"></i><b>3.1</b> Becoming an R Expert</a></li>
+<li class="chapter" data-level="3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-a-bioconductor-developer"><i class="fa fa-check"></i><b>3.2</b> Becoming an R/Bioconductor Developer</a></li>
+<li class="chapter" data-level="3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#nice-companions-for-r"><i class="fa fa-check"></i><b>3.3</b> Nice Companions for R</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#shellbash"><i class="fa fa-check"></i><b>3.3.1</b> Shell/Bash</a></li>
+<li class="chapter" data-level="3.3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#git"><i class="fa fa-check"></i><b>3.3.2</b> Git</a></li>
+<li class="chapter" data-level="3.3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#other-languages"><i class="fa fa-check"></i><b>3.3.3</b> Other Languages</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-infrastructure.html"><a href="data-infrastructure.html"><i class="fa fa-check"></i><b>4</b> Data Infrastructure</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#prerequisites"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-singlecellexperiment-class"><i class="fa fa-check"></i><b>4.2</b> The <em>SingleCellExperiment</em> Class</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#primary-data-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Primary Data: The <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#extending-the-assays-slot"><i class="fa fa-check"></i><b>4.2.2</b> Extending the <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#column-metadata-coldata-slot"><i class="fa fa-check"></i><b>4.2.3</b> Column (Meta)Data: <code>colData</code> Slot</a></li>
+<li class="chapter" data-level="4.2.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#feature-metadata-rowdatarowranges"><i class="fa fa-check"></i><b>4.2.4</b> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></a></li>
+<li class="chapter" data-level="4.2.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors-slot-sizefactors"><i class="fa fa-check"></i><b>4.2.5</b> Size Factors Slot: <code>sizeFactors</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#a-brief-recap-from-se-to-sce"><i class="fa fa-check"></i><b>4.3</b> A Brief Recap: From <code>se</code> to <code>sce</code></a></li>
+<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-reduceddims-slot"><i class="fa fa-check"></i><b>4.4</b> The <code>reducedDims</code> Slot</a></li>
+<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#one-more-thing-metadata-slot"><i class="fa fa-check"></i><b>4.5</b> One More Thing: <code>metadata</code> Slot</a></li>
+<li class="chapter" data-level="4.6" data-path="data-infrastructure.html"><a href="data-infrastructure.html#about-spike-ins"><i class="fa fa-check"></i><b>4.6</b> About Spike-Ins</a></li>
+<li class="chapter" data-level="4.7" data-path="data-infrastructure.html"><a href="data-infrastructure.html#working-with-singlecellexperiment"><i class="fa fa-check"></i><b>4.7</b> Working with <em>SingleCellExperiment</em></a></li>
+<li class="chapter" data-level="4.8" data-path="data-infrastructure.html"><a href="data-infrastructure.html#multimodal-data-multiassayexperiment"><i class="fa fa-check"></i><b>4.8</b> Multimodal Data: <em>MultiAssayExperiment</em></a></li>
+</ul></li>
+<li class="part"><span><b>II Workflows</b></span></li>
+<li class="chapter" data-level="5" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html"><i class="fa fa-check"></i><b>5</b> Analytical Workflow Overview</a><ul>
+<li class="chapter" data-level="5.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#experimental-design"><i class="fa fa-check"></i><b>5.1</b> Experimental Design</a></li>
+<li class="chapter" data-level="5.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#preprocessing"><i class="fa fa-check"></i><b>5.2</b> Preprocessing</a></li>
+<li class="chapter" data-level="5.3" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#import-to-r"><i class="fa fa-check"></i><b>5.3</b> Import to R</a></li>
+<li class="chapter" data-level="5.4" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#data-processing"><i class="fa fa-check"></i><b>5.4</b> Data Processing</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#quality-control-metrics"><i class="fa fa-check"></i><b>5.4.1</b> Quality Control Metrics</a></li>
+<li class="chapter" data-level="5.4.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#normalizing-data"><i class="fa fa-check"></i><b>5.4.2</b> Normalizing Data</a></li>
+<li class="chapter" data-level="5.4.3" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#feature-selection"><i class="fa fa-check"></i><b>5.4.3</b> Feature Selection</a></li>
+<li class="chapter" data-level="5.4.4" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#imputation"><i class="fa fa-check"></i><b>5.4.4</b> Imputation</a></li>
+<li class="chapter" data-level="5.4.5" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#dimensionality-reduction"><i class="fa fa-check"></i><b>5.4.5</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="5.4.6" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#integrating-datasets"><i class="fa fa-check"></i><b>5.4.6</b> Integrating Datasets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#downstream-statistical-analyses"><i class="fa fa-check"></i><b>5.5</b> Downstream Statistical Analyses</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#clustering"><i class="fa fa-check"></i><b>5.5.1</b> Clustering</a></li>
+<li class="chapter" data-level="5.5.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#differential-expression"><i class="fa fa-check"></i><b>5.5.2</b> Differential Expression</a></li>
+<li class="chapter" data-level="5.5.3" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#trajectory-analysis"><i class="fa fa-check"></i><b>5.5.3</b> Trajectory Analysis</a></li>
+<li class="chapter" data-level="5.5.4" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#annotation"><i class="fa fa-check"></i><b>5.5.4</b> Annotation</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#accessible-reproducible-analysis"><i class="fa fa-check"></i><b>5.6</b> Accessible &amp; Reproducible Analysis</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#interactive-data-visualization"><i class="fa fa-check"></i><b>5.6.1</b> Interactive Data Visualization</a></li>
+<li class="chapter" data-level="5.6.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#report-generation"><i class="fa fa-check"></i><b>5.6.2</b> Report Generation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html"><i class="fa fa-check"></i><b>6</b> A Basic Analysis</a><ul>
+<li class="chapter" data-level="6.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#preprocessing-import-to-r"><i class="fa fa-check"></i><b>6.1</b> Preprocessing &amp; Import to R</a></li>
+<li class="chapter" data-level="6.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#constructing-the-singlecellexperiment"><i class="fa fa-check"></i><b>6.2</b> Constructing the SingleCellExperiment</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#from-scratch"><i class="fa fa-check"></i><b>6.2.1</b> From Scratch</a></li>
+<li class="chapter" data-level="6.2.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#from-publicly-available-data"><i class="fa fa-check"></i><b>6.2.2</b> From Publicly Available Data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#data-processing-1"><i class="fa fa-check"></i><b>6.3</b> Data Processing</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#quality-control-metrics-1"><i class="fa fa-check"></i><b>6.3.1</b> Quality Control Metrics</a></li>
+<li class="chapter" data-level="6.3.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#normalizing-data-1"><i class="fa fa-check"></i><b>6.3.2</b> Normalizing Data</a></li>
+<li class="chapter" data-level="6.3.3" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#feature-selection-1"><i class="fa fa-check"></i><b>6.3.3</b> Feature Selection</a></li>
+<li class="chapter" data-level="6.3.4" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#dimensionality-reduction-1"><i class="fa fa-check"></i><b>6.3.4</b> Dimensionality Reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#downstream-statistical-analyses-1"><i class="fa fa-check"></i><b>6.4</b> Downstream Statistical Analyses</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#clustering-1"><i class="fa fa-check"></i><b>6.4.1</b> Clustering</a></li>
+<li class="chapter" data-level="6.4.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#differential-expression-1"><i class="fa fa-check"></i><b>6.4.2</b> Differential Expression</a></li>
+<li class="chapter" data-level="6.4.3" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#annotation-1"><i class="fa fa-check"></i><b>6.4.3</b> Annotation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#accessible-reproducible-analysis-1"><i class="fa fa-check"></i><b>6.5</b> Accessible &amp; Reproducible Analysis</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#interactive-data-visualization-1"><i class="fa fa-check"></i><b>6.5.1</b> Interactive Data Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>7</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="7.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>7.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="7.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>7.2</b> Parallelization</a></li>
+<li class="chapter" data-level="7.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>7.3</b> On-Disk Data</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="annotation-2.html"><a href="annotation-2.html"><i class="fa fa-check"></i><b>8</b> Annotation</a></li>
+<li class="chapter" data-level="9" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>9</b> Clustering</a><ul>
+<li class="chapter" data-level="9.1" data-path="clustering-2.html"><a href="clustering-2.html#understanding-the-data"><i class="fa fa-check"></i><b>9.1</b> Understanding the Data</a></li>
+<li class="chapter" data-level="9.2" data-path="clustering-2.html"><a href="clustering-2.html#manual-clustering"><i class="fa fa-check"></i><b>9.2</b> Manual Clustering</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="clustering-2.html"><a href="clustering-2.html#varying-k"><i class="fa fa-check"></i><b>9.2.1</b> Varying <code>k</code></a></li>
+<li class="chapter" data-level="9.2.2" data-path="clustering-2.html"><a href="clustering-2.html#varying-clustering-algorithms"><i class="fa fa-check"></i><b>9.2.2</b> Varying Clustering Algorithms</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="clustering-2.html"><a href="clustering-2.html#automated-clustering"><i class="fa fa-check"></i><b>9.3</b> Automated Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="differential-expression-2.html"><a href="differential-expression-2.html"><i class="fa fa-check"></i><b>10</b> Differential Expression</a></li>
+<li class="chapter" data-level="11" data-path="imputation-1.html"><a href="imputation-1.html"><i class="fa fa-check"></i><b>11</b> Imputation</a></li>
+<li class="chapter" data-level="12" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>12</b> Integrating Datasets</a></li>
+<li class="chapter" data-level="13" data-path="quality-control.html"><a href="quality-control.html"><i class="fa fa-check"></i><b>13</b> Quality Control</a></li>
+<li class="chapter" data-level="14" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>14</b> Sharing and Interactive Interfaces</a></li>
+<li class="chapter" data-level="15" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html"><i class="fa fa-check"></i><b>15</b> Trajectory Analysis</a></li>
+<li class="part"><span><b>III Appendix</b></span></li>
+<li class="chapter" data-level="16" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>16</b> About the Data</a><ul>
+<li class="chapter" data-level="16.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>16.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="16.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>16.2</b> Cellbench_data</a></li>
+<li class="chapter" data-level="16.3" data-path="about-the-data.html"><a href="about-the-data.html#human-cell-atlas"><i class="fa fa-check"></i><b>16.3</b> Human Cell Atlas</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>17</b> About the Contributors</a></li>
+<li class="divider"></li>
+<li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Orchestrating Single-Cell Analysis with Bioconductor</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="clustering-2" class="section level1">
+<h1><span class="header-section-number">Chapter 9</span> Clustering</h1>
+<div id="understanding-the-data" class="section level2">
+<h2><span class="header-section-number">9.1</span> Understanding the Data</h2>
+<p>To follow along with this chapter, we will be using the 5 cell line data from the <a href="https://github.com/LuyiTian/CellBench_data">CellBench_data</a> repository. We will load the original dataset, and then subsample down to 1000 cells to make performing downstream calculations faster:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(here)
+sce &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">here</span>(<span class="st">&#39;_rfiles/_data/cellbench_sce_sc_10x_5cl_qc.rds&#39;</span>))
+
+sce &lt;-<span class="st"> </span>sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">1000</span>)]
+sce</code></pre>
+<pre><code>## class: SingleCellExperiment 
+## dim: 11786 1000 
+## metadata(3): scPipe Biomart log.exprs.offset
+## assays(3): counts cpm logcounts
+## rownames(11786): COL27A1 SLC35B1 ... RAC2 ANKH
+## rowData names(9): is_feature_control mean_counts ...
+##   n_cells_counts pct_dropout_counts
+## colnames(1000): Lib90_03432 Lib90_03122 ... Lib90_02656
+##   Lib90_03619
+## colData names(30): unaligned aligned_unmapped ...
+##   cell_line_demuxlet demuxlet_cls
+## reducedDimNames(0):
+## spikeNames(0):</code></pre>
+<p>The per cell labels pertaining to the 5 cell lines assayed can be found within the <code>colData</code> component under the column name <code>cell_line</code>. We can count the number of instances of each cell line present in our subsampled dataset as follows:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce<span class="op">$</span>cell_line)</code></pre>
+<pre><code>## 
+##   A549  H1975  H2228   H838 HCC827 
+##    303    120    199    216    162</code></pre>
+<p>Before continuing, we will perform feature selection and dimensionality reduction that will be used downstream by the clustering methods and visualizations.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BiocSingular)
+<span class="kw">library</span>(scater)
+<span class="kw">library</span>(scran)
+
+## feature selection
+fit &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)
+dec &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce, fit)
+hvg_genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec[dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, ]) <span class="co"># ~4k genes</span>
+
+## dimensionality reduction
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">20</span>,
+              <span class="dt">feature_set =</span> hvg_genes,
+              <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>())
+## plot(attr(reducedDim(sce, &#39;PCA&#39;), &#39;percentVar&#39;)) ## elbow plot
+sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce, <span class="dt">n_dimred =</span> <span class="dv">20</span>)</code></pre>
+<p>We can now visualize the 5 cell lines via UMAP:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;cell_line&#39;</span>)</code></pre>
+<p><img src="P2_WX.clustering_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>One thing to note is that, per our UMAP visualization, cell line H1975 appears to be two primary clusters, with some cells resembling the H838 cell line.</p>
+</div>
+<div id="manual-clustering" class="section level2">
+<h2><span class="header-section-number">9.2</span> Manual Clustering</h2>
+<p>Low-level clustering relies on building the shared- or k-nearest neighbors graphs manually, and then applying a graph-based clustering algorithm based on the resulting graph. One such wrapper to construct the SNN/KNN graph comes from the <code>scran</code> package’s <code>buildSNNGraph()</code> and <code>buildKNNGraph()</code> functions, respectively. The resulting <code>igraph</code> object from these functions can then be fed into any number of clustering algorithms provided by <code>igraph</code>. For example, louvain clustering is a popular algorithm that is implemented in the <code>cluster_louvain()</code> function.</p>
+<p>Further, one additional parameter to note in the <code>buildSNNGraph()</code> function below is the <code>BNPARAM</code>, which provides even finer control over nearest-neighbors detection via the <code>BiocNeighbors</code> package. This parameter allows the user to specify an implementation from <code>BiocNeighbors</code> to use that has been designed for high-dimensional data. Here, we highlight the use of an approximate method via the Annoy algorithm by way of providing <code>AnnoyParam()</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce, <span class="dt">k =</span> <span class="dv">50</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)
+louvain_clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership
+
+sce<span class="op">$</span>louvain_clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(louvain_clusters)</code></pre>
+<p>We can then inspect the results of our clustering both on the UMAP as well as via a confusion matrix:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;louvain_clusters&#39;</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-6"></span>
+<img src="P2_WX.clustering_files/figure-html/unnamed-chunk-6-1.png" alt="Louvain clustering applied to an SNN graph constructed with k=50." width="672" />
+<p class="caption">
+Figure 9.1: Louvain clustering applied to an SNN graph constructed with k=50.
+</p>
+</div>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce<span class="op">$</span>louvain_clusters, sce<span class="op">$</span>cell_line)</code></pre>
+<pre><code>##    
+##     A549 H1975 H2228 H838 HCC827
+##   1    0     8     0    0    162
+##   2    0    12     0  216      0
+##   3    0     4   199    0      0
+##   4  303     1     0    0      0
+##   5    0    95     0    0      0</code></pre>
+<p>Overall at this k, we see that the clusters align very sensibly with the cell lines of origins.</p>
+<div id="varying-k" class="section level3">
+<h3><span class="header-section-number">9.2.1</span> Varying <code>k</code></h3>
+<p>While our first try appeared to work fairly well, this may not always be the case. Furthermore, checking the stability of clustering is sensible to ensure that a clustering result is robust.</p>
+<p>To iterate over the varying <code>k</code> parameter (the number of nearest neighbors to draw the graph with), we utilize the <code>purrr</code> functional programming library in this example, but note that <code>lapply</code> works equally well.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
+
+## Iterate over varying k for SNNGraph construction
+k_v &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">5</span>, <span class="dv">50</span>, <span class="dt">by =</span> <span class="dv">15</span>)
+g_l &lt;-<span class="st"> </span><span class="kw">map</span>(k_v, <span class="cf">function</span>(x) {
+    <span class="kw">buildSNNGraph</span>(sce, <span class="dt">k =</span> x, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)
+})
+<span class="kw">names</span>(g_l) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;k_&#39;</span>, k_v)
+
+## Iterate over resulting graphs to apply louvain clustering
+lc_l &lt;-<span class="st"> </span><span class="kw">map</span>(g_l, <span class="cf">function</span>(g) {
+    igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership
+})
+<span class="kw">names</span>(lc_l) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;k_&#39;</span>, k_v)
+
+## Coerce louvain cluster results list to dataframe of factors
+lc_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">do.call</span>(cbind, lc_l))
+lc_df &lt;-<span class="st"> </span><span class="kw">apply</span>(lc_df, <span class="dv">2</span>, as.factor)
+
+## Append results to colData for plotting
+<span class="kw">colData</span>(sce) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(sce), lc_df)</code></pre>
+<p>Now we can plot across our various k’s on the UMAP for ease of interpretation. Note that we use the <em>patchwork</em> package to combine the multiple <code>ggplot</code> objects that are generated by the <code>plotUMAP()</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(patchwork)
+p_l &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">colnames</span>(lc_df), <span class="op">~</span><span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> .))
+<span class="kw">wrap_plots</span>(p_l, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-8"></span>
+<img src="P2_WX.clustering_files/figure-html/unnamed-chunk-8-1.png" alt="Varying k, from top left clockwise, k is set to 5, 20, 50, and 35." width="672" />
+<p class="caption">
+Figure 9.2: Varying k, from top left clockwise, k is set to 5, 20, 50, and 35.
+</p>
+</div>
+</div>
+<div id="varying-clustering-algorithms" class="section level3">
+<h3><span class="header-section-number">9.2.2</span> Varying Clustering Algorithms</h3>
+<p>Another area for tweaking is in the clustering algorithm applied, as there are various community detection methods available through packages such as <code>igraph</code>. Here, we demonstrate a few select clustering methods - louvain, walktrap, and fast/greedy - across two different sets of graphs generated above, where k equaled 5 or 20:</p>
+<pre class="sourceCode r"><code class="sourceCode r">## Clustering functions (cf)
+cf_l &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">louvain =</span> igraph<span class="op">::</span>cluster_louvain,
+             <span class="dt">walktrap =</span> igraph<span class="op">::</span>cluster_walktrap,
+             <span class="dt">fastgreedy =</span> igraph<span class="op">::</span>cluster_fast_greedy)
+
+## Cluster assignments (ca) per function with k_5 and k_20 graphs
+ca_l &lt;-<span class="st"> </span><span class="kw">map2</span>(<span class="kw">c</span>(cf_l, cf_l),
+     <span class="kw">c</span>(g_l[<span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>), <span class="dt">each =</span> <span class="kw">length</span>(cf_l))]),
+     <span class="cf">function</span>(f, g) {
+         <span class="kw">f</span>(g)<span class="op">$</span>membership
+})
+<span class="kw">names</span>(ca_l) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rep</span>(<span class="kw">names</span>(cf_l), <span class="dv">2</span>), <span class="st">&#39;__&#39;</span>,
+                      <span class="kw">rep</span>(<span class="kw">names</span>(g_l)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">each =</span> <span class="dv">3</span>))
+
+## Coerce clustering results list to dataframe of factors
+ca_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">do.call</span>(cbind, ca_l))
+ca_df &lt;-<span class="st"> </span><span class="kw">apply</span>(ca_df, <span class="dv">2</span>, as.factor)
+
+## Append results to colData for plotting
+<span class="kw">colData</span>(sce) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(sce), ca_df)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">p_l &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">colnames</span>(ca_df), <span class="op">~</span><span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> .))
+<span class="kw">wrap_plots</span>(p_l, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">FALSE</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-10"></span>
+<img src="P2_WX.clustering_files/figure-html/unnamed-chunk-10-1.png" alt="Three clustering methods (by row, top to bottom: louvain, walktrap, and fast/greedy) were applied to two graphs (by column, left to right: k=5, k=20). Clustering results are shown as different colors on the UMAP projection." width="672" />
+<p class="caption">
+Figure 9.3: Three clustering methods (by row, top to bottom: louvain, walktrap, and fast/greedy) were applied to two graphs (by column, left to right: k=5, k=20). Clustering results are shown as different colors on the UMAP projection.
+</p>
+</div>
+<p>We can see from this result that the choice of clustering method was largely a non-factor in the k=20 case, whereas the more granular clustering method of k=5 did indeed produce some variation, particularly between the louvain/walktrap vs the fast-greedy.</p>
+</div>
+</div>
+<div id="automated-clustering" class="section level2">
+<h2><span class="header-section-number">9.3</span> Automated Clustering</h2>
+<p>Automated clustering frameworks seek to find an “optimal” number of clusters. The <em>SC3</em> package provides a simple framework that allows users to test for a variable number of clusters. Additionally, the <em>SC3</em> package provides handy visualizations to qualitatively assess the clustering results.</p>
+<p>Before we use the <em>SC3</em> package, we first set a required <code>rowData</code> column for <em>SC3</em> to work:</p>
+<pre class="sourceCode r"><code class="sourceCode r">## SC3 requires this column to be appended
+<span class="kw">rowData</span>(sce)<span class="op">$</span>feature_symbol &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce) </code></pre>
+<p>And now we run the <code>sc3()</code> function to test for variable numbers of clusters by setting the <code>ks</code> argument. Here we search for 3 to 7 clusters:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SC3)
+
+## SC3 will return an SCE object with appended &quot;sc3_&quot; columns
+sce &lt;-<span class="st"> </span><span class="kw">sc3</span>(sce,
+           <span class="dt">ks =</span> <span class="dv">3</span><span class="op">:</span><span class="dv">6</span>,
+           <span class="dt">k_estimator =</span> <span class="ot">TRUE</span>)</code></pre>
+<p>After using <code>sc3()</code>, the function returns the original <code>SingleCellExperiment</code> object, but with new columns in <code>colData(sce)</code> corresponding to the different <code>ks</code> supplied to the function, as well as a full representation of the analysis that is stored in <code>metadata(sce)$sc3</code>, which includes an estimate of the optimal <code>k</code> (as dictated by the <code>k_estimator = TRUE</code> argument above).</p>
+<p>Below, we show the clustering results of the <code>ks</code> we supplied, 3 through 6, shown on the UMAP representation of the data.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sc3_cols &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;sc3_&#39;</span>, <span class="dv">3</span><span class="op">:</span><span class="dv">6</span>, <span class="st">&#39;_clusters&#39;</span>)
+
+p_l &lt;-<span class="st"> </span><span class="kw">map</span>(sc3_cols, <span class="op">~</span><span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> .))
+
+<span class="kw">wrap_plots</span>(p_l, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre>
+<p><img src="P2_WX.clustering_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>To access all the output generated by <code>sc3()</code>, we can inspect the <code>metadata</code> component of our <code>sce</code> object:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">metadata</span>(sce)<span class="op">$</span>sc3, <span class="dv">1</span>)</code></pre>
+<pre><code>## List of 8
+##  $ kmeans_iter_max: num 1e+09
+##  $ kmeans_nstart  : num 1000
+##  $ n_dim          : int [1:15] 54 59 44 64 45 62 68 70 63 57 ...
+##  $ rand_seed      : num 1
+##  $ n_cores        : num 15
+##  $ k_estimation   : num 14
+##  $ transformations:List of 6
+##   ..- attr(*, &quot;rng&quot;)=List of 6
+##  $ consensus      :List of 4</code></pre>
+<p>The parameters and various outputs from <code>sc3()</code> are saved shown to be saved in a list. For example, we can access the estimated <code>k</code> (as we asked for via the <code>k_estimator = TRUE</code> argument to <code>sc3()</code>) by inspecting this list as follows below. Based on our data, <code>sc3()</code> estimates the optimal <code>k</code> to be:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">metadata</span>(sce)<span class="op">$</span>sc3<span class="op">$</span>k_estimation</code></pre>
+<pre><code>## [1] 14</code></pre>
+<p>The <em>SC3</em> package contains many more utilities for exploring the stability of clustering and can even produce differential expression analysis results using the <code>biology = TRUE</code> argument within the <code>sc3()</code> function. We leave it to the interested reader to <a href="https://bioconductor.org/packages/release/bioc/html/SC3.html">learn more advanced features in <em>SC3</em></a> via their vignette.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="annotation-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="differential-expression-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": true,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_WX.clustering.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["OSCA.pdf", "OSCA.epub"],
+"toc": {
+"collapse": "subsection"
+},
+"bookdown::epub_book": "default",
+"cover": "images/cover.png"
+});
+});
+</script>
+
+</body>
+
+</html>
