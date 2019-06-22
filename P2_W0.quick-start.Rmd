@@ -1,0 +1,27 @@
+# Quick Start
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE, warning = FALSE, error = FALSE,
+                      cache = TRUE,
+                      dev = 'CairoPNG')                      
+options(digits = 4)
+library(BiocStyle)
+```
+
+
+*WIP*
+
+```{r, eval=FALSE}
+## Read in data into SingleCellExperiment ------------------
+library(HCAData)
+sce <- HCAData('ica_bone_marrow')
+
+## subsample for better book compilation speed
+set.seed(1234)
+sce <- sce[, sample(ncol(sce), 2500)]
+
+## Quality Control -----------------------------------------
+library(scater)
+sce <- calculateQCMetrics(sce)
+```

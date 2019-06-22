@@ -1,7 +1,7 @@
 --- 
 title: "Orchestrating Single-Cell Analysis with Bioconductor"
 author: ["Robert A. Amezquita", "Stephanie C. Hicks"]
-date: "2019-06-21"
+date: "2019-06-22"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]

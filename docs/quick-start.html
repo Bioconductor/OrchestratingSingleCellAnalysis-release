@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 9 Quality Control | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <title>Chapter 6 Quick Start | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 9 Quality Control | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:title" content="Chapter 6 Quick Start | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 9 Quality Control | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta name="twitter:title" content="Chapter 6 Quick Start | Orchestrating Single-Cell Analysis with Bioconductor" />
   
   <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<link rel="prev" href="integrating-datasets-1.html">
-<link rel="next" href="clustering-2.html">
+<link rel="prev" href="analytical-workflow-overview.html">
+<link rel="next" href="a-basic-analysis.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -286,10 +286,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="quality-control" class="section level1">
-<h1><span class="header-section-number">Chapter 9</span> Quality Control</h1>
-<pre class="sourceCode r"><code class="sourceCode r">##libsize.drop &lt;- isOutlier(sce.hsc$total_counts, nmads=3, type=&quot;lower&quot;, log=TRUE)
-##feature.drop &lt;- isOutlier(sce.hsc$total_features_by_counts, nmads=3, type=&quot;lower&quot;, log=TRUE)</code></pre>
+<div id="quick-start" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Quick Start</h1>
+<p><em>WIP</em></p>
+<pre class="sourceCode r"><code class="sourceCode r">## Read in data into SingleCellExperiment ------------------
+<span class="kw">library</span>(HCAData)
+sce &lt;-<span class="st"> </span><span class="kw">HCAData</span>(<span class="st">&#39;ica_bone_marrow&#39;</span>)
+
+## subsample for better book compilation speed
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+sce &lt;-<span class="st"> </span>sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">2500</span>)]
+
+## Quality Control -----------------------------------------
+<span class="kw">library</span>(scater)
+sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce)</code></pre>
 
 </div>
             </section>
@@ -297,8 +307,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="integrating-datasets-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="clustering-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="analytical-workflow-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="a-basic-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -328,7 +338,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W2.quality-control.Rmd",
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W0.quick-start.Rmd",
 "text": "Edit"
 },
 "history": {
