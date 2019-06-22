@@ -9,19 +9,147 @@ options(digits = 4)
 library(BiocStyle)
 ```
 
+To make it as easy as possible to get started fast, here we simply provide a script that walks through a typical, basic scRNA-seq analysis in code, with prose as comments (`#`), and all visualization held until the end of the script. The next chapter - "A Basic Analysis" - will provide more commentary on the various steps throughout, as well as relevant intermediate plotting results. 
 
-*WIP*
+Here, we use an example dataset from the [*Human Cell Atlas* immune cell profiling project on bone marrow](https://preview.data.humancellatlas.org). This dataset is loaded via the *HCAData* package, which provides a ready to use *SingleCellExperiment* object. 
+
+Note that the *HCAData* bone marrow dataset is comprised of 8 donors, so we have added an integration step to ameliorate batch effects caused by different donors. However, for use cases where integration is not necessary (e.g. no expected batch effects), we note in the code what to skip and relevant arguments to replace.
+
+Lastly, note that some arguments are added for the sake of reducing computational runtime and can be modified or removed. These include parallelization via `BPPARAM`, and different algorithms for SVD and nearest-neighbor via `BSPARAM` and `BNPARAM`. See the "Adaptations for Large-scale Data" chapter for more information on these arguments.
+
 
 ```{r, eval=FALSE}
-## Read in data into SingleCellExperiment ------------------
+## Setup ---------------------------------------------------
+## not run - uncomment these lines to install necessary pkgs
+
+## install.packages('BiocManager')
+## BiocManager::install(version = 'devel') # devel=3.10
+## BiocManager::install(c(
+##   'HCAData',                       # dataset
+##   'scater', 'scran', 'batchelor',  # processing
+##   'igraph',                        # clustering
+##   'MAST', 'slingshot',             # DE + Trajectory
+##   'iSEE'                           # interactive viz
+## ))
+
+## Import data into R --------------------------------------
+
+## For reading in data directly from CellRanger output
+## use the lines below and replace with proper paths to data
+## append any cell metadata as needed to colData()
+## library(DropletUtils)
+## sce <- read10xCounts('/path/to/cellranger/outs/')
+
+## For this quick-start: Human Cell Atlas (HCA) data
 library(HCAData)
 sce <- HCAData('ica_bone_marrow')
 
-## subsample for better book compilation speed
+## subsample for better brevity of compilation
 set.seed(1234)
 sce <- sce[, sample(ncol(sce), 2500)]
+
 
 ## Quality Control -----------------------------------------
 library(scater)
 sce <- calculateQCMetrics(sce)
+
+## remove "bad" cells by total counts/features per cell
+sce <- sce[, sce$total_counts > 500 & sce$total_features > 100]
+
+## to ease computation, remove low frequency genes from `sce`
+num_reads <- 1                  # minimum 1 read
+num_cells <- 0.025 * ncol(sce)   # in at least 2.5% of all cells
+keep <- rowSums(counts(sce) >= num_reads) >= num_cells
+sce <- sce[keep, ]
+
+## for readability, use Symbols in lieu of IDs as rownames
+uniq_feats <- uniquifyFeatureNames(ID = rowData(sce)$ID,
+                                   Symbol = rowData(sce)$Symbol_TENx)
+rownames(sce) <- uniq_feats
+
+
+## Normalization -------------------------------------------
+sce <- normalize(sce)
+
+
+## Feature Selection ---------------------------------------
+library(scran)
+
+fit <- trendVar(sce, use.spikes = FALSE)
+dec <- decomposeVar(sce)
+hvg <- rownames(dec)[dec$bio > 0] # save gene names
+
+
+## Integration ---------------------------------------------
+## only perform this section if there is a batch effect
+library(batchelor)
+
+sce <- fastMNN(sce, batch = sce$Donor,
+               subset.row = hvg,
+               BSPARAM = BiocSingular::IrlbaParam(deferred = TRUE),
+               BNPARAM = BiocNeighbors::AnnoyParam(),
+               BPPARAM = MulticoreParam())
+
+
+## Dimensionality Reduction --------------------------------
+## note on `use_dimred` arg: specifies which precomputed
+## dimension reduction to use in `sce`; if there is none,
+## it will first calculate and save PCA to `sce` then UMAP
+sce <- runUMAP(sce,
+               use_dimred = 'corrected', # omit if `fastMNN()` not run
+               BSPARAM = BiocSingular::IrlbaParam(deferred = TRUE),
+               BNPARAM = BiocNeighbors::AnnoyParam(),
+               BPPARAM = MulticoreParam())
+
+
+## Clustering ----------------------------------------------
+library(igraph)
+
+## replace `use.dimred` with 'PCA' if no integration was performed
+## this will be automatically added via `runUMAP` above
+g <- buildSNNGraph(sce, use.dimred = 'corrected',
+                   BNPARAM = AnnoyParam(),
+                   BPPARAM = MulticoreParam())
+clusters <- as.factor(igraph::cluster_louvain(g)$membership)
+sce$clusters <- clusters
+
+
+## Differential Expression ---------------------------------
+markers <- findMarkers(sce, clusters = sce$clusters,
+                       direction = 'up', lfc = 1.5,
+                       subset.row = hvg,
+                       BPPARAM = MulticoreParam())
+
+## library(MAST)
+## todo: write MAST func to comparing just two clusters
+
+
+## Annotation ----------------------------------------------
+## todo: figure out what cell types are present
+## use a simple marker panel?
+
+
+## Trajectory Analysis -------------------------------------
+## library(slingshot)
+## todo: within a cluster, run slingshot for funsies
+
+
+## Interactive Exploration ---------------------------------
+library(iSEE)
+## iSEE(sce) ## not run; opens a web browser GUI
+```
+
+```{r}
+## Visualizations ------------------------------------------
+## todo: need the following:
+## quality control: histogram of total counts
+## normalization: ???
+## feature selection: variance v mean expression?
+## PCA/UMAP: before and after batch correction
+## UMAP (no colours)
+## UMAP (with clusters colours)
+## UMAP (with cell type labels)
+## heatmap (top marker genes)
+## trajectory plot (all or on subset of cells/within a clust)
+## DE (volcano plot)
 ```
