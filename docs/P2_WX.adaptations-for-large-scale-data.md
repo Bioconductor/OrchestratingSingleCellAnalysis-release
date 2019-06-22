@@ -53,8 +53,8 @@ bm <- bench::mark(
 ## # A tibble: 2 x 4
 ##   expression                                    min   median mem_alloc
 ##   <bch:expr>                               <bch:tm> <bch:tm> <bch:byt>
-## 1 runPCA(tiny_sce, BSPARAM = IrlbaParam())   49.4ms   52.6ms        0B
-## 2 runPCA(tiny_sce, BSPARAM = ExactParam())    718ms    718ms        0B
+## 1 runPCA(tiny_sce, BSPARAM = IrlbaParam())   41.8ms   42.2ms        0B
+## 2 runPCA(tiny_sce, BSPARAM = ExactParam())    613ms    613ms        0B
 ```
 
 We can see that the approximate, irlba based implementation is about 6 times faster than the exact version in this case.
@@ -79,10 +79,10 @@ bm <- bench::mark(
 
 ```
 ## # A tibble: 2 x 4
-##   expression                                               min   median
-##   <bch:expr>                                          <bch:tm> <bch:tm>
-## 1 buildSNNGraph(tiny_sce_pca, BNPARAM = AnnoyParam())    1.31s    1.31s
-## 2 buildSNNGraph(tiny_sce_pca, BNPARAM = KmknnParam()) 769.95ms 769.95ms
+##   expression                                              min  median
+##   <bch:expr>                                          <bch:t> <bch:t>
+## 1 buildSNNGraph(tiny_sce_pca, BNPARAM = AnnoyParam()) 679.1ms 679.1ms
+## 2 buildSNNGraph(tiny_sce_pca, BNPARAM = KmknnParam())   1.41s   1.41s
 ## # … with 1 more variable: mem_alloc <bch:byt>
 ```
 
@@ -116,8 +116,8 @@ bm <- bench::mark(
 ## # A tibble: 2 x 4
 ##   expression                                          min  median mem_alloc
 ##   <bch:expr>                                     <bch:tm> <bch:t> <bch:byt>
-## 1 buildSNNGraph(big_sce, BNPARAM = AnnoyParam())     8.2s    8.2s        0B
-## 2 buildSNNGraph(big_sce, BNPARAM = KmknnParam())    14.4s   14.4s        0B
+## 1 buildSNNGraph(big_sce, BNPARAM = AnnoyParam())    5.94s   5.94s        0B
+## 2 buildSNNGraph(big_sce, BNPARAM = KmknnParam())   11.41s  11.41s        0B
 ```
 
 We see (more consistently) that we have realized some gains from using the approximate-based nearest neighbors search.
@@ -151,8 +151,8 @@ bm <- bench::mark(
 ## # A tibble: 2 x 4
 ##   expression                                           min median mem_alloc
 ##   <bch:expr>                                        <bch:> <bch:> <bch:byt>
-## 1 runUMAP(tiny_sce_pca, BPPARAM = SerialParam())     3.82s  3.82s        0B
-## 2 runUMAP(tiny_sce_pca, BPPARAM = MulticoreParam())     4s     4s        0B
+## 1 runUMAP(tiny_sce_pca, BPPARAM = SerialParam())      3.7s   3.7s        0B
+## 2 runUMAP(tiny_sce_pca, BPPARAM = MulticoreParam())  4.15s  4.15s        0B
 ```
 
 On this dataset and equipment, there's not much, if any, benefit to parallelization, but your mileage may vary dependent on those aspects.

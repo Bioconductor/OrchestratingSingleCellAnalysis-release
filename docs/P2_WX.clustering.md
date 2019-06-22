@@ -2,9 +2,14 @@
 
 
 
+Data derived from single-cell assays have enabled researchers to unravel tissue heterogeneity at unprecedented levels of detail, enabling the identification of novel cell types, as well as rare cell populations that were previously unidentifiable using bulk assays. Clustering - the process of grouping cells - is a fundamental step in deconvoluting heterogeneous single-cell data into distinct groups of cells with similar expression profiles. These clusters are interpreted as proxies for more abstract biological concepts such as discrete cell types or cell states.
+
+Here we will work with a dataset that contains labeled cell type populations to highlight different approaches to clustering scRNA-seq data.
+
+
 ## Understanding the Data
 
-To follow along with this chapter, we will be using the 5 cell line data from the [CellBench_data](https://github.com/LuyiTian/CellBench_data) repository. We will load the original dataset, and then subsample down to 1000 cells to make performing downstream calculations faster:
+To follow along with this chapter, we will be using the 5 cell line data from the [*CellBench_data*](https://github.com/LuyiTian/CellBench_data) repository. We will load the original dataset, and then subsample down to 1000 cells to make performing downstream calculations faster:
 
 
 ```r
