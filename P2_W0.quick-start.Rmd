@@ -46,15 +46,24 @@ sce <- HCAData('ica_bone_marrow')
 
 ## subsample for better brevity of compilation
 set.seed(1234)
-sce <- sce[, sample(ncol(sce), 2500)]
+sce <- sce[, sample(ncol(sce), 10000)]
 
+## Split out donor based on barcode
+Donor <- lapply(sce$Barcode, strsplit, '_')
+Donor <- unlist(lapply(Donor, function(x) { x[[1]][1] }))
+sce$Donor <- Donor
+
+## Convert DelayedArray to regular matrix
+counts(sce) <- as.matrix(counts(sce))
 
 ## Quality Control -----------------------------------------
 library(scater)
-sce <- calculateQCMetrics(sce)
+sce <- calculateQCMetrics(sce,
+                          BPPARAM = BiocParallel::MulticoreParam())
 
 ## remove "bad" cells by total counts/features per cell
-sce <- sce[, sce$total_counts > 500 & sce$total_features > 100]
+filt_lgl <- sce$total_counts > 500 & sce$total_features_by_counts > 100
+sce <- sce[, filt]
 
 ## to ease computation, remove low frequency genes from `sce`
 num_reads <- 1                  # minimum 1 read
@@ -64,7 +73,7 @@ sce <- sce[keep, ]
 
 ## for readability, use Symbols in lieu of IDs as rownames
 uniq_feats <- uniquifyFeatureNames(ID = rowData(sce)$ID,
-                                   Symbol = rowData(sce)$Symbol_TENx)
+                                   names = rowData(sce)$Symbol)
 rownames(sce) <- uniq_feats
 
 
@@ -76,7 +85,7 @@ sce <- normalize(sce)
 library(scran)
 
 fit <- trendVar(sce, use.spikes = FALSE)
-dec <- decomposeVar(sce)
+dec <- decomposeVar(sce, fit)
 hvg <- rownames(dec)[dec$bio > 0] # save gene names
 
 
@@ -84,22 +93,27 @@ hvg <- rownames(dec)[dec$bio > 0] # save gene names
 ## only perform this section if there is a batch effect
 library(batchelor)
 
-sce <- fastMNN(sce, batch = sce$Donor,
+mnn <- fastMNN(sce, batch = sce$Donor,
                subset.row = hvg,
                BSPARAM = BiocSingular::IrlbaParam(deferred = TRUE),
                BNPARAM = BiocNeighbors::AnnoyParam(),
-               BPPARAM = MulticoreParam())
+               BPPARAM = BiocParallel::MulticoreParam())
 
+reducedDim(sce, 'MNN') <- reducedDim(mnn, 'corrected')
 
 ## Dimensionality Reduction --------------------------------
 ## note on `use_dimred` arg: specifies which precomputed
 ## dimension reduction to use in `sce`; if there is none,
 ## it will first calculate and save PCA to `sce` then UMAP
 sce <- runUMAP(sce,
-               use_dimred = 'corrected', # omit if `fastMNN()` not run
-               BSPARAM = BiocSingular::IrlbaParam(deferred = TRUE),
+               use_dimred = 'MNN', # omit if `fastMNN()` not run
                BNPARAM = BiocNeighbors::AnnoyParam(),
-               BPPARAM = MulticoreParam())
+               BPPARAM = BiocParallel::MulticoreParam(),
+               ## unnecessary options, only used to make a pretty graph
+               min_dist = 0.5, repulsion_strength = 0.25,
+               spread = 0.6,
+               n_neighbors = 15)
+
 
 
 ## Clustering ----------------------------------------------
@@ -107,18 +121,23 @@ library(igraph)
 
 ## replace `use.dimred` with 'PCA' if no integration was performed
 ## this will be automatically added via `runUMAP` above
-g <- buildSNNGraph(sce, use.dimred = 'corrected',
-                   BNPARAM = AnnoyParam(),
-                   BPPARAM = MulticoreParam())
+g <- buildSNNGraph(sce, use.dimred = 'MNN',
+                   k = 30,  # higher = bigger clusters
+                   BNPARAM = BiocNeighbors::AnnoyParam(),
+                   BPPARAM = BiocParallel::MulticoreParam())
 clusters <- as.factor(igraph::cluster_louvain(g)$membership)
 sce$clusters <- clusters
 
 
 ## Differential Expression ---------------------------------
 markers <- findMarkers(sce, clusters = sce$clusters,
+                       block = sce$Donor, # use to get within-donor DE
                        direction = 'up', lfc = 1.5,
+                       pval.type = "all", # get cluster-unique markers
                        subset.row = hvg,
-                       BPPARAM = MulticoreParam())
+                       BPPARAM = BiocParallel::MulticoreParam())
+
+
 
 ## library(MAST)
 ## todo: write MAST func to comparing just two clusters
@@ -152,4 +171,63 @@ library(iSEE)
 ## heatmap (top marker genes)
 ## trajectory plot (all or on subset of cells/within a clust)
 ## DE (volcano plot)
+
+
+## Pre-batch correction
+tmp <- runPCA(sce,
+              BSPARAM = BiocSingular::IrlbaParam(),
+              BPPARAM = BiocParallel::MulticoreParam())
+tmp <- runUMAP(tmp,
+               BNPARAM = BiocNeighbors::AnnoyParam(),
+               BPPARAM = BiocParallel::MulticoreParam())
+plotUMAP(tmp, colour_by = 'Donor')
+
+
+## UMAP plots by different characteristics
+plotUMAP(sce, colour_by = 'Donor')
+plotUMAP(sce, colour_by = 'CD3E')
+plotUMAP(sce, colour_by = 'CD79A')
+plotUMAP(sce, colour_by = 'LYZ')
+plotUMAP(sce, colour_by = 'NKG7')
+plotUMAP(sce, colour_by = 'CD8B')
+plotUMAP(sce, colour_by = 'IL7R')
+plotUMAP(sce, colour_by = 'HBB')
+plotUMAP(sce, colour_by = 'MT-ND3')
+
+plotUMAP(sce, colour_by = 'clusters', text_by = 'clusters')
+
+
+
+
+## Top global markers per cluster
+top_markers <- lapply(markers, function(x) {
+    rownames(x)[1:20]
+})
+
+top_markers <- sort(unique(unlist(top_markers)))
+top_markers <- top_markers[!grepl('MT-|^RP', top_markers)]
+
+set.seed(1234)
+plotHeatmap(sce[, sample(ncol(sce), 5000)],
+            features = top_markers,
+            color = viridis::viridis(101, option = 'A'),
+##            symmetric = TRUE, zlim = c(-5, 5),
+            colour_columns_by = 'clusters',
+            clustering_method = 'ward.D2',
+            show_colnames = FALSE,
+            fontsize_row = 4
+            )
+
+
+## Volcano plot - not run
+marker_tbl_1 <- as.data.frame(markers[[1]])
+
+marker_tbl_1 %>%
+    ggplot(aes(x = logFC.2, y = -log10(FDR))) +
+    geom_point() +
+    geom_vline(xintercept = c(-log(1.5), log(1.5)), linetype = 'dashed') +
+    theme_classic()
+
+
+
 ```
