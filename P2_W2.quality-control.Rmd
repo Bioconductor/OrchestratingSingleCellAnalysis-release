@@ -137,7 +137,7 @@ DataFrame(LibSize=sum(qc.lib), NExprs=sum(qc.nexprs),
 
 # Retain only high-quality cells in the SingleCellExperiment.
 filtered <- sce[,!discard]
-filtered
+dim(filtered)
 ```
 
 While simple, this strategy generally requires considerable experience to determine appropriate thresholds for each experimental protocol and biological system.
@@ -160,6 +160,14 @@ It ensures that the threshold is not a negative value, which would be meaningles
 qc.lib2 <- isOutlier(log(sce$total_counts), nmads=3, type="lower")
 qc.nexprs2 <- isOutlier(log(sce$total_features_by_counts), nmads=3,
     type="lower")
+```
+
+`isOutlier()` will also return the exact filter thresholds for each metric.
+These may be useful for checking whether the automatically selected thresholds are appropriate.
+
+```{r}
+attr(qc.lib2, "thresholds")
+attr(qc.nexprs2, "thresholds")
 ```
 
 We identify outliers for the proportion-based metrics in a similar manner.
@@ -186,16 +194,6 @@ filtered2 <- sce[,!discard2]
 With this strategy, the thresholds adapt to both the location and spread of the distribution of values for a given metric.
 This allows the QC procedure to adjust to changes in sequencing depth, cDNA capture efficiency, mitochondrial content, etc. without requiring any user intervention or prior experience.
 However, some implicit assumptions are required - these are discussed below in more detail.
-
-**Comments:**
-
-- `isOutlier()` will also return the exact filter thresholds for each metric.
-These may be useful for checking whether the automatically selected thresholds are appropriate.
-
-    ```{r}
-    attr(qc.lib2, "thresholds")
-    attr(qc.nexprs2, "thresholds")
-    ```
 
 ### Considering experimental factors 
 
@@ -291,7 +289,7 @@ We call cells at a false discovery rate (FDR) of 0.1%, meaning that no more than
 
 ```{r}
 set.seed(100)
-e.out <- emptyDrops(counts(sce))
+e.out <- emptyDrops(counts(sce.pbmc))
 sum(e.out$FDR <= 0.001, na.rm=TRUE)
 ```
 
@@ -308,7 +306,7 @@ We then subset our `SingleCellExperiment` object to retain only the detected cel
 
 ```{r}
 # using which() to automatically remove NAs.
-sce <- sce[,which(e.out$FDR <= 0.001)]
+sce.pbmc <- sce.pbmc[,which(e.out$FDR <= 0.001)]
 ```
 
 Users wanting to use the cell calling algorithm from the _CellRanger_ pipeline (version 2) can call `defaultDrops()` instead.
@@ -317,11 +315,10 @@ It also requires an estimate of the expected number of cells in the experiment.
 
 ### Examining cell-calling diagnostics
 
-The number of Monte Carlo iterations (specified by the `niters` argument in `emptyDrops()`) determines the lower bound for the _p_v
-alues [@phipson2010permutation].
-The `Limited` field in the output indicates whether or not the computed _p_-value for a particular barcode is bounded by the number of iterations.
+The number of Monte Carlo iterations determines the lower bound for the $p$-values [@phipson2010permutation].
+The `Limited` field in the output indicates whether or not the computed $p$-value for a particular barcode is bounded by the number of iterations.
 If any non-significant barcodes are `TRUE` for `Limited`, we may need to increase the number of iterations.
-A larger number of iterations will often result in a lower _p_-value for these barcodes, which may allow them to be detected after correcting for multiple testing.
+A larger number of iterations will result in a lower $p$-value for these barcodes, which may allow them to be detected after correcting for multiple testing.
 
 ```{r}
 table(Sig=e.out$FDR <= 0.01, Limited=e.out$Limited)
