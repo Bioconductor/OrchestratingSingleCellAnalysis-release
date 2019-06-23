@@ -239,6 +239,116 @@ filtered3 <- sce[,!discard3]
 
 TODO.
 
+## Droplet-specific procedures
+
+### Background
+
+An interesting aspect of droplet-based data is that we have no prior knowledge about which droplets (i.e., cell barcodes) actually contain cells, and which are empty.
+Thus, we need to call cells from empty droplets based on the observed expression profiles.
+This is not entirely straightforward as empty droplets can contain ambient (i.e., extracellular) RNA that can be captured and sequenced, resulting in non-zero counts for libraries that do not contain any cell.
+
+To demonstrate, we obtain the **unfiltered** count matrix for the PBMC dataset from 10X Genomics.
+This has not been subjected to the cell filtering algorithm method in the _CellRanger_ software suite, allowing us to apply our own algorithms for identifying the libraries that correspond to cells.
+
+```{r}
+# Hoping to shovel this code into TENxPBMCData.
+# Just bear with it for now.
+library(BiocFileCache)
+bfc <- BiocFileCache("raw_data", ask = FALSE)
+raw.path <- bfcrpath(bfc, file.path("http://cf.10xgenomics.com/samples",
+    "cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz"))
+untar(raw.path, exdir=file.path(tempdir(), "pbmc4k"))
+
+library(DropletUtils)
+library(Matrix)
+fname <- file.path(tempdir(), "pbmc4k/raw_gene_bc_matrices/GRCh38")
+sce.pbmc <- read10xCounts(fname, col.names=TRUE)
+sce.pbmc
+```
+
+The distribution of total counts exhibits a sharp transition between barcodes with large and small total counts (Figure \@ref(fig:rankplot)), probably corresponding to cell-containing and empty droplets respectively.
+
+```{r rankplot, fig.cap="Total UMI count for each barcode in the PBMC dataset, plotted against its rank (in decreasing order of total counts). The inferred locations of the inflection and knee points are also shown."}
+bcrank <- barcodeRanks(counts(sce.pbmc))
+
+# Only showing unique points for plotting speed.
+uniq <- !duplicated(bcrank$rank)
+plot(bcrank$rank[uniq], bcrank$total[uniq], log="xy",
+    xlab="Rank", ylab="Total UMI count", cex.lab=1.2)
+
+abline(h=metadata(bcrank)$inflection, col="darkgreen", lty=2)
+abline(h=metadata(bcrank)$knee, col="dodgerblue", lty=2)
+
+legend("bottomleft", legend=c("Inflection", "Knee"), 
+        col=c("darkgreen", "dodgerblue"), lty=2, cex=1.2)
+```
+
+### Testing for empty droplets
+
+We use the `emptyDrops()` function to test whether the expression profile for each cell barcode is significantly different from the ambient RNA pool [@lun2018distinguishing].
+Any significant deviation indicates that the barcode corresponds to a cell-containing droplet.
+We call cells at a false discovery rate (FDR) of 0.1%, meaning that no more than 0.1% of our called barcodes should be empty droplets on average.
+
+```{r}
+set.seed(100)
+e.out <- emptyDrops(counts(sce))
+sum(e.out$FDR <= 0.001, na.rm=TRUE)
+```
+
+`emptyDrops()` computes Monte Carlo $p$-values based on a Dirichlet-multinomial model of sampling molecules into droplets.
+These $p$-values are stochastic so it is important to set the random seed to obtain reproducible results.
+The stability of the Monte Carlo $p$-values depends on the number of iterations used to compute them. 
+This is controlled using the `niters=` argument in `emptyDrops()`, set to a default of 10000 for speed.
+Larger values improve stability with the only cost being that of time, so users should set `niters=` to the largest value they are willing to wait for.
+
+The function also assumes that cell barcodes with total UMI counts below a certain threshold (`lower=100` by default) correspond to empty droplets, and uses them to estimate the ambient expression profile.
+By definition, these barcodes cannot be cell-containing droplets and are excluded from the hypothesis testing, hence the `NA`s in the output.
+
+We then subset our `SingleCellExperiment` object to retain only the detected cells.
+
+```{r}
+# using which() to automatically remove NAs.
+sce <- sce[,which(e.out$FDR <= 0.001)]
+```
+
+Users wanting to use the cell calling algorithm from the _CellRanger_ pipeline (version 2) can call `defaultDrops()` instead.
+This tends to be quite conservative as it often discards genuine cells with low RNA content (and thus low total counts).
+It also requires an estimate of the expected number of cells in the experiment.
+
+### Examining cell-calling diagnostics
+
+The number of Monte Carlo iterations (specified by the `niters` argument in `emptyDrops()`) determines the lower bound for the _p_v
+alues [@phipson2010permutation].
+The `Limited` field in the output indicates whether or not the computed _p_-value for a particular barcode is bounded by the number of iterations.
+If any non-significant barcodes are `TRUE` for `Limited`, we may need to increase the number of iterations.
+A larger number of iterations will often result in a lower _p_-value for these barcodes, which may allow them to be detected after correcting for multiple testing.
+
+```{r}
+table(Sig=e.out$FDR <= 0.01, Limited=e.out$Limited)
+```
+
+As mentioned above, `emptyDrops()` assumes that barcodes with low total UMI counts are empty droplets.
+Thus, the null hypothesis should be true for all of these barcodes. 
+We can check whether the hypothesis testing procedure holds its size by examining the distribution of $p$-values for low-total barcodes.
+Ideally, the distribution should be close to uniform.
+
+```{r ambientpvalhist, fig.cap="Distribution of $p$-values for the assumed empty droplets."}
+full.data <- read10xCounts(fname, col.names=TRUE)
+set.seed(100)
+limit <- 100   
+all.out <- emptyDrops(counts(full.data), lower=limit, test.ambient=TRUE)
+hist(all.out$PValue[all.out$Total <= limit & all.out$Total > 0],
+    xlab="P-value", main="", col="grey80") 
+```
+
+Large peaks near zero indicate that barcodes with total counts below `lower` are not all ambient in origin.
+This can be resolved by decreasing `lower` further to ensure that barcodes corresponding to droplets with very small cells are not used to estimate the ambient profile.
+
+While `emptyDrops()` will distinguish cells from empty droplets, it makes no statement about the quality of the cells.
+It is entirely possible for droplets to contain damaged or dying cells, which need to be removed prior to downstream analysis.
+This can be done using the outlier-based strategy to set data-adaptive thresholds on the mitochondrial proportion.
+(`emptyDrops()` will already remove cells with low library sizes or number of expressed genes, so further filtering on these metrics is generally not necessary.)
+
 ## Assumptions of outlier detection
 
 An outlier-based definition for low-quality cells assumes that most cells are of acceptable quality.
