@@ -351,6 +351,12 @@ This can be done using the outlier-based strategy to set data-adaptive threshold
 
 ## Assumptions of outlier detection
 
+### Overview
+
+The use of `isOutlier()` is an effective general strategy for identifying and removing low-quality cells.
+However, it involves a number of assumptions about the experiment and biological system, and while these assumptions are mostly reasonable, users should still keep them in mind when interpreting the results.
+(Be alert, not alarmed, for those who remember the Australian Government's ~indoctrination~ counter-terror program.)
+
 An outlier-based definition for low-quality cells assumes that most cells are of acceptable quality.
 This is usually a reasonable expectation and can be experimentally supported in some situations by visually checking that the cells are intact, e.g., on the microwell plate.
 If most cells are of (unacceptably) low quality, the adaptive thresholds will fail as they cannot remove the majority of cells.
@@ -369,3 +375,62 @@ The use of the MAD mitigates this problem by accounting for biological variabili
 A heterogeneous population should have higher variability in the metrics among high-quality cells, increasing the MAD and reducing the chance of incorrectly removing particular cell types (at the cost of reducing power to remove low-quality cells).
 Systematic differences in the QC metrics can be handled to some extent using the `batch=` argument in the `isOutlier()` function.
 However, this is not applicable in experiments where the relevant factors (e.g., cell type) are not known in advance.
+
+### Checking for discarded cell types
+
+The biggest concern with the assumptions is whether a cell type is lost during the QC procedure.
+We can diagnose this by looking for differences in gene expression between the discarded and retained cells.
+To demonstrate, we compute the average count across the discarded and retained pools in the 416B data set, and we compute the log-fold change between the averages.
+
+```{r}
+lost <- calcAverage(counts(sce)[,!discard])
+kept <- calcAverage(counts(sce)[,discard])
+
+library(edgeR)
+logged <- cpm(cbind(lost, kept), log=TRUE, prior.count=2)
+logFC <- logged[,1] - logged[,2]
+abundance <- rowMeans(logged)
+```
+
+If the discarded pool is enriched for a certain cell type, we should observe increased expression of the corresponding marker genes.
+No systematic upregulation of genes is apparent in the discarded pool in Figure \@ref(fig:discardplot416b), suggesting that the QC step did not inadvertently filter out a cell type in the 416B dataset.
+
+```{r discardplot416b, fig.cap="Log-fold change in expression in the discarded cells compared to the retained cells in the 416B dataset. Each point represents a gene, with spike-in and mitochondrial transcripts in red and blue respectively."}
+plot(abundance, logFC, xlab="Average count", ylab="Log-FC (lost/kept)", pch=16)
+is.spike <- isSpike(sce)
+points(abundance[is.spike], logFC[is.spike], col="red", pch=16)
+points(abundance[is.mito], logFC[is.mito], col="dodgerblue", pch=16)
+```
+
+For comparison, we consider our PBMC data set where we remove all libraries with a library size below 500.
+
+```{r}
+alt.discard <- colSums(counts(sce.pbmc)) < 500
+lost <- calcAverage(counts(sce.pbmc)[,alt.discard])
+kept <- calcAverage(counts(sce.pbmc)[,!alt.discard])
+
+logged <- edgeR::cpm(cbind(lost, kept), log=TRUE, prior.count=2)
+logFC <- logged[,1] - logged[,2]
+abundance <- rowMeans(logged)
+```
+
+The presence of a distinct population in the discarded pool manifests in Figure \@ref(fig:discardplotpbmc) as a a number of genes that are 
+This includes _PF4_, _PPBP_ and _CAVIN2_, which (spoiler alert!) indicates that there is a platelet population that has been discarded by `alt.discard`.
+
+```{r discardplotpbmc, fig.cap="Average counts across all discarded and retained cells in the PBMC dataset, after using a more stringent filter on the total UMI count. Each point represents a gene, with platelet-related genes highlighted in orange."}
+plot(abundance, logFC, xlab="Average count", ylab="Log-FC (lost/kept)", pch=16)
+platelet <- c("PF4", "PPBP", "CAVIN2")
+
+library(org.Hs.eg.db)
+ids <- mapIds(org.Hs.eg.db, keys=platelet, column="ENSEMBL", keytype="SYMBOL")
+points(abundance[ids], logFC[ids], col="orange", pch=16)
+```
+
+If we suspect that cell types have been incorrectly discarded by our QC procedure, the most direct solution is to relax the QC filters by increasing `nmads=` in the `isOutlier()` calls.
+We can also avoid filtering on metrics that are associated with genuine biological differences between cell types.
+
+As an aside, it is worth mentioning that the true technical quality of a cell may also be correlated with its type.
+(This differs from a correlation between the cell type and the QC metrics, as the latter are our imperfect proxies for quality.)
+This can arise if some cell types are not amenable to dissociation or microfluidics handling during the scRNA-seq protocol.
+In such cases, it is possible to "correctly" discard an entire cell type during QC if all of its cells are damaged.
+Indeed, concerns over the computational removal of cell types during QC are probably minor compared to losses in the experimental protocol.
