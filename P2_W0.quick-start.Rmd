@@ -18,6 +18,8 @@ Note that the *HCAData* bone marrow dataset is comprised of 8 donors, so we have
 Lastly, note that some arguments are added for the sake of reducing computational runtime and can be modified or removed. These include parallelization via `BPPARAM`, and different algorithms for SVD and nearest-neighbor via `BSPARAM` and `BNPARAM`. See the "Adaptations for Large-scale Data" chapter for more information on these arguments.
 
 
+## Code
+
 ```{r}
 ## Setup ---------------------------------------------------
 ## not run - uncomment these lines to install necessary pkgs
@@ -31,7 +33,8 @@ Lastly, note that some arguments are added for the sake of reducing computationa
 ##   'MAST', 'slingshot',             # DE + Trajectory
 ##   'iSEE'                           # interactive viz
 ## ))
-
+```
+```{r}
 ## Import data into R --------------------------------------
 
 ## For reading in data directly from CellRanger output
@@ -55,14 +58,16 @@ sce$Donor <- Donor
 
 ## Convert DelayedArray to regular matrix
 counts(sce) <- as.matrix(counts(sce))
+```
 
+```{r}
 ## Quality Control -----------------------------------------
 library(scater)
 sce <- calculateQCMetrics(sce,
                           BPPARAM = BiocParallel::MulticoreParam())
 
 ## remove "bad" cells by total counts/features per cell
-filt_lgl <- sce$total_counts > 500 & sce$total_features_by_counts > 100
+filt <- sce$total_counts > 500 & sce$total_features_by_counts > 100
 sce <- sce[, filt]
 
 ## to ease computation, remove low frequency genes from `sce`
@@ -75,24 +80,28 @@ sce <- sce[keep, ]
 uniq_feats <- uniquifyFeatureNames(ID = rowData(sce)$ID,
                                    names = rowData(sce)$Symbol)
 rownames(sce) <- uniq_feats
+```
 
-
+```{r}
 ## Normalization -------------------------------------------
 sce <- normalize(sce)
+```
 
-
+```{r}
 ## Feature Selection ---------------------------------------
 library(scran)
 
 fit <- trendVar(sce, use.spikes = FALSE)
 dec <- decomposeVar(sce, fit)
 hvg <- rownames(dec)[dec$bio > 0] # save gene names
+```
 
-
+```{r}
 ## Integration ---------------------------------------------
 ## only perform this section if there is a batch effect
 library(batchelor)
 
+set.seed(1234)
 mnn <- fastMNN(sce, batch = sce$Donor,
                subset.row = hvg,
                BSPARAM = BiocSingular::IrlbaParam(deferred = TRUE),
@@ -100,36 +109,42 @@ mnn <- fastMNN(sce, batch = sce$Donor,
                BPPARAM = BiocParallel::MulticoreParam())
 
 reducedDim(sce, 'MNN') <- reducedDim(mnn, 'corrected')
+```
 
+```{r}
 ## Dimensionality Reduction --------------------------------
 ## note on `use_dimred` arg: specifies which precomputed
 ## dimension reduction to use in `sce`; if there is none,
 ## it will first calculate and save PCA to `sce` then UMAP
+set.seed(1234)
 sce <- runUMAP(sce,
                use_dimred = 'MNN', # omit if `fastMNN()` not run
                BNPARAM = BiocNeighbors::AnnoyParam(),
                BPPARAM = BiocParallel::MulticoreParam(),
                ## unnecessary options, only used to make a pretty graph
                min_dist = 0.5, repulsion_strength = 0.25,
-               spread = 0.6,
+               spread = 0.7,
                n_neighbors = 15)
+```
 
-
-
+```{r}
 ## Clustering ----------------------------------------------
 library(igraph)
 
 ## replace `use.dimred` with 'PCA' if no integration was performed
 ## this will be automatically added via `runUMAP` above
+set.seed(1234)
 g <- buildSNNGraph(sce, use.dimred = 'MNN',
                    k = 30,  # higher = bigger clusters
                    BNPARAM = BiocNeighbors::AnnoyParam(),
                    BPPARAM = BiocParallel::MulticoreParam())
 clusters <- as.factor(igraph::cluster_louvain(g)$membership)
 sce$clusters <- clusters
+```
 
-
+```{r}
 ## Differential Expression ---------------------------------
+## pval.type = 'all' : only get globally unique markers
 markers <- findMarkers(sce, clusters = sce$clusters,
                        block = sce$Donor, # use to get within-donor DE
                        direction = 'up', lfc = 1.5,
@@ -137,33 +152,80 @@ markers <- findMarkers(sce, clusters = sce$clusters,
                        subset.row = hvg,
                        BPPARAM = BiocParallel::MulticoreParam())
 
-
-
-## library(MAST)
-## todo: write MAST func to comparing just two clusters
-
-
-## Annotation ----------------------------------------------
-## todo: figure out what cell types are present
-## use a simple marker panel?
-
-
-## Trajectory Analysis -------------------------------------
-## library(slingshot)
-## todo: within a cluster, run slingshot for funsies
-
-
-## Interactive Exploration ---------------------------------
-library(iSEE)
-## iSEE(sce) ## not run; opens a web browser GUI
+## pval.type = 'any' : get all potential markers of any direction/comparison
+markers_any <- findMarkers(sce, clusters = sce$clusters,
+                           block = sce$Donor, # use to get within-donor DE
+                           direction = 'any', lfc = 0,
+                           pval.type = "any", # get all potential markers
+                           subset.row = hvg,
+                           BPPARAM = BiocParallel::MulticoreParam())
 ```
 
 ```{r}
+## Annotation ----------------------------------------------
+## Get mappings of ENTREZID to Symbol
+library(org.Hs.eg.db)
+
+keys_entrez <- keys(org.Hs.eg.db, 'ENTREZID')
+
+mapping_es <- AnnotationDbi::select(org.Hs.eg.db,
+                                    keys = keys_entrez,
+                                    columns = c('ENTREZID', 'SYMBOL'),
+                                    keytype = 'ENTREZID')
+mapping_es$ENTREZID <- as.integer(mapping_es$ENTREZID)
+
+## Get pathways of interest - convert to list with symbol
+## devtools::install_github('stephenturner/msigdf')
+library(msigdf)
+
+mdb <- dplyr::inner_join(msigdf.human, mapping_es,
+                         by = c('entrez' = 'ENTREZID')) %>%
+    dplyr::filter(collection == 'c7') %>%
+    dplyr::select(-collection, -entrez) %>%
+    dplyr::group_nest(geneset)
+
+pathways <- purrr::map(mdb$data, function(x) {
+    as.character(x$SYMBOL)
+})
+names(pathways) <- mdb$geneset
+
+## Get stats based on markers search - compare clusters 3 vs 2
+stats <- markers_any[[3]]$logFC.2
+names(stats) <- rownames(markers_any[[3]])
+
+## Run fast gene set enrichment analysis (see plot at bottom)
+library(fgsea)
+
+fgseaRes <- fgsea(pathways = pathways, 
+                  stats = stats,
+                  minSize = 15,
+                  maxSize = 500,
+                  nperm = 10000)
+```
+
+```{r}
+## Trajectory Analysis -------------------------------------
+library(slingshot)
+
+slc <- slingshot(sce[, sce$clusters %in% c(3, 5, 9)],
+                 clusterLabels = 'clusters',
+                 reducedDim = 'UMAP')
+```
+
+```{r}
+## Interactive Exploration ---------------------------------
+## library(iSEE)
+## iSEE(sce) ## not run; opens a web browser GUI
+```
+
+## Visualizations
+
+```{r}
 ## Visualizations ------------------------------------------
-## todo: need the following:
-## quality control: histogram of total counts
-## normalization: ???
-## feature selection: variance v mean expression?
+## todo: quality control: histogram of total counts
+## todo: normalization: ???
+## todo: feature selection: variance v mean expression?
+##
 ## PCA/UMAP: before and after batch correction
 ## UMAP (no colours)
 ## UMAP (with clusters colours)
@@ -171,35 +233,55 @@ library(iSEE)
 ## heatmap (top marker genes)
 ## trajectory plot (all or on subset of cells/within a clust)
 ## DE (volcano plot)
+## Gene set enrichment plot
+```
 
+```{r}
+## Trajectory analysis -------------------------------------
+## Slingshot trajectory plot
+library(RColorBrewer)
+colors <- colorRampPalette(brewer.pal(11, 'Spectral')[-6])(100)
+plotcol <- colors[cut(slc$slingPseudotime_1, breaks = 100)]
 
-## Pre-batch correction
+plot(reducedDims(slc)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(slc), lwd = 2, col = 'black')
+```
+
+```{r}
+## UMAP based plots ----------------------------------------
+## UMAP (no colours)
+plotUMAP(sce)
+
+## Pre vs post batch correction
 tmp <- runPCA(sce,
               BSPARAM = BiocSingular::IrlbaParam(),
               BPPARAM = BiocParallel::MulticoreParam())
 tmp <- runUMAP(tmp,
                BNPARAM = BiocNeighbors::AnnoyParam(),
-               BPPARAM = BiocParallel::MulticoreParam())
-plotUMAP(tmp, colour_by = 'Donor')
+               BPPARAM = BiocParallel::MulticoreParam(),
+               ## unnecessary options, only used to make a pretty graph
+               min_dist = 0.5, repulsion_strength = 0.25,
+               spread = 0.7,
+               n_neighbors = 15)
+p0 <- plotUMAP(tmp, colour_by = 'Donor')
+p1 <- plotUMAP(sce, colour_by = 'Donor')
+patchwork::wrap_plots(p0, p1, nrow = 2)
 
+## Gene expression on UMAP plots
+p2 <- plotUMAP(sce, colour_by = 'CD3E')
+p3 <- plotUMAP(sce, colour_by = 'CD79A')
+p4 <- plotUMAP(sce, colour_by = 'LYZ')
+p5 <- plotUMAP(sce, colour_by = 'NKG7')
 
-## UMAP plots by different characteristics
-plotUMAP(sce, colour_by = 'Donor')
-plotUMAP(sce, colour_by = 'CD3E')
-plotUMAP(sce, colour_by = 'CD79A')
-plotUMAP(sce, colour_by = 'LYZ')
-plotUMAP(sce, colour_by = 'NKG7')
-plotUMAP(sce, colour_by = 'CD8B')
-plotUMAP(sce, colour_by = 'IL7R')
-plotUMAP(sce, colour_by = 'HBB')
-plotUMAP(sce, colour_by = 'MT-ND3')
+patchwork::wrap_plots(p2, p3, p4, p5, nrow = 2)
 
+## Clusters on UMAP
 plotUMAP(sce, colour_by = 'clusters', text_by = 'clusters')
+```
 
-
-
-
-## Top global markers per cluster
+```{r}
+## Gene expression plots -----------------------------------
+## Heatmap: Top global markers per cluster
 top_markers <- lapply(markers, function(x) {
     rownames(x)[1:20]
 })
@@ -215,19 +297,31 @@ plotHeatmap(sce[, sample(ncol(sce), 5000)],
             colour_columns_by = 'clusters',
             clustering_method = 'ward.D2',
             show_colnames = FALSE,
-            fontsize_row = 4
+            fontsize_row = 6
             )
 
+## Volcano plot
+marker_tbl_3 <- as.data.frame(markers_any[[3]])
 
-## Volcano plot - not run
-marker_tbl_1 <- as.data.frame(markers[[1]])
-
-marker_tbl_1 %>%
+marker_tbl_3 %>%
     ggplot(aes(x = logFC.2, y = -log10(FDR))) +
     geom_point() +
     geom_vline(xintercept = c(-log(1.5), log(1.5)), linetype = 'dashed') +
-    theme_classic()
+    theme_classic() +
+    coord_cartesian(xlim = c(-2, 2), expand = FALSE)
+```
 
+```{r}
+## Gene set enrichment -------------------------------------
+## Plot multiple pathways enrichment plots
+topPathwaysUp <- fgseaRes[ES > 0][head(order(pval), n=10), pathway]
+topPathwaysDown <- fgseaRes[ES < 0][head(order(pval), n=10), pathway]
+topPathways <- c(topPathwaysUp, rev(topPathwaysDown))
+plotGseaTable(pathways[topPathways], stats,
+              fgseaRes, 
+              gseaParam = 0.5)
 
-
+## Traditional GSEA plot
+plotEnrichment(pathways[["GSE29618_MONOCYTE_VS_PDC_UP"]],
+               stats)
 ```
