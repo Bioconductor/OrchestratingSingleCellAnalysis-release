@@ -177,6 +177,7 @@ mapping_es$ENTREZID <- as.integer(mapping_es$ENTREZID)
 ## Get pathways of interest - convert to list with symbol
 ## devtools::install_github('stephenturner/msigdf')
 library(msigdf)
+library(dplyr)
 
 mdb <- dplyr::inner_join(msigdf.human, mapping_es,
                          by = c('entrez' = 'ENTREZID')) %>%

@@ -25,7 +25,7 @@ library(TENxPBMCData)
 sce <- TENxPBMCData('pbmc4k')
 
 set.seed(1234)
-sce <- sce[, sample(ncol(sce), 2000)]
+sce <- sce[, sample(ncol(sce), 1000)]
 sce
 ```
 
@@ -188,13 +188,21 @@ counts(sce) <- as.matrix(counts(sce))
 
 And now we run the `sc3()` function to test for variable numbers of clusters by setting the `ks` argument. Here we search for 3 to 6` clusters:
 
+
+
+<!-- ## HOTFIX NEEDED -->
+```{r include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(eval=FALSE) # NEEDS HOTFIX - SC3 CRASHES
+```
+
 ```{r}
 library(SC3)
 
 ## SC3 will return an SCE object with appended "sc3_" columns
 sce <- sc3(sce,
            ks = 3:6,
-           k_estimator = TRUE)
+           k_estimator = TRUE,
+           n_cores = 2)
 ```
 
 After using `sc3()`, the function returns the original `SingleCellExperiment` object, but with new columns in `colData(sce)` corresponding to the different `ks` supplied to the function, as well as a full representation of the analysis that is stored in `metadata(sce)$sc3`, which includes an estimate of the optimal `k` (as dictated by the `k_estimator = TRUE` argument above). 
