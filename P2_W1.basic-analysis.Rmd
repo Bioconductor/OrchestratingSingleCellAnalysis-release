@@ -1,3 +1,4 @@
+
 # A Basic Analysis
 
 ```{r setup, include=FALSE}
@@ -444,8 +445,7 @@ rho[1:3, ]
 
 We can then run the `cellassign` method to produce cell type labels on a per cell basis:
 
-```{r, eval=FALSE}
-## not run - results pulled from a prior run
+```{r}
 ## devtools::install_github('Irrationone/cellassign')
 library(cellassign)
 library(tensorflow)
@@ -458,16 +458,6 @@ fit <- cellassign(sce[rownames(rho), ],
 
 ## add cell type info into colData
 colData(sce)$cellassign_type <- fit$cell_type
-```
-
-```{r, include=FALSE, eval=FALSE}
-## save cellassign results from one run to pull up for plot
-saveRDS(fit$cell_type, here::here('inst/extdata/cellassign_type.rds'))
-```
-
-```{r, include=FALSE}
-cellassign_type <- readRDS(here::here('_rfiles/cellassign_type.rds'))
-colData(sce)$cellassign_type <- cellassign_type
 ```
 
 ```{r, fig.cap="UMAP showing the results of automated label assignment as performed by cellassign."}

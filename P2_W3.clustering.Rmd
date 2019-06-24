@@ -2,6 +2,7 @@
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
+                      eval=FALSE, # NEEDS HOTFIX
                       message = FALSE, warning = FALSE, error = FALSE,
                       dev = 'CairoPNG',
                       cache = TRUE)
@@ -10,60 +11,67 @@ options(digits = 4)
 
 Data derived from single-cell assays have enabled researchers to unravel tissue heterogeneity at unprecedented levels of detail, enabling the identification of novel cell types, as well as rare cell populations that were previously unidentifiable using bulk assays. Clustering - the process of grouping cells - is a fundamental step in deconvoluting heterogeneous single-cell data into distinct groups of cells with similar expression profiles. These clusters are interpreted as proxies for more abstract biological concepts such as discrete cell types or cell states.
 
-Here we will work with a dataset that contains labeled cell type populations to highlight different approaches to clustering scRNA-seq data.
+<!-- Here we will work with a dataset that contains labeled cell type populations to highlight different approaches to clustering scRNA-seq data. -->
 
 
-## Understanding the Data
+## Loading the Data
 
-To follow along with this chapter, we will be using the 5 cell line data from the [*CellBench_data*](https://github.com/LuyiTian/CellBench_data) repository. We will load the original dataset, and then subsample down to 1000 cells to make performing downstream calculations faster:
+<!-- To follow along with this chapter, we will be using the 5 cell line data from the [*CellBench_data*](https://github.com/LuyiTian/CellBench_data) repository. We will load the original dataset, and then subsample down to 1000 cells to make performing downstream calculations faster: -->
 
 ```{r}
-library(here)
-sce <- readRDS(here('_rfiles/_data/cellbench_sce_sc_10x_5cl_qc.rds'))
+## library(TENxBrainData)  # would be neat to try on this
+## sce <- TENxBrainData()
+library(TENxPBMCData)
+sce <- TENxPBMCData('pbmc4k')
 
-sce <- sce[, sample(ncol(sce), 1000)]
+set.seed(1234)
+sce <- sce[, sample(ncol(sce), 2000)]
 sce
 ```
 
-The per cell labels pertaining to the 5 cell lines assayed can be found within the `colData` component under the column name `cell_line`. We can count the number of instances of each cell line present in our subsampled dataset as follows:
+<!-- The per cell labels pertaining to the 5 cell lines assayed can be found within the `colData` component under the column name `cell_line`. We can count the number of instances of each cell line present in our subsampled dataset as follows: -->
 
-```{r}
-table(sce$cell_line)
-```
+<!-- ```{r} -->
+<!-- table(sce$cell_line) -->
+<!-- ``` -->
 
-Before continuing, we will perform feature selection and dimensionality reduction that will be used downstream by the clustering methods and visualizations. 
+Before continuing, we will perform normalization, feature selection, and dimensionality reduction that will be used downstream by the clustering methods and visualizations. 
 
 ```{r}
 library(BiocSingular)
 library(scater)
 library(scran)
 
+## normalization
+sce <- normalize(sce)
+
 ## feature selection
 fit <- trendVar(sce, use.spikes = FALSE)
 dec <- decomposeVar(sce, fit)
-hvg_genes <- rownames(dec[dec$bio > 0, ]) # ~4k genes
+hvg <- rownames(dec[dec$bio > 0, ]) # ~4k genes
 
 ## dimensionality reduction
 set.seed(1234)
-sce <- runPCA(sce, ncomponents = 20,
-              feature_set = hvg_genes,
-              BSPARAM = IrlbaParam())
-## plot(attr(reducedDim(sce, 'PCA'), 'percentVar')) ## elbow plot
-sce <- runUMAP(sce, n_dimred = 20)
+sce <- runPCA(sce, 
+              feature_set = hvg)
 ```
-
-We can now visualize the 5 cell lines via UMAP:
 
 ```{r}
-plotUMAP(sce, colour_by = 'cell_line')
+sce <- runUMAP(sce)
 ```
 
-One thing to note is that, per our UMAP visualization, cell line H1975 appears to be two primary clusters, with some cells resembling the H838 cell line.
+We can now visualize the data prior to clustering via UMAP:
+
+```{r}
+plotUMAP(sce)
+```
+
+<!-- One thing to note is that, per our UMAP visualization, cell line H1975 appears to be two primary clusters, with some cells resembling the H838 cell line. -->
 
 
 ## Manual Clustering
 
-Low-level clustering relies on building the shared- or k-nearest neighbors graphs manually, and then applying a graph-based clustering algorithm based on the resulting graph. One such wrapper to construct the SNN/KNN graph comes from the `scran` package's `buildSNNGraph()` and `buildKNNGraph()` functions, respectively. The resulting `igraph` object from these functions can then be fed into any number of clustering algorithms provided by `igraph`. For example, louvain clustering is a popular algorithm that is implemented in the `cluster_louvain()` function.
+Low-level clustering relies on building the shared- or k-nearest neighbors graphs manually, and thenppppppppp applying a graph-based clustering algorithm based on the resulting graph. One such wrapper to construct the SNN/KNN graph comes from the `scran` package's `buildSNNGraph()` and `buildKNNGraph()` functions, respectively. The resulting `igraph` object from these functions can then be fed into any number of clustering algorithms provided by `igraph`. For example, louvain clustering is a popular algorithm that is implemented in the `cluster_louvain()` function.
 
 Further, one additional parameter to note in the `buildSNNGraph()` function below is the `BNPARAM`, which provides even finer control over nearest-neighbors detection via the `BiocNeighbors` package. This parameter allows the user to specify an implementation from `BiocNeighbors` to use that has been designed for high-dimensional data. Here, we highlight the use of an approximate method via the Annoy algorithm by way of providing `AnnoyParam()`.
 
@@ -79,10 +87,12 @@ We can then inspect the results of our clustering both on the UMAP as well as vi
 
 ```{r, fig.cap="Louvain clustering applied to an SNN graph constructed with k=50."}
 plotUMAP(sce, colour_by = 'louvain_clusters')
-table(sce$louvain_clusters, sce$cell_line)
 ```
 
-Overall at this k, we see that the clusters align very sensibly with the cell lines of origins.
+<!-- table(sce$louvain_clusters, sce$cell_line) -->
+
+
+<!-- Overall at this k, we see that the clusters align very sensibly with the cell lines of origins. -->
 
 
 ### Varying `k`
@@ -167,10 +177,16 @@ Before we use the *SC3* package, we first set a required `rowData` column for *S
 
 ```{r}
 ## SC3 requires this column to be appended
-rowData(sce)$feature_symbol <- rownames(sce) 
+rowData(sce)$feature_symbol <- rownames(sce)
 ```
 
-And now we run the `sc3()` function to test for variable numbers of clusters by setting the `ks` argument. Here we search for 3 to 7 clusters:
+Further, for compatibility purposes, we must make the counts in the `assays` slot are of class `matrix` rather than disk-backed classes such as `DelayedMatrix`:
+
+```{r}
+counts(sce) <- as.matrix(counts(sce))
+```
+
+And now we run the `sc3()` function to test for variable numbers of clusters by setting the `ks` argument. Here we search for 3 to 6` clusters:
 
 ```{r}
 library(SC3)
