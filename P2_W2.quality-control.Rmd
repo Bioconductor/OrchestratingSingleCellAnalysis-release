@@ -1,5 +1,10 @@
 # Quality Control
 
+```{r, echo=FALSE, results='asis'}
+source("workflows/extractor.R")
+setupHTML()
+```
+
 ## Motivation
 
 Low-quality cells in scRNA-seq data can arise from a variety of sources such as cell damage during dissociation
@@ -29,56 +34,12 @@ We will demonstrate the application of various QC procedures using a small scRNA
 This dataset contains SMART-seq2 data with spike-ins from two 96-well plates of 416B cells with and without induction of the _CBFB-MYH11_ oncogene.
 All libraries are provided with no prior quality control, allowing us to apply our own procedures as desired.
 
+```{r, results='asis', echo=FALSE}
+extractCached("workflows/lun-416b", "download", "sce.416b")
+```
+
 ```{r}
-# NOTE: to be moved to ExperimentHub. 
-# Bear with it for now.
-
-library(BiocFileCache)
-bfc <- BiocFileCache("raw_data", ask = FALSE)
-lun.zip <- bfcrpath(bfc, 
-    file.path("https://www.ebi.ac.uk/arrayexpress/files",
-        "E-MTAB-5522/E-MTAB-5522.processed.1.zip"))
-lun.sdrf <- bfcrpath(bfc, 
-    file.path("https://www.ebi.ac.uk/arrayexpress/files",
-        "E-MTAB-5522/E-MTAB-5522.sdrf.txt"))
-unzip(lun.zip, exdir=tempdir())
-
-plate1 <- read.delim(file.path(tempdir(), "counts_Calero_20160113.tsv"), 
-    header=TRUE, row.names=1, check.names=FALSE)
-plate2 <- read.delim(file.path(tempdir(), "counts_Calero_20160325.tsv"), 
-    header=TRUE, row.names=1, check.names=FALSE)
-
-gene.lengths <- plate1$Length # First column is the gene length.
-plate1 <- as.matrix(plate1[,-1]) # Discarding gene length (as it is not a cell).
-plate2 <- as.matrix(plate2[,-1])
-rbind(Plate1=dim(plate1), Plate2=dim(plate2))
-
-all.counts <- cbind(plate1, plate2)
-
-library(SingleCellExperiment)
-sce <- SingleCellExperiment(list(counts=all.counts))
-rowData(sce)$GeneLength <- gene.lengths
-
-isSpike(sce, "ERCC") <- grepl("^ERCC", rownames(sce))
-summary(isSpike(sce, "ERCC"))
-
-is.sirv <- grepl("^SIRV", rownames(sce))
-
-metadata <- read.delim(lun.sdrf, check.names=FALSE, header=TRUE)
-m <- match(colnames(sce), metadata[["Source Name"]]) # Enforcing identical order.
-stopifnot(all(!is.na(m))) # Checking that nothing's missing.
-metadata <- metadata[m,]
-head(colnames(metadata))
-
-colData(sce)$Plate <- factor(metadata[["Factor Value[block]"]])
-pheno <- metadata[["Factor Value[phenotype]"]]
-levels(pheno) <- c("induced", "control")
-colData(sce)$Oncogene <- pheno
-table(colData(sce)$Oncogene, colData(sce)$Plate)
-
-# library(scRNAseq)
-# sce <- LunSpikeInData(type="416B") # TODO: this will replace the above.
-sce
+sce.416b
 ```
 
 ## Choice of QC metrics
@@ -106,14 +67,14 @@ These are stored in the column-wise metadata of the `SingleCellExperiment` for f
 # Identifying the mitochondrial transcripts:
 library(TxDb.Mmusculus.UCSC.mm10.ensGene)
 location <- mapIds(TxDb.Mmusculus.UCSC.mm10.ensGene, 
-    keys=rownames(sce), column="CDSCHROM", keytype="GENEID")
+    keys=rownames(sce.416b), column="CDSCHROM", keytype="GENEID")
 is.mito <- which(location=="chrM")
 
 # Computing the QC metrics.
 library(scater)
-sce <- calculateQCMetrics(sce, feature_controls=list(Mito=is.mito))
-head(colnames(rowData(sce)))
-head(colnames(colData(sce)))
+sce.416b <- calculateQCMetrics(sce.416b, feature_controls=list(Mito=is.mito))
+head(colnames(rowData(sce.416b)))
+head(colnames(colData(sce.416b)))
 ```
 
 ## Identifying low-quality cells
@@ -124,10 +85,10 @@ The simplest approach to identifying low-quality cells is to apply thresholds on
 For example, we might discard all cells that have library sizes below 100,000 reads; express fewer than 5,000 genes; have spike-in proportions above 10%; or have mitochondrial proportions above 5%^[These numbers were rectally derived.].
 
 ```{r}
-qc.lib <- sce$total_counts < 1e5
-qc.nexprs <- sce$total_features_by_counts < 5e3
-qc.spike <- sce$pct_counts_ERCC > 10
-qc.mito <- sce$pct_counts_Mito > 5
+qc.lib <- sce.416b$total_counts < 1e5
+qc.nexprs <- sce.416b$total_features_by_counts < 5e3
+qc.spike <- sce.416b$pct_counts_ERCC > 10
+qc.mito <- sce.416b$pct_counts_Mito > 5
 discard <- qc.lib | qc.nexprs | qc.spike | qc.mito
 
 # Summarize the number of cells removed for each reason.
@@ -135,7 +96,7 @@ DataFrame(LibSize=sum(qc.lib), NExprs=sum(qc.nexprs),
     SpikeProp=sum(qc.spike), MitoProp=sum(qc.mito), Total=sum(discard))
 
 # Retain only high-quality cells in the SingleCellExperiment.
-filtered <- sce[,!discard]
+filtered <- sce.416b[,!discard]
 dim(filtered)
 ```
 
@@ -156,8 +117,8 @@ A log-transformation is used to improve resolution at small values when `type="l
 It ensures that the threshold is not a negative value, which would be meaningless for quality control on these metrics.
 
 ```{r}
-qc.lib2 <- isOutlier(log(sce$total_counts), nmads=3, type="lower")
-qc.nexprs2 <- isOutlier(log(sce$total_features_by_counts), nmads=3,
+qc.lib2 <- isOutlier(log(sce.416b$total_counts), nmads=3, type="lower")
+qc.nexprs2 <- isOutlier(log(sce.416b$total_features_by_counts), nmads=3,
     type="lower")
 ```
 
@@ -173,8 +134,8 @@ We identify outliers for the proportion-based metrics in a similar manner.
 Here, no transformation is required as we are identifying large outliers that should already be clearly distinguishable from zero.
 
 ```{r}
-qc.spike2 <- isOutlier(sce$pct_counts_ERCC, nmads=3, type="higher")
-qc.mito2 <- isOutlier(sce$pct_counts_ERCC, nmads=3, type="higher")
+qc.spike2 <- isOutlier(sce.416b$pct_counts_ERCC, nmads=3, type="higher")
+qc.mito2 <- isOutlier(sce.416b$pct_counts_ERCC, nmads=3, type="higher")
 ```
 
 We use all of these filters to identify and remove low-quality cells.
@@ -187,7 +148,7 @@ DataFrame(LibSize=sum(qc.lib2), NExprs=sum(qc.nexprs2),
     SpikeProp=sum(qc.spike2), MitoProp=sum(qc.mito2), Total=sum(discard2))
 
 # Retain only high-quality cells in the SingleCellExperiment.
-filtered2 <- sce[,!discard2]
+filtered2 <- sce.416b[,!discard2]
 ```
 
 With this strategy, the thresholds adapt to both the location and spread of the distribution of values for a given metric.
@@ -212,15 +173,15 @@ We combine these factors together and supply this to the `batch=` argument.
 This results in the removal of more cells as the MAD is no longer inflated by (i) systematic differences in sequencing depth between batches and (ii) differences in number of genes expressed upon oncogene induction.
 
 ```{r}
-batch <- paste0(sce$Oncogene, "-", sce$Plate)
+batch <- paste0(sce.416b$Oncogene, "-", sce.416b$Plate)
 
-qc.lib3 <- isOutlier(log(sce$total_counts), nmads=3, type="lower",
+qc.lib3 <- isOutlier(log(sce.416b$total_counts), nmads=3, type="lower",
     batch=batch)
-qc.nexprs3 <- isOutlier(log(sce$total_features_by_counts), nmads=3,
+qc.nexprs3 <- isOutlier(log(sce.416b$total_features_by_counts), nmads=3,
     type="lower", batch=batch)
-qc.spike3 <- isOutlier(sce$pct_counts_ERCC, nmads=3, type="higher",
+qc.spike3 <- isOutlier(sce.416b$pct_counts_ERCC, nmads=3, type="higher",
     batch=batch)
-qc.mito3 <- isOutlier(sce$pct_counts_ERCC, nmads=3, type="higher",
+qc.mito3 <- isOutlier(sce.416b$pct_counts_ERCC, nmads=3, type="higher",
     batch=batch)
 
 discard3 <- qc.lib3 | qc.nexprs3 | qc.spike3 | qc.mito3
@@ -230,7 +191,7 @@ DataFrame(LibSize=sum(qc.lib3), NExprs=sum(qc.nexprs3),
     SpikeProp=sum(qc.spike3), MitoProp=sum(qc.mito3), Total=sum(discard3))
 
 # Retain only high-quality cells in the SingleCellExperiment.
-filtered3 <- sce[,!discard3]
+filtered3 <- sce.416b[,!discard3]
 ```
 ## Checking diagnostic plots
 
@@ -380,8 +341,8 @@ We can diagnose this by looking for differences in gene expression between the d
 To demonstrate, we compute the average count across the discarded and retained pools in the 416B data set, and we compute the log-fold change between the averages.
 
 ```{r}
-lost <- calcAverage(counts(sce)[,!discard])
-kept <- calcAverage(counts(sce)[,discard])
+lost <- calcAverage(counts(sce.416b)[,!discard])
+kept <- calcAverage(counts(sce.416b)[,discard])
 
 library(edgeR)
 logged <- cpm(cbind(lost, kept), log=TRUE, prior.count=2)
@@ -394,7 +355,7 @@ No systematic upregulation of genes is apparent in the discarded pool in Figure 
 
 ```{r discardplot416b, fig.cap="Log-fold change in expression in the discarded cells compared to the retained cells in the 416B dataset. Each point represents a gene, with spike-in and mitochondrial transcripts in red and blue respectively."}
 plot(abundance, logFC, xlab="Average count", ylab="Log-FC (lost/kept)", pch=16)
-is.spike <- isSpike(sce)
+is.spike <- isSpike(sce.416b)
 points(abundance[is.spike], logFC[is.spike], col="red", pch=16)
 points(abundance[is.mito], logFC[is.mito], col="dodgerblue", pch=16)
 ```
