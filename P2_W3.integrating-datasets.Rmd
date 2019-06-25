@@ -17,7 +17,6 @@ Here we will work with two PBMC datasets from the *TENxPBMCData* package - the `
 ## Preprocessing
 
 Before proceeding to the integration section, we will first load the data, and subsequently run it through a preprocessing pipeline that ensures we have a common set of genes across both experiments, filters out poor quality cells, and normalizes the expression matrix. The code for this is shown below for completeness. 
-
 Note that here we make use of the *purrr* package both for code succinctness and to apply the same function to each PBMC dataset contained within the `pbmc_l` list. (see base `lapply()` and `purrrr::map()` for more details).
 
 Furthermore, to speed up computation, we will subsample each of these datasets down to 1000 cells each.
@@ -53,7 +52,15 @@ sce <- reduce(pbmc_l, cbind)
 ## Uniquify row ids to use mostly human readable rownames
 rowData(sce) <- rd
 rownames(sce) <- scater::uniquifyFeatureNames(rd$ENSEMBL_ID, rd$Symbol_TENx)
+```
 
+<!-- ## HOTFIX NEEDED - RECAST ASSAY INTO MATRIX  -->
+```{r, include=FALSE, eval=TRUE}
+## HOTFIX
+counts(sce) <- as.matrix(counts(sce))
+```
+
+```{r}
 ## Calculate and apply QC metrics; filter out cells with low lib or low genes detected
 library(scater)
 sce <- calculateQCMetrics(sce)
@@ -63,19 +70,24 @@ sce <- sce[, !(low_lib | low_genes)]
 
 ## normalize data
 sce <- normalize(sce)
+
+## feature selection
+library(scran)
+fit <- trendVar(sce, use.spikes = FALSE)
+dec <- decomposeVar(sce, fit)
+hvg <- rownames(dec)[dec$bio > 0] # save gene names
+```
+
+For faster calculations, here we will subset the `hvg` object to the top 2000 genes:
+
+```{r}
+hvg <- hvg[1:2000]
 ```
 
 From the combined dataset encapsulated within `sce`, we note that the origin of each cell is annotated within `colData` under the column `Sample`. This will be used as the batch variable throughout.
 
 ```{r}
 table(sce$Sample) # alternately: colData(sce)$Sample
-```
-
-<!-- ## HOTFIX NEEDED - RECAST ASSAY INTO MATRIX  -->
-```{r, include=FALSE, eval=TRUE}
-## HOTFIX
-counts(sce) <- as.matrix(counts(sce))
-logcounts(sce) <- as.matrix(logcounts(sce))
 ```
 
 
@@ -92,9 +104,10 @@ sce_mnn_simple <- sce
 ## run MNN with no advanced preprocessing
 ## BSPARAM/BNPARAM/BPPARAM explained in "adaptations to large scale data"
 mnn_simple_out <- batchelor::fastMNN(sce_mnn_simple,
-                                     batch = sce_mnn_simple$Sample,
-                                     BSPARAM = BiocSingular::IrlbaParam(),
-                                     BNPARAM = BiocNeighbors::AnnoyParam())
+                                     subset.row = hvg,
+                                     batch = sce_mnn_simple$Sample)
+                                     ## BSPARAM = BiocSingular::IrlbaParam(),
+                                     ## BNPARAM = BiocNeighbors::AnnoyParam())
 
 ## add MNN_simple coordinates to the new sce object
 reducedDim(sce_mnn_simple, 'MNN') <- reducedDim(mnn_simple_out, 'corrected')
@@ -123,17 +136,19 @@ sce_harmony <- sce
 
 ## Add PCA to sce, then run Harmony as its dependent on PCA
 sce_harmony <- runPCA(sce_harmony,
-                      BSPARAM = IrlbaParam(),
-                      BPPARAM = MulticoreParam()))
+                      feature_set = hvg,
+                      BSPARAM = BiocSingular::IrlbaParam(),
+                      BPPARAM = BiocParallel::MulticoreParam())
 sce_harmony <- RunHarmony(sce_harmony, group.by.vars = "Sample")
 
 ## Calculate UMAP on Harmony embeddings
 sce_harmony <- runUMAP(sce_harmony, use_dimred = 'HARMONY')
 ```
 
+
 ```{r, fig.cap = 'Plot of the first two components of the Harmony embedding (left). UMAP calculated on the Harmony embeddings. (right)'}
-p1 <- plotReducedDim(sce, 'HARMONY', colour_by = 'Sample')
-p2 <- plotReducedDim(sce, 'UMAP', colour_by = 'Sample')
+p1 <- plotReducedDim(sce_harmony, 'HARMONY', colour_by = 'Sample')
+p2 <- plotReducedDim(sce_harmony, 'UMAP', colour_by = 'Sample')
 wrap_plots(p1, p2, nrow = 1)
 ```
 
@@ -144,16 +159,15 @@ Here we work through a more advanced workflow using MNN as above, but this time 
 
 For more details, we refer to the [`compareSingleCell` vignette](https://github.com/MarioniLab/compareSingleCell/) vignette by Aaron Lun.
 
+<!-- ### Feature Selection -->
 
-### Feature Selection
+<!-- We briefly highlight feature selection within the preprocessing, as the choice of genes used in the integration can have an outsize effect on end result.  -->
 
-We briefly highlight feature selection within the preprocessing, as the choice of genes used in the integration can have an outsize effect on end result. 
+<!-- For brevity, here we use the `scran` package to identify the genes with biological coefficients of variation greater than zero, but leave the choice of method up to the reader. Note that, compared to the basic analysis workflow, we use the `multiBlockVar()` function and block on the origin (`pbmc3k` vs `pbmc4k`). This function models the variance of expression in each block separately. -->
 
-For brevity, here we use the `scran` package to identify the genes with biological coefficients of variation greater than zero, but leave the choice of method up to the reader. Note that, compared to the basic analysis workflow, we use the `multiBlockVar()` function and block on the origin (`pbmc3k` vs `pbmc4k`). This function models the variance of expression in each block separately.
+<!-- Additionally, we turn off weighting such that each sample contributes equally to the results, regardless of the number of cells per sample. This prevents one condition from biasing the combined statistics.  -->
 
-Additionally, we turn off weighting such that each sample contributes equally to the results, regardless of the number of cells per sample. This prevents one condition from biasing the combined statistics. 
-
-For more details, we refer to the [`compareSingleCell` merge](https://github.com/MarioniLab/compareSingleCell/blob/master/vignettes/embryo_merge.Rmd) vignette.
+<!-- For more details, we refer to the [`compareSingleCell` merge](https://github.com/MarioniLab/compareSingleCell/blob/master/vignettes/embryo_merge.Rmd) vignette. -->
 
 
 ```{r}
@@ -161,21 +175,21 @@ For more details, we refer to the [`compareSingleCell` merge](https://github.com
 sce_mnn_advanced <- sce
 ```
 
-```{r}
-library(scran)
-dec <- multiBlockVar(sce_mnn_advanced, block = sce_mnn_advanced$Sample,
-                     make.tech.trend = TRUE,
-                     weighted = FALSE)
+<!-- ```{r} -->
+<!-- library(scran) -->
+<!-- dec <- multiBlockVar(sce_mnn_advanced, block = sce_mnn_advanced$Sample, -->
+<!--                      make.tech.trend = TRUE, -->
+<!--                      weighted = FALSE) -->
 
-hvg <- rownames(dec)[dec$bio > 0]
-```
+<!-- hvg <- rownames(dec)[dec$bio > 0] -->
+<!-- ``` -->
 
-In this example, we get back `r sum(dec$bio > 0)` genes from the method to use for the integration. For speed, we will limit ourselves to the top 1000 genes.
+<!-- In this example, we get back `r sum(dec$bio > 0)` genes. -->
 
 
-```{r}
-hvg_subset <- hvg[1:1000]
-```
+<!-- ```{r} -->
+<!-- hvg_subset <- hvg[1:1000] -->
+<!-- ``` -->
 
 ### Dimensionality Reduction
 
@@ -184,6 +198,8 @@ Principal components analyses can be used to both reduce computational work and 
 To accomplish this, the `multiBatchPCA()` function from *scran* ensures that each sample contributes equally to the new coordinate space. For further discussion on this point, see the `r Biocpkg("simpleSingleCell", "batch.html#hierarchical-merging", "simpleSingleCell vignette")` section on hierarchical merging.
 
 We then calculate the number of PCs to retain by comparing the variance explained per principal component versus the technical noise and total variance in the data. This will leave us with a subset of PCA components.
+
+Note that we will use the features selected from the preproprocessing step earlier in this chapter.
 
 
 ```{r}
@@ -194,8 +210,9 @@ library(BiocSingular) # provide approximate pca via IrlbaParam()
 set.seed(1234) # for Random/IrlbaParam backends
 
 ## run batchelor version of multiBatchPCA (use :: notation to override namespace)
-pcs <- batchelor::multiBatchPCA(sce_mnn_advanced, batch = sce_mnn_advanced$Sample,
-                                subset.row = hvg_subset,
+pcs <- batchelor::multiBatchPCA(sce_mnn_advanced,
+                                batch = sce_mnn_advanced$Sample,
+                                subset.row = hvg,
                                 get.variance = TRUE,
                                 BSPARAM = BiocSingular::IrlbaParam(),
                                 BPPARAM = BiocParallel::MulticoreParam())
@@ -203,7 +220,7 @@ pcs <- batchelor::multiBatchPCA(sce_mnn_advanced, batch = sce_mnn_advanced$Sampl
 ## Retain only the top PCs based on variance explained > technical noise
 retain <- denoisePCANumber(
     metadata(pcs)$var.explained, # variance explained per PC.
-    sum(dec[hvg_subset, ]$tech),       # technical noise in subset of genes.
+    sum(dec[hvg, ]$tech),       # technical noise in subset of genes.
     metadata(pcs)$var.total      # total variance in the data
 )
 
@@ -233,8 +250,8 @@ sce_mnn_advanced <- runUMAP(sce_mnn_advanced, use_dimred = 'MNN')
 The MNN coordinates and the UMAP coordinates derived from them are visualized below:
 
 ```{r, fig.cap = "Plot of first two MNN coordinates (left). UMAP calculated on the MNN coordinates (right). Colour denotes origin of sample."} 
-p1 <- plotReducedDim(sce, 'MNN', colour_by = 'Sample')
-p2 <- plotReducedDim(sce, 'UMAP', colour_by = 'Sample')
+p1 <- plotReducedDim(sce_mnn_advanced, 'MNN', colour_by = 'Sample')
+p2 <- plotReducedDim(sce_mnn_advanced, 'UMAP', colour_by = 'Sample')
 wrap_plots(p1, p2, nrow = 1)
 ```
 
@@ -252,9 +269,10 @@ sce_naive <- sce
 
 ```{r}
 ## run PCA on only the normalized gene expression data
-sce_naive <- runPCA(sce_naive, ncomponents = 25,
-              feature_set = hvg_subset,
-              BSPARAM = IrlbaParam())
+sce_naive <- runPCA(sce_naive,
+                    feature_set = hvg,
+                    BSPARAM = BiocSingular::IrlbaParam(),
+                    BPPARAM = BiocParallel::MulticoreParam())
 
 ## Run UMAP on the norm gene exp. derived PCA coordinates - use only top PCs
 sce_naive <- runUMAP(sce_naive, use_dimred = 'PCA')
@@ -286,8 +304,7 @@ assay(sce_limma, "logcounts_limma") <- limma_corrected ## add new assay
 
 ## calc a PCA on limma values; save separate to prevent overwriting
 sce_limma <- runPCA(sce_limma,
-                    ncomponents = 25,
-                    feature_set = hvg_subset,
+                    feature_set = hvg,
                     exprs_values = "logcounts_limma",
                     BSPARAM = BiocSingular::IrlbaParam(),
                     BPPARAM = BiocParallel::MulticoreParam())
@@ -299,8 +316,8 @@ sce_limma <- runUMAP(sce_limma, use_dimred = 'PCA')
 The resulting PCA and UMAP from the limma batch correction method are shown below:
 
 ```{r, fig.cap = 'PCA calculated on the limma batch-corrected gene expression matrix (left). UMAP calculated via the PCA derived from limma batch-corrected gene expression matrix (right).'}
-p1 <- plotReducedDim(sce_limma, 'PCA_limma', colour_by = 'Sample')
-p2 <- plotReducedDim(sce_limma, 'UMAP_limma', colour_by = 'Sample')
+p1 <- plotReducedDim(sce_limma, 'PCA', colour_by = 'Sample')
+p2 <- plotReducedDim(sce_limma, 'UMAP', colour_by = 'Sample')
 wrap_plots(p1, p2, nrow = 1)
 ```
 

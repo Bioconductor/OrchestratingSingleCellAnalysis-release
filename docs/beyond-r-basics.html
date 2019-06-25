@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Beyond R Basics | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Beyond R Basics | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Beyond R Basics | Orchestrating Single-Cell Analysis with Bioconductor" />
+  
+  <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+<meta name="author" content="Robert A. Amezquita" />
+<meta name="author" content="Stephanie C. Hicks" />
+
+
+<meta name="date" content="2019-06-25" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="prev" href="learning-r-and-more.html">
+<link rel="next" href="data-infrastructure.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Orchestrating Single-Cell Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I Preamble</b></span></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#what-you-will-learn"><i class="fa fa-check"></i><b>1.1</b> What you will learn</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="introduction.html"><a href="introduction.html#preliminaries"><i class="fa fa-check"></i><b>1.1.1</b> Preliminaries</a></li>
+<li class="chapter" data-level="1.1.2" data-path="introduction.html"><a href="introduction.html#workflows"><i class="fa fa-check"></i><b>1.1.2</b> Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#what-you-wont-learn"><i class="fa fa-check"></i><b>1.2</b> What you won’t learn</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#who-we-wrote-this-for"><i class="fa fa-check"></i><b>1.3</b> Who we wrote this for</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#why-we-wrote-this"><i class="fa fa-check"></i><b>1.4</b> Why we wrote this</a></li>
+<li class="chapter" data-level="1.5" data-path="introduction.html"><a href="introduction.html#acknowledgements"><i class="fa fa-check"></i><b>1.5</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html"><i class="fa fa-check"></i><b>2</b> Learning R and Bioconductor</a><ul>
+<li class="chapter" data-level="2.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#the-benefits-of-r-and-bioconductor"><i class="fa fa-check"></i><b>2.1</b> The Benefits of R and Bioconductor</a></li>
+<li class="chapter" data-level="2.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-started-with-r"><i class="fa fa-check"></i><b>2.2</b> Learning R Online</a></li>
+<li class="chapter" data-level="2.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#running-r-locally"><i class="fa fa-check"></i><b>2.3</b> Running R Locally</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r"><i class="fa fa-check"></i><b>2.3.1</b> Installing R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r-bioconductor-packages"><i class="fa fa-check"></i><b>2.3.2</b> Installing R &amp; Bioconductor Packages</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-help-in-and-out-of-r"><i class="fa fa-check"></i><b>2.4</b> Getting Help In (and Out) of R</a></li>
+<li class="chapter" data-level="2.5" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-documentation"><i class="fa fa-check"></i><b>2.5</b> Bioconductor Help</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-packages"><i class="fa fa-check"></i><b>2.5.1</b> Bioconductor Packages</a></li>
+<li class="chapter" data-level="2.5.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#biocviews"><i class="fa fa-check"></i><b>2.5.2</b> biocViews</a></li>
+<li class="chapter" data-level="2.5.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-forums"><i class="fa fa-check"></i><b>2.5.3</b> Bioconductor Forums</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html"><i class="fa fa-check"></i><b>3</b> Beyond R Basics</a><ul>
+<li class="chapter" data-level="3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-an-r-expert"><i class="fa fa-check"></i><b>3.1</b> Becoming an R Expert</a></li>
+<li class="chapter" data-level="3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-a-bioconductor-developer"><i class="fa fa-check"></i><b>3.2</b> Becoming an R/Bioconductor Developer</a></li>
+<li class="chapter" data-level="3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#nice-companions-for-r"><i class="fa fa-check"></i><b>3.3</b> Nice Companions for R</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#shellbash"><i class="fa fa-check"></i><b>3.3.1</b> Shell/Bash</a></li>
+<li class="chapter" data-level="3.3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#git"><i class="fa fa-check"></i><b>3.3.2</b> Git</a></li>
+<li class="chapter" data-level="3.3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#other-languages"><i class="fa fa-check"></i><b>3.3.3</b> Other Languages</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-infrastructure.html"><a href="data-infrastructure.html"><i class="fa fa-check"></i><b>4</b> Data Infrastructure</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#prerequisites"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-singlecellexperiment-class"><i class="fa fa-check"></i><b>4.2</b> The <em>SingleCellExperiment</em> Class</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#primary-data-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Primary Data: The <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#extending-the-assays-slot"><i class="fa fa-check"></i><b>4.2.2</b> Extending the <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#column-metadata-coldata-slot"><i class="fa fa-check"></i><b>4.2.3</b> Column (Meta)Data: <code>colData</code> Slot</a></li>
+<li class="chapter" data-level="4.2.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#feature-metadata-rowdatarowranges"><i class="fa fa-check"></i><b>4.2.4</b> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></a></li>
+<li class="chapter" data-level="4.2.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors-slot-sizefactors"><i class="fa fa-check"></i><b>4.2.5</b> Size Factors Slot: <code>sizeFactors</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#a-brief-recap-from-se-to-sce"><i class="fa fa-check"></i><b>4.3</b> A Brief Recap: From <code>se</code> to <code>sce</code></a></li>
+<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-reduceddims-slot"><i class="fa fa-check"></i><b>4.4</b> The <code>reducedDims</code> Slot</a></li>
+<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#one-more-thing-metadata-slot"><i class="fa fa-check"></i><b>4.5</b> One More Thing: <code>metadata</code> Slot</a></li>
+<li class="chapter" data-level="4.6" data-path="data-infrastructure.html"><a href="data-infrastructure.html#about-spike-ins"><i class="fa fa-check"></i><b>4.6</b> About Spike-Ins</a></li>
+<li class="chapter" data-level="4.7" data-path="data-infrastructure.html"><a href="data-infrastructure.html#working-with-singlecellexperiment"><i class="fa fa-check"></i><b>4.7</b> Working with <em>SingleCellExperiment</em></a></li>
+<li class="chapter" data-level="4.8" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-centrality-of-singlecellexperiment"><i class="fa fa-check"></i><b>4.8</b> The Centrality of SingleCellExperiment</a></li>
+<li class="chapter" data-level="4.9" data-path="data-infrastructure.html"><a href="data-infrastructure.html#multimodal-data-multiassayexperiment"><i class="fa fa-check"></i><b>4.9</b> Multimodal Data: <em>MultiAssayExperiment</em></a></li>
+</ul></li>
+<li class="part"><span><b>II Workflows</b></span></li>
+<li class="chapter" data-level="5" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html"><i class="fa fa-check"></i><b>5</b> Analytical Workflow Overview</a><ul>
+<li class="chapter" data-level="5.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#experimental-design"><i class="fa fa-check"></i><b>5.1</b> Experimental Design</a></li>
+<li class="chapter" data-level="5.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#preprocessing"><i class="fa fa-check"></i><b>5.2</b> Preprocessing</a></li>
+<li class="chapter" data-level="5.3" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#import-to-r"><i class="fa fa-check"></i><b>5.3</b> Import to R</a></li>
+<li class="chapter" data-level="5.4" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#data-processing"><i class="fa fa-check"></i><b>5.4</b> Data Processing</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#quality-control-metrics"><i class="fa fa-check"></i><b>5.4.1</b> Quality Control Metrics</a></li>
+<li class="chapter" data-level="5.4.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#normalizing-data"><i class="fa fa-check"></i><b>5.4.2</b> Normalizing Data</a></li>
+<li class="chapter" data-level="5.4.3" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#feature-selection"><i class="fa fa-check"></i><b>5.4.3</b> Feature Selection</a></li>
+<li class="chapter" data-level="5.4.4" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#imputation"><i class="fa fa-check"></i><b>5.4.4</b> Imputation</a></li>
+<li class="chapter" data-level="5.4.5" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#dimensionality-reduction"><i class="fa fa-check"></i><b>5.4.5</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="5.4.6" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#integrating-datasets"><i class="fa fa-check"></i><b>5.4.6</b> Integrating Datasets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#downstream-statistical-analyses"><i class="fa fa-check"></i><b>5.5</b> Downstream Statistical Analyses</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#clustering"><i class="fa fa-check"></i><b>5.5.1</b> Clustering</a></li>
+<li class="chapter" data-level="5.5.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#differential-expression"><i class="fa fa-check"></i><b>5.5.2</b> Differential Expression</a></li>
+<li class="chapter" data-level="5.5.3" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#trajectory-analysis"><i class="fa fa-check"></i><b>5.5.3</b> Trajectory Analysis</a></li>
+<li class="chapter" data-level="5.5.4" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#annotation"><i class="fa fa-check"></i><b>5.5.4</b> Annotation</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#accessible-reproducible-analysis"><i class="fa fa-check"></i><b>5.6</b> Accessible &amp; Reproducible Analysis</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#interactive-data-visualization"><i class="fa fa-check"></i><b>5.6.1</b> Interactive Data Visualization</a></li>
+<li class="chapter" data-level="5.6.2" data-path="analytical-workflow-overview.html"><a href="analytical-workflow-overview.html#report-generation"><i class="fa fa-check"></i><b>5.6.2</b> Report Generation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="quick-start.html"><a href="quick-start.html"><i class="fa fa-check"></i><b>6</b> Quick Start</a><ul>
+<li class="chapter" data-level="6.1" data-path="quick-start.html"><a href="quick-start.html#code"><i class="fa fa-check"></i><b>6.1</b> Code</a></li>
+<li class="chapter" data-level="6.2" data-path="quick-start.html"><a href="quick-start.html#visualizations"><i class="fa fa-check"></i><b>6.2</b> Visualizations</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html"><i class="fa fa-check"></i><b>7</b> A Basic Analysis</a><ul>
+<li class="chapter" data-level="7.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#preprocessing-import-to-r"><i class="fa fa-check"></i><b>7.1</b> Preprocessing &amp; Import to R</a></li>
+<li class="chapter" data-level="7.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#constructing-the-singlecellexperiment"><i class="fa fa-check"></i><b>7.2</b> Constructing the SingleCellExperiment</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#from-scratch"><i class="fa fa-check"></i><b>7.2.1</b> From Scratch</a></li>
+<li class="chapter" data-level="7.2.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#from-publicly-available-data"><i class="fa fa-check"></i><b>7.2.2</b> From Publicly Available Data</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#data-processing-1"><i class="fa fa-check"></i><b>7.3</b> Data Processing</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#quality-control-metrics-1"><i class="fa fa-check"></i><b>7.3.1</b> Quality Control Metrics</a></li>
+<li class="chapter" data-level="7.3.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#normalizing-data-1"><i class="fa fa-check"></i><b>7.3.2</b> Normalizing Data</a></li>
+<li class="chapter" data-level="7.3.3" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#feature-selection-1"><i class="fa fa-check"></i><b>7.3.3</b> Feature Selection</a></li>
+<li class="chapter" data-level="7.3.4" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#dimensionality-reduction-1"><i class="fa fa-check"></i><b>7.3.4</b> Dimensionality Reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#downstream-statistical-analyses-1"><i class="fa fa-check"></i><b>7.4</b> Downstream Statistical Analyses</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#clustering-1"><i class="fa fa-check"></i><b>7.4.1</b> Clustering</a></li>
+<li class="chapter" data-level="7.4.2" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#differential-expression-1"><i class="fa fa-check"></i><b>7.4.2</b> Differential Expression</a></li>
+<li class="chapter" data-level="7.4.3" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#annotation-1"><i class="fa fa-check"></i><b>7.4.3</b> Annotation</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#accessible-reproducible-analysis-1"><i class="fa fa-check"></i><b>7.5</b> Accessible &amp; Reproducible Analysis</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#interactive-data-visualization-1"><i class="fa fa-check"></i><b>7.5.1</b> Interactive Data Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="quality-control.html"><a href="quality-control.html"><i class="fa fa-check"></i><b>8</b> Quality Control</a><ul>
+<li class="chapter" data-level="8.1" data-path="quality-control.html"><a href="quality-control.html#motivation"><i class="fa fa-check"></i><b>8.1</b> Motivation</a></li>
+<li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#introducing-the-dataset"><i class="fa fa-check"></i><b>8.2</b> Introducing the dataset</a></li>
+<li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.3</b> Choice of QC metrics</a></li>
+<li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.4</b> Identifying low-quality cells</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.4.1</b> With fixed thresholds</a></li>
+<li class="chapter" data-level="8.4.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.4.2</b> With adaptive thresholds</a></li>
+<li class="chapter" data-level="8.4.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.4.3</b> Considering experimental factors</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.5</b> Checking diagnostic plots</a></li>
+<li class="chapter" data-level="8.6" data-path="quality-control.html"><a href="quality-control.html#droplet-specific-procedures"><i class="fa fa-check"></i><b>8.6</b> Droplet-specific procedures</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>8.6.1</b> Background</a></li>
+<li class="chapter" data-level="8.6.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>8.6.2</b> Testing for empty droplets</a></li>
+<li class="chapter" data-level="8.6.3" data-path="quality-control.html"><a href="quality-control.html#examining-cell-calling-diagnostics"><i class="fa fa-check"></i><b>8.6.3</b> Examining cell-calling diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="quality-control.html"><a href="quality-control.html#assumptions-of-outlier-detection"><i class="fa fa-check"></i><b>8.7</b> Assumptions of outlier detection</a><ul>
+<li class="chapter" data-level="8.7.1" data-path="quality-control.html"><a href="quality-control.html#overview"><i class="fa fa-check"></i><b>8.7.1</b> Overview</a></li>
+<li class="chapter" data-level="8.7.2" data-path="quality-control.html"><a href="quality-control.html#checking-for-discarded-cell-types"><i class="fa fa-check"></i><b>8.7.2</b> Checking for discarded cell types</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>9</b> Clustering</a><ul>
+<li class="chapter" data-level="9.1" data-path="clustering-2.html"><a href="clustering-2.html#loading-the-data"><i class="fa fa-check"></i><b>9.1</b> Loading the Data</a></li>
+<li class="chapter" data-level="9.2" data-path="clustering-2.html"><a href="clustering-2.html#manual-clustering"><i class="fa fa-check"></i><b>9.2</b> Manual Clustering</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="clustering-2.html"><a href="clustering-2.html#varying-k"><i class="fa fa-check"></i><b>9.2.1</b> Varying <code>k</code></a></li>
+<li class="chapter" data-level="9.2.2" data-path="clustering-2.html"><a href="clustering-2.html#varying-clustering-algorithms"><i class="fa fa-check"></i><b>9.2.2</b> Varying Clustering Algorithms</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="clustering-2.html"><a href="clustering-2.html#automated-clustering"><i class="fa fa-check"></i><b>9.3</b> Automated Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>10</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="10.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>10.1</b> Preprocessing</a></li>
+<li class="chapter" data-level="10.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>10.2</b> Fast MNN</a></li>
+<li class="chapter" data-level="10.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>10.3</b> Harmony</a></li>
+<li class="chapter" data-level="10.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>10.4</b> Advanced MNN Workflow</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>10.4.1</b> Dimensionality Reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>10.5</b> Naive Method Without Correction</a></li>
+<li class="chapter" data-level="10.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>10.6</b> Limma Batch Correction</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="differential-expression-2.html"><a href="differential-expression-2.html"><i class="fa fa-check"></i><b>11</b> Differential Expression</a></li>
+<li class="chapter" data-level="12" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html"><i class="fa fa-check"></i><b>12</b> Trajectory Analysis</a></li>
+<li class="chapter" data-level="13" data-path="annotation-2.html"><a href="annotation-2.html"><i class="fa fa-check"></i><b>13</b> Annotation</a></li>
+<li class="chapter" data-level="14" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>14</b> Sharing and Interactive Interfaces</a></li>
+<li class="chapter" data-level="15" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>15</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="15.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>15.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="15.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>15.2</b> Parallelization</a></li>
+<li class="chapter" data-level="15.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>15.3</b> On-Disk Data</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="data-import-and-export.html"><a href="data-import-and-export.html"><i class="fa fa-check"></i><b>16</b> Data Import and Export</a></li>
+<li class="part"><span><b>III Appendix</b></span></li>
+<li class="chapter" data-level="17" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>17</b> About the Data</a><ul>
+<li class="chapter" data-level="17.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>17.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="17.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>17.2</b> Cellbench_data</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>18</b> About the Contributors</a><ul>
+<li class="chapter" data-level="18.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>18.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
+<li class="chapter" data-level="18.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>18.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
+<li class="chapter" data-level="18.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>18.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
+<li class="chapter" data-level="18.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>18.0.4</b> <em>Aaron Lun, PhD</em></a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Orchestrating Single-Cell Analysis with Bioconductor</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="beyond-r-basics" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Beyond R Basics</h1>
+<p>Here we briefly outline resources for taking your R programming to the next level, including resources for learning about package development. We also outline some companions to R that are good to know not only for package development, but also for running your own bioinformatic pipelines, enabling you to use a broader array of tools to go from raw data to preprocessed data before working in R.</p>
+<div id="becoming-an-r-expert" class="section level2">
+<h2><span class="header-section-number">3.1</span> Becoming an R Expert</h2>
+<p>For a deeper dive into the finer details of the R programming language, the <a href="https://adv-r.hadley.nz/">Advanced R</a>. While targeted at more experienced R users and programmers, this book represents a comprehensive compendium of more advanced concepts, and touches on some of the paradigms used extensively by developers throughout Bioconductor, specifically <a href="https://adv-r.hadley.nz/s4.html">programming with S4</a>.</p>
+<p>Eventually, you’ll reach the point where you have your own collection of functions, datasets, and reach the point where you will be writing your own packages. Luckily, there’s a guide for just that, with the book <a href="http://r-pkgs.had.co.nz/">R Packages</a>. Packages are great even if just for personal use, and of course, with some polishing, can eventually become a package available on CRAN or Bioconductor. Furthermore, they are also a great way of putting together code associated with a manuscript, promoting reproducible, accessible computing practices, something we all strive for in our work.</p>
+<p>For many of the little details that are oft forgotten learning about R, the aptly named <a href="https://whattheyforgot.org/">What They Forgot to Teach You About R</a> is a great read for learning about the little things such as file naming, maintaining an R installation, and reproducible analysis habits.</p>
+<p>Finally, we save the most intriguing resource for last - another book for those on the road to becoming an R expert is <a href="https://www.burns-stat.com/pages/Tutor/R_inferno.pdf">R Inferno</a>, which dives into many of the unique quirks of R. <em>Warning: this book goes <em>very</em> deep into the painstaking details of R.</em></p>
+</div>
+<div id="becoming-a-bioconductor-developer" class="section level2">
+<h2><span class="header-section-number">3.2</span> Becoming an R/Bioconductor Developer</h2>
+<p>While <a href="learning-r-and-more.html#bioconductor-documentation">learning to use Bioconductor</a> tools is a very welcoming experience, unfortunately there is no central resource for navigating the plethora of gotchas and paradigms associated with developing for Bioconductor. Based on conversations with folks involved in developing for Bioconductor, much of this knowledge is hard won and fairly spread out. This however is beginning to change with more recent efforts led by the Bioconductor team, and while this book represents an earnest effort towards addressing the user perspective, it is currently out of scope to include a deep dive about the developer side.</p>
+<p>For those looking to get started with developing packages for Bioconductor, it is important to first become acquainted with developing standalone R packages. To this end, the <a href="https://r-pkgs.org/">R Packages</a> book provides a deep dive into the details of constructing your own package, as well as details regarding submission of a package to CRAN. For programming practices,</p>
+<p>With that, some resources that are worth looking into to get started are the <a href="https://github.com/Bioconductor/BiocWorkshops">BiocWorkshops</a> repository under the <a href="https://github.com/Bioconductor/">Bioconductor Github</a> provides a book composed of workshops that have been hosted by Bioconductor team members and contributors. These workshops center around learning, using, and developing for Bioconductor. A host of topics are also available via the <a href="http://bioconductor.org/help/course-materials/">Learn</a> module on the Bioconductor website as well. Finally, the Bioconductor <a href="https://www.bioconductor.org/developers/">developers portal</a> contains a bevy of individual resources and guides for experienced R developers.</p>
+</div>
+<div id="nice-companions-for-r" class="section level2">
+<h2><span class="header-section-number">3.3</span> Nice Companions for R</h2>
+<p>While not essential for our purposes, many bioinformatic tools for processing raw sequencing data require knowledge beyond just R to install, run, and import their results into R for further analysis. The most important of which are basic knowledge of the Shell/Bash utilities, for working with bioinformatic pipelines and troubleshooting (R package) installation issues.</p>
+<p>Additionally, for working with packages or software that are still in development and not hosted on an official repository like CRAN or Bioconductor, knowledge of Git - a version control system - and the popular Github repository is helpful. This enables you to not only work with other people’s code, but also better manage your own code to keep track of changes.</p>
+<div id="shellbash" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Shell/Bash</h3>
+<p>Datacamp and other interactive online resources such as <a href="https://www.codecademy.com/catalog/subject/all">Codecademy</a> are great places to learn some of these extra skills. We highly recommend learning <a href="https://www.datacamp.com/courses/tech:shell">Shell/Bash</a>, as it is the starting point for most bioinformatic processing pipelines.</p>
+</div>
+<div id="git" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Git</h3>
+<p>We would recommend learning <a href="https://www.datacamp.com/courses/tech:git">Git</a> next, a system for code versioning control which underlies the popular <a href="https://Github.com">Github</a> repository, where many of the most popular open source tools are hosted. Learning Git is essential for not only keeping track of your own code, but also for using, managing, and contributing to open source software projects.</p>
+<p>For a more R centric look at using Git (and Github), we highly recommend checking out <a href="https://happygitwithr.com/">Happy Git and Github for the useR</a>.</p>
+</div>
+<div id="other-languages" class="section level3">
+<h3><span class="header-section-number">3.3.3</span> Other Languages</h3>
+<p>A frequent question that comes up is “What else should I learn besides R?” Firstly, we believe that <a href="learning-r-and-more.html#getting-started-with-r">honing your R skills</a> is first and foremost, and beyond just R, learning Shell/Bash and Git covered in the <a href="#nice-friends-for-r"><em>Nice Friends for R</em></a> section are already a great start. For those just getting started, these skills should become comfortable in practice before moving on.</p>
+<p>However, there are indeed benefits to going beyond just R. At a basic level, learning other programming languages helps broaden one’s perspective - similar to learning multiple spoken or written languages, learning about other programming languages (even if only in a cursory manner) helps one identify broader patterns that may be applicable across languages.</p>
+<p>At an applied level, work within and outside of R has made it ever more friendly now than ever before with multi-lingual setups and teams, enabling the use of the best tool for the job at hand. For example, <a href="https://www.python.org/">Python</a> is another popular language used in both data science and a broader array of applications as well. R now supports a native Python interface via the <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a> package, enabling access to tools developed originally in Python such as the popular <a href="https://tensorflow.rstudio.com/">TensorFlow</a> framework for machine learning applications. <a href="http://www.cplusplus.com/">C++</a> is frequently used natively in R as well via <a href="http://www.rcpp.org/">Rcpp</a> in packages to massively accelerate computations. Finally, multiple langauges are supported in code documents and reports through <a href="https://rmarkdown.rstudio.com/lesson-5.html">R Markdown</a>.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="learning-r-and-more.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-infrastructure.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": true,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P1_03.beyond-r-basics.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["OSCA.pdf", "OSCA.epub"],
+"toc": {
+"collapse": "subsection"
+},
+"bookdown::epub_book": "default",
+"cover": "images/cover.png"
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
