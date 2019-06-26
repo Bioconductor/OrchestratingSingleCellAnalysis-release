@@ -19,209 +19,7 @@ In contrast, general batch correction methods aim to remove gene-specific differ
 
 ```r
 library(scRNAseq)
-```
-
-```
-## Loading required package: SingleCellExperiment
-```
-
-```
-## Loading required package: SummarizedExperiment
-```
-
-```
-## Loading required package: GenomicRanges
-```
-
-```
-## Loading required package: stats4
-```
-
-```
-## Loading required package: BiocGenerics
-```
-
-```
-## Loading required package: parallel
-```
-
-```
-## 
-## Attaching package: 'BiocGenerics'
-```
-
-```
-## The following objects are masked from 'package:parallel':
-## 
-##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-##     clusterExport, clusterMap, parApply, parCapply, parLapply,
-##     parLapplyLB, parRapply, parSapply, parSapplyLB
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     IQR, mad, sd, var, xtabs
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     anyDuplicated, append, as.data.frame, basename, cbind,
-##     colnames, dirname, do.call, duplicated, eval, evalq, Filter,
-##     Find, get, grep, grepl, intersect, is.unsorted, lapply, Map,
-##     mapply, match, mget, order, paste, pmax, pmax.int, pmin,
-##     pmin.int, Position, rank, rbind, Reduce, rownames, sapply,
-##     setdiff, sort, table, tapply, union, unique, unsplit, which,
-##     which.max, which.min
-```
-
-```
-## Loading required package: S4Vectors
-```
-
-```
-## 
-## Attaching package: 'S4Vectors'
-```
-
-```
-## The following object is masked from 'package:base':
-## 
-##     expand.grid
-```
-
-```
-## Loading required package: IRanges
-```
-
-```
-## Loading required package: GenomeInfoDb
-```
-
-```
-## Loading required package: Biobase
-```
-
-```
-## Welcome to Bioconductor
-## 
-##     Vignettes contain introductory material; view with
-##     'browseVignettes()'. To cite Bioconductor, see
-##     'citation("Biobase")', and for packages 'citation("pkgname")'.
-```
-
-```
-## Loading required package: DelayedArray
-```
-
-```
-## Loading required package: matrixStats
-```
-
-```
-## 
-## Attaching package: 'matrixStats'
-```
-
-```
-## The following objects are masked from 'package:Biobase':
-## 
-##     anyMissing, rowMedians
-```
-
-```
-## Loading required package: BiocParallel
-```
-
-```
-## 
-## Attaching package: 'DelayedArray'
-```
-
-```
-## The following objects are masked from 'package:matrixStats':
-## 
-##     colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     aperm, apply, rowsum
-```
-
-```r
 sce.zeisel <- ZeiselBrainData()
-```
-
-```
-## Warning: `overscope_eval_next()` is deprecated as of rlang 0.2.0.
-## Please use `eval_tidy()` with a data mask instead.
-## This warning is displayed once per session.
-```
-
-```
-## Warning: `overscope_clean()` is deprecated as of rlang 0.2.0.
-## This warning is displayed once per session.
-```
-
-```
-## snapshotDate(): 2019-06-20
-```
-
-```
-## see ?scRNAseq and browseVignettes('scRNAseq') for documentation
-```
-
-```
-## downloading 1 resources
-```
-
-```
-## retrieving 1 resource
-```
-
-```
-## loading from cache 
-##     'EH2580 : 2596'
-```
-
-```
-## see ?scRNAseq and browseVignettes('scRNAseq') for documentation
-```
-
-```
-## downloading 1 resources
-```
-
-```
-## retrieving 1 resource
-```
-
-```
-## loading from cache 
-##     'EH2582 : 2598'
-```
-
-```
-## see ?scRNAseq and browseVignettes('scRNAseq') for documentation
-```
-
-```
-## downloading 1 resources
-```
-
-```
-## retrieving 1 resource
-```
-
-```
-## loading from cache 
-##     'EH2581 : 2597'
-```
-
-```r
 sce.zeisel 
 ```
 
@@ -244,13 +42,6 @@ sce.zeisel
 
 ```r
 library(scater)
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```r
 lib.sf.zeisel <- librarySizeFactors(sce.zeisel)
 hist(log10(lib.sf.zeisel), xlab="Log10[Size factor]", col='grey80')
 ```
@@ -310,23 +101,10 @@ We demonstrate the use of spike-in normalization on a different dataset involvin
 
 ```r
 library(BiocFileCache)
-```
-
-```
-## Loading required package: dbplyr
-```
-
-```r
 bfc <- BiocFileCache("raw_data", ask=FALSE)
 islam.fname <- bfcrpath(bfc, file.path("ftp://ftp.ncbi.nlm.nih.gov/geo/series",
     "GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz"))
-```
 
-```
-## adding rname 'ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz'
-```
-
-```r
 counts <- read.table(islam.fname,
     colClasses=c(list("character", NULL, NULL, NULL, NULL, NULL, NULL),
     rep("integer", 96)), skip=6, sep='\t', row.names=1)

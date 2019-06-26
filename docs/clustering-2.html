@@ -336,6 +336,17 @@ sce &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span cla
 <span class="kw">set.seed</span>(<span class="dv">1234</span>)
 sce &lt;-<span class="st"> </span>sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">1000</span>)]
 sce</code></pre>
+<pre><code>## class: SingleCellExperiment 
+## dim: 33694 1000 
+## metadata(0):
+## assays(1): counts
+## rownames(33694): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000277475 ENSG00000268674
+## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
+## colnames: NULL
+## colData names(11): Sample Barcode ... Individual Date_published
+## reducedDimNames(0):
+## spikeNames(0):</code></pre>
 <!-- The per cell labels pertaining to the 5 cell lines assayed can be found within the `colData` component under the column name `cell_line`. We can count the number of instances of each cell line present in our subsampled dataset as follows: -->
 <!-- ```{r} -->
 <!-- table(sce$cell_line) -->
@@ -360,6 +371,7 @@ sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce,
 <pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce)</code></pre>
 <p>We can now visualize the data prior to clustering via UMAP:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotUMAP</span>(sce)</code></pre>
+<p><img src="P2_W3.clustering_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <!-- One thing to note is that, per our UMAP visualization, cell line H1975 appears to be two primary clusters, with some cells resembling the H838 cell line. -->
 </div>
 <div id="manual-clustering" class="section level2">
@@ -372,6 +384,12 @@ louvain_clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><
 sce<span class="op">$</span>louvain_clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(louvain_clusters)</code></pre>
 <p>We can then inspect the results of our clustering both on the UMAP as well as via a confusion matrix:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;louvain_clusters&#39;</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-6"></span>
+<img src="P2_W3.clustering_files/figure-html/unnamed-chunk-6-1.png" alt="Louvain clustering applied to an SNN graph constructed with k=50." width="672" />
+<p class="caption">
+Figure 10.1: Louvain clustering applied to an SNN graph constructed with k=50.
+</p>
+</div>
 <!-- table(sce$louvain_clusters, sce$cell_line) -->
 <!-- Overall at this k, we see that the clusters align very sensibly with the cell lines of origins. -->
 <div id="varying-k" class="section level3">
@@ -403,6 +421,12 @@ lc_df &lt;-<span class="st"> </span><span class="kw">apply</span>(lc_df, <span c
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(patchwork)
 p_l &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">colnames</span>(lc_df), <span class="op">~</span><span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> .))
 <span class="kw">wrap_plots</span>(p_l, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-8"></span>
+<img src="P2_W3.clustering_files/figure-html/unnamed-chunk-8-1.png" alt="Varying k, from top left clockwise, k is set to 5, 20, 50, and 35." width="672" />
+<p class="caption">
+Figure 10.2: Varying k, from top left clockwise, k is set to 5, 20, 50, and 35.
+</p>
+</div>
 </div>
 <div id="varying-clustering-algorithms" class="section level3">
 <h3><span class="header-section-number">10.2.2</span> Varying Clustering Algorithms</h3>
@@ -429,11 +453,18 @@ ca_df &lt;-<span class="st"> </span><span class="kw">apply</span>(ca_df, <span c
 <span class="kw">colData</span>(sce) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(sce), ca_df)</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">p_l &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">colnames</span>(ca_df), <span class="op">~</span><span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> .))
 <span class="kw">wrap_plots</span>(p_l, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">FALSE</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-10"></span>
+<img src="P2_W3.clustering_files/figure-html/unnamed-chunk-10-1.png" alt="Three clustering methods (by row, top to bottom: louvain, walktrap, and fast/greedy) were applied to two graphs (by column, left to right: k=5, k=20). Clustering results are shown as different colors on the UMAP projection." width="672" />
+<p class="caption">
+Figure 10.3: Three clustering methods (by row, top to bottom: louvain, walktrap, and fast/greedy) were applied to two graphs (by column, left to right: k=5, k=20). Clustering results are shown as different colors on the UMAP projection.
+</p>
+</div>
 <p>We can see from this result that the choice of clustering method was largely a non-factor in the k=20 case, whereas the more granular clustering method of k=5 did indeed produce some variation, particularly between the louvain/walktrap vs the fast-greedy.</p>
 </div>
 </div>
 <div id="automated-clustering" class="section level2">
 <h2><span class="header-section-number">10.3</span> Automated Clustering</h2>
+<p><em>NOTE: not run in current book build due to error. However, the code below can likely be run locally without problem.</em></p>
 <p>Automated clustering frameworks seek to find an “optimal” number of clusters. The <em>SC3</em> package provides a simple framework that allows users to test for a variable number of clusters. Additionally, the <em>SC3</em> package provides handy visualizations to qualitatively assess the clustering results.</p>
 <p>Before we use the <em>SC3</em> package, we first set a required <code>rowData</code> column for <em>SC3</em> to work:</p>
 <pre class="sourceCode r"><code class="sourceCode r">## SC3 requires this column to be appended
@@ -441,7 +472,6 @@ ca_df &lt;-<span class="st"> </span><span class="kw">apply</span>(ca_df, <span c
 <p>Further, for compatibility purposes, we must make the counts in the <code>assays</code> slot are of class <code>matrix</code> rather than disk-backed classes such as <code>DelayedMatrix</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">counts</span>(sce) &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">counts</span>(sce))</code></pre>
 <p>And now we run the <code>sc3()</code> function to test for variable numbers of clusters by setting the <code>ks</code> argument. Here we search for 3 to 6` clusters:</p>
-<!-- ## HOTFIX NEEDED -->
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SC3)
 
 ## SC3 will return an SCE object with appended &quot;sc3_&quot; columns

@@ -336,85 +336,9 @@ In contrast, general batch correction methods aim to remove gene-specific differ
 </div>
 <div id="setting-up-the-data" class="section level2">
 <h2><span class="header-section-number">9.2</span> Setting up the data</h2>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scRNAseq)</code></pre>
-<pre><code>## Loading required package: SingleCellExperiment</code></pre>
-<pre><code>## Loading required package: SummarizedExperiment</code></pre>
-<pre><code>## Loading required package: GenomicRanges</code></pre>
-<pre><code>## Loading required package: stats4</code></pre>
-<pre><code>## Loading required package: BiocGenerics</code></pre>
-<pre><code>## Loading required package: parallel</code></pre>
-<pre><code>## 
-## Attaching package: &#39;BiocGenerics&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:parallel&#39;:
-## 
-##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-##     clusterExport, clusterMap, parApply, parCapply, parLapply,
-##     parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     IQR, mad, sd, var, xtabs</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     anyDuplicated, append, as.data.frame, basename, cbind,
-##     colnames, dirname, do.call, duplicated, eval, evalq, Filter,
-##     Find, get, grep, grepl, intersect, is.unsorted, lapply, Map,
-##     mapply, match, mget, order, paste, pmax, pmax.int, pmin,
-##     pmin.int, Position, rank, rbind, Reduce, rownames, sapply,
-##     setdiff, sort, table, tapply, union, unique, unsplit, which,
-##     which.max, which.min</code></pre>
-<pre><code>## Loading required package: S4Vectors</code></pre>
-<pre><code>## 
-## Attaching package: &#39;S4Vectors&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:base&#39;:
-## 
-##     expand.grid</code></pre>
-<pre><code>## Loading required package: IRanges</code></pre>
-<pre><code>## Loading required package: GenomeInfoDb</code></pre>
-<pre><code>## Loading required package: Biobase</code></pre>
-<pre><code>## Welcome to Bioconductor
-## 
-##     Vignettes contain introductory material; view with
-##     &#39;browseVignettes()&#39;. To cite Bioconductor, see
-##     &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<pre><code>## Loading required package: DelayedArray</code></pre>
-<pre><code>## Loading required package: matrixStats</code></pre>
-<pre><code>## 
-## Attaching package: &#39;matrixStats&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:Biobase&#39;:
-## 
-##     anyMissing, rowMedians</code></pre>
-<pre><code>## Loading required package: BiocParallel</code></pre>
-<pre><code>## 
-## Attaching package: &#39;DelayedArray&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:matrixStats&#39;:
-## 
-##     colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     aperm, apply, rowsum</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sce.zeisel &lt;-<span class="st"> </span><span class="kw">ZeiselBrainData</span>()</code></pre>
-<pre><code>## Warning: `overscope_eval_next()` is deprecated as of rlang 0.2.0.
-## Please use `eval_tidy()` with a data mask instead.
-## This warning is displayed once per session.</code></pre>
-<pre><code>## Warning: `overscope_clean()` is deprecated as of rlang 0.2.0.
-## This warning is displayed once per session.</code></pre>
-<pre><code>## snapshotDate(): 2019-06-20</code></pre>
-<pre><code>## see ?scRNAseq and browseVignettes(&#39;scRNAseq&#39;) for documentation</code></pre>
-<pre><code>## downloading 1 resources</code></pre>
-<pre><code>## retrieving 1 resource</code></pre>
-<pre><code>## loading from cache 
-##     &#39;EH2580 : 2596&#39;</code></pre>
-<pre><code>## see ?scRNAseq and browseVignettes(&#39;scRNAseq&#39;) for documentation</code></pre>
-<pre><code>## downloading 1 resources</code></pre>
-<pre><code>## retrieving 1 resource</code></pre>
-<pre><code>## loading from cache 
-##     &#39;EH2582 : 2598&#39;</code></pre>
-<pre><code>## see ?scRNAseq and browseVignettes(&#39;scRNAseq&#39;) for documentation</code></pre>
-<pre><code>## downloading 1 resources</code></pre>
-<pre><code>## retrieving 1 resource</code></pre>
-<pre><code>## loading from cache 
-##     &#39;EH2581 : 2597&#39;</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sce.zeisel </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scRNAseq)
+sce.zeisel &lt;-<span class="st"> </span><span class="kw">ZeiselBrainData</span>()
+sce.zeisel </code></pre>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 21135 3005 
 ## metadata(0):
@@ -429,9 +353,8 @@ In contrast, general batch correction methods aim to remove gene-specific differ
 </div>
 <div id="library-size-normalization" class="section level2">
 <h2><span class="header-section-number">9.3</span> Library size normalization</h2>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scater)</code></pre>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">lib.sf.zeisel &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.zeisel)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scater)
+lib.sf.zeisel &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.zeisel)
 <span class="kw">hist</span>(<span class="kw">log10</span>(lib.sf.zeisel), <span class="dt">xlab=</span><span class="st">&quot;Log10[Size factor]&quot;</span>, <span class="dt">col=</span><span class="st">&#39;grey80&#39;</span>)</code></pre>
 <div class="figure"><span id="fig:histlib"></span>
 <img src="P2_W2b.normalization_files/figure-html/histlib-1.png" alt="Distribution of size factors derived from the library size in the Zeisel brain dataset." width="672" />
@@ -475,13 +398,12 @@ Thus, the former will not be represented as part of the bias in the latter, whic
 By comparison, the other normalization methods described above will simply interpret any change in total RNA content as part of the bias and remove it.</p>
 <p>We demonstrate the use of spike-in normalization on a different dataset involving different cell types – namely, mouse embryonic stem cells (mESCs) and mouse embryonic fibroblasts (MEFs) <span class="citation">(<span class="citeproc-not-found" data-reference-id="islam2011characterization"><strong>???</strong></span>)</span>.
 (We will discuss the application of spike-in normalization to the Zeisel brain data shortly.)</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BiocFileCache)</code></pre>
-<pre><code>## Loading required package: dbplyr</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask=</span><span class="ot">FALSE</span>)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BiocFileCache)
+bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask=</span><span class="ot">FALSE</span>)
 islam.fname &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;ftp://ftp.ncbi.nlm.nih.gov/geo/series&quot;</span>,
-    <span class="st">&quot;GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz&quot;</span>))</code></pre>
-<pre><code>## adding rname &#39;ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz&#39;</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts &lt;-<span class="st"> </span><span class="kw">read.table</span>(islam.fname,
+    <span class="st">&quot;GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz&quot;</span>))
+
+counts &lt;-<span class="st"> </span><span class="kw">read.table</span>(islam.fname,
     <span class="dt">colClasses=</span><span class="kw">c</span>(<span class="kw">list</span>(<span class="st">&quot;character&quot;</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>),
     <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">96</span>)), <span class="dt">skip=</span><span class="dv">6</span>, <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">row.names=</span><span class="dv">1</span>)
 
