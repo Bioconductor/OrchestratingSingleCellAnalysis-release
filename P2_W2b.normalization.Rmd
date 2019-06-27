@@ -96,12 +96,12 @@ Systematic differences in the coverage of the spike-in transcripts can only be d
 Scaling normalization is then applied to equalize spike-in coverage across cells.
 We refer to the corresponding scaling factors as "spike-in size factors".
 
-Spike-in normalization should be used if differences in the total RNA content of individual cells are of interest.
+Spike-in normalization should be used if differences in the total RNA content of individual cells are of interest and must be preserved in downstream analyses.
 In any particular cell, an increase in the amount of endogenous RNA will not increase spike-in coverage. 
 Thus, the former will not be represented as part of the bias in the latter, which means that the effects of total RNA content on expression will not be removed upon scaling.
 By comparison, the other normalization methods described above will simply interpret any change in total RNA content as part of the bias and remove it.
 
-We demonstrate the use of spike-in normalization on a different dataset involving different cell types -- namely, mouse embryonic stem cells (mESCs) and mouse embryonic fibroblasts (MEFs) [@islam2011characterization].
+We demonstrate the use of spike-in normalization on a different dataset involving mouse embryonic stem cells (mESCs) and mouse embryonic fibroblasts (MEFs) [@islam2011characterization].
 (We will discuss the application of spike-in normalization to the Zeisel brain data shortly.)
 
 ```{r}
@@ -131,9 +131,9 @@ spike.sf.islam <- computeSpikeFactors(sce.islam, sf.out=TRUE)
 ```
 
 We observe a negative correlation between the two sets of size factors (Figure \@ref(fig:normplotspikemef)).
-This is because MEFs contain more endogenous RNA, which reduces the relative spike-in coverage in each library (thereby decreasing the spike-in size factors) but increases the coverage of endogenous genes (thus increasing the deconvolution size factors).
+This is because MEFs contain more endogenous RNA, which reduces the relative spike-in coverage in each library (thereby decreasing the spike-in size factors) but increases the coverage of endogenous genes (thus increasing the library size factors).
 If the spike-in size factors were applied to the counts, the expression values in MEFs would be scaled up while expression in mESCs would be scaled down.
-However, the opposite would occur if deconvolution size factors were used.
+However, the opposite would occur if library size factors were used. 
 
 ```{r normplotspikemef, fig.cap="Size factors from spike-in normalization, plotted against the library size factors for all cells in the mESC/MEF dataset. Each point is a cells, coloured according to its type."}
 lib.sf.islam <- librarySizeFactors(sce.islam)
@@ -144,7 +144,7 @@ legend("bottomleft", col=colours, legend=names(colours), pch=16)
 ```
 
 Whether or not total RNA content is relevant -- and thus, the choice of normalization strategy -- depends on the biological hypothesis. 
-In most cases, it is not interesting and can be normalized out by applying the library size or deconvolution factors. 
+In most cases, changes in total RNA content are not interesting and can be normalized out by applying the library size or deconvolution factors. 
 However, this may not always be appropriate if differences in total RNA are associated with a biological process of interest, e.g., cell cycle activity or T cell activation [@richard2018tcell].
 Spike-in normalization will preserve these differences such that any changes in expression between biological groups have the correct sign.
 
