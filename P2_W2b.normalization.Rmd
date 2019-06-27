@@ -27,6 +27,11 @@ In contrast, general batch correction methods aim to remove gene-specific differ
 
 ## Setting up the data
 
+To demonstrate a range of normalization strategies in this section, we will be using the @zeisel2015brain dataset from the `r BiocStyle::Biocpkg("scRNAseq")` package.
+This dataset was generated using the STRT/C1 protocol and contains UMI count data for 3005 cells from the mouse brain. 
+ERCC spike-in transcripts were also added to each cell.
+For simplicity, we will trust that sufficient quality control on the cells has already been performed by the original authors.
+
 ```{r}
 library(scRNAseq)
 sce.zeisel <- ZeiselBrainData()
@@ -35,11 +40,35 @@ sce.zeisel
 
 ## Library size normalization
 
+Scaling normalization is the simplest and most commonly used class of normalization strategies. 
+This involves dividing all counts for each cell by a cell-specific scaling factor, often called a "size factor"^[Library _size_, geddit?].
+The assumption here is that any cell-specific bias (e.g., in capture or amplification efficiency) affects all genes equally via scaling of the expected mean count for that cell.
+The size factor represents the relative bias in each cell, so division of the counts by the size factor should remove that bias.
+The resulting "normalized expression values" can then be used for downstream analyses such as clustering and dimensionality reduction.
+
+Library size normalization is the simplest strategy for performing scaling normalization.
+We define the library size as the total sum of counts across all genes for each cell.
+The "library size factor" for each cell is then directly proportional to its library size.
+The proportionality constant is defined such that the mean size factor across all cells is equal to 1.
+This ensures that the normalized expression values are on the same scale as the original counts, which is useful for interpretation
+ - especially when dealing with transformed data (see below).
+In the Zeisel brain data, the library size factors differ by up to 10-fold across cells (Figure \@ref(fig:histlib)), which is typical of the variability in coverage in scRNA-seq data. 
+
 ```{r histlib, fig.cap="Distribution of size factors derived from the library size in the Zeisel brain dataset."}
 library(scater)
 lib.sf.zeisel <- librarySizeFactors(sce.zeisel)
 hist(log10(lib.sf.zeisel), xlab="Log10[Size factor]", col='grey80')
 ```
+
+Strictly speaking, the use of library size factors assumes that there is no "imbalance" in the differentially expressed (DE) genes between any pair of cells.
+That is, any upregulation for a subset of genes is cancelled out by the same magnitude of downregulation in a different subset of genes.
+This ensures that the library size is an unbiased estimate of the relative cell-specific bias^[Unbiased bias... now that's a Rumsfeldian turn of phrase.].
+(Otherwise, the estimate would be compromised by composition biases, as discussed in @robinson2010scaling.)
+This may not be true in scRNA-seq applications, which means that library size normalization may not yield accurate normalized expression values for downstream analyses.
+
+In practice, normalization accuracy is not a major consideration for exploratory scRNA-seq data analyses.
+Composition biases do not usually affect the separation of clusters, only the magnitude - and to a lesser extent, direction - of the log-fold changes between clusters or cell types.
+As such, library size normalization is usually sufficient in many applications where the aim is to identify clusters and the top markers that define each cluster.
 
 ## Normalization by deconvolution
 
