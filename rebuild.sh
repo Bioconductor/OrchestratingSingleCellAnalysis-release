@@ -5,7 +5,24 @@ base=OSCABase
 # Updating the submodule remotes.
 git submodule update --remote
 
-# Copying over the files in the specified order.
+###################################################
+# Intro files:
+
+allfiles=(
+introduction.Rmd
+learning-r-and-bioconductor.Rmd
+beyond-r-basics.Rmd
+data-infrastructure.Rmd
+)
+
+for i in "${!allfiles[@]}"; do 
+    newfile=$(printf "P1_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
+    cp ${base}/intro/${allfiles[$i]} $newfile
+done
+
+###################################################
+# Analysis files:
+
 allfiles=(
 overview.Rmd
 quick-start.Rmd
@@ -24,8 +41,22 @@ import-export.Rmd
 
 for i in "${!allfiles[@]}"; do 
     newfile=$(printf "P2_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
-    cp ${base}/${allfiles[$i]} $newfile
+    cp ${base}/analysis/${allfiles[$i]} $newfile
 done
 
 # Copying the workflows as well.
-cp -r ${base}/workflows .
+cp -r ${base}/analysis/workflows .
+
+###################################################
+# About files:
+
+allfiles=(
+about-the-data.Rmd
+about-the-contributors.Rmd
+)
+
+for i in "${!allfiles[@]}"; do 
+    newfile=$(printf "P3_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
+    cp ${base}/about/${allfiles[$i]} $newfile
+done
+
