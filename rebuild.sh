@@ -47,6 +47,8 @@ done
 # Copying the workflows as well.
 cp -r ${base}/analysis/workflows .
 
+cp ${base}/ref.bib .
+
 ###################################################
 # About files:
 
