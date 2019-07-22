@@ -30,7 +30,7 @@ basic-analysis.Rmd
 quality-control.Rmd
 normalization.Rmd
 clustering.Rmd
-diff-exp.Rmd
+marker-detection.Rmd
 data-integration.Rmd
 cell-annotation.Rmd
 interactive.Rmd
