@@ -70,4 +70,26 @@ done
 R -e "all.workflows <- list.files('workflows', pattern='Rmd$', full=TRUE); for (x in all.workflows) { rmarkdown::render(x) }"
 
 
+###################################################
+## Write the DESCRIPTION file automagically 
+
+echo "Package: OrchestratingSingleCellAnalysis" > DESCRIPTION
+echo "Title: Orchestrating Single Cell Analysis with Bioconductor" >> DESCRIPTION
+echo "Version: 0.0.1.9999" >> DESCRIPTION
+echo "Authors@R: c(person('Robert', 'Amezquita', role = c('aut', 'cre')), person('Aaron', 'Lun', role = c('aut')), person('Stephanie', 'Hicks', role = 'aut'), person('Raphael', 'Gottardo', role = 'aut'))" >> DESCRIPTION
+echo "Description: Online book for orchestrating single cell analysis with Bioconductor. Methods and resources with plenty of examples." >> DESCRIPTION
+echo "License: GPL-3" >> DESCRIPTION
+echo "Encoding: UTF-8" >> DESCRIPTION
+echo "LazyData: true" >> DESCRIPTION
+echo "Imports:" >> DESCRIPTION
+
+## Where the magic happens to grab all the uses of library
+grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/    /g' | sed 's/)/,/g' >> DESCRIPTION
+
+## Add some extra packages that aren't mentioned explicitly throughout
+echo "    BiocManager" >> DESCRIPTION
+echo "    devtools" >> DESCRIPTION
+echo "    bookdown" >> DESCRIPTION
+
+
 
