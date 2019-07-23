@@ -35,11 +35,8 @@ normalization.Rmd
 clustering.Rmd
 marker-detection.Rmd
 data-integration.Rmd
-cell-annotation.Rmd
 interactive.Rmd
-trajectory.Rmd
 big-data.Rmd
-import-export.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
@@ -58,6 +55,7 @@ cp ${base}/ref.bib .
 allfiles=(
 about-the-data.Rmd
 about-the-contributors.Rmd
+bibliography.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
