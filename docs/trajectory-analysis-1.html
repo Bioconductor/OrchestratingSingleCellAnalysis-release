@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 13 Trajectory Analysis | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <title>Chapter 16 Trajectory Analysis | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 13 Trajectory Analysis | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:title" content="Chapter 16 Trajectory Analysis | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
   
   
@@ -16,22 +16,22 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 13 Trajectory Analysis | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta name="twitter:title" content="Chapter 16 Trajectory Analysis | Orchestrating Single-Cell Analysis with Bioconductor" />
   
   <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   
 
 
 
-<meta name="date" content="2019-06-26" />
+<meta name="date" content="2019-07-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<link rel="prev" href="differential-expression-2.html">
-<link rel="next" href="annotation-2.html">
+<link rel="prev" href="sharing-and-interactive-interfaces.html">
+<link rel="next" href="adaptations-for-large-scale-data.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -54,7 +54,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; position: absolute; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -209,6 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="quick-start.html"><a href="quick-start.html"><i class="fa fa-check"></i><b>6</b> Quick Start</a><ul>
 <li class="chapter" data-level="6.1" data-path="quick-start.html"><a href="quick-start.html#code"><i class="fa fa-check"></i><b>6.1</b> Code</a></li>
 <li class="chapter" data-level="6.2" data-path="quick-start.html"><a href="quick-start.html#visualizations"><i class="fa fa-check"></i><b>6.2</b> Visualizations</a></li>
+<li class="chapter" data-level="6.3" data-path="quick-start.html"><a href="quick-start.html#session-info"><i class="fa fa-check"></i><b>6.3</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html"><i class="fa fa-check"></i><b>7</b> A Basic Analysis</a><ul>
 <li class="chapter" data-level="7.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#preprocessing-import-to-r"><i class="fa fa-check"></i><b>7.1</b> Preprocessing &amp; Import to R</a></li>
@@ -230,76 +230,118 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.5" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#accessible-reproducible-analysis-1"><i class="fa fa-check"></i><b>7.5</b> Accessible &amp; Reproducible Analysis</a><ul>
 <li class="chapter" data-level="7.5.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#interactive-data-visualization-1"><i class="fa fa-check"></i><b>7.5.1</b> Interactive Data Visualization</a></li>
 </ul></li>
+<li class="chapter" data-level="7.6" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#session-info-1"><i class="fa fa-check"></i><b>7.6</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="quality-control.html"><a href="quality-control.html"><i class="fa fa-check"></i><b>8</b> Quality Control</a><ul>
 <li class="chapter" data-level="8.1" data-path="quality-control.html"><a href="quality-control.html#motivation"><i class="fa fa-check"></i><b>8.1</b> Motivation</a></li>
-<li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#introducing-the-dataset"><i class="fa fa-check"></i><b>8.2</b> Introducing the dataset</a></li>
-<li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.3</b> Choice of QC metrics</a></li>
-<li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.4</b> Identifying low-quality cells</a><ul>
-<li class="chapter" data-level="8.4.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.4.1</b> With fixed thresholds</a></li>
-<li class="chapter" data-level="8.4.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.4.2</b> With adaptive thresholds</a></li>
-<li class="chapter" data-level="8.4.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.4.3</b> Considering experimental factors</a></li>
+<li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.2</b> Choice of QC metrics</a></li>
+<li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.3</b> Identifying low-quality cells</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.3.1</b> With fixed thresholds</a></li>
+<li class="chapter" data-level="8.3.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.3.2</b> With adaptive thresholds</a></li>
+<li class="chapter" data-level="8.3.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.3.3</b> Considering experimental factors</a></li>
 </ul></li>
-<li class="chapter" data-level="8.5" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.5</b> Checking diagnostic plots</a></li>
-<li class="chapter" data-level="8.6" data-path="quality-control.html"><a href="quality-control.html#droplet-specific-procedures"><i class="fa fa-check"></i><b>8.6</b> Droplet-specific procedures</a><ul>
-<li class="chapter" data-level="8.6.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>8.6.1</b> Background</a></li>
-<li class="chapter" data-level="8.6.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>8.6.2</b> Testing for empty droplets</a></li>
-<li class="chapter" data-level="8.6.3" data-path="quality-control.html"><a href="quality-control.html#examining-cell-calling-diagnostics"><i class="fa fa-check"></i><b>8.6.3</b> Examining cell-calling diagnostics</a></li>
+<li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.4</b> Checking diagnostic plots</a></li>
+<li class="chapter" data-level="8.5" data-path="quality-control.html"><a href="quality-control.html#droplet-specific-procedures"><i class="fa fa-check"></i><b>8.5</b> Droplet-specific procedures</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>8.5.1</b> Background</a></li>
+<li class="chapter" data-level="8.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>8.5.2</b> Testing for empty droplets</a></li>
+<li class="chapter" data-level="8.5.3" data-path="quality-control.html"><a href="quality-control.html#examining-cell-calling-diagnostics"><i class="fa fa-check"></i><b>8.5.3</b> Examining cell-calling diagnostics</a></li>
 </ul></li>
-<li class="chapter" data-level="8.7" data-path="quality-control.html"><a href="quality-control.html#assumptions-of-outlier-detection"><i class="fa fa-check"></i><b>8.7</b> Assumptions of outlier detection</a><ul>
-<li class="chapter" data-level="8.7.1" data-path="quality-control.html"><a href="quality-control.html#overview"><i class="fa fa-check"></i><b>8.7.1</b> Overview</a></li>
-<li class="chapter" data-level="8.7.2" data-path="quality-control.html"><a href="quality-control.html#checking-for-discarded-cell-types"><i class="fa fa-check"></i><b>8.7.2</b> Checking for discarded cell types</a></li>
+<li class="chapter" data-level="8.6" data-path="quality-control.html"><a href="quality-control.html#assumptions-of-outlier-detection"><i class="fa fa-check"></i><b>8.6</b> Assumptions of outlier detection</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="quality-control.html"><a href="quality-control.html#overview"><i class="fa fa-check"></i><b>8.6.1</b> Overview</a></li>
+<li class="chapter" data-level="8.6.2" data-path="quality-control.html"><a href="quality-control.html#checking-for-discarded-cell-types"><i class="fa fa-check"></i><b>8.6.2</b> Checking for discarded cell types</a></li>
 </ul></li>
+<li class="chapter" data-level="8.7" data-path="quality-control.html"><a href="quality-control.html#session-info-2"><i class="fa fa-check"></i><b>8.7</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="normalization.html"><a href="normalization.html"><i class="fa fa-check"></i><b>9</b> Normalization</a><ul>
 <li class="chapter" data-level="9.1" data-path="normalization.html"><a href="normalization.html#motivation-1"><i class="fa fa-check"></i><b>9.1</b> Motivation</a></li>
 <li class="chapter" data-level="9.2" data-path="normalization.html"><a href="normalization.html#setting-up-the-data"><i class="fa fa-check"></i><b>9.2</b> Setting up the data</a></li>
 <li class="chapter" data-level="9.3" data-path="normalization.html"><a href="normalization.html#library-size-normalization"><i class="fa fa-check"></i><b>9.3</b> Library size normalization</a></li>
 <li class="chapter" data-level="9.4" data-path="normalization.html"><a href="normalization.html#normalization-by-deconvolution"><i class="fa fa-check"></i><b>9.4</b> Normalization by deconvolution</a></li>
-<li class="chapter" data-level="9.5" data-path="normalization.html"><a href="normalization.html#normalization-by-spike-ins"><i class="fa fa-check"></i><b>9.5</b> Normalization by spike-ins</a><ul>
-<li class="chapter" data-level="9.5.1" data-path="normalization.html"><a href="normalization.html#differences-in-total-rna-content"><i class="fa fa-check"></i><b>9.5.1</b> Differences in total RNA content</a></li>
-<li class="chapter" data-level="9.5.2" data-path="normalization.html"><a href="normalization.html#differences-in-cell-damage"><i class="fa fa-check"></i><b>9.5.2</b> Differences in cell damage</a></li>
-</ul></li>
-<li class="chapter" data-level="9.6" data-path="normalization.html"><a href="normalization.html#transformation"><i class="fa fa-check"></i><b>9.6</b> Transformation</a></li>
+<li class="chapter" data-level="9.5" data-path="normalization.html"><a href="normalization.html#normalization-by-spike-ins"><i class="fa fa-check"></i><b>9.5</b> Normalization by spike-ins</a></li>
+<li class="chapter" data-level="9.6" data-path="normalization.html"><a href="normalization.html#putting-it-all-together"><i class="fa fa-check"></i><b>9.6</b> Putting it all together</a></li>
+<li class="chapter" data-level="9.7" data-path="normalization.html"><a href="normalization.html#why-log-transform"><i class="fa fa-check"></i><b>9.7</b> Why (log-)transform?</a></li>
+<li class="chapter" data-level="9.8" data-path="normalization.html"><a href="normalization.html#session-info-3"><i class="fa fa-check"></i><b>9.8</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>10</b> Clustering</a><ul>
-<li class="chapter" data-level="10.1" data-path="clustering-2.html"><a href="clustering-2.html#loading-the-data"><i class="fa fa-check"></i><b>10.1</b> Loading the Data</a></li>
-<li class="chapter" data-level="10.2" data-path="clustering-2.html"><a href="clustering-2.html#manual-clustering"><i class="fa fa-check"></i><b>10.2</b> Manual Clustering</a><ul>
-<li class="chapter" data-level="10.2.1" data-path="clustering-2.html"><a href="clustering-2.html#varying-k"><i class="fa fa-check"></i><b>10.2.1</b> Varying <code>k</code></a></li>
-<li class="chapter" data-level="10.2.2" data-path="clustering-2.html"><a href="clustering-2.html#varying-clustering-algorithms"><i class="fa fa-check"></i><b>10.2.2</b> Varying Clustering Algorithms</a></li>
+<li class="chapter" data-level="10.1" data-path="clustering-2.html"><a href="clustering-2.html#motivation-2"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
+<li class="chapter" data-level="10.2" data-path="clustering-2.html"><a href="clustering-2.html#comments-on-truth"><i class="fa fa-check"></i><b>10.2</b> Comments on Truth</a></li>
+<li class="chapter" data-level="10.3" data-path="clustering-2.html"><a href="clustering-2.html#graph-based-clustering"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="clustering-2.html"><a href="clustering-2.html#background-1"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
+<li class="chapter" data-level="10.3.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
+<li class="chapter" data-level="10.3.3" data-path="clustering-2.html"><a href="clustering-2.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
+<li class="chapter" data-level="10.3.4" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="clustering-2.html"><a href="clustering-2.html#automated-clustering"><i class="fa fa-check"></i><b>10.3</b> Automated Clustering</a></li>
+<li class="chapter" data-level="10.4" data-path="clustering-2.html"><a href="clustering-2.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="clustering-2.html"><a href="clustering-2.html#background-2"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
+<li class="chapter" data-level="10.4.2" data-path="clustering-2.html"><a href="clustering-2.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
+<li class="chapter" data-level="10.4.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>11</b> Integrating Datasets</a><ul>
-<li class="chapter" data-level="11.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>11.1</b> Preprocessing</a></li>
-<li class="chapter" data-level="11.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>11.2</b> Fast MNN</a></li>
-<li class="chapter" data-level="11.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>11.3</b> Harmony</a></li>
-<li class="chapter" data-level="11.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>11.4</b> Advanced MNN Workflow</a><ul>
-<li class="chapter" data-level="11.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>11.4.1</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="10.5" data-path="clustering-2.html"><a href="clustering-2.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="clustering-2.html"><a href="clustering-2.html#background-3"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
+<li class="chapter" data-level="10.5.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
+<li class="chapter" data-level="10.5.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="11.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>11.5</b> Naive Method Without Correction</a></li>
-<li class="chapter" data-level="11.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>11.6</b> Limma Batch Correction</a></li>
+<li class="chapter" data-level="10.6" data-path="clustering-2.html"><a href="clustering-2.html#session-info-4"><i class="fa fa-check"></i><b>10.6</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="differential-expression-2.html"><a href="differential-expression-2.html"><i class="fa fa-check"></i><b>12</b> Differential Expression</a></li>
-<li class="chapter" data-level="13" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html"><i class="fa fa-check"></i><b>13</b> Trajectory Analysis</a></li>
+<li class="chapter" data-level="11" data-path="differential-expression-2.html"><a href="differential-expression-2.html"><i class="fa fa-check"></i><b>11</b> Differential Expression</a></li>
+<li class="chapter" data-level="12" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>12</b> Marker gene detection</a><ul>
+<li class="chapter" data-level="12.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-3"><i class="fa fa-check"></i><b>12.1</b> Motivation</a></li>
+<li class="chapter" data-level="12.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>12.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>12.2.1</b> Standard application</a></li>
+<li class="chapter" data-level="12.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>12.2.2</b> Using the log-fold change</a></li>
+<li class="chapter" data-level="12.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>12.2.3</b> Finding cluster-specific markers</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>12.3</b> Alternative testing regimes</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>12.3.1</b> Using the Wilcoxon rank sum test</a></li>
+<li class="chapter" data-level="12.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>12.3.2</b> Using a binomial test</a></li>
+<li class="chapter" data-level="12.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>12.3.3</b> Using custom DE methods</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#handling-blocking-factors"><i class="fa fa-check"></i><b>12.4</b> Handling blocking factors</a></li>
+<li class="chapter" data-level="12.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>12.5</b> Using the <code>block=</code> argument</a></li>
+<li class="chapter" data-level="12.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>12.6</b> Using the <code>design=</code> argument</a></li>
+<li class="chapter" data-level="12.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>12.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>12.7.1</b> From data snooping</a></li>
+<li class="chapter" data-level="12.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#nature-of-replication"><i class="fa fa-check"></i><b>12.7.2</b> Nature of replication</a></li>
+</ul></li>
+<li class="chapter" data-level="12.8" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-5"><i class="fa fa-check"></i><b>12.8</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="13.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>13.1</b> Preprocessing</a></li>
+<li class="chapter" data-level="13.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>13.2</b> Fast MNN</a></li>
+<li class="chapter" data-level="13.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>13.3</b> Harmony</a></li>
+<li class="chapter" data-level="13.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>13.4</b> Advanced MNN Workflow</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>13.4.1</b> Dimensionality Reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>13.5</b> Naive Method Without Correction</a></li>
+<li class="chapter" data-level="13.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>13.6</b> Limma Batch Correction</a></li>
+<li class="chapter" data-level="13.7" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#session-info-6"><i class="fa fa-check"></i><b>13.7</b> Session Info</a></li>
+</ul></li>
 <li class="chapter" data-level="14" data-path="annotation-2.html"><a href="annotation-2.html"><i class="fa fa-check"></i><b>14</b> Annotation</a></li>
-<li class="chapter" data-level="15" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>15</b> Sharing and Interactive Interfaces</a></li>
-<li class="chapter" data-level="16" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>16</b> Adaptations for Large-scale Data</a><ul>
-<li class="chapter" data-level="16.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>16.1</b> Approximate Methods</a></li>
-<li class="chapter" data-level="16.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>16.2</b> Parallelization</a></li>
-<li class="chapter" data-level="16.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>16.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="15" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>15</b> Sharing and Interactive Interfaces</a><ul>
+<li class="chapter" data-level="15.1" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html#session-info-7"><i class="fa fa-check"></i><b>15.1</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="data-import-and-export.html"><a href="data-import-and-export.html"><i class="fa fa-check"></i><b>17</b> Data Import and Export</a></li>
+<li class="chapter" data-level="16" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html"><i class="fa fa-check"></i><b>16</b> Trajectory Analysis</a><ul>
+<li class="chapter" data-level="16.1" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html#session-info-8"><i class="fa fa-check"></i><b>16.1</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>17</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="17.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>17.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="17.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>17.2</b> Parallelization</a></li>
+<li class="chapter" data-level="17.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>17.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="17.4" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-9"><i class="fa fa-check"></i><b>17.4</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="data-import-and-export.html"><a href="data-import-and-export.html"><i class="fa fa-check"></i><b>18</b> Data Import and Export</a><ul>
+<li class="chapter" data-level="18.1" data-path="data-import-and-export.html"><a href="data-import-and-export.html#session-info-10"><i class="fa fa-check"></i><b>18.1</b> Session Info</a></li>
+</ul></li>
 <li class="part"><span><b>III Appendix</b></span></li>
-<li class="chapter" data-level="18" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>18</b> About the Data</a><ul>
-<li class="chapter" data-level="18.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>18.1</b> 10X Genomics PBMC Data</a></li>
-<li class="chapter" data-level="18.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>18.2</b> Cellbench_data</a></li>
+<li class="chapter" data-level="19" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>19</b> About the Data</a><ul>
+<li class="chapter" data-level="19.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>19.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="19.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>19.2</b> Cellbench_data</a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>19</b> About the Contributors</a><ul>
-<li class="chapter" data-level="19.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>19.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
-<li class="chapter" data-level="19.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>19.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
-<li class="chapter" data-level="19.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>19.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
-<li class="chapter" data-level="19.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>19.0.4</b> <em>Aaron Lun, PhD</em></a></li>
+<li class="chapter" data-level="20" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>20</b> About the Contributors</a><ul>
+<li class="chapter" data-level="20.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>20.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
+<li class="chapter" data-level="20.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>20.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
+<li class="chapter" data-level="20.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>20.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
+<li class="chapter" data-level="20.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>20.0.4</b> <em>Aaron Lun, PhD</em></a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
@@ -322,17 +364,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="trajectory-analysis-1" class="section level1">
-<h1><span class="header-section-number">Chapter 13</span> Trajectory Analysis</h1>
-<p><em>WIP</em></p>
+<h1><span class="header-section-number">Chapter 16</span> Trajectory Analysis</h1>
+<script>
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("aaron-collapse")) {
+        event.target.classList.toggle("active");
+        var content = event.target.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+    }
+})
+</script>
+<style>
+.aaron-collapse {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
 
+.aaron-content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
+<p><em>WIP</em></p>
+<div id="session-info-8" class="section level2">
+<h2><span class="header-section-number">16.1</span> Session Info</h2>
+<button class="aaron-collapse">
+View session info
+</button>
+<div class="aaron-content">
+<p>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.6 LTS</p>
+<p>Matrix products: default
+BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so</p>
+<p>locale:
+[1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C<br />
+[3] LC_TIME=en_US.UTF-8 LC_COLLATE=en_US.UTF-8<br />
+[5] LC_MONETARY=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8<br />
+[7] LC_PAPER=en_US.UTF-8 LC_NAME=C<br />
+[9] LC_ADDRESS=C LC_TELEPHONE=C<br />
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C</p>
+<p>attached base packages:
+[1] stats graphics grDevices utils datasets methods base</p>
+<p>other attached packages:
+[1] BiocStyle_2.13.2</p>
+<p>loaded via a namespace (and not attached):
+[1] BiocManager_1.30.4 compiler_3.6.0 magrittr_1.5<br />
+[4] bookdown_0.12 tools_3.6.0 htmltools_0.3.6<br />
+[7] yaml_2.2.0 Rcpp_1.0.1 stringi_1.4.3<br />
+[10] rmarkdown_1.14 knitr_1.23 stringr_1.4.0<br />
+[13] xfun_0.8 digest_0.6.20 evaluate_0.14</p>
+</div>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="differential-expression-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="annotation-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="sharing-and-interactive-interfaces.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="adaptations-for-large-scale-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -362,7 +467,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W5.trajectory-analysis.Rmd",
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W11.trajectory.Rmd",
 "text": "Edit"
 },
 "history": {

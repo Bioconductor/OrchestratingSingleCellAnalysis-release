@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 Quick Start | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 Quick Start | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-06-26" />
+<meta name="date" content="2019-07-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -54,7 +54,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; position: absolute; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -209,6 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="quick-start.html"><a href="quick-start.html"><i class="fa fa-check"></i><b>6</b> Quick Start</a><ul>
 <li class="chapter" data-level="6.1" data-path="quick-start.html"><a href="quick-start.html#code"><i class="fa fa-check"></i><b>6.1</b> Code</a></li>
 <li class="chapter" data-level="6.2" data-path="quick-start.html"><a href="quick-start.html#visualizations"><i class="fa fa-check"></i><b>6.2</b> Visualizations</a></li>
+<li class="chapter" data-level="6.3" data-path="quick-start.html"><a href="quick-start.html#session-info"><i class="fa fa-check"></i><b>6.3</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html"><i class="fa fa-check"></i><b>7</b> A Basic Analysis</a><ul>
 <li class="chapter" data-level="7.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#preprocessing-import-to-r"><i class="fa fa-check"></i><b>7.1</b> Preprocessing &amp; Import to R</a></li>
@@ -230,76 +230,118 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.5" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#accessible-reproducible-analysis-1"><i class="fa fa-check"></i><b>7.5</b> Accessible &amp; Reproducible Analysis</a><ul>
 <li class="chapter" data-level="7.5.1" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#interactive-data-visualization-1"><i class="fa fa-check"></i><b>7.5.1</b> Interactive Data Visualization</a></li>
 </ul></li>
+<li class="chapter" data-level="7.6" data-path="a-basic-analysis.html"><a href="a-basic-analysis.html#session-info-1"><i class="fa fa-check"></i><b>7.6</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="quality-control.html"><a href="quality-control.html"><i class="fa fa-check"></i><b>8</b> Quality Control</a><ul>
 <li class="chapter" data-level="8.1" data-path="quality-control.html"><a href="quality-control.html#motivation"><i class="fa fa-check"></i><b>8.1</b> Motivation</a></li>
-<li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#introducing-the-dataset"><i class="fa fa-check"></i><b>8.2</b> Introducing the dataset</a></li>
-<li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.3</b> Choice of QC metrics</a></li>
-<li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.4</b> Identifying low-quality cells</a><ul>
-<li class="chapter" data-level="8.4.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.4.1</b> With fixed thresholds</a></li>
-<li class="chapter" data-level="8.4.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.4.2</b> With adaptive thresholds</a></li>
-<li class="chapter" data-level="8.4.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.4.3</b> Considering experimental factors</a></li>
+<li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.2</b> Choice of QC metrics</a></li>
+<li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.3</b> Identifying low-quality cells</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.3.1</b> With fixed thresholds</a></li>
+<li class="chapter" data-level="8.3.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.3.2</b> With adaptive thresholds</a></li>
+<li class="chapter" data-level="8.3.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.3.3</b> Considering experimental factors</a></li>
 </ul></li>
-<li class="chapter" data-level="8.5" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.5</b> Checking diagnostic plots</a></li>
-<li class="chapter" data-level="8.6" data-path="quality-control.html"><a href="quality-control.html#droplet-specific-procedures"><i class="fa fa-check"></i><b>8.6</b> Droplet-specific procedures</a><ul>
-<li class="chapter" data-level="8.6.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>8.6.1</b> Background</a></li>
-<li class="chapter" data-level="8.6.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>8.6.2</b> Testing for empty droplets</a></li>
-<li class="chapter" data-level="8.6.3" data-path="quality-control.html"><a href="quality-control.html#examining-cell-calling-diagnostics"><i class="fa fa-check"></i><b>8.6.3</b> Examining cell-calling diagnostics</a></li>
+<li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.4</b> Checking diagnostic plots</a></li>
+<li class="chapter" data-level="8.5" data-path="quality-control.html"><a href="quality-control.html#droplet-specific-procedures"><i class="fa fa-check"></i><b>8.5</b> Droplet-specific procedures</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>8.5.1</b> Background</a></li>
+<li class="chapter" data-level="8.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>8.5.2</b> Testing for empty droplets</a></li>
+<li class="chapter" data-level="8.5.3" data-path="quality-control.html"><a href="quality-control.html#examining-cell-calling-diagnostics"><i class="fa fa-check"></i><b>8.5.3</b> Examining cell-calling diagnostics</a></li>
 </ul></li>
-<li class="chapter" data-level="8.7" data-path="quality-control.html"><a href="quality-control.html#assumptions-of-outlier-detection"><i class="fa fa-check"></i><b>8.7</b> Assumptions of outlier detection</a><ul>
-<li class="chapter" data-level="8.7.1" data-path="quality-control.html"><a href="quality-control.html#overview"><i class="fa fa-check"></i><b>8.7.1</b> Overview</a></li>
-<li class="chapter" data-level="8.7.2" data-path="quality-control.html"><a href="quality-control.html#checking-for-discarded-cell-types"><i class="fa fa-check"></i><b>8.7.2</b> Checking for discarded cell types</a></li>
+<li class="chapter" data-level="8.6" data-path="quality-control.html"><a href="quality-control.html#assumptions-of-outlier-detection"><i class="fa fa-check"></i><b>8.6</b> Assumptions of outlier detection</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="quality-control.html"><a href="quality-control.html#overview"><i class="fa fa-check"></i><b>8.6.1</b> Overview</a></li>
+<li class="chapter" data-level="8.6.2" data-path="quality-control.html"><a href="quality-control.html#checking-for-discarded-cell-types"><i class="fa fa-check"></i><b>8.6.2</b> Checking for discarded cell types</a></li>
 </ul></li>
+<li class="chapter" data-level="8.7" data-path="quality-control.html"><a href="quality-control.html#session-info-2"><i class="fa fa-check"></i><b>8.7</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="normalization.html"><a href="normalization.html"><i class="fa fa-check"></i><b>9</b> Normalization</a><ul>
 <li class="chapter" data-level="9.1" data-path="normalization.html"><a href="normalization.html#motivation-1"><i class="fa fa-check"></i><b>9.1</b> Motivation</a></li>
 <li class="chapter" data-level="9.2" data-path="normalization.html"><a href="normalization.html#setting-up-the-data"><i class="fa fa-check"></i><b>9.2</b> Setting up the data</a></li>
 <li class="chapter" data-level="9.3" data-path="normalization.html"><a href="normalization.html#library-size-normalization"><i class="fa fa-check"></i><b>9.3</b> Library size normalization</a></li>
 <li class="chapter" data-level="9.4" data-path="normalization.html"><a href="normalization.html#normalization-by-deconvolution"><i class="fa fa-check"></i><b>9.4</b> Normalization by deconvolution</a></li>
-<li class="chapter" data-level="9.5" data-path="normalization.html"><a href="normalization.html#normalization-by-spike-ins"><i class="fa fa-check"></i><b>9.5</b> Normalization by spike-ins</a><ul>
-<li class="chapter" data-level="9.5.1" data-path="normalization.html"><a href="normalization.html#differences-in-total-rna-content"><i class="fa fa-check"></i><b>9.5.1</b> Differences in total RNA content</a></li>
-<li class="chapter" data-level="9.5.2" data-path="normalization.html"><a href="normalization.html#differences-in-cell-damage"><i class="fa fa-check"></i><b>9.5.2</b> Differences in cell damage</a></li>
-</ul></li>
-<li class="chapter" data-level="9.6" data-path="normalization.html"><a href="normalization.html#transformation"><i class="fa fa-check"></i><b>9.6</b> Transformation</a></li>
+<li class="chapter" data-level="9.5" data-path="normalization.html"><a href="normalization.html#normalization-by-spike-ins"><i class="fa fa-check"></i><b>9.5</b> Normalization by spike-ins</a></li>
+<li class="chapter" data-level="9.6" data-path="normalization.html"><a href="normalization.html#putting-it-all-together"><i class="fa fa-check"></i><b>9.6</b> Putting it all together</a></li>
+<li class="chapter" data-level="9.7" data-path="normalization.html"><a href="normalization.html#why-log-transform"><i class="fa fa-check"></i><b>9.7</b> Why (log-)transform?</a></li>
+<li class="chapter" data-level="9.8" data-path="normalization.html"><a href="normalization.html#session-info-3"><i class="fa fa-check"></i><b>9.8</b> Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>10</b> Clustering</a><ul>
-<li class="chapter" data-level="10.1" data-path="clustering-2.html"><a href="clustering-2.html#loading-the-data"><i class="fa fa-check"></i><b>10.1</b> Loading the Data</a></li>
-<li class="chapter" data-level="10.2" data-path="clustering-2.html"><a href="clustering-2.html#manual-clustering"><i class="fa fa-check"></i><b>10.2</b> Manual Clustering</a><ul>
-<li class="chapter" data-level="10.2.1" data-path="clustering-2.html"><a href="clustering-2.html#varying-k"><i class="fa fa-check"></i><b>10.2.1</b> Varying <code>k</code></a></li>
-<li class="chapter" data-level="10.2.2" data-path="clustering-2.html"><a href="clustering-2.html#varying-clustering-algorithms"><i class="fa fa-check"></i><b>10.2.2</b> Varying Clustering Algorithms</a></li>
+<li class="chapter" data-level="10.1" data-path="clustering-2.html"><a href="clustering-2.html#motivation-2"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
+<li class="chapter" data-level="10.2" data-path="clustering-2.html"><a href="clustering-2.html#comments-on-truth"><i class="fa fa-check"></i><b>10.2</b> Comments on Truth</a></li>
+<li class="chapter" data-level="10.3" data-path="clustering-2.html"><a href="clustering-2.html#graph-based-clustering"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="clustering-2.html"><a href="clustering-2.html#background-1"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
+<li class="chapter" data-level="10.3.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
+<li class="chapter" data-level="10.3.3" data-path="clustering-2.html"><a href="clustering-2.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
+<li class="chapter" data-level="10.3.4" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="clustering-2.html"><a href="clustering-2.html#automated-clustering"><i class="fa fa-check"></i><b>10.3</b> Automated Clustering</a></li>
+<li class="chapter" data-level="10.4" data-path="clustering-2.html"><a href="clustering-2.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="clustering-2.html"><a href="clustering-2.html#background-2"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
+<li class="chapter" data-level="10.4.2" data-path="clustering-2.html"><a href="clustering-2.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
+<li class="chapter" data-level="10.4.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>11</b> Integrating Datasets</a><ul>
-<li class="chapter" data-level="11.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>11.1</b> Preprocessing</a></li>
-<li class="chapter" data-level="11.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>11.2</b> Fast MNN</a></li>
-<li class="chapter" data-level="11.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>11.3</b> Harmony</a></li>
-<li class="chapter" data-level="11.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>11.4</b> Advanced MNN Workflow</a><ul>
-<li class="chapter" data-level="11.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>11.4.1</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="10.5" data-path="clustering-2.html"><a href="clustering-2.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="clustering-2.html"><a href="clustering-2.html#background-3"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
+<li class="chapter" data-level="10.5.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
+<li class="chapter" data-level="10.5.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="11.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>11.5</b> Naive Method Without Correction</a></li>
-<li class="chapter" data-level="11.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>11.6</b> Limma Batch Correction</a></li>
+<li class="chapter" data-level="10.6" data-path="clustering-2.html"><a href="clustering-2.html#session-info-4"><i class="fa fa-check"></i><b>10.6</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="differential-expression-2.html"><a href="differential-expression-2.html"><i class="fa fa-check"></i><b>12</b> Differential Expression</a></li>
-<li class="chapter" data-level="13" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html"><i class="fa fa-check"></i><b>13</b> Trajectory Analysis</a></li>
+<li class="chapter" data-level="11" data-path="differential-expression-2.html"><a href="differential-expression-2.html"><i class="fa fa-check"></i><b>11</b> Differential Expression</a></li>
+<li class="chapter" data-level="12" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>12</b> Marker gene detection</a><ul>
+<li class="chapter" data-level="12.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-3"><i class="fa fa-check"></i><b>12.1</b> Motivation</a></li>
+<li class="chapter" data-level="12.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>12.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>12.2.1</b> Standard application</a></li>
+<li class="chapter" data-level="12.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>12.2.2</b> Using the log-fold change</a></li>
+<li class="chapter" data-level="12.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>12.2.3</b> Finding cluster-specific markers</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>12.3</b> Alternative testing regimes</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>12.3.1</b> Using the Wilcoxon rank sum test</a></li>
+<li class="chapter" data-level="12.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>12.3.2</b> Using a binomial test</a></li>
+<li class="chapter" data-level="12.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>12.3.3</b> Using custom DE methods</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#handling-blocking-factors"><i class="fa fa-check"></i><b>12.4</b> Handling blocking factors</a></li>
+<li class="chapter" data-level="12.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>12.5</b> Using the <code>block=</code> argument</a></li>
+<li class="chapter" data-level="12.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>12.6</b> Using the <code>design=</code> argument</a></li>
+<li class="chapter" data-level="12.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>12.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>12.7.1</b> From data snooping</a></li>
+<li class="chapter" data-level="12.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#nature-of-replication"><i class="fa fa-check"></i><b>12.7.2</b> Nature of replication</a></li>
+</ul></li>
+<li class="chapter" data-level="12.8" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-5"><i class="fa fa-check"></i><b>12.8</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="13.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>13.1</b> Preprocessing</a></li>
+<li class="chapter" data-level="13.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>13.2</b> Fast MNN</a></li>
+<li class="chapter" data-level="13.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>13.3</b> Harmony</a></li>
+<li class="chapter" data-level="13.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>13.4</b> Advanced MNN Workflow</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>13.4.1</b> Dimensionality Reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>13.5</b> Naive Method Without Correction</a></li>
+<li class="chapter" data-level="13.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>13.6</b> Limma Batch Correction</a></li>
+<li class="chapter" data-level="13.7" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#session-info-6"><i class="fa fa-check"></i><b>13.7</b> Session Info</a></li>
+</ul></li>
 <li class="chapter" data-level="14" data-path="annotation-2.html"><a href="annotation-2.html"><i class="fa fa-check"></i><b>14</b> Annotation</a></li>
-<li class="chapter" data-level="15" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>15</b> Sharing and Interactive Interfaces</a></li>
-<li class="chapter" data-level="16" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>16</b> Adaptations for Large-scale Data</a><ul>
-<li class="chapter" data-level="16.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>16.1</b> Approximate Methods</a></li>
-<li class="chapter" data-level="16.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>16.2</b> Parallelization</a></li>
-<li class="chapter" data-level="16.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>16.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="15" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>15</b> Sharing and Interactive Interfaces</a><ul>
+<li class="chapter" data-level="15.1" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html#session-info-7"><i class="fa fa-check"></i><b>15.1</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="data-import-and-export.html"><a href="data-import-and-export.html"><i class="fa fa-check"></i><b>17</b> Data Import and Export</a></li>
+<li class="chapter" data-level="16" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html"><i class="fa fa-check"></i><b>16</b> Trajectory Analysis</a><ul>
+<li class="chapter" data-level="16.1" data-path="trajectory-analysis-1.html"><a href="trajectory-analysis-1.html#session-info-8"><i class="fa fa-check"></i><b>16.1</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>17</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="17.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>17.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="17.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>17.2</b> Parallelization</a></li>
+<li class="chapter" data-level="17.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>17.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="17.4" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-9"><i class="fa fa-check"></i><b>17.4</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="data-import-and-export.html"><a href="data-import-and-export.html"><i class="fa fa-check"></i><b>18</b> Data Import and Export</a><ul>
+<li class="chapter" data-level="18.1" data-path="data-import-and-export.html"><a href="data-import-and-export.html#session-info-10"><i class="fa fa-check"></i><b>18.1</b> Session Info</a></li>
+</ul></li>
 <li class="part"><span><b>III Appendix</b></span></li>
-<li class="chapter" data-level="18" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>18</b> About the Data</a><ul>
-<li class="chapter" data-level="18.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>18.1</b> 10X Genomics PBMC Data</a></li>
-<li class="chapter" data-level="18.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>18.2</b> Cellbench_data</a></li>
+<li class="chapter" data-level="19" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>19</b> About the Data</a><ul>
+<li class="chapter" data-level="19.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>19.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="19.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>19.2</b> Cellbench_data</a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>19</b> About the Contributors</a><ul>
-<li class="chapter" data-level="19.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>19.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
-<li class="chapter" data-level="19.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>19.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
-<li class="chapter" data-level="19.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>19.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
-<li class="chapter" data-level="19.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>19.0.4</b> <em>Aaron Lun, PhD</em></a></li>
+<li class="chapter" data-level="20" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>20</b> About the Contributors</a><ul>
+<li class="chapter" data-level="20.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>20.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
+<li class="chapter" data-level="20.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>20.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
+<li class="chapter" data-level="20.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>20.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
+<li class="chapter" data-level="20.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>20.0.4</b> <em>Aaron Lun, PhD</em></a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
@@ -323,274 +365,392 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="quick-start" class="section level1">
 <h1><span class="header-section-number">Chapter 6</span> Quick Start</h1>
+<script>
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("aaron-collapse")) {
+        event.target.classList.toggle("active");
+        var content = event.target.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+    }
+})
+</script>
+<style>
+.aaron-collapse {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.aaron-content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
 <p>To make it as easy as possible to get started fast, here we simply provide a script that walks through a typical, basic scRNA-seq analysis in code, with prose as comments (<code>#</code>), and all visualization held until the end of the script. The next chapter - “A Basic Analysis” - will provide more commentary on the various steps throughout, as well as relevant intermediate plotting results.</p>
 <p>Here, we use an example dataset from the <a href="https://preview.data.humancellatlas.org"><em>Human Cell Atlas</em> immune cell profiling project on bone marrow</a>. This dataset is loaded via the <em>HCAData</em> package, which provides a ready to use <em>SingleCellExperiment</em> object.</p>
 <p>Note that the <em>HCAData</em> bone marrow dataset is comprised of 8 donors, so we have added an integration step to ameliorate batch effects caused by different donors. However, for use cases where integration is not necessary (e.g. no expected batch effects), we note in the code what to skip and relevant arguments to replace.</p>
 <p>Lastly, note that some arguments are added for the sake of reducing computational runtime and can be modified or removed. These include parallelization via <code>BPPARAM</code>, and different algorithms for SVD and nearest-neighbor via <code>BSPARAM</code> and <code>BNPARAM</code>. See the “Adaptations for Large-scale Data” chapter for more information on these arguments.</p>
 <div id="code" class="section level2">
 <h2><span class="header-section-number">6.1</span> Code</h2>
-<pre class="sourceCode r"><code class="sourceCode r">## Setup ---------------------------------------------------
-## not run - uncomment these lines to install necessary pkgs
-
-## install.packages(&#39;BiocManager&#39;)
-## BiocManager::install(version = &#39;devel&#39;) # devel=3.10
-## BiocManager::install(c(
-##   &#39;HCAData&#39;,                       # dataset
-##   &#39;scater&#39;, &#39;scran&#39;, &#39;batchelor&#39;,  # processing
-##   &#39;igraph&#39;,                        # clustering
-##   &#39;MAST&#39;, &#39;slingshot&#39;,             # DE + Trajectory
-##   &#39;iSEE&#39;                           # interactive viz
-## ))</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Import data into R --------------------------------------
-
-## For reading in data directly from CellRanger output
-## use the lines below and replace with proper paths to data
-## append any cell metadata as needed to colData()
-## library(DropletUtils)
-## sce &lt;- read10xCounts(&#39;/path/to/cellranger/outs/&#39;)
-
-## For this quick-start: Human Cell Atlas (HCA) data
-<span class="kw">library</span>(HCAData)
-sce &lt;-<span class="st"> </span><span class="kw">HCAData</span>(<span class="st">&#39;ica_bone_marrow&#39;</span>)
-
-## subsample for better brevity of compilation
-<span class="kw">set.seed</span>(<span class="dv">1234</span>)
-sce &lt;-<span class="st"> </span>sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">10000</span>)]
-
-## Split out donor based on barcode
-Donor &lt;-<span class="st"> </span><span class="kw">lapply</span>(sce<span class="op">$</span>Barcode, strsplit, <span class="st">&#39;_&#39;</span>)
-Donor &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(Donor, <span class="cf">function</span>(x) { x[[<span class="dv">1</span>]][<span class="dv">1</span>] }))
-sce<span class="op">$</span>Donor &lt;-<span class="st"> </span>Donor
-
-## Convert DelayedArray to regular matrix
-<span class="kw">counts</span>(sce) &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">counts</span>(sce))</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Quality Control -----------------------------------------
-<span class="kw">library</span>(scater)
-sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce,
-                          <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())
-
-## remove &quot;bad&quot; cells by total counts/features per cell
-filt &lt;-<span class="st"> </span>sce<span class="op">$</span>total_counts <span class="op">&gt;</span><span class="st"> </span><span class="dv">500</span> <span class="op">&amp;</span><span class="st"> </span>sce<span class="op">$</span>total_features_by_counts <span class="op">&gt;</span><span class="st"> </span><span class="dv">100</span>
-sce &lt;-<span class="st"> </span>sce[, filt]
-
-## to ease computation, remove low frequency genes from `sce`
-num_reads &lt;-<span class="st"> </span><span class="dv">1</span>                  <span class="co"># minimum 1 read</span>
-num_cells &lt;-<span class="st"> </span><span class="fl">0.025</span> <span class="op">*</span><span class="st"> </span><span class="kw">ncol</span>(sce)   <span class="co"># in at least 2.5% of all cells</span>
-keep &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) <span class="op">&gt;=</span><span class="st"> </span>num_reads) <span class="op">&gt;=</span><span class="st"> </span>num_cells
-sce &lt;-<span class="st"> </span>sce[keep, ]
-
-## for readability, use Symbols in lieu of IDs as rownames
-uniq_feats &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="dt">ID =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ID,
-                                   <span class="dt">names =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol)
-<span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span>uniq_feats</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Normalization -------------------------------------------
-sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Feature Selection ---------------------------------------
-<span class="kw">library</span>(scran)
-
-fit &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)
-dec &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce, fit)
-hvg &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec)[dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>] <span class="co"># save gene names</span></code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Integration ---------------------------------------------
-## only perform this section if there is a batch effect
-<span class="kw">library</span>(batchelor)
-
-<span class="kw">set.seed</span>(<span class="dv">1234</span>)
-mnn &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce, <span class="dt">batch =</span> sce<span class="op">$</span>Donor,
-               <span class="dt">subset.row =</span> hvg,
-               <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(<span class="dt">deferred =</span> <span class="ot">TRUE</span>),
-               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),
-               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())
-
-<span class="kw">reducedDim</span>(sce, <span class="st">&#39;MNN&#39;</span>) &lt;-<span class="st"> </span><span class="kw">reducedDim</span>(mnn, <span class="st">&#39;corrected&#39;</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Dimensionality Reduction --------------------------------
-## note on `use_dimred` arg: specifies which precomputed
-## dimension reduction to use in `sce`; if there is none,
-## it will first calculate and save PCA to `sce` then UMAP
-<span class="kw">set.seed</span>(<span class="dv">1234</span>)
-sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce,
-               <span class="dt">use_dimred =</span> <span class="st">&#39;MNN&#39;</span>, <span class="co"># omit if `fastMNN()` not run</span>
-               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),
-               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>(),
-               ## unnecessary options, only used to make a pretty graph
-               <span class="dt">min_dist =</span> <span class="fl">0.5</span>, <span class="dt">repulsion_strength =</span> <span class="fl">0.25</span>,
-               <span class="dt">spread =</span> <span class="fl">0.7</span>,
-               <span class="dt">n_neighbors =</span> <span class="dv">15</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Clustering ----------------------------------------------
-<span class="kw">library</span>(igraph)
-
-## replace `use.dimred` with &#39;PCA&#39; if no integration was performed
-## this will be automatically added via `runUMAP` above
-<span class="kw">set.seed</span>(<span class="dv">1234</span>)
-g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce, <span class="dt">use.dimred =</span> <span class="st">&#39;MNN&#39;</span>,
-                   <span class="dt">k =</span> <span class="dv">30</span>,  <span class="co"># higher = bigger clusters</span>
-                   <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),
-                   <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())
-clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership)
-sce<span class="op">$</span>clusters &lt;-<span class="st"> </span>clusters</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Differential Expression ---------------------------------
-## pval.type = &#39;all&#39; : only get globally unique markers
-markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">clusters =</span> sce<span class="op">$</span>clusters,
-                       <span class="dt">block =</span> sce<span class="op">$</span>Donor, <span class="co"># use to get within-donor DE</span>
-                       <span class="dt">direction =</span> <span class="st">&#39;up&#39;</span>, <span class="dt">lfc =</span> <span class="fl">1.5</span>,
-                       <span class="dt">pval.type =</span> <span class="st">&quot;all&quot;</span>, <span class="co"># get cluster-unique markers</span>
-                       <span class="dt">subset.row =</span> hvg,
-                       <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())
-
-## pval.type = &#39;any&#39; : get all potential markers of any direction/comparison
-markers_any &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">clusters =</span> sce<span class="op">$</span>clusters,
-                           <span class="dt">block =</span> sce<span class="op">$</span>Donor, <span class="co"># use to get within-donor DE</span>
-                           <span class="dt">direction =</span> <span class="st">&#39;any&#39;</span>, <span class="dt">lfc =</span> <span class="dv">0</span>,
-                           <span class="dt">pval.type =</span> <span class="st">&quot;any&quot;</span>, <span class="co"># get all potential markers</span>
-                           <span class="dt">subset.row =</span> hvg,
-                           <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Annotation ----------------------------------------------
-## Get mappings of ENTREZID to Symbol
-<span class="kw">library</span>(org.Hs.eg.db)
-
-keys_entrez &lt;-<span class="st"> </span><span class="kw">keys</span>(org.Hs.eg.db, <span class="st">&#39;ENTREZID&#39;</span>)
-
-mapping_es &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">select</span>(org.Hs.eg.db,
-                                    <span class="dt">keys =</span> keys_entrez,
-                                    <span class="dt">columns =</span> <span class="kw">c</span>(<span class="st">&#39;ENTREZID&#39;</span>, <span class="st">&#39;SYMBOL&#39;</span>),
-                                    <span class="dt">keytype =</span> <span class="st">&#39;ENTREZID&#39;</span>)
-mapping_es<span class="op">$</span>ENTREZID &lt;-<span class="st"> </span><span class="kw">as.integer</span>(mapping_es<span class="op">$</span>ENTREZID)
-
-## Get pathways of interest - convert to list with symbol
-## devtools::install_github(&#39;stephenturner/msigdf&#39;)
-<span class="kw">library</span>(msigdf)
-<span class="kw">library</span>(dplyr)
-
-mdb &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">inner_join</span>(msigdf.human, mapping_es,
-                         <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;entrez&#39;</span> =<span class="st"> &#39;ENTREZID&#39;</span>)) <span class="op">%&gt;%</span>
-<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(collection <span class="op">==</span><span class="st"> &#39;c7&#39;</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>collection, <span class="op">-</span>entrez) <span class="op">%&gt;%</span>
-<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">group_nest</span>(geneset)
-
-pathways &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(mdb<span class="op">$</span>data, <span class="cf">function</span>(x) {
-    <span class="kw">as.character</span>(x<span class="op">$</span>SYMBOL)
-})
-<span class="kw">names</span>(pathways) &lt;-<span class="st"> </span>mdb<span class="op">$</span>geneset
-
-## Get stats based on markers search - compare clusters 3 vs 2
-stats &lt;-<span class="st"> </span>markers_any[[<span class="dv">3</span>]]<span class="op">$</span>logFC<span class="fl">.2</span>
-<span class="kw">names</span>(stats) &lt;-<span class="st"> </span><span class="kw">rownames</span>(markers_any[[<span class="dv">3</span>]])
-
-## Run fast gene set enrichment analysis (see plot at bottom)
-<span class="kw">library</span>(fgsea)
-
-fgseaRes &lt;-<span class="st"> </span><span class="kw">fgsea</span>(<span class="dt">pathways =</span> pathways, 
-                  <span class="dt">stats =</span> stats,
-                  <span class="dt">minSize =</span> <span class="dv">15</span>,
-                  <span class="dt">maxSize =</span> <span class="dv">500</span>,
-                  <span class="dt">nperm =</span> <span class="dv">10000</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Trajectory Analysis -------------------------------------
-<span class="kw">library</span>(slingshot)
-
-slc &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce[, sce<span class="op">$</span>clusters <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">9</span>)],
-                 <span class="dt">clusterLabels =</span> <span class="st">&#39;clusters&#39;</span>,
-                 <span class="dt">reducedDim =</span> <span class="st">&#39;UMAP&#39;</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Interactive Exploration ---------------------------------
-## library(iSEE)
-## iSEE(sce) ## not run; opens a web browser GUI</code></pre>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1">## Setup ---------------------------------------------------</a>
+<a class="sourceLine" id="cb66-2" data-line-number="2">## not run - uncomment these lines to install necessary pkgs</a>
+<a class="sourceLine" id="cb66-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb66-4" data-line-number="4">## install.packages(&#39;BiocManager&#39;)</a>
+<a class="sourceLine" id="cb66-5" data-line-number="5">## BiocManager::install(version = &#39;devel&#39;) # devel=3.10</a>
+<a class="sourceLine" id="cb66-6" data-line-number="6">## BiocManager::install(c(</a>
+<a class="sourceLine" id="cb66-7" data-line-number="7">##   &#39;HCAData&#39;,                       # dataset</a>
+<a class="sourceLine" id="cb66-8" data-line-number="8">##   &#39;scater&#39;, &#39;scran&#39;, &#39;batchelor&#39;,  # processing</a>
+<a class="sourceLine" id="cb66-9" data-line-number="9">##   &#39;igraph&#39;,                        # clustering</a>
+<a class="sourceLine" id="cb66-10" data-line-number="10">##   &#39;MAST&#39;, &#39;slingshot&#39;,             # DE + Trajectory</a>
+<a class="sourceLine" id="cb66-11" data-line-number="11">##   &#39;iSEE&#39;                           # interactive viz</a>
+<a class="sourceLine" id="cb66-12" data-line-number="12">## ))</a></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1">## Import data into R --------------------------------------</a>
+<a class="sourceLine" id="cb67-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb67-3" data-line-number="3">## For reading in data directly from CellRanger output</a>
+<a class="sourceLine" id="cb67-4" data-line-number="4">## use the lines below and replace with proper paths to data</a>
+<a class="sourceLine" id="cb67-5" data-line-number="5">## append any cell metadata as needed to colData()</a>
+<a class="sourceLine" id="cb67-6" data-line-number="6">## library(DropletUtils)</a>
+<a class="sourceLine" id="cb67-7" data-line-number="7">## sce &lt;- read10xCounts(&#39;/path/to/cellranger/outs/&#39;)</a>
+<a class="sourceLine" id="cb67-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb67-9" data-line-number="9">## For this quick-start: Human Cell Atlas (HCA) data</a>
+<a class="sourceLine" id="cb67-10" data-line-number="10"><span class="kw">library</span>(HCAData)</a>
+<a class="sourceLine" id="cb67-11" data-line-number="11">sce &lt;-<span class="st"> </span><span class="kw">HCAData</span>(<span class="st">&#39;ica_bone_marrow&#39;</span>)</a>
+<a class="sourceLine" id="cb67-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb67-13" data-line-number="13">## subsample for better brevity of compilation</a>
+<a class="sourceLine" id="cb67-14" data-line-number="14"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb67-15" data-line-number="15">sce &lt;-<span class="st"> </span>sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">10000</span>)]</a>
+<a class="sourceLine" id="cb67-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb67-17" data-line-number="17">## Split out donor based on barcode</a>
+<a class="sourceLine" id="cb67-18" data-line-number="18">Donor &lt;-<span class="st"> </span><span class="kw">lapply</span>(sce<span class="op">$</span>Barcode, strsplit, <span class="st">&#39;_&#39;</span>)</a>
+<a class="sourceLine" id="cb67-19" data-line-number="19">Donor &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(Donor, <span class="cf">function</span>(x) { x[[<span class="dv">1</span>]][<span class="dv">1</span>] }))</a>
+<a class="sourceLine" id="cb67-20" data-line-number="20">sce<span class="op">$</span>Donor &lt;-<span class="st"> </span>Donor</a>
+<a class="sourceLine" id="cb67-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb67-22" data-line-number="22">## Convert DelayedArray to regular matrix</a>
+<a class="sourceLine" id="cb67-23" data-line-number="23"><span class="kw">counts</span>(sce) &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">counts</span>(sce))</a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1">## Quality Control -----------------------------------------</a>
+<a class="sourceLine" id="cb68-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb68-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce,</a>
+<a class="sourceLine" id="cb68-4" data-line-number="4">                          <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
+<a class="sourceLine" id="cb68-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb68-6" data-line-number="6">## remove &quot;bad&quot; cells by total counts/features per cell</a>
+<a class="sourceLine" id="cb68-7" data-line-number="7">filt &lt;-<span class="st"> </span>sce<span class="op">$</span>total_counts <span class="op">&gt;</span><span class="st"> </span><span class="dv">500</span> <span class="op">&amp;</span><span class="st"> </span>sce<span class="op">$</span>total_features_by_counts <span class="op">&gt;</span><span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb68-8" data-line-number="8">sce &lt;-<span class="st"> </span>sce[, filt]</a>
+<a class="sourceLine" id="cb68-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb68-10" data-line-number="10">## to ease computation, remove low frequency genes from `sce`</a>
+<a class="sourceLine" id="cb68-11" data-line-number="11">num_reads &lt;-<span class="st"> </span><span class="dv">1</span>                  <span class="co"># minimum 1 read</span></a>
+<a class="sourceLine" id="cb68-12" data-line-number="12">num_cells &lt;-<span class="st"> </span><span class="fl">0.025</span> <span class="op">*</span><span class="st"> </span><span class="kw">ncol</span>(sce)   <span class="co"># in at least 2.5% of all cells</span></a>
+<a class="sourceLine" id="cb68-13" data-line-number="13">keep &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) <span class="op">&gt;=</span><span class="st"> </span>num_reads) <span class="op">&gt;=</span><span class="st"> </span>num_cells</a>
+<a class="sourceLine" id="cb68-14" data-line-number="14">sce &lt;-<span class="st"> </span>sce[keep, ]</a>
+<a class="sourceLine" id="cb68-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb68-16" data-line-number="16">## for readability, use Symbols in lieu of IDs as rownames</a>
+<a class="sourceLine" id="cb68-17" data-line-number="17">uniq_feats &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="dt">ID =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ID,</a>
+<a class="sourceLine" id="cb68-18" data-line-number="18">                                   <span class="dt">names =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol)</a>
+<a class="sourceLine" id="cb68-19" data-line-number="19"><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span>uniq_feats</a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1">## Normalization -------------------------------------------</a>
+<a class="sourceLine" id="cb69-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1">## Feature Selection ---------------------------------------</a>
+<a class="sourceLine" id="cb70-2" data-line-number="2"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb70-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb70-4" data-line-number="4">fit &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb70-5" data-line-number="5">dec &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce, fit)</a>
+<a class="sourceLine" id="cb70-6" data-line-number="6">hvg &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec)[dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>] <span class="co"># save gene names</span></a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1">## Integration ---------------------------------------------</a>
+<a class="sourceLine" id="cb71-2" data-line-number="2">## only perform this section if there is a batch effect</a>
+<a class="sourceLine" id="cb71-3" data-line-number="3"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb71-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb71-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb71-6" data-line-number="6">mnn &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce, <span class="dt">batch =</span> sce<span class="op">$</span>Donor,</a>
+<a class="sourceLine" id="cb71-7" data-line-number="7">               <span class="dt">subset.row =</span> hvg,</a>
+<a class="sourceLine" id="cb71-8" data-line-number="8">               <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(<span class="dt">deferred =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb71-9" data-line-number="9">               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),</a>
+<a class="sourceLine" id="cb71-10" data-line-number="10">               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
+<a class="sourceLine" id="cb71-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb71-12" data-line-number="12"><span class="kw">reducedDim</span>(sce, <span class="st">&#39;MNN&#39;</span>) &lt;-<span class="st"> </span><span class="kw">reducedDim</span>(mnn, <span class="st">&#39;corrected&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1">## Dimensionality Reduction --------------------------------</a>
+<a class="sourceLine" id="cb72-2" data-line-number="2">## note on `use_dimred` arg: specifies which precomputed</a>
+<a class="sourceLine" id="cb72-3" data-line-number="3">## dimension reduction to use in `sce`; if there is none,</a>
+<a class="sourceLine" id="cb72-4" data-line-number="4">## it will first calculate and save PCA to `sce` then UMAP</a>
+<a class="sourceLine" id="cb72-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb72-6" data-line-number="6">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce,</a>
+<a class="sourceLine" id="cb72-7" data-line-number="7">               <span class="dt">use_dimred =</span> <span class="st">&#39;MNN&#39;</span>, <span class="co"># omit if `fastMNN()` not run</span></a>
+<a class="sourceLine" id="cb72-8" data-line-number="8">               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),</a>
+<a class="sourceLine" id="cb72-9" data-line-number="9">               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>(),</a>
+<a class="sourceLine" id="cb72-10" data-line-number="10">               ## unnecessary options, only used to make a pretty graph</a>
+<a class="sourceLine" id="cb72-11" data-line-number="11">               <span class="dt">min_dist =</span> <span class="fl">0.5</span>, <span class="dt">repulsion_strength =</span> <span class="fl">0.25</span>,</a>
+<a class="sourceLine" id="cb72-12" data-line-number="12">               <span class="dt">spread =</span> <span class="fl">0.7</span>,</a>
+<a class="sourceLine" id="cb72-13" data-line-number="13">               <span class="dt">n_neighbors =</span> <span class="dv">15</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1">## Clustering ----------------------------------------------</a>
+<a class="sourceLine" id="cb73-2" data-line-number="2"><span class="kw">library</span>(igraph)</a>
+<a class="sourceLine" id="cb73-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb73-4" data-line-number="4">## replace `use.dimred` with &#39;PCA&#39; if no integration was performed</a>
+<a class="sourceLine" id="cb73-5" data-line-number="5">## this will be automatically added via `runUMAP` above</a>
+<a class="sourceLine" id="cb73-6" data-line-number="6"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb73-7" data-line-number="7">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce, <span class="dt">use.dimred =</span> <span class="st">&#39;MNN&#39;</span>,</a>
+<a class="sourceLine" id="cb73-8" data-line-number="8">                   <span class="dt">k =</span> <span class="dv">30</span>,  <span class="co"># higher = bigger clusters</span></a>
+<a class="sourceLine" id="cb73-9" data-line-number="9">                   <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),</a>
+<a class="sourceLine" id="cb73-10" data-line-number="10">                   <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
+<a class="sourceLine" id="cb73-11" data-line-number="11">clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership)</a>
+<a class="sourceLine" id="cb73-12" data-line-number="12">sce<span class="op">$</span>clusters &lt;-<span class="st"> </span>clusters</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1">## Differential Expression ---------------------------------</a>
+<a class="sourceLine" id="cb74-2" data-line-number="2">## pval.type = &#39;all&#39; : only get globally unique markers</a>
+<a class="sourceLine" id="cb74-3" data-line-number="3">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">clusters =</span> sce<span class="op">$</span>clusters,</a>
+<a class="sourceLine" id="cb74-4" data-line-number="4">                       <span class="dt">block =</span> sce<span class="op">$</span>Donor, <span class="co"># use to get within-donor DE</span></a>
+<a class="sourceLine" id="cb74-5" data-line-number="5">                       <span class="dt">direction =</span> <span class="st">&#39;up&#39;</span>, <span class="dt">lfc =</span> <span class="fl">1.5</span>,</a>
+<a class="sourceLine" id="cb74-6" data-line-number="6">                       <span class="dt">pval.type =</span> <span class="st">&quot;all&quot;</span>, <span class="co"># get cluster-unique markers</span></a>
+<a class="sourceLine" id="cb74-7" data-line-number="7">                       <span class="dt">subset.row =</span> hvg,</a>
+<a class="sourceLine" id="cb74-8" data-line-number="8">                       <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
+<a class="sourceLine" id="cb74-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb74-10" data-line-number="10">## pval.type = &#39;any&#39; : get all potential markers of any direction/comparison</a>
+<a class="sourceLine" id="cb74-11" data-line-number="11">markers_any &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">clusters =</span> sce<span class="op">$</span>clusters,</a>
+<a class="sourceLine" id="cb74-12" data-line-number="12">                           <span class="dt">block =</span> sce<span class="op">$</span>Donor, <span class="co"># use to get within-donor DE</span></a>
+<a class="sourceLine" id="cb74-13" data-line-number="13">                           <span class="dt">direction =</span> <span class="st">&#39;any&#39;</span>, <span class="dt">lfc =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb74-14" data-line-number="14">                           <span class="dt">pval.type =</span> <span class="st">&quot;any&quot;</span>, <span class="co"># get all potential markers</span></a>
+<a class="sourceLine" id="cb74-15" data-line-number="15">                           <span class="dt">subset.row =</span> hvg,</a>
+<a class="sourceLine" id="cb74-16" data-line-number="16">                           <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1">## Annotation ----------------------------------------------</a>
+<a class="sourceLine" id="cb75-2" data-line-number="2">## Get mappings of ENTREZID to Symbol</a>
+<a class="sourceLine" id="cb75-3" data-line-number="3"><span class="kw">library</span>(org.Hs.eg.db)</a>
+<a class="sourceLine" id="cb75-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb75-5" data-line-number="5">keys_entrez &lt;-<span class="st"> </span><span class="kw">keys</span>(org.Hs.eg.db, <span class="st">&#39;ENTREZID&#39;</span>)</a>
+<a class="sourceLine" id="cb75-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb75-7" data-line-number="7">mapping_es &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">select</span>(org.Hs.eg.db,</a>
+<a class="sourceLine" id="cb75-8" data-line-number="8">                                    <span class="dt">keys =</span> keys_entrez,</a>
+<a class="sourceLine" id="cb75-9" data-line-number="9">                                    <span class="dt">columns =</span> <span class="kw">c</span>(<span class="st">&#39;ENTREZID&#39;</span>, <span class="st">&#39;SYMBOL&#39;</span>),</a>
+<a class="sourceLine" id="cb75-10" data-line-number="10">                                    <span class="dt">keytype =</span> <span class="st">&#39;ENTREZID&#39;</span>)</a>
+<a class="sourceLine" id="cb75-11" data-line-number="11">mapping_es<span class="op">$</span>ENTREZID &lt;-<span class="st"> </span><span class="kw">as.integer</span>(mapping_es<span class="op">$</span>ENTREZID)</a>
+<a class="sourceLine" id="cb75-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb75-13" data-line-number="13">## Get pathways of interest - convert to list with symbol</a>
+<a class="sourceLine" id="cb75-14" data-line-number="14">## devtools::install_github(&#39;stephenturner/msigdf&#39;)</a>
+<a class="sourceLine" id="cb75-15" data-line-number="15"><span class="kw">library</span>(msigdf)</a>
+<a class="sourceLine" id="cb75-16" data-line-number="16"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb75-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb75-18" data-line-number="18">mdb &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">inner_join</span>(msigdf.human, mapping_es,</a>
+<a class="sourceLine" id="cb75-19" data-line-number="19">                         <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;entrez&#39;</span> =<span class="st"> &#39;ENTREZID&#39;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-20" data-line-number="20"><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(collection <span class="op">==</span><span class="st"> &#39;c7&#39;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-21" data-line-number="21"><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>collection, <span class="op">-</span>entrez) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-22" data-line-number="22"><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">group_nest</span>(geneset)</a>
+<a class="sourceLine" id="cb75-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb75-24" data-line-number="24">pathways &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(mdb<span class="op">$</span>data, <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb75-25" data-line-number="25">    <span class="kw">as.character</span>(x<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb75-26" data-line-number="26">})</a>
+<a class="sourceLine" id="cb75-27" data-line-number="27"><span class="kw">names</span>(pathways) &lt;-<span class="st"> </span>mdb<span class="op">$</span>geneset</a>
+<a class="sourceLine" id="cb75-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb75-29" data-line-number="29">## Get stats based on markers search - compare clusters 3 vs 2</a>
+<a class="sourceLine" id="cb75-30" data-line-number="30">stats &lt;-<span class="st"> </span>markers_any[[<span class="dv">3</span>]]<span class="op">$</span>logFC<span class="fl">.2</span></a>
+<a class="sourceLine" id="cb75-31" data-line-number="31"><span class="kw">names</span>(stats) &lt;-<span class="st"> </span><span class="kw">rownames</span>(markers_any[[<span class="dv">3</span>]])</a>
+<a class="sourceLine" id="cb75-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb75-33" data-line-number="33">## Run fast gene set enrichment analysis (see plot at bottom)</a>
+<a class="sourceLine" id="cb75-34" data-line-number="34"><span class="kw">library</span>(fgsea)</a>
+<a class="sourceLine" id="cb75-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb75-36" data-line-number="36">fgseaRes &lt;-<span class="st"> </span><span class="kw">fgsea</span>(<span class="dt">pathways =</span> pathways, </a>
+<a class="sourceLine" id="cb75-37" data-line-number="37">                  <span class="dt">stats =</span> stats,</a>
+<a class="sourceLine" id="cb75-38" data-line-number="38">                  <span class="dt">minSize =</span> <span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb75-39" data-line-number="39">                  <span class="dt">maxSize =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb75-40" data-line-number="40">                  <span class="dt">nperm =</span> <span class="dv">10000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" data-line-number="1">## Trajectory Analysis -------------------------------------</a>
+<a class="sourceLine" id="cb76-2" data-line-number="2"><span class="kw">library</span>(slingshot)</a>
+<a class="sourceLine" id="cb76-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb76-4" data-line-number="4">slc &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce[, sce<span class="op">$</span>clusters <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">9</span>)],</a>
+<a class="sourceLine" id="cb76-5" data-line-number="5">                 <span class="dt">clusterLabels =</span> <span class="st">&#39;clusters&#39;</span>,</a>
+<a class="sourceLine" id="cb76-6" data-line-number="6">                 <span class="dt">reducedDim =</span> <span class="st">&#39;UMAP&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1">## Interactive Exploration ---------------------------------</a>
+<a class="sourceLine" id="cb77-2" data-line-number="2">## library(iSEE)</a>
+<a class="sourceLine" id="cb77-3" data-line-number="3">## iSEE(sce) ## not run; opens a web browser GUI</a></code></pre></div>
 </div>
 <div id="visualizations" class="section level2">
 <h2><span class="header-section-number">6.2</span> Visualizations</h2>
-<pre class="sourceCode r"><code class="sourceCode r">## Visualizations ------------------------------------------
-## todo: quality control: histogram of total counts
-## todo: normalization: ???
-## todo: feature selection: variance v mean expression?
-##
-## PCA/UMAP: before and after batch correction
-## UMAP (no colours)
-## UMAP (with clusters colours)
-## UMAP (with cell type labels)
-## heatmap (top marker genes)
-## trajectory plot (all or on subset of cells/within a clust)
-## DE (volcano plot)
-## Gene set enrichment plot</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">## Trajectory analysis -------------------------------------
-## Slingshot trajectory plot
-<span class="kw">library</span>(RColorBrewer)
-colors &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">brewer.pal</span>(<span class="dv">11</span>, <span class="st">&#39;Spectral&#39;</span>)[<span class="op">-</span><span class="dv">6</span>])(<span class="dv">100</span>)
-plotcol &lt;-<span class="st"> </span>colors[<span class="kw">cut</span>(slc<span class="op">$</span>slingPseudotime_<span class="dv">1</span>, <span class="dt">breaks =</span> <span class="dv">100</span>)]
-
-<span class="kw">plot</span>(<span class="kw">reducedDims</span>(slc)<span class="op">$</span>UMAP, <span class="dt">col =</span> plotcol, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">asp =</span> <span class="dv">1</span>)
-<span class="kw">lines</span>(<span class="kw">SlingshotDataSet</span>(slc), <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## UMAP based plots ----------------------------------------
-## UMAP (no colours)
-<span class="kw">plotUMAP</span>(sce)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Pre vs post batch correction
-tmp &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce,
-              <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(),
-              <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())
-tmp &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(tmp,
-               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),
-               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>(),
-               ## unnecessary options, only used to make a pretty graph
-               <span class="dt">min_dist =</span> <span class="fl">0.5</span>, <span class="dt">repulsion_strength =</span> <span class="fl">0.25</span>,
-               <span class="dt">spread =</span> <span class="fl">0.7</span>,
-               <span class="dt">n_neighbors =</span> <span class="dv">15</span>)
-p0 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(tmp, <span class="dt">colour_by =</span> <span class="st">&#39;Donor&#39;</span>)
-p1 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;Donor&#39;</span>)
-patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(p0, p1, <span class="dt">nrow =</span> <span class="dv">2</span>)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Gene expression on UMAP plots
-p2 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;CD3E&#39;</span>)
-p3 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;CD79A&#39;</span>)
-p4 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;LYZ&#39;</span>)
-p5 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;NKG7&#39;</span>)
-
-patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(p2, p3, p4, p5, <span class="dt">nrow =</span> <span class="dv">2</span>)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Clusters on UMAP
-<span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;clusters&#39;</span>, <span class="dt">text_by =</span> <span class="st">&#39;clusters&#39;</span>)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-15-4.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Gene expression plots -----------------------------------
-## Heatmap: Top global markers per cluster
-top_markers &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(x) {
-    <span class="kw">rownames</span>(x)[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]
-})
-
-top_markers &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(<span class="kw">unlist</span>(top_markers)))
-top_markers &lt;-<span class="st"> </span>top_markers[<span class="op">!</span><span class="kw">grepl</span>(<span class="st">&#39;MT-|^RP&#39;</span>, top_markers)]
-
-<span class="kw">set.seed</span>(<span class="dv">1234</span>)
-<span class="kw">plotHeatmap</span>(sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">5000</span>)],
-            <span class="dt">features =</span> top_markers,
-            <span class="dt">color =</span> viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">101</span>, <span class="dt">option =</span> <span class="st">&#39;A&#39;</span>),
-##            symmetric = TRUE, zlim = c(-5, 5),
-            <span class="dt">colour_columns_by =</span> <span class="st">&#39;clusters&#39;</span>,
-            <span class="dt">clustering_method =</span> <span class="st">&#39;ward.D2&#39;</span>,
-            <span class="dt">show_colnames =</span> <span class="ot">FALSE</span>,
-            <span class="dt">fontsize_row =</span> <span class="dv">6</span>
-            )</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Volcano plot
-marker_tbl_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(markers_any[[<span class="dv">3</span>]])
-
-marker_tbl_<span class="dv">3</span> <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> logFC<span class="fl">.2</span>, <span class="dt">y =</span> <span class="op">-</span><span class="kw">log10</span>(FDR))) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">c</span>(<span class="op">-</span><span class="kw">log</span>(<span class="fl">1.5</span>), <span class="kw">log</span>(<span class="fl">1.5</span>)), <span class="dt">linetype =</span> <span class="st">&#39;dashed&#39;</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">theme_classic</span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">expand =</span> <span class="ot">FALSE</span>)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Gene set enrichment -------------------------------------
-## Plot multiple pathways enrichment plots
-topPathwaysUp &lt;-<span class="st"> </span>fgseaRes[ES <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>][<span class="kw">head</span>(<span class="kw">order</span>(pval), <span class="dt">n=</span><span class="dv">10</span>), pathway]
-topPathwaysDown &lt;-<span class="st"> </span>fgseaRes[ES <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>][<span class="kw">head</span>(<span class="kw">order</span>(pval), <span class="dt">n=</span><span class="dv">10</span>), pathway]
-topPathways &lt;-<span class="st"> </span><span class="kw">c</span>(topPathwaysUp, <span class="kw">rev</span>(topPathwaysDown))
-<span class="kw">plotGseaTable</span>(pathways[topPathways], stats,
-              fgseaRes, 
-              <span class="dt">gseaParam =</span> <span class="fl">0.5</span>)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">## Traditional GSEA plot
-<span class="kw">plotEnrichment</span>(pathways[[<span class="st">&quot;GSE29618_MONOCYTE_VS_PDC_UP&quot;</span>]],
-               stats)</code></pre>
-<p><img src="P2_W0.quick-start_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" data-line-number="1">## Visualizations ------------------------------------------</a>
+<a class="sourceLine" id="cb78-2" data-line-number="2">## todo: quality control: histogram of total counts</a>
+<a class="sourceLine" id="cb78-3" data-line-number="3">## todo: normalization: ???</a>
+<a class="sourceLine" id="cb78-4" data-line-number="4">## todo: feature selection: variance v mean expression?</a>
+<a class="sourceLine" id="cb78-5" data-line-number="5">##</a>
+<a class="sourceLine" id="cb78-6" data-line-number="6">## PCA/UMAP: before and after batch correction</a>
+<a class="sourceLine" id="cb78-7" data-line-number="7">## UMAP (no colours)</a>
+<a class="sourceLine" id="cb78-8" data-line-number="8">## UMAP (with clusters colours)</a>
+<a class="sourceLine" id="cb78-9" data-line-number="9">## UMAP (with cell type labels)</a>
+<a class="sourceLine" id="cb78-10" data-line-number="10">## heatmap (top marker genes)</a>
+<a class="sourceLine" id="cb78-11" data-line-number="11">## trajectory plot (all or on subset of cells/within a clust)</a>
+<a class="sourceLine" id="cb78-12" data-line-number="12">## DE (volcano plot)</a>
+<a class="sourceLine" id="cb78-13" data-line-number="13">## Gene set enrichment plot</a></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">## Trajectory analysis -------------------------------------</a>
+<a class="sourceLine" id="cb79-2" data-line-number="2">## Slingshot trajectory plot</a>
+<a class="sourceLine" id="cb79-3" data-line-number="3"><span class="kw">library</span>(RColorBrewer)</a>
+<a class="sourceLine" id="cb79-4" data-line-number="4">colors &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">brewer.pal</span>(<span class="dv">11</span>, <span class="st">&#39;Spectral&#39;</span>)[<span class="op">-</span><span class="dv">6</span>])(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb79-5" data-line-number="5">plotcol &lt;-<span class="st"> </span>colors[<span class="kw">cut</span>(slc<span class="op">$</span>slingPseudotime_<span class="dv">1</span>, <span class="dt">breaks =</span> <span class="dv">100</span>)]</a>
+<a class="sourceLine" id="cb79-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb79-7" data-line-number="7"><span class="kw">plot</span>(<span class="kw">reducedDims</span>(slc)<span class="op">$</span>UMAP, <span class="dt">col =</span> plotcol, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">asp =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb79-8" data-line-number="8"><span class="kw">lines</span>(<span class="kw">SlingshotDataSet</span>(slc), <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" data-line-number="1">## UMAP based plots ----------------------------------------</a>
+<a class="sourceLine" id="cb80-2" data-line-number="2">## UMAP (no colours)</a>
+<a class="sourceLine" id="cb80-3" data-line-number="3"><span class="kw">plotUMAP</span>(sce)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1">## Pre vs post batch correction</a>
+<a class="sourceLine" id="cb81-2" data-line-number="2">tmp &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce,</a>
+<a class="sourceLine" id="cb81-3" data-line-number="3">              <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(),</a>
+<a class="sourceLine" id="cb81-4" data-line-number="4">              <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
+<a class="sourceLine" id="cb81-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(tmp,</a>
+<a class="sourceLine" id="cb81-6" data-line-number="6">               <span class="dt">BNPARAM =</span> BiocNeighbors<span class="op">::</span><span class="kw">AnnoyParam</span>(),</a>
+<a class="sourceLine" id="cb81-7" data-line-number="7">               <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>(),</a>
+<a class="sourceLine" id="cb81-8" data-line-number="8">               ## unnecessary options, only used to make a pretty graph</a>
+<a class="sourceLine" id="cb81-9" data-line-number="9">               <span class="dt">min_dist =</span> <span class="fl">0.5</span>, <span class="dt">repulsion_strength =</span> <span class="fl">0.25</span>,</a>
+<a class="sourceLine" id="cb81-10" data-line-number="10">               <span class="dt">spread =</span> <span class="fl">0.7</span>,</a>
+<a class="sourceLine" id="cb81-11" data-line-number="11">               <span class="dt">n_neighbors =</span> <span class="dv">15</span>)</a>
+<a class="sourceLine" id="cb81-12" data-line-number="12">p0 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(tmp, <span class="dt">colour_by =</span> <span class="st">&#39;Donor&#39;</span>)</a>
+<a class="sourceLine" id="cb81-13" data-line-number="13">p1 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;Donor&#39;</span>)</a>
+<a class="sourceLine" id="cb81-14" data-line-number="14">patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(p0, p1, <span class="dt">nrow =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1">## Gene expression on UMAP plots</a>
+<a class="sourceLine" id="cb82-2" data-line-number="2">p2 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;CD3E&#39;</span>)</a>
+<a class="sourceLine" id="cb82-3" data-line-number="3">p3 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;CD79A&#39;</span>)</a>
+<a class="sourceLine" id="cb82-4" data-line-number="4">p4 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;LYZ&#39;</span>)</a>
+<a class="sourceLine" id="cb82-5" data-line-number="5">p5 &lt;-<span class="st"> </span><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;NKG7&#39;</span>)</a>
+<a class="sourceLine" id="cb82-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb82-7" data-line-number="7">patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(p2, p3, p4, p5, <span class="dt">nrow =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1">## Clusters on UMAP</a>
+<a class="sourceLine" id="cb83-2" data-line-number="2"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;clusters&#39;</span>, <span class="dt">text_by =</span> <span class="st">&#39;clusters&#39;</span>)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-15-4.png" width="672" /></p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" data-line-number="1">## Gene expression plots -----------------------------------</a>
+<a class="sourceLine" id="cb84-2" data-line-number="2">## Heatmap: Top global markers per cluster</a>
+<a class="sourceLine" id="cb84-3" data-line-number="3">top_markers &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb84-4" data-line-number="4">    <span class="kw">rownames</span>(x)[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</a>
+<a class="sourceLine" id="cb84-5" data-line-number="5">})</a>
+<a class="sourceLine" id="cb84-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb84-7" data-line-number="7">top_markers &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(<span class="kw">unlist</span>(top_markers)))</a>
+<a class="sourceLine" id="cb84-8" data-line-number="8">top_markers &lt;-<span class="st"> </span>top_markers[<span class="op">!</span><span class="kw">grepl</span>(<span class="st">&#39;MT-|^RP&#39;</span>, top_markers)]</a>
+<a class="sourceLine" id="cb84-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb84-10" data-line-number="10"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb84-11" data-line-number="11"><span class="kw">plotHeatmap</span>(sce[, <span class="kw">sample</span>(<span class="kw">ncol</span>(sce), <span class="dv">5000</span>)],</a>
+<a class="sourceLine" id="cb84-12" data-line-number="12">            <span class="dt">features =</span> top_markers,</a>
+<a class="sourceLine" id="cb84-13" data-line-number="13">            <span class="dt">color =</span> viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">101</span>, <span class="dt">option =</span> <span class="st">&#39;A&#39;</span>),</a>
+<a class="sourceLine" id="cb84-14" data-line-number="14">##            symmetric = TRUE, zlim = c(-5, 5),</a>
+<a class="sourceLine" id="cb84-15" data-line-number="15">            <span class="dt">colour_columns_by =</span> <span class="st">&#39;clusters&#39;</span>,</a>
+<a class="sourceLine" id="cb84-16" data-line-number="16">            <span class="dt">clustering_method =</span> <span class="st">&#39;ward.D2&#39;</span>,</a>
+<a class="sourceLine" id="cb84-17" data-line-number="17">            <span class="dt">show_colnames =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb84-18" data-line-number="18">            <span class="dt">fontsize_row =</span> <span class="dv">6</span></a>
+<a class="sourceLine" id="cb84-19" data-line-number="19">            )</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1">## Volcano plot</a>
+<a class="sourceLine" id="cb85-2" data-line-number="2">marker_tbl_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(markers_any[[<span class="dv">3</span>]])</a>
+<a class="sourceLine" id="cb85-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb85-4" data-line-number="4">marker_tbl_<span class="dv">3</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb85-5" data-line-number="5"><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> logFC<span class="fl">.2</span>, <span class="dt">y =</span> <span class="op">-</span><span class="kw">log10</span>(FDR))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-6" data-line-number="6"><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-7" data-line-number="7"><span class="st">    </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">c</span>(<span class="op">-</span><span class="kw">log</span>(<span class="fl">1.5</span>), <span class="kw">log</span>(<span class="fl">1.5</span>)), <span class="dt">linetype =</span> <span class="st">&#39;dashed&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-8" data-line-number="8"><span class="st">    </span><span class="kw">theme_classic</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-9" data-line-number="9"><span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">expand =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1">## Gene set enrichment -------------------------------------</a>
+<a class="sourceLine" id="cb86-2" data-line-number="2">## Plot multiple pathways enrichment plots</a>
+<a class="sourceLine" id="cb86-3" data-line-number="3">topPathwaysUp &lt;-<span class="st"> </span>fgseaRes[ES <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>][<span class="kw">head</span>(<span class="kw">order</span>(pval), <span class="dt">n=</span><span class="dv">10</span>), pathway]</a>
+<a class="sourceLine" id="cb86-4" data-line-number="4">topPathwaysDown &lt;-<span class="st"> </span>fgseaRes[ES <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>][<span class="kw">head</span>(<span class="kw">order</span>(pval), <span class="dt">n=</span><span class="dv">10</span>), pathway]</a>
+<a class="sourceLine" id="cb86-5" data-line-number="5">topPathways &lt;-<span class="st"> </span><span class="kw">c</span>(topPathwaysUp, <span class="kw">rev</span>(topPathwaysDown))</a>
+<a class="sourceLine" id="cb86-6" data-line-number="6"><span class="kw">plotGseaTable</span>(pathways[topPathways], stats,</a>
+<a class="sourceLine" id="cb86-7" data-line-number="7">              fgseaRes, </a>
+<a class="sourceLine" id="cb86-8" data-line-number="8">              <span class="dt">gseaParam =</span> <span class="fl">0.5</span>)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1">## Traditional GSEA plot</a>
+<a class="sourceLine" id="cb87-2" data-line-number="2"><span class="kw">plotEnrichment</span>(pathways[[<span class="st">&quot;GSE29618_MONOCYTE_VS_PDC_UP&quot;</span>]],</a>
+<a class="sourceLine" id="cb87-3" data-line-number="3">               stats)</a></code></pre></div>
+<p><img src="P2_W02.quick-start_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+</div>
+<div id="session-info" class="section level2">
+<h2><span class="header-section-number">6.3</span> Session Info</h2>
+<button class="aaron-collapse">
+View session info
+</button>
+<div class="aaron-content">
+<p>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.6 LTS</p>
+<p>Matrix products: default
+BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so</p>
+<p>locale:
+[1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C<br />
+[3] LC_TIME=en_US.UTF-8 LC_COLLATE=en_US.UTF-8<br />
+[5] LC_MONETARY=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8<br />
+[7] LC_PAPER=en_US.UTF-8 LC_NAME=C<br />
+[9] LC_ADDRESS=C LC_TELEPHONE=C<br />
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C</p>
+<p>attached base packages:
+[1] stats4 parallel stats graphics grDevices utils datasets
+[8] methods base</p>
+<p>other attached packages:
+[1] RColorBrewer_1.1-2 slingshot_1.3.1<br />
+[3] princurve_2.1.4 fgsea_1.11.0<br />
+[5] Rcpp_1.0.1 dplyr_0.8.3<br />
+[7] msigdf_5.2 org.Hs.eg.db_3.8.2<br />
+[9] AnnotationDbi_1.47.0 igraph_1.2.4.1<br />
+[11] batchelor_1.1.4 scran_1.13.9<br />
+[13] scater_1.13.9 ggplot2_3.2.0<br />
+[15] rhdf5_2.29.0 HCAData_1.1.1<br />
+[17] SingleCellExperiment_1.5.3 SummarizedExperiment_1.15.5
+[19] DelayedArray_0.11.4 BiocParallel_1.19.0<br />
+[21] matrixStats_0.54.0 Biobase_2.45.0<br />
+[23] GenomicRanges_1.37.14 GenomeInfoDb_1.21.1<br />
+[25] IRanges_2.19.10 S4Vectors_0.23.17<br />
+[27] BiocGenerics_0.31.5 BiocStyle_2.13.2</p>
+<p>loaded via a namespace (and not attached):
+[1] ggbeeswarm_0.6.0 colorspace_1.4-1<br />
+[3] dynamicTreeCut_1.63-1 XVector_0.25.0<br />
+[5] BiocNeighbors_1.3.2 bit64_0.9-7<br />
+[7] interactiveDisplayBase_1.23.0 knitr_1.23<br />
+[9] zeallot_0.1.0 jsonlite_1.6<br />
+[11] dbplyr_1.4.2 shiny_1.3.2<br />
+[13] HDF5Array_1.13.4 BiocManager_1.30.4<br />
+[15] compiler_3.6.0 httr_1.4.0<br />
+[17] dqrng_0.2.1 backports_1.1.4<br />
+[19] assertthat_0.2.1 Matrix_1.2-17<br />
+[21] lazyeval_0.2.2 limma_3.41.6<br />
+[23] later_0.8.0 BiocSingular_1.1.5<br />
+[25] htmltools_0.3.6 tools_3.6.0<br />
+[27] rsvd_1.0.1 gtable_0.3.0<br />
+[29] glue_1.3.1 GenomeInfoDbData_1.2.1<br />
+[31] rappdirs_0.3.1 fastmatch_1.1-0<br />
+[33] vctrs_0.2.0 ape_5.3<br />
+[35] nlme_3.1-140 ExperimentHub_1.11.1<br />
+[37] crosstalk_1.0.0 DelayedMatrixStats_1.7.1<br />
+[39] xfun_0.8 stringr_1.4.0<br />
+[41] miniUI_0.1.1.1 mime_0.7<br />
+[43] irlba_2.3.3 statmod_1.4.32<br />
+[45] AnnotationHub_2.17.3 edgeR_3.27.6<br />
+[47] zlibbioc_1.31.0 scales_1.0.0<br />
+[49] promises_1.0.1 yaml_2.2.0<br />
+[51] curl_4.0 memoise_1.1.0<br />
+[53] gridExtra_2.3 stringi_1.4.3<br />
+[55] RSQLite_2.1.1 manipulateWidget_0.10.0<br />
+[57] rlang_0.4.0 pkgconfig_2.0.2<br />
+[59] bitops_1.0-6 rgl_0.100.26<br />
+[61] evaluate_0.14 lattice_0.20-38<br />
+[63] purrr_0.3.2 Rhdf5lib_1.7.2<br />
+[65] htmlwidgets_1.3 bit_1.1-14<br />
+[67] tidyselect_0.2.5 magrittr_1.5<br />
+[69] bookdown_0.12 R6_2.4.0<br />
+[71] DBI_1.0.0 pillar_1.4.2<br />
+[73] withr_2.1.2 RCurl_1.95-4.12<br />
+[75] tibble_2.1.3 crayon_1.3.4<br />
+[77] BiocFileCache_1.9.1 rmarkdown_1.14<br />
+[79] viridis_0.5.1 locfit_1.5-9.1<br />
+[81] grid_3.6.0 data.table_1.12.2<br />
+[83] blob_1.2.0 digest_0.6.20<br />
+[85] webshot_0.5.1 xtable_1.8-4<br />
+[87] httpuv_1.5.1 munsell_0.5.0<br />
+[89] beeswarm_0.2.3 viridisLite_0.3.0<br />
+[91] vipor_0.4.5</p>
+</div>
 
 </div>
 </div>
@@ -630,7 +790,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W0.quick-start.Rmd",
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W02.quick-start.Rmd",
 "text": "Edit"
 },
 "history": {

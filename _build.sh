@@ -5,6 +5,6 @@
 
 set -ev
 
-Rscript --quiet _render.R "bookdown::pdf_book"
+## Rscript --quiet _render.R "bookdown::pdf_book"
 Rscript --quiet _render.R "bookdown::gitbook"
 ## Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::epub_book')"

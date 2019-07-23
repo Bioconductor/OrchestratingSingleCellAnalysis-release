@@ -62,3 +62,8 @@ for i in "${!allfiles[@]}"; do
     cp ${base}/about/${allfiles[$i]} $newfile
 done
 
+
+###################################################
+# Build appendix workflow files
+
+R -e "all.workflows <- list.files('workflows', pattern='Rmd$', full=TRUE); for (x in all.workflows) { rmarkdown::render(x) }"
