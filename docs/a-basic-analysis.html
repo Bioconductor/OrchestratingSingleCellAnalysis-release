@@ -411,27 +411,27 @@ document.addEventListener("click", function (event) {
 <div id="from-scratch" class="section level3">
 <h3><span class="header-section-number">7.2.1</span> From Scratch</h3>
 <p>Below we show an example of creating a <code>SingleCellExperiment</code> class object from a counts matrix and associated experimental metadata.</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1"><span class="kw">library</span>(SingleCellExperiment)</a>
-<a class="sourceLine" id="cb88-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb88-3" data-line-number="3">## More realistic: read in your experimental design metadata</a>
-<a class="sourceLine" id="cb88-4" data-line-number="4">## If its per cell metadata, make sure it lines up with your</a>
-<a class="sourceLine" id="cb88-5" data-line-number="5">## counts matrix row IDs correctly</a>
-<a class="sourceLine" id="cb88-6" data-line-number="6">## my_metadata &lt;- read.csv(&quot;my_metadata.csv&quot;) </a>
-<a class="sourceLine" id="cb88-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb88-8" data-line-number="8">## Example data</a>
-<a class="sourceLine" id="cb88-9" data-line-number="9">ncells &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb88-10" data-line-number="10">my_counts_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(<span class="dv">20000</span>, <span class="dv">5</span>), <span class="dt">ncol =</span> ncells)</a>
-<a class="sourceLine" id="cb88-11" data-line-number="11">my_metadata &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genotype =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;B&#39;</span>), <span class="dt">each =</span> <span class="dv">50</span>),</a>
-<a class="sourceLine" id="cb88-12" data-line-number="12">                          <span class="dt">experiment_id =</span> <span class="st">&#39;Experiment1&#39;</span>)</a>
-<a class="sourceLine" id="cb88-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb88-14" data-line-number="14">## Construct the sce object manually</a>
-<a class="sourceLine" id="cb88-15" data-line-number="15">sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> my_counts_matrix),</a>
-<a class="sourceLine" id="cb88-16" data-line-number="16">                            <span class="dt">colData =</span> my_metadata)</a>
-<a class="sourceLine" id="cb88-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb88-18" data-line-number="18">## Manually adding a variable that is the same across all cells</a>
-<a class="sourceLine" id="cb88-19" data-line-number="19"><span class="kw">colData</span>(sce) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(sce), <span class="dt">date =</span> <span class="st">&#39;2020-01-01&#39;</span>)</a>
-<a class="sourceLine" id="cb88-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb88-21" data-line-number="21">sce</a></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="kw">library</span>(SingleCellExperiment)</a>
+<a class="sourceLine" id="cb89-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb89-3" data-line-number="3">## More realistic: read in your experimental design metadata</a>
+<a class="sourceLine" id="cb89-4" data-line-number="4">## If its per cell metadata, make sure it lines up with your</a>
+<a class="sourceLine" id="cb89-5" data-line-number="5">## counts matrix row IDs correctly</a>
+<a class="sourceLine" id="cb89-6" data-line-number="6">## my_metadata &lt;- read.csv(&quot;my_metadata.csv&quot;) </a>
+<a class="sourceLine" id="cb89-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb89-8" data-line-number="8">## Example data</a>
+<a class="sourceLine" id="cb89-9" data-line-number="9">ncells &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb89-10" data-line-number="10">my_counts_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(<span class="dv">20000</span>, <span class="dv">5</span>), <span class="dt">ncol =</span> ncells)</a>
+<a class="sourceLine" id="cb89-11" data-line-number="11">my_metadata &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">genotype =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;B&#39;</span>), <span class="dt">each =</span> <span class="dv">50</span>),</a>
+<a class="sourceLine" id="cb89-12" data-line-number="12">                          <span class="dt">experiment_id =</span> <span class="st">&#39;Experiment1&#39;</span>)</a>
+<a class="sourceLine" id="cb89-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb89-14" data-line-number="14">## Construct the sce object manually</a>
+<a class="sourceLine" id="cb89-15" data-line-number="15">sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> my_counts_matrix),</a>
+<a class="sourceLine" id="cb89-16" data-line-number="16">                            <span class="dt">colData =</span> my_metadata)</a>
+<a class="sourceLine" id="cb89-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb89-18" data-line-number="18">## Manually adding a variable that is the same across all cells</a>
+<a class="sourceLine" id="cb89-19" data-line-number="19"><span class="kw">colData</span>(sce) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(sce), <span class="dt">date =</span> <span class="st">&#39;2020-01-01&#39;</span>)</a>
+<a class="sourceLine" id="cb89-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb89-21" data-line-number="21">sce</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 200 100 
 ## metadata(0):
@@ -446,10 +446,10 @@ document.addEventListener("click", function (event) {
 <div id="from-publicly-available-data" class="section level3">
 <h3><span class="header-section-number">7.2.2</span> From Publicly Available Data</h3>
 <p>From here on out, we will be working with a small example dataset from the <code>TENxPBMCData</code> Bioconductor package which has already been packaged into a <code>SingleCellExperiment</code> class object:</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" data-line-number="1"><span class="kw">library</span>(TENxPBMCData)</a>
-<a class="sourceLine" id="cb90-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a>
-<a class="sourceLine" id="cb90-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb90-4" data-line-number="4">sce</a></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1"><span class="kw">library</span>(TENxPBMCData)</a>
+<a class="sourceLine" id="cb91-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a>
+<a class="sourceLine" id="cb91-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb91-4" data-line-number="4">sce</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 32738 2700 
 ## metadata(0):
@@ -462,7 +462,7 @@ document.addEventListener("click", function (event) {
 ## reducedDimNames(0):
 ## spikeNames(0):</code></pre>
 <p>One decision that should be made early on in the analysis is what row identifier to identify genes. Depending on how the data is imported, the <code>rowData</code> component may already have additional annotation information, such as multiple row mappings. For our new <code>sce</code> object from the <code>pbmc3k</code> dataset, we can take a look at <code>rowData</code> to see our options:</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"><span class="kw">rowData</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1"><span class="kw">rowData</span>(sce)</a></code></pre></div>
 <pre><code>## DataFrame with 32738 rows and 3 columns
 ##                      ENSEMBL_ID  Symbol_TENx       Symbol
 ##                     &lt;character&gt;  &lt;character&gt;  &lt;character&gt;
@@ -478,17 +478,17 @@ document.addEventListener("click", function (event) {
 ## ENSG00000215616 ENSG00000215616   AC002321.2           NA
 ## ENSG00000215611 ENSG00000215611   AC002321.1           NA</code></pre>
 <p>We see that we could choose between <code>ENSEMBL_ID</code> (the default), <code>Symbol_TENx</code>, and <code>Symbol</code>. For ease of readability and subsetting, we will utilize the <code>Symbol_TENx</code> identifier as our object’s rownames, making it possible to subset the <code>sce</code> with gene symbols as in <code>sce[&quot;CD8A&quot;, ]</code>.</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" data-line-number="1">## reassign rownames</a>
-<a class="sourceLine" id="cb94-2" data-line-number="2"><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce)[, <span class="st">&quot;Symbol_TENx&quot;</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1">## reassign rownames</a>
+<a class="sourceLine" id="cb95-2" data-line-number="2"><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce)[, <span class="st">&quot;Symbol_TENx&quot;</span>]</a></code></pre></div>
 <p>Now, while this seems to work just fine, eventually we may run into an issue because we actually have duplicated row names here. Depending on how a downstream function is coded, this may cause an esoteric error to pop-up. In fact, here we have about 100 duplicates.</p>
 <p>We can avoid future errors (and many headaches) by removing duplicates before any analysis:</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1">## counts dupes from top to bottom to make a logical vector</a>
-<a class="sourceLine" id="cb95-2" data-line-number="2">dupes &lt;-<span class="st"> </span><span class="kw">duplicated</span>(<span class="kw">rownames</span>(sce))</a>
-<a class="sourceLine" id="cb95-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb95-4" data-line-number="4">sce &lt;-<span class="st"> </span>sce[<span class="op">!</span>dupes, ]</a></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1">## counts dupes from top to bottom to make a logical vector</a>
+<a class="sourceLine" id="cb96-2" data-line-number="2">dupes &lt;-<span class="st"> </span><span class="kw">duplicated</span>(<span class="kw">rownames</span>(sce))</a>
+<a class="sourceLine" id="cb96-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb96-4" data-line-number="4">sce &lt;-<span class="st"> </span>sce[<span class="op">!</span>dupes, ]</a></code></pre></div>
 <p>Keep in mind, the above is likely the most inelegant solution to the problem. Other methods could include, from the duplicated set of genes, choosing the one with the highest expression, aggregating the counts per cell, or keeping them all by adding an additional suffix to make the row names unique. Each has its own tradeoffs, so we leave this choice up to the diligent reader.</p>
 <p>And one more bit of preprocessing to prevent a potential downstream error is to assign our columns proper names. We can grab the barcodes of each cell from <code>colData</code> and assign them as column names as follows:</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1"><span class="kw">colnames</span>(sce) &lt;-<span class="st"> </span>sce<span class="op">$</span>Barcode</a></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="kw">colnames</span>(sce) &lt;-<span class="st"> </span>sce<span class="op">$</span>Barcode</a></code></pre></div>
 </div>
 </div>
 <div id="data-processing-1" class="section level2">
@@ -498,29 +498,29 @@ document.addEventListener("click", function (event) {
 <h3><span class="header-section-number">7.3.1</span> Quality Control Metrics</h3>
 <p>The first step is to ensure that our dataset only contains viable cells, e.g. droplets that contain proper mRNA libraries.</p>
 <p>One way to do that is to use the popular “knee plot”, which shows the relationship between the log rank vs the log total counts, and then calculate where the “knee” of the plot is. We use the <code>DropletUtils</code> package to demonstrate this in our example PBMC dataset.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="kw">library</span>(DropletUtils)</a>
-<a class="sourceLine" id="cb97-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb97-3" data-line-number="3">## Calculate the rank vs total counts per cell</a>
-<a class="sourceLine" id="cb97-4" data-line-number="4">br &lt;-<span class="st"> </span><span class="kw">barcodeRanks</span>(<span class="kw">counts</span>(sce))</a>
-<a class="sourceLine" id="cb97-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb97-6" data-line-number="6">## Create the knee plot</a>
-<a class="sourceLine" id="cb97-7" data-line-number="7"><span class="kw">plot</span>(<span class="kw">log10</span>(br<span class="op">$</span>rank), <span class="kw">log10</span>(br<span class="op">$</span>total))</a>
-<a class="sourceLine" id="cb97-8" data-line-number="8"><span class="kw">abline</span>(<span class="dt">h =</span> <span class="kw">log10</span>(<span class="kw">metadata</span>(br)<span class="op">$</span>knee))</a></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" data-line-number="1"><span class="kw">library</span>(DropletUtils)</a>
+<a class="sourceLine" id="cb98-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb98-3" data-line-number="3">## Calculate the rank vs total counts per cell</a>
+<a class="sourceLine" id="cb98-4" data-line-number="4">br &lt;-<span class="st"> </span><span class="kw">barcodeRanks</span>(<span class="kw">counts</span>(sce))</a>
+<a class="sourceLine" id="cb98-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb98-6" data-line-number="6">## Create the knee plot</a>
+<a class="sourceLine" id="cb98-7" data-line-number="7"><span class="kw">plot</span>(<span class="kw">log10</span>(br<span class="op">$</span>rank), <span class="kw">log10</span>(br<span class="op">$</span>total))</a>
+<a class="sourceLine" id="cb98-8" data-line-number="8"><span class="kw">abline</span>(<span class="dt">h =</span> <span class="kw">log10</span>(<span class="kw">metadata</span>(br)<span class="op">$</span>knee))</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-7"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-7-1.png" alt="Barcode rank (aka knee) plot showing log10-rank by log10-total counts relationship and calculated knee (horizontal line)." width="672" />
 <p class="caption">
 Figure 7.1: Barcode rank (aka knee) plot showing log10-rank by log10-total counts relationship and calculated knee (horizontal line).
 </p>
 </div>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" data-line-number="1">## Save the calculated knee from `barcodeRanks()`</a>
-<a class="sourceLine" id="cb98-2" data-line-number="2">knee &lt;-<span class="st"> </span><span class="kw">log10</span>(<span class="kw">metadata</span>(br)<span class="op">$</span>knee)</a></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1">## Save the calculated knee from `barcodeRanks()`</a>
+<a class="sourceLine" id="cb99-2" data-line-number="2">knee &lt;-<span class="st"> </span><span class="kw">log10</span>(<span class="kw">metadata</span>(br)<span class="op">$</span>knee)</a></code></pre></div>
 <p>We see that the knee calculated via this method (horizontal line) is at 1740, or on the log scale, 3.2405.</p>
 <p>This can be used as a filter to remove cells that are likely to be empty droplets. Before we do that, we will finish calculating other quality control (QC) metrics via the <code>scater</code> package and show the results from the first three cells.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb99-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb99-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb100-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb100-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce)</a></code></pre></div>
 <p>We can display some of the calculated QC metrics appended to the <code>colData</code> component - there are a number of other columns present, but for brevity will only show two pertinent ones.</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="kw">colData</span>(sce)[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="kw">c</span>(<span class="st">&quot;log10_total_features_by_counts&quot;</span>, <span class="st">&quot;log10_total_counts&quot;</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" data-line-number="1"><span class="kw">colData</span>(sce)[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="kw">c</span>(<span class="st">&quot;log10_total_features_by_counts&quot;</span>, <span class="st">&quot;log10_total_counts&quot;</span>)]</a></code></pre></div>
 <pre><code>## DataFrame with 3 rows and 2 columns
 ##                  log10_total_features_by_counts log10_total_counts
 ##                                       &lt;numeric&gt;          &lt;numeric&gt;
@@ -528,16 +528,16 @@ Figure 7.1: Barcode rank (aka knee) plot showing log10-rank by log10-total count
 ## AAACATTGAGCTAC-1                           3.13               3.69
 ## AAACATTGATCAGC-1                           3.05                3.5</code></pre>
 <p>We can further inspect these cells based on their total counts as well as vs the total features detected by counts (e.g. the number of genes that have nonzero counts).</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="kw">hist</span>(sce<span class="op">$</span>log10_total_counts, <span class="dt">breaks =</span> <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb102-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v =</span> knee)</a></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" data-line-number="1"><span class="kw">hist</span>(sce<span class="op">$</span>log10_total_counts, <span class="dt">breaks =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb103-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v =</span> knee)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-11"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-11-1.png" alt="Histogram of the log10 total counts with the calculated knee from above (vertical line)." width="672" />
 <p class="caption">
 Figure 7.2: Histogram of the log10 total counts with the calculated knee from above (vertical line).
 </p>
 </div>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" data-line-number="1"><span class="kw">smoothScatter</span>(sce<span class="op">$</span>log10_total_counts, sce<span class="op">$</span>log10_total_features_by_counts, <span class="dt">nbin =</span> <span class="dv">250</span>)</a>
-<a class="sourceLine" id="cb103-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v =</span> knee)</a></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="kw">smoothScatter</span>(sce<span class="op">$</span>log10_total_counts, sce<span class="op">$</span>log10_total_features_by_counts, <span class="dt">nbin =</span> <span class="dv">250</span>)</a>
+<a class="sourceLine" id="cb104-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v =</span> knee)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-12"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-12-1.png" alt="Smoothed scatter plot of the log10-total counts vs the log10-total features detected by counts with the calculated knee from above (vertical line)." width="672" />
 <p class="caption">
@@ -546,8 +546,8 @@ Figure 7.3: Smoothed scatter plot of the log10-total counts vs the log10-total f
 </div>
 <p>While there are various ways to filter cells, here we actually will not need to perform any filtering, as the data has already undergone a stringent quality control, and thus all the cells can be considered high quality.</p>
 <p>For the sake of completeness, we will demonstrate here - without evaluating - how to subset based on the previously calculated barcode ranks knee:</p>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1">## not run</a>
-<a class="sourceLine" id="cb104-2" data-line-number="2">sce &lt;-<span class="st"> </span>sce[, sce<span class="op">$</span>log10_total_counts <span class="op">&gt;</span><span class="st"> </span>knee]</a></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1">## not run</a>
+<a class="sourceLine" id="cb105-2" data-line-number="2">sce &lt;-<span class="st"> </span>sce[, sce<span class="op">$</span>log10_total_counts <span class="op">&gt;</span><span class="st"> </span>knee]</a></code></pre></div>
 </div>
 <div id="normalizing-data-1" class="section level3">
 <h3><span class="header-section-number">7.3.2</span> Normalizing Data</h3>
@@ -557,9 +557,9 @@ Figure 7.3: Smoothed scatter plot of the log10-total counts vs the log10-total f
 <!-- 's `quickCluster()` function to do the initial clustering. Then the (cell) size factors are used to log-normalize the counts data via -->
 <!-- ## quick_clusters <- quickCluster(sce, use.ranks = FALSE) -->
 <!-- ## sce <- computeSumFactors(sce, clusters = quick_clusters) -->
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <p>We can see below that we now have two assays, <code>counts</code> and <code>logcounts</code>.</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1"><span class="kw">assays</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1"><span class="kw">assays</span>(sce)</a></code></pre></div>
 <pre><code>## List of length 2
 ## names(2): counts logcounts</code></pre>
 </div>
@@ -567,11 +567,11 @@ Figure 7.3: Smoothed scatter plot of the log10-total counts vs the log10-total f
 <h3><span class="header-section-number">7.3.3</span> Feature Selection</h3>
 <p>This section will use the <code>scran</code> package, as we select for informative genes by selecting for those with high coefficients of biological variation.</p>
 <p>Since this experiment does not have spike-ins, we will fit the mean-variance trend across the endogenous genes.</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb108-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb108-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb108-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb108-4" data-line-number="4"><span class="kw">plot</span>(fit<span class="op">$</span>mean, fit<span class="op">$</span>var)</a>
-<a class="sourceLine" id="cb108-5" data-line-number="5"><span class="kw">curve</span>(fit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb109-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb109-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb109-4" data-line-number="4"><span class="kw">plot</span>(fit<span class="op">$</span>mean, fit<span class="op">$</span>var)</a>
+<a class="sourceLine" id="cb109-5" data-line-number="5"><span class="kw">curve</span>(fit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-16"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-16-1.png" alt="Mean-variance trend line fit by scran package trendVar() function." width="672" />
 <p class="caption">
@@ -580,9 +580,9 @@ Figure 7.4: Mean-variance trend line fit by scran package trendVar() function.
 </div>
 <p>We can see that the trend line goes through the central mass of genes, and thus continue on with looking at the decomposed variance. In this method, it is assumed that the total variance is the sum of the technical and biological variance, where the technical variance can be determined by interpolating the fitted trend at the mean log-count for that gene. Thus the biological variance is the total variance minus this interpolated (technical) variance.</p>
 <p>We can then rank and choose genes which have a biological coefficient of variance greater than zero.</p>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" data-line-number="1">dec &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce, fit)</a>
-<a class="sourceLine" id="cb109-2" data-line-number="2">dec &lt;-<span class="st"> </span>dec[<span class="kw">order</span>(dec<span class="op">$</span>bio, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ] <span class="co"># order by bio var</span></a></code></pre></div>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1">dec[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1">dec &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce, fit)</a>
+<a class="sourceLine" id="cb110-2" data-line-number="2">dec &lt;-<span class="st"> </span>dec[<span class="kw">order</span>(dec<span class="op">$</span>bio, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ] <span class="co"># order by bio var</span></a></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" data-line-number="1">dec[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>##          mean total   bio  tech p.value FDR
 ## LYZ     1.629 3.925 3.116 0.809       0   0
 ## S100A9  1.068 3.352 2.628 0.725       0   0
@@ -595,10 +595,10 @@ Figure 7.4: Mean-variance trend line fit by scran package trendVar() function.
 <p>“Ranking based on p-value tends to prioritize HVGs that are more likely to be true positives but, at the same time, less likely to be interesting. This is because the ratio can be very large for HVGs that have very low total variance and do not contribute much to the cell-cell heterogeneity.”</p>
 </blockquote>
 <p>However we choose, we can save these highly variable genes and use them for subsequent analyses:</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" data-line-number="1">hvg_genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec)[dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1">hvg_genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec)[dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a></code></pre></div>
 <p>For the purpose of sharing and saving this list of genes, we can stash the result into the <code>metadata</code> component of our <code>sce</code> object as follows:</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1"><span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes &lt;-<span class="st"> </span>hvg_genes</a>
-<a class="sourceLine" id="cb113-2" data-line-number="2"><span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" data-line-number="1"><span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes &lt;-<span class="st"> </span>hvg_genes</a>
+<a class="sourceLine" id="cb114-2" data-line-number="2"><span class="kw">metadata</span>(sce)<span class="op">$</span>hvg_genes[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a></code></pre></div>
 <pre><code>##  [1] &quot;LYZ&quot;     &quot;S100A9&quot;  &quot;HLA-DRA&quot; &quot;FTL&quot;     &quot;CD74&quot;    &quot;CST3&quot;    &quot;S100A8&quot; 
 ##  [8] &quot;TYROBP&quot;  &quot;NKG7&quot;    &quot;FTH1&quot;</code></pre>
 <p>The <code>metadata</code> component can hold any object, as it is a list container. Any results that you’d like to keep are safe to store here, and a great way to save or share intermediate results that would otherwise be kept in separate objects.</p>
@@ -606,18 +606,18 @@ Figure 7.4: Mean-variance trend line fit by scran package trendVar() function.
 <div id="dimensionality-reduction-1" class="section level3">
 <h3><span class="header-section-number">7.3.4</span> Dimensionality Reduction</h3>
 <p>We now can perform dimensionality reduction using our highly variable genes (<code>hvg_genes</code>) subset. To do this, we will first calculate the PCA representation via the <code>runPCA()</code> function from the <code>scater</code> package. We will calculate 50 components on our highly variable genes:</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">50</span>,</a>
-<a class="sourceLine" id="cb115-2" data-line-number="2">              <span class="dt">feature_set =</span> hvg_genes)</a></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb116-2" data-line-number="2">              <span class="dt">feature_set =</span> hvg_genes)</a></code></pre></div>
 <p>The results of these calculations will be stored in the <code>reducedDims</code> component. This method saves the percent variance explained per component as an attribute, which can be accessed as follows, and subsequently plot the “elbow plot”:</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1">## access the attribute where percentVar is saved in reducedDim</a>
-<a class="sourceLine" id="cb116-2" data-line-number="2">pct_var_explained &lt;-<span class="st"> </span><span class="kw">attr</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>), <span class="st">&#39;percentVar&#39;</span>)</a>
-<a class="sourceLine" id="cb116-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb116-4" data-line-number="4"><span class="kw">plot</span>(pct_var_explained) <span class="co"># elbow plot</span></a></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1">## access the attribute where percentVar is saved in reducedDim</a>
+<a class="sourceLine" id="cb117-2" data-line-number="2">pct_var_explained &lt;-<span class="st"> </span><span class="kw">attr</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>), <span class="st">&#39;percentVar&#39;</span>)</a>
+<a class="sourceLine" id="cb117-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb117-4" data-line-number="4"><span class="kw">plot</span>(pct_var_explained) <span class="co"># elbow plot</span></a></code></pre></div>
 <p><img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>To calculate a 2-dimensional representation of the data, we will use the top 20 components of our PCA result to compute the UMAP representation.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce, <span class="dt">use_dimred =</span> <span class="st">&#39;PCA&#39;</span>, <span class="dt">n_dimred =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb117-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb117-3" data-line-number="3"><span class="kw">plotUMAP</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce, <span class="dt">use_dimred =</span> <span class="st">&#39;PCA&#39;</span>, <span class="dt">n_dimred =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb118-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb118-3" data-line-number="3"><span class="kw">plotUMAP</span>(sce)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-24"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-24-1.png" alt="UMAP plot." width="672" />
 <p class="caption">
@@ -638,18 +638,18 @@ Figure 7.5: UMAP plot.
 <li>calculate based on the SNN graph the most representative clusters</li>
 </ul>
 <p>In this first step, we will specify that we will consider <code>k</code> nearest neighbors, and <code>d</code> dimensions from the PCA calculation as follows:</p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>) <span class="co"># to make results reproducible</span></a>
-<a class="sourceLine" id="cb118-2" data-line-number="2">snng &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce, <span class="dt">k =</span> <span class="dv">50</span>, <span class="dt">d =</span> <span class="dv">20</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>) <span class="co"># to make results reproducible</span></a>
+<a class="sourceLine" id="cb119-2" data-line-number="2">snng &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce, <span class="dt">k =</span> <span class="dv">50</span>, <span class="dt">d =</span> <span class="dv">20</span>)</a></code></pre></div>
 <p>Following the graph construction, we can calculate the clusters using a variety of different graph-based methods from the <code>igraph</code> package. Here, we use the louvain method to determine our cell’s cluster memberships.</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1">snng_clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(snng)</a></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" data-line-number="1">snng_clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(snng)</a></code></pre></div>
 <p>We see that we have the following numbers of cells per cluster:</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" data-line-number="1"><span class="kw">table</span>(snng_clusters<span class="op">$</span>membership)</a></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" data-line-number="1"><span class="kw">table</span>(snng_clusters<span class="op">$</span>membership)</a></code></pre></div>
 <pre><code>## 
 ##   1   2   3   4   5 
 ## 687 350 556 528 579</code></pre>
 <p>To view this result graphically on the UMAP plot, we first assign the result to the <code>colData</code> component as a new column, and specify this as our color variable in the <code>plotUMAP()</code> function:</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" data-line-number="1"><span class="kw">colData</span>(sce)<span class="op">$</span>clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(snng_clusters<span class="op">$</span>membership)</a>
-<a class="sourceLine" id="cb122-2" data-line-number="2"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;clusters&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1"><span class="kw">colData</span>(sce)<span class="op">$</span>clusters &lt;-<span class="st"> </span><span class="kw">as.factor</span>(snng_clusters<span class="op">$</span>membership)</a>
+<a class="sourceLine" id="cb123-2" data-line-number="2"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;clusters&#39;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-28"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-28-1.png" alt="UMAP plot showing calculated clusters." width="672" />
 <p class="caption">
@@ -662,12 +662,12 @@ Figure 7.6: UMAP plot showing calculated clusters.
 <h3><span class="header-section-number">7.4.2</span> Differential Expression</h3>
 <p>In this section, we will look to identify genes that are unique to each of our clusters. To accomplish this, we will lean on the <code>scran</code> package to perform the analysis, and then the <code>scater</code> package to visualize the results.</p>
 <p>For this analysis, we will limit ourselves to a top subset of highly variable genes in our <code>hvg_genes</code> set, purely for the sake of computation time. Furthermore, we will limit our consideration to genes with an <em>increased</em> log fold-change of at least 1.5 versus other clusters. We will also use the <code>BiocParallel</code> package to parallelize the computation and speed up our processing via the <code>BPPARAM</code> argument.</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">clusters =</span> <span class="kw">colData</span>(sce)<span class="op">$</span>clusters,</a>
-<a class="sourceLine" id="cb123-2" data-line-number="2">                       <span class="dt">subset.row =</span> hvg_genes[<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>],</a>
-<a class="sourceLine" id="cb123-3" data-line-number="3">                       <span class="dt">lfc =</span> <span class="fl">1.5</span>, <span class="dt">direction =</span> <span class="st">&#39;up&#39;</span>, <span class="dt">log.p =</span> <span class="ot">TRUE</span>, </a>
-<a class="sourceLine" id="cb123-4" data-line-number="4">                       <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb124-1" data-line-number="1">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">clusters =</span> <span class="kw">colData</span>(sce)<span class="op">$</span>clusters,</a>
+<a class="sourceLine" id="cb124-2" data-line-number="2">                       <span class="dt">subset.row =</span> hvg_genes[<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>],</a>
+<a class="sourceLine" id="cb124-3" data-line-number="3">                       <span class="dt">lfc =</span> <span class="fl">1.5</span>, <span class="dt">direction =</span> <span class="st">&#39;up&#39;</span>, <span class="dt">log.p =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb124-4" data-line-number="4">                       <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a></code></pre></div>
 <p>We can view the top 5 markers that are differentially expressed (by our specified metrics):</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb124-1" data-line-number="1">markers[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" data-line-number="1">markers[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>##        Top log.p.value log.FDR logFC.2 logFC.3 logFC.4 logFC.5
 ## CST3     1      -831.4  -825.9   3.446   3.470   3.413   3.480
 ## TYROBP   1      -778.7  -773.8   3.325   3.324   2.691   3.301
@@ -675,7 +675,7 @@ Figure 7.6: UMAP plot showing calculated clusters.
 ## FTL      3      -667.3  -662.9   3.110   3.634   3.463   3.534
 ## FTH1     4      -474.3  -470.6   2.771   3.118   3.100   2.755</code></pre>
 <p>We can see that CD3D, a marker of T cells, is one of our top differentially expressed genes in cluster 1. We can plot the expression of this gene across all our clusters as follows:</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb126-1" data-line-number="1"><span class="kw">plotExpression</span>(sce, <span class="st">&#39;CD3D&#39;</span>, <span class="dt">x =</span> <span class="st">&#39;clusters&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb127-1" data-line-number="1"><span class="kw">plotExpression</span>(sce, <span class="st">&#39;CD3D&#39;</span>, <span class="dt">x =</span> <span class="st">&#39;clusters&#39;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-32"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-32-1.png" alt="Violin plots of CD3D expression across clusters." width="672" />
 <p class="caption">
@@ -690,19 +690,19 @@ Figure 7.7: Violin plots of CD3D expression across clusters.
 <h4><span class="header-section-number">7.4.3.1</span> A Manual Approach</h4>
 <p>To finish off our the downstream analysis section here, we will look to annotate our clusters with a cell type designation, based on publicly available knowledge.</p>
 <p>Before we do that, let’s get a broader view of our top differentially expressed genes. To do this, we can iterate over the list-object returned by <code>findMarkers</code> to get the top 10 genes per cluster, and then plot these genes in a heatmap.</p>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb127-1" data-line-number="1">## grab the top 10 genes per cluster (e.g. within each list component)</a>
-<a class="sourceLine" id="cb127-2" data-line-number="2">genes &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb127-3" data-line-number="3">    <span class="kw">rownames</span>(x)[x<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>]</a>
-<a class="sourceLine" id="cb127-4" data-line-number="4">})</a>
-<a class="sourceLine" id="cb127-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb127-6" data-line-number="6">## uniqify the set of genes returned, after coercing to a vector</a>
-<a class="sourceLine" id="cb127-7" data-line-number="7">genes &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">unlist</span>(genes))</a>
-<a class="sourceLine" id="cb127-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb127-9" data-line-number="9"><span class="kw">plotHeatmap</span>(sce, genes,</a>
-<a class="sourceLine" id="cb127-10" data-line-number="10">            <span class="dt">colour_columns_by =</span> <span class="st">&quot;clusters&quot;</span>,</a>
-<a class="sourceLine" id="cb127-11" data-line-number="11">            <span class="dt">show_colnames =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb127-12" data-line-number="12">            <span class="dt">clustering_method =</span> <span class="st">&#39;ward.D2&#39;</span>,</a>
-<a class="sourceLine" id="cb127-13" data-line-number="13">            <span class="dt">fontsize_row =</span> <span class="dv">6</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb128-1" data-line-number="1">## grab the top 10 genes per cluster (e.g. within each list component)</a>
+<a class="sourceLine" id="cb128-2" data-line-number="2">genes &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb128-3" data-line-number="3">    <span class="kw">rownames</span>(x)[x<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb128-4" data-line-number="4">})</a>
+<a class="sourceLine" id="cb128-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb128-6" data-line-number="6">## uniqify the set of genes returned, after coercing to a vector</a>
+<a class="sourceLine" id="cb128-7" data-line-number="7">genes &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">unlist</span>(genes))</a>
+<a class="sourceLine" id="cb128-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb128-9" data-line-number="9"><span class="kw">plotHeatmap</span>(sce, genes,</a>
+<a class="sourceLine" id="cb128-10" data-line-number="10">            <span class="dt">colour_columns_by =</span> <span class="st">&quot;clusters&quot;</span>,</a>
+<a class="sourceLine" id="cb128-11" data-line-number="11">            <span class="dt">show_colnames =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb128-12" data-line-number="12">            <span class="dt">clustering_method =</span> <span class="st">&#39;ward.D2&#39;</span>,</a>
+<a class="sourceLine" id="cb128-13" data-line-number="13">            <span class="dt">fontsize_row =</span> <span class="dv">6</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-33"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-33-1.png" alt="Heatmap showing top differentially expressed genes across the clusters." width="672" />
 <p class="caption">
@@ -718,28 +718,28 @@ Figure 7.8: Heatmap showing top differentially expressed genes across the cluste
 <li>CD3D/CD3E, markers of T cells, are expressed across clusters 5, 1, and 4</li>
 </ul>
 <p>Finally, we can view a selection of the genes mentioned above on our previous UMAP plot:</p>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb128-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;CD79A&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb129-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;CD79A&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-341"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-34-1.png" alt="Various UMAP plots showing the expression of select cell-type specific genes." width="672" />
 <p class="caption">
 Figure 7.9: Various UMAP plots showing the expression of select cell-type specific genes.
 </p>
 </div>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb129-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;LYZ&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb130-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;LYZ&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-342"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-34-2.png" alt="Various UMAP plots showing the expression of select cell-type specific genes." width="672" />
 <p class="caption">
 Figure 7.10: Various UMAP plots showing the expression of select cell-type specific genes.
 </p>
 </div>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb130-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;NKG7&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;NKG7&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-343"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-34-3.png" alt="Various UMAP plots showing the expression of select cell-type specific genes." width="672" />
 <p class="caption">
 Figure 7.11: Various UMAP plots showing the expression of select cell-type specific genes.
 </p>
 </div>
-<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;CD3D&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" data-line-number="1"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&quot;CD3D&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-344"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-34-4.png" alt="Various UMAP plots showing the expression of select cell-type specific genes." width="672" />
 <p class="caption">
@@ -760,48 +760,48 @@ Figure 7.12: Various UMAP plots showing the expression of select cell-type speci
 <p>Manually classifying cell types present in an scRNA-seq experiment can be prone to bias in terms of how a label is selected. Thus have emerged automated classification approaches which take a measured approach to the labeling of cell types.</p>
 <p>One such approach - <code>cellassign</code> - applies labels in a single-cell manner based on a gene by cell type “marker matrix”. Here, we utilize an existing gene by cell type annotation from a publication by <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1070-5">Becht et al. (2016)</a> which categorizes genes into cell types based on the specificity of their expression.</p>
 <p>Let’s first construct a marker matrix loosely inspired by the <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat PBMC 3k tutorial</a>:</p>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" data-line-number="1">anno &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
-<a class="sourceLine" id="cb132-2" data-line-number="2">    <span class="dt">SYMBOL =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb132-3" data-line-number="3">        <span class="st">&#39;IL7R&#39;</span>, <span class="st">&#39;CCR7&#39;</span>, <span class="st">&#39;CD4&#39;</span>, <span class="st">&#39;CD3D&#39;</span>, <span class="st">&#39;CD3E&#39;</span>,</a>
-<a class="sourceLine" id="cb132-4" data-line-number="4">        <span class="st">&#39;CD14&#39;</span>, <span class="st">&#39;LYZ&#39;</span>,</a>
-<a class="sourceLine" id="cb132-5" data-line-number="5">        <span class="st">&#39;MS4A1&#39;</span>, <span class="st">&#39;CD79A&#39;</span>, <span class="st">&#39;CD79B&#39;</span>,</a>
-<a class="sourceLine" id="cb132-6" data-line-number="6">        <span class="st">&#39;CD8A&#39;</span>, <span class="st">&#39;CD8B&#39;</span>, <span class="st">&#39;CD3D&#39;</span>, <span class="st">&#39;CD3E&#39;</span>,</a>
-<a class="sourceLine" id="cb132-7" data-line-number="7">        <span class="st">&#39;GNLY&#39;</span>, <span class="st">&#39;NKG7&#39;</span>,</a>
-<a class="sourceLine" id="cb132-8" data-line-number="8">        <span class="st">&#39;FCER1A&#39;</span>, <span class="st">&#39;CST3&#39;</span>, <span class="st">&#39;ITGAX&#39;</span></a>
-<a class="sourceLine" id="cb132-9" data-line-number="9">    ),</a>
-<a class="sourceLine" id="cb132-10" data-line-number="10">    <span class="dt">cell_type =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb132-11" data-line-number="11">        <span class="kw">rep</span>(<span class="st">&#39;CD4 T cell&#39;</span>, <span class="dv">5</span>),</a>
-<a class="sourceLine" id="cb132-12" data-line-number="12">        <span class="kw">rep</span>(<span class="st">&#39;Monocyte&#39;</span>, <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb132-13" data-line-number="13">        <span class="kw">rep</span>(<span class="st">&#39;B cell&#39;</span>, <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb132-14" data-line-number="14">        <span class="kw">rep</span>(<span class="st">&#39;CD8 T cell&#39;</span>, <span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb132-15" data-line-number="15">        <span class="kw">rep</span>(<span class="st">&#39;NK cell&#39;</span>, <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb132-16" data-line-number="16">        <span class="kw">rep</span>(<span class="st">&#39;Dendritic cell&#39;</span>, <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb132-17" data-line-number="17">    )</a>
-<a class="sourceLine" id="cb132-18" data-line-number="18">)</a></code></pre></div>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" data-line-number="1">anno &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb133-2" data-line-number="2">    <span class="dt">SYMBOL =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb133-3" data-line-number="3">        <span class="st">&#39;IL7R&#39;</span>, <span class="st">&#39;CCR7&#39;</span>, <span class="st">&#39;CD4&#39;</span>, <span class="st">&#39;CD3D&#39;</span>, <span class="st">&#39;CD3E&#39;</span>,</a>
+<a class="sourceLine" id="cb133-4" data-line-number="4">        <span class="st">&#39;CD14&#39;</span>, <span class="st">&#39;LYZ&#39;</span>,</a>
+<a class="sourceLine" id="cb133-5" data-line-number="5">        <span class="st">&#39;MS4A1&#39;</span>, <span class="st">&#39;CD79A&#39;</span>, <span class="st">&#39;CD79B&#39;</span>,</a>
+<a class="sourceLine" id="cb133-6" data-line-number="6">        <span class="st">&#39;CD8A&#39;</span>, <span class="st">&#39;CD8B&#39;</span>, <span class="st">&#39;CD3D&#39;</span>, <span class="st">&#39;CD3E&#39;</span>,</a>
+<a class="sourceLine" id="cb133-7" data-line-number="7">        <span class="st">&#39;GNLY&#39;</span>, <span class="st">&#39;NKG7&#39;</span>,</a>
+<a class="sourceLine" id="cb133-8" data-line-number="8">        <span class="st">&#39;FCER1A&#39;</span>, <span class="st">&#39;CST3&#39;</span>, <span class="st">&#39;ITGAX&#39;</span></a>
+<a class="sourceLine" id="cb133-9" data-line-number="9">    ),</a>
+<a class="sourceLine" id="cb133-10" data-line-number="10">    <span class="dt">cell_type =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb133-11" data-line-number="11">        <span class="kw">rep</span>(<span class="st">&#39;CD4 T cell&#39;</span>, <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb133-12" data-line-number="12">        <span class="kw">rep</span>(<span class="st">&#39;Monocyte&#39;</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb133-13" data-line-number="13">        <span class="kw">rep</span>(<span class="st">&#39;B cell&#39;</span>, <span class="dv">3</span>),</a>
+<a class="sourceLine" id="cb133-14" data-line-number="14">        <span class="kw">rep</span>(<span class="st">&#39;CD8 T cell&#39;</span>, <span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb133-15" data-line-number="15">        <span class="kw">rep</span>(<span class="st">&#39;NK cell&#39;</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb133-16" data-line-number="16">        <span class="kw">rep</span>(<span class="st">&#39;Dendritic cell&#39;</span>, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb133-17" data-line-number="17">    )</a>
+<a class="sourceLine" id="cb133-18" data-line-number="18">)</a></code></pre></div>
 <p>Lastly, we’ll need to reformat this matrix to fit the expectations of <code>cellassign</code>, chiefly to convert the annotation into a binary matrix of genes (rows) by cell types (columns):</p>
-<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" data-line-number="1">## construct rho (binary marker matrix)</a>
-<a class="sourceLine" id="cb133-2" data-line-number="2">tmp &lt;-<span class="st"> </span>tidyr<span class="op">::</span><span class="kw">spread</span>(anno, cell_type, cell_type)</a>
-<a class="sourceLine" id="cb133-3" data-line-number="3">rho &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(tmp[, <span class="dv">-1</span>]), <span class="dv">0</span>, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb133-4" data-line-number="4"><span class="kw">rownames</span>(rho) &lt;-<span class="st"> </span>tmp<span class="op">$</span>SYMBOL</a>
-<a class="sourceLine" id="cb133-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb133-6" data-line-number="6">## remove entries that are not present in our dataset</a>
-<a class="sourceLine" id="cb133-7" data-line-number="7">rho &lt;-<span class="st"> </span>rho[<span class="kw">rownames</span>(rho) <span class="op">%in%</span><span class="st"> </span><span class="kw">rownames</span>(sce), ]</a>
-<a class="sourceLine" id="cb133-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb133-9" data-line-number="9">rho[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb134-1" data-line-number="1">## construct rho (binary marker matrix)</a>
+<a class="sourceLine" id="cb134-2" data-line-number="2">tmp &lt;-<span class="st"> </span>tidyr<span class="op">::</span><span class="kw">spread</span>(anno, cell_type, cell_type)</a>
+<a class="sourceLine" id="cb134-3" data-line-number="3">rho &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(tmp[, <span class="dv">-1</span>]), <span class="dv">0</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb134-4" data-line-number="4"><span class="kw">rownames</span>(rho) &lt;-<span class="st"> </span>tmp<span class="op">$</span>SYMBOL</a>
+<a class="sourceLine" id="cb134-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb134-6" data-line-number="6">## remove entries that are not present in our dataset</a>
+<a class="sourceLine" id="cb134-7" data-line-number="7">rho &lt;-<span class="st"> </span>rho[<span class="kw">rownames</span>(rho) <span class="op">%in%</span><span class="st"> </span><span class="kw">rownames</span>(sce), ]</a>
+<a class="sourceLine" id="cb134-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb134-9" data-line-number="9">rho[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
 <pre><code>##      B cell CD4 T cell CD8 T cell Dendritic cell Monocyte NK cell
 ## CCR7      0          1          0              0        0       0
 ## CD14      0          0          0              0        1       0
 ## CD3D      0          1          1              0        0       0</code></pre>
 <p>We can then run the <code>cellassign</code> method to produce cell type labels on a per cell basis:</p>
-<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb135-1" data-line-number="1">## devtools::install_github(&#39;Irrationone/cellassign&#39;)</a>
-<a class="sourceLine" id="cb135-2" data-line-number="2"><span class="kw">library</span>(cellassign)</a>
-<a class="sourceLine" id="cb135-3" data-line-number="3"><span class="kw">library</span>(tensorflow)</a>
-<a class="sourceLine" id="cb135-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb135-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
-<a class="sourceLine" id="cb135-6" data-line-number="6">reticulate<span class="op">::</span><span class="kw">py_set_seed</span>(<span class="dv">1234</span>)</a>
-<a class="sourceLine" id="cb135-7" data-line-number="7">fit &lt;-<span class="st"> </span><span class="kw">cellassign</span>(sce[<span class="kw">rownames</span>(rho), ],</a>
-<a class="sourceLine" id="cb135-8" data-line-number="8">                  <span class="dt">marker_gene_info =</span> rho,</a>
-<a class="sourceLine" id="cb135-9" data-line-number="9">                  <span class="dt">s =</span> <span class="kw">sizeFactors</span>(sce))</a></code></pre></div>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1">## devtools::install_github(&#39;Irrationone/cellassign&#39;)</a>
+<a class="sourceLine" id="cb136-2" data-line-number="2"><span class="kw">library</span>(cellassign)</a>
+<a class="sourceLine" id="cb136-3" data-line-number="3"><span class="kw">library</span>(tensorflow)</a>
+<a class="sourceLine" id="cb136-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb136-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb136-6" data-line-number="6">reticulate<span class="op">::</span><span class="kw">py_set_seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb136-7" data-line-number="7">fit &lt;-<span class="st"> </span><span class="kw">cellassign</span>(sce[<span class="kw">rownames</span>(rho), ],</a>
+<a class="sourceLine" id="cb136-8" data-line-number="8">                  <span class="dt">marker_gene_info =</span> rho,</a>
+<a class="sourceLine" id="cb136-9" data-line-number="9">                  <span class="dt">s =</span> <span class="kw">sizeFactors</span>(sce))</a></code></pre></div>
 <pre><code>## 160  L old: -97042.4116434613; L new: -46422.4311352146; Difference (%): 0.521627396217512
 ## 80   L old: -46422.4311352146; L new: -46072.5841608096; Difference (%): 0.00753616227866197
 ## 60   L old: -46072.5841608096; L new: -45509.3585831869; Difference (%): 0.0122247446693432
@@ -822,10 +822,10 @@ Figure 7.12: Various UMAP plots showing the expression of select cell-type speci
 ## 40   L old: -44022.7713210755; L new: -44011.9926758065; Difference (%): 0.000244842497314432
 ## 40   L old: -44011.9926758065; L new: -43999.8964578935; Difference (%): 0.000274839133099664
 ## 40   L old: -43999.8964578935; L new: -43986.1070954304; Difference (%): 0.000313395338926541</code></pre>
-<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb137-1" data-line-number="1">## add cell type info into colData</a>
-<a class="sourceLine" id="cb137-2" data-line-number="2"><span class="kw">colData</span>(sce)<span class="op">$</span>cellassign_type &lt;-<span class="st"> </span>fit<span class="op">$</span>cell_type</a></code></pre></div>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" data-line-number="1">## plot the cellassign results on UMAP</a>
-<a class="sourceLine" id="cb138-2" data-line-number="2"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;cellassign_type&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" data-line-number="1">## add cell type info into colData</a>
+<a class="sourceLine" id="cb138-2" data-line-number="2"><span class="kw">colData</span>(sce)<span class="op">$</span>cellassign_type &lt;-<span class="st"> </span>fit<span class="op">$</span>cell_type</a></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" data-line-number="1">## plot the cellassign results on UMAP</a>
+<a class="sourceLine" id="cb139-2" data-line-number="2"><span class="kw">plotUMAP</span>(sce, <span class="dt">colour_by =</span> <span class="st">&#39;cellassign_type&#39;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unnamed-chunk-38"></span>
 <img src="P2_W03.basic-analysis_files/figure-html/unnamed-chunk-38-1.png" alt="UMAP showing the results of automated label assignment as performed by cellassign." width="672" />
 <p class="caption">
@@ -842,93 +842,96 @@ Figure 7.13: UMAP showing the results of automated label assignment as performed
 <div id="interactive-data-visualization-1" class="section level3">
 <h3><span class="header-section-number">7.5.1</span> Interactive Data Visualization</h3>
 <p>Interactive exploration and visualization is a great way for collaborators to learn more about scRNA-seq data and analyses. In particular the <code>iSEE</code> package has been especially designed for viewing and sharing scRNA-seq.</p>
-<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" data-line-number="1">## not run</a>
-<a class="sourceLine" id="cb139-2" data-line-number="2"><span class="kw">library</span>(iSEE)</a>
-<a class="sourceLine" id="cb139-3" data-line-number="3"><span class="kw">iSEE</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" data-line-number="1">## not run</a>
+<a class="sourceLine" id="cb140-2" data-line-number="2"><span class="kw">library</span>(iSEE)</a>
+<a class="sourceLine" id="cb140-3" data-line-number="3"><span class="kw">iSEE</span>(sce)</a></code></pre></div>
 <p>Based on the example analyses, we task the interested reader to assess the previous section’s automatic annotation relative to the clustering results using <code>iSEE</code>.</p>
 </div>
 </div>
 <div id="session-info-1" class="section level2">
 <h2><span class="header-section-number">7.6</span> Session Info</h2>
-<button class="aaron-collapse">
-View session info
-</button>
-<div class="aaron-content">
-<p>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS</p>
-<p>Matrix products: default
-BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so</p>
-<p>locale:
-[1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C<br />
-[3] LC_TIME=en_US.UTF-8 LC_COLLATE=en_US.UTF-8<br />
-[5] LC_MONETARY=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8<br />
-[7] LC_PAPER=en_US.UTF-8 LC_NAME=C<br />
-[9] LC_ADDRESS=C LC_TELEPHONE=C<br />
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C</p>
-<p>attached base packages:
-[1] stats4 parallel stats graphics grDevices utils datasets
-[8] methods base</p>
-<p>other attached packages:
-[1] tensorflow_1.13.1 cellassign_0.99.2<br />
-[3] scran_1.13.9 scater_1.13.9<br />
-[5] ggplot2_3.2.0 DropletUtils_1.5.4<br />
-[7] TENxPBMCData_1.3.0 HDF5Array_1.13.4<br />
-[9] rhdf5_2.29.0 SingleCellExperiment_1.5.3
-[11] SummarizedExperiment_1.15.5 DelayedArray_0.11.4<br />
-[13] BiocParallel_1.19.0 matrixStats_0.54.0<br />
-[15] Biobase_2.45.0 GenomicRanges_1.37.14<br />
-[17] GenomeInfoDb_1.21.1 IRanges_2.19.10<br />
-[19] S4Vectors_0.23.17 BiocGenerics_0.31.5<br />
-[21] BiocStyle_2.13.2</p>
-<p>loaded via a namespace (and not attached):
-[1] bitops_1.0-6 bit64_0.9-7<br />
-[3] httr_1.4.0 dynamicTreeCut_1.63-1<br />
-[5] tools_3.6.0 backports_1.1.4<br />
-[7] R6_2.4.0 irlba_2.3.3<br />
-[9] vipor_0.4.5 DBI_1.0.0<br />
-[11] lazyeval_0.2.2 colorspace_1.4-1<br />
-[13] withr_2.1.2 gridExtra_2.3<br />
-[15] tidyselect_0.2.5 bit_1.1-14<br />
-[17] curl_4.0 compiler_3.6.0<br />
-[19] BiocNeighbors_1.3.2 bookdown_0.12<br />
-[21] scales_1.0.0 tfruns_1.4<br />
-[23] rappdirs_0.3.1 stringr_1.4.0<br />
-[25] digest_0.6.20 rmarkdown_1.14<br />
-[27] R.utils_2.9.0 XVector_0.25.0<br />
-[29] base64enc_0.1-3 pkgconfig_2.0.2<br />
-[31] htmltools_0.3.6 dbplyr_1.4.2<br />
-[33] limma_3.41.6 rlang_0.4.0<br />
-[35] RSQLite_2.1.1 DelayedMatrixStats_1.7.1<br />
-[37] shiny_1.3.2 jsonlite_1.6<br />
-[39] dplyr_0.8.3 R.oo_1.22.0<br />
-[41] RCurl_1.95-4.12 magrittr_1.5<br />
-[43] BiocSingular_1.1.5 GenomeInfoDbData_1.2.1<br />
-[45] Matrix_1.2-17 ggbeeswarm_0.6.0<br />
-[47] Rcpp_1.0.1 munsell_0.5.0<br />
-[49] Rhdf5lib_1.7.2 reticulate_1.12<br />
-[51] viridis_0.5.1 R.methodsS3_1.7.1<br />
-[53] whisker_0.3-2 stringi_1.4.3<br />
-[55] yaml_2.2.0 edgeR_3.27.6<br />
-[57] zlibbioc_1.31.0 BiocFileCache_1.9.1<br />
-[59] AnnotationHub_2.17.3 grid_3.6.0<br />
-[61] blob_1.2.0 promises_1.0.1<br />
-[63] dqrng_0.2.1 ExperimentHub_1.11.1<br />
-[65] crayon_1.3.4 lattice_0.20-38<br />
-[67] locfit_1.5-9.1 zeallot_0.1.0<br />
-[69] knitr_1.23 pillar_1.4.2<br />
-[71] igraph_1.2.4.1 glue_1.3.1<br />
-[73] evaluate_0.14 BiocManager_1.30.4<br />
-[75] vctrs_0.2.0 httpuv_1.5.1<br />
-[77] gtable_0.3.0 purrr_0.3.2<br />
-[79] assertthat_0.2.1 xfun_0.8<br />
-[81] rsvd_1.0.1 mime_0.7<br />
-[83] xtable_1.8-4 later_0.8.0<br />
-[85] viridisLite_0.3.0 tibble_2.1.3<br />
-[87] beeswarm_0.2.3 AnnotationDbi_1.47.0<br />
-[89] memoise_1.1.0 statmod_1.4.32<br />
-[91] interactiveDisplayBase_1.23.0</p>
-</div>
+<pre><code>## &lt;button class=&quot;aaron-collapse&quot;&gt;View session info&lt;/button&gt;
+## &lt;div class=&quot;aaron-content&quot;&gt;
+## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 14.04.6 LTS
+## 
+## Matrix products: default
+## BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] tensorflow_1.13.1           cellassign_0.99.2          
+##  [3] scran_1.13.9                scater_1.13.9              
+##  [5] ggplot2_3.2.0               DropletUtils_1.5.4         
+##  [7] TENxPBMCData_1.3.0          HDF5Array_1.13.4           
+##  [9] rhdf5_2.29.0                SingleCellExperiment_1.5.3 
+## [11] SummarizedExperiment_1.15.5 DelayedArray_0.11.4        
+## [13] BiocParallel_1.19.0         matrixStats_0.54.0         
+## [15] Biobase_2.45.0              GenomicRanges_1.37.14      
+## [17] GenomeInfoDb_1.21.1         IRanges_2.19.10            
+## [19] S4Vectors_0.23.17           BiocGenerics_0.31.5        
+## [21] BiocStyle_2.13.2            Cairo_1.5-10               
+## 
+## loaded via a namespace (and not attached):
+##  [1] bitops_1.0-6                  bit64_0.9-7                  
+##  [3] httr_1.4.0                    dynamicTreeCut_1.63-1        
+##  [5] tools_3.6.0                   backports_1.1.4              
+##  [7] R6_2.4.0                      irlba_2.3.3                  
+##  [9] vipor_0.4.5                   DBI_1.0.0                    
+## [11] lazyeval_0.2.2                colorspace_1.4-1             
+## [13] withr_2.1.2                   gridExtra_2.3                
+## [15] tidyselect_0.2.5              bit_1.1-14                   
+## [17] curl_4.0                      compiler_3.6.0               
+## [19] BiocNeighbors_1.3.2           bookdown_0.12                
+## [21] scales_1.0.0                  tfruns_1.4                   
+## [23] rappdirs_0.3.1                stringr_1.4.0                
+## [25] digest_0.6.20                 rmarkdown_1.14               
+## [27] R.utils_2.9.0                 XVector_0.25.0               
+## [29] base64enc_0.1-3               pkgconfig_2.0.2              
+## [31] htmltools_0.3.6               dbplyr_1.4.2                 
+## [33] limma_3.41.6                  rlang_0.4.0                  
+## [35] RSQLite_2.1.1                 DelayedMatrixStats_1.7.1     
+## [37] shiny_1.3.2                   jsonlite_1.6                 
+## [39] dplyr_0.8.3                   R.oo_1.22.0                  
+## [41] RCurl_1.95-4.12               magrittr_1.5                 
+## [43] BiocSingular_1.1.5            GenomeInfoDbData_1.2.1       
+## [45] Matrix_1.2-17                 ggbeeswarm_0.6.0             
+## [47] Rcpp_1.0.1                    munsell_0.5.0                
+## [49] Rhdf5lib_1.7.2                reticulate_1.12              
+## [51] viridis_0.5.1                 R.methodsS3_1.7.1            
+## [53] whisker_0.3-2                 stringi_1.4.3                
+## [55] yaml_2.2.0                    edgeR_3.27.6                 
+## [57] zlibbioc_1.31.0               BiocFileCache_1.9.1          
+## [59] AnnotationHub_2.17.3          grid_3.6.0                   
+## [61] blob_1.2.0                    promises_1.0.1               
+## [63] dqrng_0.2.1                   ExperimentHub_1.11.1         
+## [65] crayon_1.3.4                  lattice_0.20-38              
+## [67] locfit_1.5-9.1                zeallot_0.1.0                
+## [69] knitr_1.23                    pillar_1.4.2                 
+## [71] igraph_1.2.4.1                glue_1.3.1                   
+## [73] evaluate_0.14                 BiocManager_1.30.4           
+## [75] vctrs_0.2.0                   httpuv_1.5.1                 
+## [77] gtable_0.3.0                  purrr_0.3.2                  
+## [79] assertthat_0.2.1              xfun_0.8                     
+## [81] rsvd_1.0.1                    mime_0.7                     
+## [83] xtable_1.8-4                  later_0.8.0                  
+## [85] viridisLite_0.3.0             tibble_2.1.3                 
+## [87] beeswarm_0.2.3                AnnotationDbi_1.47.0         
+## [89] memoise_1.1.0                 statmod_1.4.32               
+## [91] interactiveDisplayBase_1.23.0
+## &lt;/div&gt;</code></pre>
 
 </div>
 </div>

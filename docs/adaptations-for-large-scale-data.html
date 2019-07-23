@@ -409,27 +409,27 @@ document.addEventListener("click", function (event) {
 <li><em>BiocNeighbors</em> via the <code>AnnoyParam()</code> for approximate nearest neighbor searches</li>
 </ul>
 <p>These packages provide users (and developers) a common interface, enabling modular swapping of key algorithms within functions. For example, we can see the immediate benefit of using an approximate method for PCA as provided by the <code>BSPARAM</code> argument in the following code, which utilizes the <em>bench</em> package for profiling:</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb311-1" data-line-number="1"><span class="kw">library</span>(SingleCellExperiment)</a>
-<a class="sourceLine" id="cb311-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb311-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb311-4" data-line-number="4">## Simulate a dataset with 1k genes and 1k cells</a>
-<a class="sourceLine" id="cb311-5" data-line-number="5">mat &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(<span class="fl">1e6</span>, <span class="dv">100</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb311-6" data-line-number="6">tiny_sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> mat))</a>
-<a class="sourceLine" id="cb311-7" data-line-number="7">tiny_sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(tiny_sce)</a></code></pre></div>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb312-1" data-line-number="1"><span class="kw">library</span>(bench)</a>
-<a class="sourceLine" id="cb312-2" data-line-number="2"><span class="kw">library</span>(BiocSingular)</a>
-<a class="sourceLine" id="cb312-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb312-4" data-line-number="4">## simple function to show only cols of interest</a>
-<a class="sourceLine" id="cb312-5" data-line-number="5">.show_bench &lt;-<span class="st"> </span><span class="cf">function</span>(b) {</a>
-<a class="sourceLine" id="cb312-6" data-line-number="6">    b[, <span class="kw">c</span>(<span class="st">&#39;expression&#39;</span>, <span class="st">&#39;min&#39;</span>, <span class="st">&#39;median&#39;</span>, <span class="st">&#39;mem_alloc&#39;</span>)]</a>
-<a class="sourceLine" id="cb312-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb312-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb312-9" data-line-number="9">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
-<a class="sourceLine" id="cb312-10" data-line-number="10">           <span class="kw">runPCA</span>(tiny_sce, <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>()),</a>
-<a class="sourceLine" id="cb312-11" data-line-number="11">           <span class="kw">runPCA</span>(tiny_sce, <span class="dt">BSPARAM =</span> <span class="kw">ExactParam</span>()), </a>
-<a class="sourceLine" id="cb312-12" data-line-number="12">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb312-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb312-14" data-line-number="14"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
+<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb320-1" data-line-number="1"><span class="kw">library</span>(SingleCellExperiment)</a>
+<a class="sourceLine" id="cb320-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb320-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb320-4" data-line-number="4">## Simulate a dataset with 1k genes and 1k cells</a>
+<a class="sourceLine" id="cb320-5" data-line-number="5">mat &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(<span class="fl">1e6</span>, <span class="dv">100</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb320-6" data-line-number="6">tiny_sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> mat))</a>
+<a class="sourceLine" id="cb320-7" data-line-number="7">tiny_sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(tiny_sce)</a></code></pre></div>
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb321-1" data-line-number="1"><span class="kw">library</span>(bench)</a>
+<a class="sourceLine" id="cb321-2" data-line-number="2"><span class="kw">library</span>(BiocSingular)</a>
+<a class="sourceLine" id="cb321-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb321-4" data-line-number="4">## simple function to show only cols of interest</a>
+<a class="sourceLine" id="cb321-5" data-line-number="5">.show_bench &lt;-<span class="st"> </span><span class="cf">function</span>(b) {</a>
+<a class="sourceLine" id="cb321-6" data-line-number="6">    b[, <span class="kw">c</span>(<span class="st">&#39;expression&#39;</span>, <span class="st">&#39;min&#39;</span>, <span class="st">&#39;median&#39;</span>, <span class="st">&#39;mem_alloc&#39;</span>)]</a>
+<a class="sourceLine" id="cb321-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb321-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb321-9" data-line-number="9">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
+<a class="sourceLine" id="cb321-10" data-line-number="10">           <span class="kw">runPCA</span>(tiny_sce, <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>()),</a>
+<a class="sourceLine" id="cb321-11" data-line-number="11">           <span class="kw">runPCA</span>(tiny_sce, <span class="dt">BSPARAM =</span> <span class="kw">ExactParam</span>()), </a>
+<a class="sourceLine" id="cb321-12" data-line-number="12">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb321-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb321-14" data-line-number="14"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   expression                                    min   median mem_alloc
 ##   &lt;bch:expr&gt;                               &lt;bch:tm&gt; &lt;bch:tm&gt; &lt;bch:byt&gt;
@@ -437,18 +437,18 @@ document.addEventListener("click", function (event) {
 ## 2 runPCA(tiny_sce, BSPARAM = ExactParam())    165ms    369ms        0B</code></pre>
 <p>We can see that the approximate, irlba based implementation is about 6 times faster than the exact version in this case.</p>
 <p>We can also try this with nearest neighbor searches. Here we provide the <code>BNPARAM</code> argument to build a shared nearest neighbors graph using different algorithms under the hood:</p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb314-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb314-2" data-line-number="2"><span class="kw">library</span>(BiocNeighbors)</a>
-<a class="sourceLine" id="cb314-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb314-4" data-line-number="4">## Calculate PCA before testing NN back-ends</a>
-<a class="sourceLine" id="cb314-5" data-line-number="5">tiny_sce_pca &lt;-<span class="st"> </span><span class="kw">runPCA</span>(tiny_sce, <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>())</a>
-<a class="sourceLine" id="cb314-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb314-7" data-line-number="7">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
-<a class="sourceLine" id="cb314-8" data-line-number="8">           <span class="kw">buildSNNGraph</span>(tiny_sce_pca, <span class="dt">BNPARAM =</span> <span class="kw">AnnoyParam</span>()),</a>
-<a class="sourceLine" id="cb314-9" data-line-number="9">           <span class="kw">buildSNNGraph</span>(tiny_sce_pca, <span class="dt">BNPARAM =</span> <span class="kw">KmknnParam</span>()),</a>
-<a class="sourceLine" id="cb314-10" data-line-number="10">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb314-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb314-12" data-line-number="12"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
+<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb323-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb323-2" data-line-number="2"><span class="kw">library</span>(BiocNeighbors)</a>
+<a class="sourceLine" id="cb323-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb323-4" data-line-number="4">## Calculate PCA before testing NN back-ends</a>
+<a class="sourceLine" id="cb323-5" data-line-number="5">tiny_sce_pca &lt;-<span class="st"> </span><span class="kw">runPCA</span>(tiny_sce, <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>())</a>
+<a class="sourceLine" id="cb323-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb323-7" data-line-number="7">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
+<a class="sourceLine" id="cb323-8" data-line-number="8">           <span class="kw">buildSNNGraph</span>(tiny_sce_pca, <span class="dt">BNPARAM =</span> <span class="kw">AnnoyParam</span>()),</a>
+<a class="sourceLine" id="cb323-9" data-line-number="9">           <span class="kw">buildSNNGraph</span>(tiny_sce_pca, <span class="dt">BNPARAM =</span> <span class="kw">KmknnParam</span>()),</a>
+<a class="sourceLine" id="cb323-10" data-line-number="10">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb323-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb323-12" data-line-number="12"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   expression                                               min   median
 ##   &lt;bch:expr&gt;                                          &lt;bch:tm&gt; &lt;bch:tm&gt;
@@ -457,20 +457,20 @@ document.addEventListener("click", function (event) {
 ## # … with 1 more variable: mem_alloc &lt;bch:byt&gt;</code></pre>
 <p>We can see from the above benchmark that in our tiny dataset, we don’t see much, if any, benefit of using an approximate method (via the <code>AnnoyParam()</code>, which uses the Annoy library).</p>
 <p>However, if we increase our dataset to something larger..</p>
-<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb316-1" data-line-number="1">## Simulate a dataset with 1k genes and 10k cells</a>
-<a class="sourceLine" id="cb316-2" data-line-number="2">mat &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(<span class="fl">10e6</span>, <span class="dv">100</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb316-3" data-line-number="3">big_sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> mat))</a>
-<a class="sourceLine" id="cb316-4" data-line-number="4">big_sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(big_sce)</a></code></pre></div>
-<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb317-1" data-line-number="1">## Calculate PCA before testing NN back-ends</a>
-<a class="sourceLine" id="cb317-2" data-line-number="2">big_sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(big_sce, <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>())</a>
-<a class="sourceLine" id="cb317-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb317-4" data-line-number="4">## NN search</a>
-<a class="sourceLine" id="cb317-5" data-line-number="5">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
-<a class="sourceLine" id="cb317-6" data-line-number="6">           <span class="kw">buildSNNGraph</span>(big_sce, <span class="dt">BNPARAM =</span> <span class="kw">AnnoyParam</span>()),</a>
-<a class="sourceLine" id="cb317-7" data-line-number="7">           <span class="kw">buildSNNGraph</span>(big_sce, <span class="dt">BNPARAM =</span> <span class="kw">KmknnParam</span>()),</a>
-<a class="sourceLine" id="cb317-8" data-line-number="8">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb317-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb317-10" data-line-number="10"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
+<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb325-1" data-line-number="1">## Simulate a dataset with 1k genes and 10k cells</a>
+<a class="sourceLine" id="cb325-2" data-line-number="2">mat &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rpois</span>(<span class="fl">10e6</span>, <span class="dv">100</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb325-3" data-line-number="3">big_sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> mat))</a>
+<a class="sourceLine" id="cb325-4" data-line-number="4">big_sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(big_sce)</a></code></pre></div>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb326-1" data-line-number="1">## Calculate PCA before testing NN back-ends</a>
+<a class="sourceLine" id="cb326-2" data-line-number="2">big_sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(big_sce, <span class="dt">BSPARAM =</span> <span class="kw">IrlbaParam</span>())</a>
+<a class="sourceLine" id="cb326-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb326-4" data-line-number="4">## NN search</a>
+<a class="sourceLine" id="cb326-5" data-line-number="5">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
+<a class="sourceLine" id="cb326-6" data-line-number="6">           <span class="kw">buildSNNGraph</span>(big_sce, <span class="dt">BNPARAM =</span> <span class="kw">AnnoyParam</span>()),</a>
+<a class="sourceLine" id="cb326-7" data-line-number="7">           <span class="kw">buildSNNGraph</span>(big_sce, <span class="dt">BNPARAM =</span> <span class="kw">KmknnParam</span>()),</a>
+<a class="sourceLine" id="cb326-8" data-line-number="8">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb326-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb326-10" data-line-number="10"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   expression                                          min  median mem_alloc
 ##   &lt;bch:expr&gt;                                     &lt;bch:tm&gt; &lt;bch:t&gt; &lt;bch:byt&gt;
@@ -485,14 +485,14 @@ document.addEventListener("click", function (event) {
 <p>Across many Bioconductor packages, an argument that will often be present in functions that are parallelizable is the <code>BPPARAM</code> argument. Here, it is possible to specify the parallel back-end that can be used for evaluation.</p>
 <p>Again, note that parallelization does incur an overhead cost in splitting up the data, sending it off, and combining the results, and thus your mileage may vary depending on the specifics.</p>
 <p>Below is an example usage of the <em>BiocParallel</em> library supplying <code>BPPARAM</code> argument for constructing the UMAP representation from the PCA results:</p>
-<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb319-1" data-line-number="1"><span class="kw">library</span>(BiocParallel)</a>
-<a class="sourceLine" id="cb319-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb319-3" data-line-number="3">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
-<a class="sourceLine" id="cb319-4" data-line-number="4">           <span class="kw">runUMAP</span>(tiny_sce_pca, <span class="dt">BPPARAM =</span> <span class="kw">SerialParam</span>()),           </a>
-<a class="sourceLine" id="cb319-5" data-line-number="5">           <span class="kw">runUMAP</span>(tiny_sce_pca, <span class="dt">BPPARAM =</span> <span class="kw">MulticoreParam</span>()),</a>
-<a class="sourceLine" id="cb319-6" data-line-number="6">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb319-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb319-8" data-line-number="8"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" data-line-number="1"><span class="kw">library</span>(BiocParallel)</a>
+<a class="sourceLine" id="cb328-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb328-3" data-line-number="3">bm &lt;-<span class="st"> </span>bench<span class="op">::</span><span class="kw">mark</span>(</a>
+<a class="sourceLine" id="cb328-4" data-line-number="4">           <span class="kw">runUMAP</span>(tiny_sce_pca, <span class="dt">BPPARAM =</span> <span class="kw">SerialParam</span>()),           </a>
+<a class="sourceLine" id="cb328-5" data-line-number="5">           <span class="kw">runUMAP</span>(tiny_sce_pca, <span class="dt">BPPARAM =</span> <span class="kw">MulticoreParam</span>()),</a>
+<a class="sourceLine" id="cb328-6" data-line-number="6">           <span class="dt">check =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb328-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb328-8" data-line-number="8"><span class="kw">.show_bench</span>(bm)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   expression                                           min median mem_alloc
 ##   &lt;bch:expr&gt;                                        &lt;bch:&gt; &lt;bch:&gt; &lt;bch:byt&gt;
@@ -504,72 +504,76 @@ document.addEventListener("click", function (event) {
 <h2><span class="header-section-number">16.3</span> On-Disk Data</h2>
 <p>The matrix of data from a single-cell experiment can be on the order of tens to hundreds of gigabytes, depending on the number of features and cells measured. A standard approach to import and represent these matrices has been to load the entire data set into memory using either the <em>matrix</em> object in base R or sparse and dense matrix classes from the <em>Matrix</em> R package. This approach however may prove intractable in computing environments with limited memory.</p>
 <p>Disk-backed representations such as HDF5 free us from having to load an entire dataset into memory, and thus make it possible to work with large-scale scRNA-seq data.</p>
-<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb321-1" data-line-number="1"><span class="kw">library</span>(rhdf5)</a>
-<a class="sourceLine" id="cb321-2" data-line-number="2"><span class="kw">library</span>(HDF5Array)</a></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb330-1" data-line-number="1"><span class="kw">library</span>(rhdf5)</a>
+<a class="sourceLine" id="cb330-2" data-line-number="2"><span class="kw">library</span>(HDF5Array)</a></code></pre></div>
 </div>
 <div id="session-info-9" class="section level2">
 <h2><span class="header-section-number">16.4</span> Session Info</h2>
-<button class="aaron-collapse">
-View session info
-</button>
-<div class="aaron-content">
-<p>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS</p>
-<p>Matrix products: default
-BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so</p>
-<p>locale:
-[1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C<br />
-[3] LC_TIME=en_US.UTF-8 LC_COLLATE=en_US.UTF-8<br />
-[5] LC_MONETARY=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8<br />
-[7] LC_PAPER=en_US.UTF-8 LC_NAME=C<br />
-[9] LC_ADDRESS=C LC_TELEPHONE=C<br />
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C</p>
-<p>attached base packages:
-[1] stats4 parallel stats graphics grDevices utils datasets
-[8] methods base</p>
-<p>other attached packages:
-[1] HDF5Array_1.13.4 rhdf5_2.29.0<br />
-[3] BiocNeighbors_1.3.2 scran_1.13.9<br />
-[5] BiocSingular_1.1.5 bench_1.0.2<br />
-[7] scater_1.13.9 ggplot2_3.2.0<br />
-[9] SingleCellExperiment_1.5.3 SummarizedExperiment_1.15.5
-[11] DelayedArray_0.11.4 BiocParallel_1.19.0<br />
-[13] matrixStats_0.54.0 Biobase_2.45.0<br />
-[15] GenomicRanges_1.37.14 GenomeInfoDb_1.21.1<br />
-[17] IRanges_2.19.10 S4Vectors_0.23.17<br />
-[19] BiocGenerics_0.31.5 BiocStyle_2.13.2</p>
-<p>loaded via a namespace (and not attached):
-[1] viridis_0.5.1 dynamicTreeCut_1.63-1<br />
-[3] edgeR_3.27.6 viridisLite_0.3.0<br />
-[5] DelayedMatrixStats_1.7.1 assertthat_0.2.1<br />
-[7] statmod_1.4.32 BiocManager_1.30.4<br />
-[9] dqrng_0.2.1 GenomeInfoDbData_1.2.1<br />
-[11] vipor_0.4.5 yaml_2.2.0<br />
-[13] pillar_1.4.2 lattice_0.20-38<br />
-[15] glue_1.3.1 limma_3.41.6<br />
-[17] digest_0.6.20 XVector_0.25.0<br />
-[19] colorspace_1.4-1 htmltools_0.3.6<br />
-[21] Matrix_1.2-17 pkgconfig_2.0.2<br />
-[23] bookdown_0.12 zlibbioc_1.31.0<br />
-[25] purrr_0.3.2 scales_1.0.0<br />
-[27] tibble_2.1.3 withr_2.1.2<br />
-[29] lazyeval_0.2.2 magrittr_1.5<br />
-[31] crayon_1.3.4 evaluate_0.14<br />
-[33] beeswarm_0.2.3 tools_3.6.0<br />
-[35] stringr_1.4.0 Rhdf5lib_1.7.2<br />
-[37] munsell_0.5.0 locfit_1.5-9.1<br />
-[39] irlba_2.3.3 compiler_3.6.0<br />
-[41] rsvd_1.0.1 rlang_0.4.0<br />
-[43] grid_3.6.0 RCurl_1.95-4.12<br />
-[45] igraph_1.2.4.1 bitops_1.0-6<br />
-[47] rmarkdown_1.14 gtable_0.3.0<br />
-[49] R6_2.4.0 gridExtra_2.3<br />
-[51] knitr_1.23 dplyr_0.8.3<br />
-[53] stringi_1.4.3 ggbeeswarm_0.6.0<br />
-[55] Rcpp_1.0.1 tidyselect_0.2.5<br />
-[57] xfun_0.8</p>
-</div>
+<pre><code>## &lt;button class=&quot;aaron-collapse&quot;&gt;View session info&lt;/button&gt;
+## &lt;div class=&quot;aaron-content&quot;&gt;
+## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 14.04.6 LTS
+## 
+## Matrix products: default
+## BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] HDF5Array_1.13.4            rhdf5_2.29.0               
+##  [3] BiocNeighbors_1.3.2         scran_1.13.9               
+##  [5] BiocSingular_1.1.5          bench_1.0.2                
+##  [7] scater_1.13.9               ggplot2_3.2.0              
+##  [9] SingleCellExperiment_1.5.3  SummarizedExperiment_1.15.5
+## [11] DelayedArray_0.11.4         BiocParallel_1.19.0        
+## [13] matrixStats_0.54.0          Biobase_2.45.0             
+## [15] GenomicRanges_1.37.14       GenomeInfoDb_1.21.1        
+## [17] IRanges_2.19.10             S4Vectors_0.23.17          
+## [19] BiocGenerics_0.31.5         BiocStyle_2.13.2           
+## [21] Cairo_1.5-10               
+## 
+## loaded via a namespace (and not attached):
+##  [1] viridis_0.5.1            dynamicTreeCut_1.63-1   
+##  [3] edgeR_3.27.6             viridisLite_0.3.0       
+##  [5] DelayedMatrixStats_1.7.1 assertthat_0.2.1        
+##  [7] statmod_1.4.32           BiocManager_1.30.4      
+##  [9] dqrng_0.2.1              GenomeInfoDbData_1.2.1  
+## [11] vipor_0.4.5              yaml_2.2.0              
+## [13] pillar_1.4.2             lattice_0.20-38         
+## [15] glue_1.3.1               limma_3.41.6            
+## [17] digest_0.6.20            XVector_0.25.0          
+## [19] colorspace_1.4-1         htmltools_0.3.6         
+## [21] Matrix_1.2-17            pkgconfig_2.0.2         
+## [23] bookdown_0.12            zlibbioc_1.31.0         
+## [25] purrr_0.3.2              scales_1.0.0            
+## [27] tibble_2.1.3             withr_2.1.2             
+## [29] lazyeval_0.2.2           magrittr_1.5            
+## [31] crayon_1.3.4             evaluate_0.14           
+## [33] beeswarm_0.2.3           tools_3.6.0             
+## [35] stringr_1.4.0            Rhdf5lib_1.7.2          
+## [37] munsell_0.5.0            locfit_1.5-9.1          
+## [39] irlba_2.3.3              compiler_3.6.0          
+## [41] rsvd_1.0.1               rlang_0.4.0             
+## [43] grid_3.6.0               RCurl_1.95-4.12         
+## [45] igraph_1.2.4.1           bitops_1.0-6            
+## [47] rmarkdown_1.14           gtable_0.3.0            
+## [49] R6_2.4.0                 gridExtra_2.3           
+## [51] knitr_1.23               dplyr_0.8.3             
+## [53] stringi_1.4.3            ggbeeswarm_0.6.0        
+## [55] Rcpp_1.0.1               tidyselect_0.2.5        
+## [57] xfun_0.8                
+## &lt;/div&gt;</code></pre>
 <!-- ## Notes on Data Representation -->
 <!-- However, the explosion of data from single-cell assays has led to alternative data representations that are compatible with high-performance C++ code used for computationally intensive tasks in existing Bioconductor packages. This enables memory-efficient data manipulation and operations in R. For example, the *beachmat* Bioconductor package is a C++ interface for accessing single-cell data that is interoperable with sparse, dense and file-backed matrices, such as the HDF5 file format, which allows users to only load a subset of the data into memory at a time. In addition, Bioconductor has developed the infrastructure to read and write HDF5 files from R using the *rhdf5* package, to efficiently work with data in HDF5 files using array-like containers in the *HDF5Array*, *DelayedArray*, and *DelayedMatrixStats* packages. Much of this infrastructure was motivated by previous work done in the context of flow cytometry and whole genome bisulfite sequencing. -->
 <!-- At a low-level, the main interface between HDF5 and Bioconductor is implemented in the packages `rhdf5`, which provides read/write functionalities, `Rhdf5lib`, which provides C and C++ HDF5 libraries, and `beachmat`, which provides a consistent C++ class interface for a variety of commonly used matrix types, including sparse and HDF5-backed matrices. These packages are useful for developers that want to develop methods able to interact with HDF5 data sets. -->

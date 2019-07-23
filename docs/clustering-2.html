@@ -409,60 +409,60 @@ Here, we demonstrate the application of several commonly used methods with the 1
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb197-1" data-line-number="1">### loading <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-2" data-line-number="2"><span class="kw">library</span>(BiocFileCache)</a>
-<a class="sourceLine" id="cb197-3" data-line-number="3">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb197-4" data-line-number="4">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
-<a class="sourceLine" id="cb197-5" data-line-number="5">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
-<a class="sourceLine" id="cb197-6" data-line-number="6"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
-<a class="sourceLine" id="cb197-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb197-8" data-line-number="8"><span class="kw">library</span>(DropletUtils)</a>
-<a class="sourceLine" id="cb197-9" data-line-number="9">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
-<a class="sourceLine" id="cb197-10" data-line-number="10">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb197-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb197-12" data-line-number="12">### gene-annotation <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb197-14" data-line-number="14"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
-<a class="sourceLine" id="cb197-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb197-16" data-line-number="16"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
-<a class="sourceLine" id="cb197-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
-<a class="sourceLine" id="cb197-18" data-line-number="18">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb197-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb197-20" data-line-number="20">### cell-detection <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-21" data-line-number="21"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb197-22" data-line-number="22">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
-<a class="sourceLine" id="cb197-23" data-line-number="23">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
-<a class="sourceLine" id="cb197-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb197-25" data-line-number="25">### quality-control <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-26" data-line-number="26">sce.pbmc &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce.pbmc, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb197-27" data-line-number="27">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.pbmc<span class="op">$</span>pct_counts_Mito, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb197-28" data-line-number="28">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
-<a class="sourceLine" id="cb197-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb197-30" data-line-number="30">### normalization <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-31" data-line-number="31"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb197-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb197-33" data-line-number="33">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb197-34" data-line-number="34">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
-<a class="sourceLine" id="cb197-35" data-line-number="35">sce.pbmc &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb197-36" data-line-number="36"></a>
-<a class="sourceLine" id="cb197-37" data-line-number="37">### feature-selection <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-38" data-line-number="38">fit.pbmc &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce.pbmc, <span class="dt">use.spikes=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb197-39" data-line-number="39">dec.pbmc &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(<span class="dt">fit=</span>fit.pbmc)</a>
-<a class="sourceLine" id="cb197-40" data-line-number="40">o &lt;-<span class="st"> </span><span class="kw">order</span>(dec.pbmc<span class="op">$</span>bio, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb197-41" data-line-number="41">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec.pbmc)[<span class="kw">head</span>(o, <span class="dv">2000</span>)]</a>
-<a class="sourceLine" id="cb197-42" data-line-number="42"></a>
-<a class="sourceLine" id="cb197-43" data-line-number="43">### dimensionality-reduction <span class="al">###</span></a>
-<a class="sourceLine" id="cb197-44" data-line-number="44"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb197-45" data-line-number="45">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce.pbmc, <span class="dt">feature_set=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb197-46" data-line-number="46">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>())</a>
-<a class="sourceLine" id="cb197-47" data-line-number="47"></a>
-<a class="sourceLine" id="cb197-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb197-49" data-line-number="49">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb197-50" data-line-number="50"></a>
-<a class="sourceLine" id="cb197-51" data-line-number="51"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb197-52" data-line-number="52">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb201-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-2" data-line-number="2"><span class="kw">library</span>(BiocFileCache)</a>
+<a class="sourceLine" id="cb201-3" data-line-number="3">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb201-4" data-line-number="4">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
+<a class="sourceLine" id="cb201-5" data-line-number="5">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
+<a class="sourceLine" id="cb201-6" data-line-number="6"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
+<a class="sourceLine" id="cb201-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb201-8" data-line-number="8"><span class="kw">library</span>(DropletUtils)</a>
+<a class="sourceLine" id="cb201-9" data-line-number="9">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
+<a class="sourceLine" id="cb201-10" data-line-number="10">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb201-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb201-12" data-line-number="12">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb201-14" data-line-number="14"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
+<a class="sourceLine" id="cb201-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb201-16" data-line-number="16"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
+<a class="sourceLine" id="cb201-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
+<a class="sourceLine" id="cb201-18" data-line-number="18">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb201-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb201-20" data-line-number="20">### cell-detection <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-21" data-line-number="21"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb201-22" data-line-number="22">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
+<a class="sourceLine" id="cb201-23" data-line-number="23">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
+<a class="sourceLine" id="cb201-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb201-25" data-line-number="25">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-26" data-line-number="26">sce.pbmc &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce.pbmc, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
+<a class="sourceLine" id="cb201-27" data-line-number="27">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.pbmc<span class="op">$</span>pct_counts_Mito, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb201-28" data-line-number="28">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb201-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb201-30" data-line-number="30">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-31" data-line-number="31"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb201-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb201-33" data-line-number="33">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb201-34" data-line-number="34">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
+<a class="sourceLine" id="cb201-35" data-line-number="35">sce.pbmc &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb201-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb201-37" data-line-number="37">### feature-selection <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-38" data-line-number="38">fit.pbmc &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce.pbmc, <span class="dt">use.spikes=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb201-39" data-line-number="39">dec.pbmc &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(<span class="dt">fit=</span>fit.pbmc)</a>
+<a class="sourceLine" id="cb201-40" data-line-number="40">o &lt;-<span class="st"> </span><span class="kw">order</span>(dec.pbmc<span class="op">$</span>bio, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb201-41" data-line-number="41">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec.pbmc)[<span class="kw">head</span>(o, <span class="dv">2000</span>)]</a>
+<a class="sourceLine" id="cb201-42" data-line-number="42"></a>
+<a class="sourceLine" id="cb201-43" data-line-number="43">### dimensionality-reduction <span class="al">###</span></a>
+<a class="sourceLine" id="cb201-44" data-line-number="44"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb201-45" data-line-number="45">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce.pbmc, <span class="dt">feature_set=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb201-46" data-line-number="46">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>())</a>
+<a class="sourceLine" id="cb201-47" data-line-number="47"></a>
+<a class="sourceLine" id="cb201-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb201-49" data-line-number="49">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb201-50" data-line-number="50"></a>
+<a class="sourceLine" id="cb201-51" data-line-number="51"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb201-52" data-line-number="52">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb198-1" data-line-number="1">sce.pbmc</a></code></pre></div>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb202-1" data-line-number="1">sce.pbmc</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 33694 3922 
 ## metadata(1): log.exprs.offset
@@ -525,18 +525,18 @@ Two cells are connected by an edge if any of their nearest neighbors are shared,
 with the edge weight defined from the highest average rank of the shared neighbors <span class="citation">(Xu and Su <a href="#ref-xu2015identification">2015</a>)</span>.
 The Walktrap method from the <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em> package is then used to identify communities.
 All calculations are performed using the top PCs to take advantage of data compression and denoising.</p>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb200-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb200-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb200-3" data-line-number="3">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb200-4" data-line-number="4"><span class="kw">table</span>(clust)</a></code></pre></div>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb204-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb204-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb204-3" data-line-number="3">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb204-4" data-line-number="4"><span class="kw">table</span>(clust)</a></code></pre></div>
 <pre><code>## clust
 ##   1   2   3   4   5   6   7   8   9  10  11  12 
 ## 792 519 568 549 117 202  89 943  55  35  17  36</code></pre>
 <p>We assign the cluster assignments back into our <code>SingleCellExperiment</code> object as a factor in the column metadata.
 This allows us to conveniently visualize the distribution of clusters in a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="clustering-2.html#fig:tsne-clust-graph">10.1</a>).</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb202-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb202-2" data-line-number="2">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a>
-<a class="sourceLine" id="cb202-3" data-line-number="3"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb206-2" data-line-number="2">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a>
+<a class="sourceLine" id="cb206-3" data-line-number="3"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-clust-graph"></span>
 <img src="P2_W06.clustering_files/figure-html/tsne-clust-graph-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from graph-based clustering." width="672" />
 <p class="caption">
@@ -546,17 +546,17 @@ Figure 10.1: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dat
 <p>The most important parameter is <code>k</code>, i.e., the number of nearest neighbors used to construct the graph.
 This controls the resolution of the clustering, with higher <code>k</code> yielding a more inter-connected graph and larger clusters.
 Users can exploit this by experimenting with different values of <code>k</code> to obtain a satisfactory resolution.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb203-1" data-line-number="1"><span class="co"># More resolved.</span></a>
-<a class="sourceLine" id="cb203-2" data-line-number="2">g<span class="fl">.5</span> &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb203-3" data-line-number="3">clust<span class="fl">.5</span> &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g<span class="fl">.5</span>)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb203-4" data-line-number="4"><span class="kw">table</span>(clust<span class="fl">.5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb207-1" data-line-number="1"><span class="co"># More resolved.</span></a>
+<a class="sourceLine" id="cb207-2" data-line-number="2">g<span class="fl">.5</span> &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb207-3" data-line-number="3">clust<span class="fl">.5</span> &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g<span class="fl">.5</span>)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb207-4" data-line-number="4"><span class="kw">table</span>(clust<span class="fl">.5</span>)</a></code></pre></div>
 <pre><code>## clust.5
 ##   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 
 ## 123 798  26 559 505 200  91 505 986  27  50   9  10   9   7  17</code></pre>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb205-1" data-line-number="1"><span class="co"># Less resolved.</span></a>
-<a class="sourceLine" id="cb205-2" data-line-number="2">g<span class="fl">.50</span> &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">50</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb205-3" data-line-number="3">clust<span class="fl">.50</span> &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g<span class="fl">.50</span>)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb205-4" data-line-number="4"><span class="kw">table</span>(clust<span class="fl">.50</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb209-1" data-line-number="1"><span class="co"># Less resolved.</span></a>
+<a class="sourceLine" id="cb209-2" data-line-number="2">g<span class="fl">.50</span> &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">50</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb209-3" data-line-number="3">clust<span class="fl">.50</span> &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g<span class="fl">.50</span>)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb209-4" data-line-number="4"><span class="kw">table</span>(clust<span class="fl">.50</span>)</a></code></pre></div>
 <pre><code>## clust.50
 ##    1    2    3    4    5    6    7    8 
 ##  181  839  572  116  173  518  488 1035</code></pre>
@@ -567,21 +567,21 @@ Users can exploit this by experimenting with different values of <code>k</code> 
 Setting <code>type=&quot;number&quot;</code> will weight edges based on the number of nearest neighbors that are shared between two cells.
 Similarly, <code>type=&quot;jaccard&quot;</code> will weight edges according to the Jaccard index of the two sets of neighbors.
 We can also disable weighting altogether by using <code>buildKNNGraph()</code>, which is occasionally useful for downstream graph operations that do not support weights.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb207-1" data-line-number="1">g.num &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">type=</span><span class="st">&quot;number&quot;</span>)</a>
-<a class="sourceLine" id="cb207-2" data-line-number="2">g.jaccard &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">type=</span><span class="st">&quot;jaccard&quot;</span>)</a>
-<a class="sourceLine" id="cb207-3" data-line-number="3">g.none &lt;-<span class="st"> </span><span class="kw">buildKNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" data-line-number="1">g.num &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">type=</span><span class="st">&quot;number&quot;</span>)</a>
+<a class="sourceLine" id="cb211-2" data-line-number="2">g.jaccard &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">type=</span><span class="st">&quot;jaccard&quot;</span>)</a>
+<a class="sourceLine" id="cb211-3" data-line-number="3">g.none &lt;-<span class="st"> </span><span class="kw">buildKNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
 <p>All of these <code>g</code> variables are <code>graph</code> objects from the <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em> package.
 They can be used with any of the community detection algorithms provided by <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em>.
 We have already mentioned the Walktrap approach, but many others are available to choose from:</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb208-1" data-line-number="1">clust.louvain &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb208-2" data-line-number="2">clust.infomap &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_infomap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb208-3" data-line-number="3">clust.fast &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_fast_greedy</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb208-4" data-line-number="4">clust.labprop &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_label_prop</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb208-5" data-line-number="5">clust.eigen &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_leading_eigen</span>(g)<span class="op">$</span>membership</a></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" data-line-number="1">clust.louvain &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb212-2" data-line-number="2">clust.infomap &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_infomap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb212-3" data-line-number="3">clust.fast &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_fast_greedy</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb212-4" data-line-number="4">clust.labprop &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_label_prop</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb212-5" data-line-number="5">clust.eigen &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_leading_eigen</span>(g)<span class="op">$</span>membership</a></code></pre></div>
 <p>It is then straightforward to compare two clustering strategies to see how they differ.
 For example, the results below suggest that Louvain is similar to Walktrap;
 fast-greedy yields coarser clusters; and Infomap provides higher resolution.</p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb209-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Louvain=</span>clust.louvain, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb213-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Louvain=</span>clust.louvain, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
 <pre><code>##        Walktrap
 ## Louvain   1   2   3   4   5   6   7   8   9  10  11  12
 ##      1    0   0   0   0   0   0   0   0   0   0   0  36
@@ -595,7 +595,7 @@ fast-greedy yields coarser clusters; and Infomap provides higher resolution.</p>
 ##      9    0   0   0   0   0   0   0   0   0   0  17   0
 ##      10   0   0  13   8   0   0   0   0  54   0   0   0
 ##      11   0   0   1 515   0   0   0   0   0   0   0   0</code></pre>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Infomap=</span>clust.infomap, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Infomap=</span>clust.infomap, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
 <pre><code>##        Walktrap
 ## Infomap   1   2   3   4   5   6   7   8   9  10  11  12
 ##      1    0   0   2  24   0   0   0 943   0   0   0   0
@@ -615,7 +615,7 @@ fast-greedy yields coarser clusters; and Infomap provides higher resolution.</p>
 ##      15   0   0   0   0   0   0   0   0   0   0   0  36
 ##      16  20   0   0   0  23   0   0   0   0   0   0   0
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 6 rows ]</code></pre>
-<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb213-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Fast=</span>clust.fast, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Fast=</span>clust.fast, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
 <pre><code>##     Walktrap
 ## Fast   1   2   3   4   5   6   7   8   9  10  11  12
 ##    1   0   0   0   4   0   0   0 880   0   0   0   0
@@ -638,18 +638,18 @@ Larger modularity values indicate that there most edges occur within clusters, s
 This is useful for comparing different clusterings on the same graph - and indeed, some community detection algorithms are designed with the aim of maximizing the modularity - but it is less helpful for interpreting a given clustering.
 Rather, we use the <code>clusterModularity()</code> function, which returns modularity scores for each cluster and cluster pair.
 More precisely, when <code>get.values=TRUE</code>, it returns the observed and expected sum of weights that are used to compute the standard modularity score.</p>
-<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" data-line-number="1">mod &lt;-<span class="st"> </span><span class="kw">clusterModularity</span>(g, clust, <span class="dt">get.values=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb215-2" data-line-number="2"><span class="kw">names</span>(mod)</a></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1">mod &lt;-<span class="st"> </span><span class="kw">clusterModularity</span>(g, clust, <span class="dt">get.values=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb219-2" data-line-number="2"><span class="kw">names</span>(mod)</a></code></pre></div>
 <pre><code>## [1] &quot;observed&quot; &quot;expected&quot;</code></pre>
 <p>In each matrix, each row/column corresponds to a cluster, and each entry of the matrix contains the total weight of edges between cells in the respective clusters.
 A dataset containing well-separated clusters should contain most of the observed total weight on the diagonal entries, i.e., most edges occur between cells in the same cluster.
 We visualize this by computing the log-ratio of observed to expected weights (Figure <a href="clustering-2.html#fig:cluster-mod">10.2</a>).
 (We use the log-ratio instead of the difference as the latter’s scale depends on the number of cells in each cluster, meaning that any visualization would be dominated by large differences for large clusters.)</p>
-<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" data-line-number="1">ratio &lt;-<span class="st"> </span>mod<span class="op">$</span>observed<span class="op">/</span>mod<span class="op">$</span>expected</a>
-<a class="sourceLine" id="cb217-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb217-3" data-line-number="3"><span class="kw">library</span>(pheatmap)</a>
-<a class="sourceLine" id="cb217-4" data-line-number="4"><span class="kw">pheatmap</span>(<span class="kw">log2</span>(ratio<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>, <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb217-5" data-line-number="5">    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">100</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" data-line-number="1">ratio &lt;-<span class="st"> </span>mod<span class="op">$</span>observed<span class="op">/</span>mod<span class="op">$</span>expected</a>
+<a class="sourceLine" id="cb221-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb221-3" data-line-number="3"><span class="kw">library</span>(pheatmap)</a>
+<a class="sourceLine" id="cb221-4" data-line-number="4"><span class="kw">pheatmap</span>(<span class="kw">log2</span>(ratio<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>, <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb221-5" data-line-number="5">    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">100</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:cluster-mod"></span>
 <img src="P2_W06.clustering_files/figure-html/cluster-mod-1.png" alt="Heatmap of the log~2~-ratio of the total weight between nodes in the same cluster or in different clusters, relative to the total weight expected under a null model of random links." width="672" />
 <p class="caption">
@@ -665,9 +665,9 @@ Edges between nodes are weighted according to the ratio of observed to expected 
 We can then repeat our graph operations on this new cluster-level graph.
 For example, we could obtain clusters of clusters, or we could simply create a new cluster-based layout for visualization (Figure <a href="clustering-2.html#fig:cluster-graph">10.3</a>).
 This is analogous to the “graph abstraction” approach described by <span class="citation">Wolf et al. (<a href="#ref-wolf2017graph">2017</a>)</span>.</p>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb218-1" data-line-number="1">cluster.gr &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">graph_from_adjacency_matrix</span>(ratio, </a>
-<a class="sourceLine" id="cb218-2" data-line-number="2">    <span class="dt">mode=</span><span class="st">&quot;undirected&quot;</span>, <span class="dt">weighted=</span><span class="ot">TRUE</span>, <span class="dt">diag=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb218-3" data-line-number="3"><span class="kw">plot</span>(cluster.gr, <span class="dt">edge.width=</span>igraph<span class="op">::</span><span class="kw">E</span>(cluster.gr)<span class="op">$</span>weight<span class="op">*</span><span class="dv">10</span>)  </a></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" data-line-number="1">cluster.gr &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">graph_from_adjacency_matrix</span>(ratio, </a>
+<a class="sourceLine" id="cb222-2" data-line-number="2">    <span class="dt">mode=</span><span class="st">&quot;undirected&quot;</span>, <span class="dt">weighted=</span><span class="ot">TRUE</span>, <span class="dt">diag=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb222-3" data-line-number="3"><span class="kw">plot</span>(cluster.gr, <span class="dt">edge.width=</span>igraph<span class="op">::</span><span class="kw">E</span>(cluster.gr)<span class="op">$</span>weight<span class="op">*</span><span class="dv">10</span>)  </a></code></pre></div>
 <div class="figure"><span id="fig:cluster-graph"></span>
 <img src="P2_W06.clustering_files/figure-html/cluster-graph-1.png" alt="Force-directed layout showing the relationships between clusters based on the ratio of observed to expected total weights between nodes in different clusters. The thickness of the edge between a pair of clusters is proportional to the corresponding ratio." width="672" />
 <p class="caption">
@@ -712,14 +712,14 @@ We call this on our top PCs to obtain a clustering for a specified number of clu
 This requires a random seed to ensure that the results are reproducible.
 In general, the <span class="math inline">\(k\)</span>-means clusters correspond to the visual clusters on the <span class="math inline">\(t\)</span>-SNE plot in Figure <a href="clustering-2.html#fig:tsne-clust-kmeans">10.4</a>, though there are some divergences that are not apparent in, e.g., Figure <a href="clustering-2.html#fig:tsne-clust-graph">10.1</a>.
 (This is at least partially due to the fact that <span class="math inline">\(t\)</span>-SNE is itself graph-based and so will naturally agree more with a graph-based clustering strategy.)</p>
-<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb219-2" data-line-number="2">clust.kmeans &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb219-3" data-line-number="3"><span class="kw">table</span>(clust.kmeans<span class="op">$</span>cluster)</a></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb223-2" data-line-number="2">clust.kmeans &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb223-3" data-line-number="3"><span class="kw">table</span>(clust.kmeans<span class="op">$</span>cluster)</a></code></pre></div>
 <pre><code>## 
 ##    1    2    3    4    5    6    7    8    9   10 
 ##  458  207   23  517    1  568   36 1033 1057   22</code></pre>
-<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb221-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb225-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-clust-kmeans"></span>
 <img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering." width="672" />
 <p class="caption">
@@ -731,13 +731,13 @@ This is the log-ratio of the expected to observed within-cluster sum of squares,
 A larger gap statistic represents a lower observed sum of squares - and thus better clustering - compared to a population with no structure.
 Ideally, we would choose the <span class="math inline">\(k\)</span> that maximizes the gap statistic, but this is often unhelpful as the tendency of <span class="math inline">\(k\)</span>-means to favour spherical clusters results in a large choice <span class="math inline">\(k\)</span> to capture different cluster shapes.
 Instead, we choose the most parsimonious <span class="math inline">\(k\)</span> beyond which the increases in the gap statistic are considered insignificant (Figure <a href="#fig:kmeans-gap"><strong>??</strong></a>).</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" data-line-number="1"><span class="kw">library</span>(cluster)</a>
-<a class="sourceLine" id="cb222-2" data-line-number="2">gaps &lt;-<span class="st"> </span><span class="kw">clusGap</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), kmeans, <span class="dt">K.max=</span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb222-3" data-line-number="3">best.k &lt;-<span class="st"> </span><span class="kw">maxSE</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], gaps<span class="op">$</span>Tab[,<span class="st">&quot;SE.sim&quot;</span>])</a>
-<a class="sourceLine" id="cb222-4" data-line-number="4">best.k</a></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb226-1" data-line-number="1"><span class="kw">library</span>(cluster)</a>
+<a class="sourceLine" id="cb226-2" data-line-number="2">gaps &lt;-<span class="st"> </span><span class="kw">clusGap</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), kmeans, <span class="dt">K.max=</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb226-3" data-line-number="3">best.k &lt;-<span class="st"> </span><span class="kw">maxSE</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], gaps<span class="op">$</span>Tab[,<span class="st">&quot;SE.sim&quot;</span>])</a>
+<a class="sourceLine" id="cb226-4" data-line-number="4">best.k</a></code></pre></div>
 <pre><code>## [1] 9</code></pre>
-<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb224-1" data-line-number="1"><span class="kw">plot</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], <span class="dt">xlab=</span><span class="st">&quot;Number of clusters&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Gap statistic&quot;</span>)</a>
-<a class="sourceLine" id="cb224-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v=</span>best.k, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb228-1" data-line-number="1"><span class="kw">plot</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], <span class="dt">xlab=</span><span class="st">&quot;Number of clusters&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Gap statistic&quot;</span>)</a>
+<a class="sourceLine" id="cb228-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v=</span>best.k, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:kmeans-gp"></span>
 <img src="P2_W06.clustering_files/figure-html/kmeans-gp-1.png" alt="Gap statistic with respect to increasing number of $k$-means clusters in the 10X PBMC dataset. The red line represents the chosen $k$." width="672" />
 <p class="caption">
@@ -745,14 +745,14 @@ Figure 10.5: Gap statistic with respect to increasing number of <span class="mat
 </p>
 </div>
 <p>It is then straightforwad to repeat the clustering with the <code>best.k</code> (Figure <a href="clustering-2.html#fig:tsne-clust-kmeans-best">10.6</a>.</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb225-2" data-line-number="2">clust.kmeans2 &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers=</span>best.k)</a>
-<a class="sourceLine" id="cb225-3" data-line-number="3"><span class="kw">table</span>(clust.kmeans2<span class="op">$</span>cluster)</a></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb229-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb229-2" data-line-number="2">clust.kmeans2 &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers=</span>best.k)</a>
+<a class="sourceLine" id="cb229-3" data-line-number="3"><span class="kw">table</span>(clust.kmeans2<span class="op">$</span>cluster)</a></code></pre></div>
 <pre><code>## 
 ##    1    2    3    4    5    6    7    8    9 
 ##  458  207   24  517   22  568   36 1033 1057</code></pre>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans2<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb227-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans2<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb231-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-clust-kmeans-best"></span>
 <img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-best-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering. Here, $k$ is chosen based on the gap statistic." width="672" />
 <p class="caption">
@@ -765,9 +765,9 @@ Figure 10.6: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dat
 <p>It is informative to examine the within-cluster sum of squares for each cluster.
 Clusters are more likely to have low sum of squares if they have no internal structure and are separated from other clusters (such that there are not many cells on the boundaries between clusters, which results in a higher sum of squares from the centroid).
 As an aside, clusters with the largest sum of squares do not appear to be the most dispersed in Figure <a href="#fig:pbmc-kmeans-best"><strong>??</strong></a>, which highlights the risks of attempting to quantitatively interpret <span class="math inline">\(t\)</span>-SNE plots.</p>
-<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb228-1" data-line-number="1">tab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">WithinSS=</span>clust.kmeans2<span class="op">$</span>withinss, </a>
-<a class="sourceLine" id="cb228-2" data-line-number="2">    <span class="dt">NCells=</span><span class="kw">tabulate</span>(clust.kmeans2<span class="op">$</span>cluster))</a>
-<a class="sourceLine" id="cb228-3" data-line-number="3">tab</a></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb232-1" data-line-number="1">tab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">WithinSS=</span>clust.kmeans2<span class="op">$</span>withinss, </a>
+<a class="sourceLine" id="cb232-2" data-line-number="2">    <span class="dt">NCells=</span><span class="kw">tabulate</span>(clust.kmeans2<span class="op">$</span>cluster))</a>
+<a class="sourceLine" id="cb232-3" data-line-number="3">tab</a></code></pre></div>
 <pre><code>##   WithinSS NCells
 ## 1    11113    458
 ## 2     5715    207
@@ -780,8 +780,8 @@ As an aside, clusters with the largest sum of squares do not appear to be the mo
 ## 9    73975   1057</code></pre>
 <p>To explore the relationships between <span class="math inline">\(k\)</span>-means clusters, a natural approach is to compute distances between their centroids.
 This directly lends itself to visualization as a tree after hierarchical clustering (Figure <a href="clustering-2.html#fig:kmeans-tree">10.7</a>).</p>
-<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb230-1" data-line-number="1">cent.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(clust.kmeans2<span class="op">$</span>centers), <span class="st">&quot;ward.D2&quot;</span>)</a>
-<a class="sourceLine" id="cb230-2" data-line-number="2"><span class="kw">plot</span>(cent.tree)</a></code></pre></div>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb234-1" data-line-number="1">cent.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(clust.kmeans2<span class="op">$</span>centers), <span class="st">&quot;ward.D2&quot;</span>)</a>
+<a class="sourceLine" id="cb234-2" data-line-number="2"><span class="kw">plot</span>(cent.tree)</a></code></pre></div>
 <div class="figure"><span id="fig:kmeans-tree"></span>
 <img src="P2_W06.clustering_files/figure-html/kmeans-tree-1.png" alt="Hierarchy of $k$-means cluster centroids, using Ward's minimum variance method." width="672" />
 <p class="caption">
@@ -814,67 +814,67 @@ Nonetheless, we will still demonstrate the application of hierarchical clusterin
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" data-line-number="1">### loading <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb231-3" data-line-number="3">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
-<a class="sourceLine" id="cb231-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb231-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-6" data-line-number="6"><span class="kw">library</span>(org.Mm.eg.db)</a>
-<a class="sourceLine" id="cb231-7" data-line-number="7">symb &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b), </a>
-<a class="sourceLine" id="cb231-8" data-line-number="8">    <span class="dt">keytype=</span><span class="st">&quot;ENSEMBL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
-<a class="sourceLine" id="cb231-9" data-line-number="9"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb231-10" data-line-number="10"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span>symb</a>
-<a class="sourceLine" id="cb231-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb231-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb231-13" data-line-number="13"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
-<a class="sourceLine" id="cb231-14" data-line-number="14">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb231-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb231-16" data-line-number="16"><span class="kw">library</span>(TxDb.Mmusculus.UCSC.mm10.ensGene)</a>
-<a class="sourceLine" id="cb231-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(TxDb.Mmusculus.UCSC.mm10.ensGene, </a>
-<a class="sourceLine" id="cb231-18" data-line-number="18">    <span class="dt">keys=</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
-<a class="sourceLine" id="cb231-19" data-line-number="19">    <span class="dt">column=</span><span class="st">&quot;CDSCHROM&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb231-20" data-line-number="20"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>CHR &lt;-<span class="st"> </span>location</a>
-<a class="sourceLine" id="cb231-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb231-22" data-line-number="22">### quality-control <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-23" data-line-number="23">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>CHR<span class="op">==</span><span class="st">&quot;chrM&quot;</span>)</a>
-<a class="sourceLine" id="cb231-24" data-line-number="24">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
-<a class="sourceLine" id="cb231-25" data-line-number="25">libsize.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_counts, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, </a>
-<a class="sourceLine" id="cb231-26" data-line-number="26">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
-<a class="sourceLine" id="cb231-27" data-line-number="27">feature.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_features_by_counts, <span class="dt">nmads=</span><span class="dv">3</span>, </a>
-<a class="sourceLine" id="cb231-28" data-line-number="28">    <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
-<a class="sourceLine" id="cb231-29" data-line-number="29">spike.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>pct_counts_ERCC, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>,</a>
-<a class="sourceLine" id="cb231-30" data-line-number="30">    <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
-<a class="sourceLine" id="cb231-31" data-line-number="31">keep &lt;-<span class="st"> </span><span class="op">!</span>(libsize.drop <span class="op">|</span><span class="st"> </span>feature.drop <span class="op">|</span><span class="st"> </span>spike.drop)</a>
-<a class="sourceLine" id="cb231-32" data-line-number="32">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,keep]</a>
-<a class="sourceLine" id="cb231-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb231-34" data-line-number="34">### normalization <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-35" data-line-number="35"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb231-36" data-line-number="36">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb231-37" data-line-number="37">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce<span class="fl">.416</span>b, <span class="dt">general.use=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb231-38" data-line-number="38">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb231-39" data-line-number="39"></a>
-<a class="sourceLine" id="cb231-40" data-line-number="40">### variance-modelling <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-41" data-line-number="41">fit<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce<span class="fl">.416</span>b, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>Plate)</a>
-<a class="sourceLine" id="cb231-42" data-line-number="42">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce<span class="fl">.416</span>b, fit<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb231-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb231-44" data-line-number="44"><span class="co"># Taking all of the genes with positive biological components.</span></a>
-<a class="sourceLine" id="cb231-45" data-line-number="45">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec<span class="fl">.416</span>b)[dec<span class="fl">.416</span>b<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a>
-<a class="sourceLine" id="cb231-46" data-line-number="46"></a>
-<a class="sourceLine" id="cb231-47" data-line-number="47">### batch-correction <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-48" data-line-number="48"><span class="co"># Composition of the plates is expected to be the same,</span></a>
-<a class="sourceLine" id="cb231-49" data-line-number="49"><span class="co"># hence the use of a simple &#39;removeBatchEffect&#39;.</span></a>
-<a class="sourceLine" id="cb231-50" data-line-number="50"><span class="kw">library</span>(limma)</a>
-<a class="sourceLine" id="cb231-51" data-line-number="51"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
-<a class="sourceLine" id="cb231-52" data-line-number="52">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>Plate)</a>
-<a class="sourceLine" id="cb231-53" data-line-number="53"></a>
-<a class="sourceLine" id="cb231-54" data-line-number="54">### dimensionality-reduction <span class="al">###</span></a>
-<a class="sourceLine" id="cb231-55" data-line-number="55">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce<span class="fl">.416</span>b, <span class="dt">technical=</span>dec<span class="fl">.416</span>b, </a>
-<a class="sourceLine" id="cb231-56" data-line-number="56">    <span class="dt">subset.row=</span>chosen.hvgs, <span class="dt">assay.type=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb231-57" data-line-number="57"></a>
-<a class="sourceLine" id="cb231-58" data-line-number="58"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
-<a class="sourceLine" id="cb231-59" data-line-number="59">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb235-3" data-line-number="3">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
+<a class="sourceLine" id="cb235-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb235-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-6" data-line-number="6"><span class="kw">library</span>(org.Mm.eg.db)</a>
+<a class="sourceLine" id="cb235-7" data-line-number="7">symb &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b), </a>
+<a class="sourceLine" id="cb235-8" data-line-number="8">    <span class="dt">keytype=</span><span class="st">&quot;ENSEMBL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
+<a class="sourceLine" id="cb235-9" data-line-number="9"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb235-10" data-line-number="10"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span>symb</a>
+<a class="sourceLine" id="cb235-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb235-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb235-13" data-line-number="13"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
+<a class="sourceLine" id="cb235-14" data-line-number="14">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb235-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb235-16" data-line-number="16"><span class="kw">library</span>(TxDb.Mmusculus.UCSC.mm10.ensGene)</a>
+<a class="sourceLine" id="cb235-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(TxDb.Mmusculus.UCSC.mm10.ensGene, </a>
+<a class="sourceLine" id="cb235-18" data-line-number="18">    <span class="dt">keys=</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
+<a class="sourceLine" id="cb235-19" data-line-number="19">    <span class="dt">column=</span><span class="st">&quot;CDSCHROM&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb235-20" data-line-number="20"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>CHR &lt;-<span class="st"> </span>location</a>
+<a class="sourceLine" id="cb235-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb235-22" data-line-number="22">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-23" data-line-number="23">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>CHR<span class="op">==</span><span class="st">&quot;chrM&quot;</span>)</a>
+<a class="sourceLine" id="cb235-24" data-line-number="24">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
+<a class="sourceLine" id="cb235-25" data-line-number="25">libsize.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_counts, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, </a>
+<a class="sourceLine" id="cb235-26" data-line-number="26">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
+<a class="sourceLine" id="cb235-27" data-line-number="27">feature.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_features_by_counts, <span class="dt">nmads=</span><span class="dv">3</span>, </a>
+<a class="sourceLine" id="cb235-28" data-line-number="28">    <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
+<a class="sourceLine" id="cb235-29" data-line-number="29">spike.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>pct_counts_ERCC, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>,</a>
+<a class="sourceLine" id="cb235-30" data-line-number="30">    <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
+<a class="sourceLine" id="cb235-31" data-line-number="31">keep &lt;-<span class="st"> </span><span class="op">!</span>(libsize.drop <span class="op">|</span><span class="st"> </span>feature.drop <span class="op">|</span><span class="st"> </span>spike.drop)</a>
+<a class="sourceLine" id="cb235-32" data-line-number="32">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,keep]</a>
+<a class="sourceLine" id="cb235-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb235-34" data-line-number="34">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-35" data-line-number="35"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb235-36" data-line-number="36">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb235-37" data-line-number="37">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce<span class="fl">.416</span>b, <span class="dt">general.use=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb235-38" data-line-number="38">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb235-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb235-40" data-line-number="40">### variance-modelling <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-41" data-line-number="41">fit<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce<span class="fl">.416</span>b, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>Plate)</a>
+<a class="sourceLine" id="cb235-42" data-line-number="42">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce<span class="fl">.416</span>b, fit<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb235-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb235-44" data-line-number="44"><span class="co"># Taking all of the genes with positive biological components.</span></a>
+<a class="sourceLine" id="cb235-45" data-line-number="45">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec<span class="fl">.416</span>b)[dec<span class="fl">.416</span>b<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb235-46" data-line-number="46"></a>
+<a class="sourceLine" id="cb235-47" data-line-number="47">### batch-correction <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-48" data-line-number="48"><span class="co"># Composition of the plates is expected to be the same,</span></a>
+<a class="sourceLine" id="cb235-49" data-line-number="49"><span class="co"># hence the use of a simple &#39;removeBatchEffect&#39;.</span></a>
+<a class="sourceLine" id="cb235-50" data-line-number="50"><span class="kw">library</span>(limma)</a>
+<a class="sourceLine" id="cb235-51" data-line-number="51"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
+<a class="sourceLine" id="cb235-52" data-line-number="52">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>Plate)</a>
+<a class="sourceLine" id="cb235-53" data-line-number="53"></a>
+<a class="sourceLine" id="cb235-54" data-line-number="54">### dimensionality-reduction <span class="al">###</span></a>
+<a class="sourceLine" id="cb235-55" data-line-number="55">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce<span class="fl">.416</span>b, <span class="dt">technical=</span>dec<span class="fl">.416</span>b, </a>
+<a class="sourceLine" id="cb235-56" data-line-number="56">    <span class="dt">subset.row=</span>chosen.hvgs, <span class="dt">assay.type=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb235-57" data-line-number="57"></a>
+<a class="sourceLine" id="cb235-58" data-line-number="58"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
+<a class="sourceLine" id="cb235-59" data-line-number="59">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb232-1" data-line-number="1">sce<span class="fl">.416</span>b</a></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb236-1" data-line-number="1">sce<span class="fl">.416</span>b</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 46703 188 
 ## metadata(1): log.exprs.offset
@@ -896,23 +896,23 @@ View history
 <p>We compute a cell-cell distance matrix using the top PCs and we apply hierarchical clustering with Ward’s method.
 This aims to minimize the increase in the intra-cluster variance at each merge step.
 The resulting tree in Figure <a href="clustering-2.html#fig:dend-416b">10.8</a> shows a clear split in the population caused by oncogene induction.</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb234-1" data-line-number="1">dist<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
-<a class="sourceLine" id="cb234-2" data-line-number="2">tree<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist<span class="fl">.416</span>b, <span class="st">&quot;ward.D2&quot;</span>)</a>
-<a class="sourceLine" id="cb234-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb234-4" data-line-number="4"><span class="co"># Making a prettier plot.</span></a>
-<a class="sourceLine" id="cb234-5" data-line-number="5"><span class="kw">library</span>(dendextend)</a>
-<a class="sourceLine" id="cb234-6" data-line-number="6">tree<span class="fl">.416</span>b<span class="op">$</span>labels &lt;-<span class="st"> </span><span class="kw">seq_along</span>(tree<span class="fl">.416</span>b<span class="op">$</span>labels)</a>
-<a class="sourceLine" id="cb234-7" data-line-number="7">dend &lt;-<span class="st"> </span><span class="kw">as.dendrogram</span>(tree<span class="fl">.416</span>b, <span class="dt">hang=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb234-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb234-9" data-line-number="9">combined.fac &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce<span class="fl">.416</span>b<span class="op">$</span>Plate, <span class="st">&quot;.&quot;</span>, sce<span class="fl">.416</span>b<span class="op">$</span>Oncogene)</a>
-<a class="sourceLine" id="cb234-10" data-line-number="10"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb234-11" data-line-number="11">    <span class="st">`</span><span class="dt">20160113.control</span><span class="st">`</span>=<span class="st">&quot;blue&quot;</span>,</a>
-<a class="sourceLine" id="cb234-12" data-line-number="12">    <span class="st">`</span><span class="dt">20160113.induced</span><span class="st">`</span>=<span class="st">&quot;red&quot;</span>,</a>
-<a class="sourceLine" id="cb234-13" data-line-number="13">    <span class="st">`</span><span class="dt">20160325.control</span><span class="st">`</span>=<span class="st">&quot;dodgerblue&quot;</span>,</a>
-<a class="sourceLine" id="cb234-14" data-line-number="14">    <span class="st">`</span><span class="dt">20160325.induced</span><span class="st">`</span>=<span class="st">&quot;salmon&quot;</span></a>
-<a class="sourceLine" id="cb234-15" data-line-number="15">)[combined.fac][<span class="kw">order.dendrogram</span>(dend)]</a>
-<a class="sourceLine" id="cb234-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb234-17" data-line-number="17"><span class="kw">plot</span>(dend)</a></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb238-1" data-line-number="1">dist<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
+<a class="sourceLine" id="cb238-2" data-line-number="2">tree<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist<span class="fl">.416</span>b, <span class="st">&quot;ward.D2&quot;</span>)</a>
+<a class="sourceLine" id="cb238-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb238-4" data-line-number="4"><span class="co"># Making a prettier plot.</span></a>
+<a class="sourceLine" id="cb238-5" data-line-number="5"><span class="kw">library</span>(dendextend)</a>
+<a class="sourceLine" id="cb238-6" data-line-number="6">tree<span class="fl">.416</span>b<span class="op">$</span>labels &lt;-<span class="st"> </span><span class="kw">seq_along</span>(tree<span class="fl">.416</span>b<span class="op">$</span>labels)</a>
+<a class="sourceLine" id="cb238-7" data-line-number="7">dend &lt;-<span class="st"> </span><span class="kw">as.dendrogram</span>(tree<span class="fl">.416</span>b, <span class="dt">hang=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb238-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb238-9" data-line-number="9">combined.fac &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce<span class="fl">.416</span>b<span class="op">$</span>Plate, <span class="st">&quot;.&quot;</span>, sce<span class="fl">.416</span>b<span class="op">$</span>Oncogene)</a>
+<a class="sourceLine" id="cb238-10" data-line-number="10"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb238-11" data-line-number="11">    <span class="st">`</span><span class="dt">20160113.control</span><span class="st">`</span>=<span class="st">&quot;blue&quot;</span>,</a>
+<a class="sourceLine" id="cb238-12" data-line-number="12">    <span class="st">`</span><span class="dt">20160113.induced</span><span class="st">`</span>=<span class="st">&quot;red&quot;</span>,</a>
+<a class="sourceLine" id="cb238-13" data-line-number="13">    <span class="st">`</span><span class="dt">20160325.control</span><span class="st">`</span>=<span class="st">&quot;dodgerblue&quot;</span>,</a>
+<a class="sourceLine" id="cb238-14" data-line-number="14">    <span class="st">`</span><span class="dt">20160325.induced</span><span class="st">`</span>=<span class="st">&quot;salmon&quot;</span></a>
+<a class="sourceLine" id="cb238-15" data-line-number="15">)[combined.fac][<span class="kw">order.dendrogram</span>(dend)]</a>
+<a class="sourceLine" id="cb238-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb238-17" data-line-number="17"><span class="kw">plot</span>(dend)</a></code></pre></div>
 <div class="figure"><span id="fig:dend-416b"></span>
 <img src="P2_W06.clustering_files/figure-html/dend-416b-1.png" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its oncogene induction status (red is induced, blue is control) and plate of origin (light or dark)." width="672" />
 <p class="caption">
@@ -922,20 +922,20 @@ Figure 10.8: Hierarchy of cells in the 416B data set after hierarchical clusteri
 <p>To obtain explicit clusters, we “cut” the tree by removing internal branches such that every subtree represents a distinct cluster.
 This is most simply done by removing internal branches above a certain height of the tree, as performed by the <code>cutree()</code> function.
 We generally prefer to use the <em><a href="https://CRAN.R-project.org/package=dynamicTreeCut">dynamicTreeCut</a></em> package, which uses the shape of the tree to choose a suitable partitioning (Figure <a href="#dend-cluster"><strong>??</strong></a>).</p>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" data-line-number="1"><span class="kw">library</span>(dynamicTreeCut)</a>
-<a class="sourceLine" id="cb235-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb235-3" data-line-number="3"><span class="co"># minClusterSize needs to be turned down for small datasets.</span></a>
-<a class="sourceLine" id="cb235-4" data-line-number="4"><span class="co"># deepSplit controls the resolution of the partitioning.</span></a>
-<a class="sourceLine" id="cb235-5" data-line-number="5">clust<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">cutreeDynamic</span>(tree<span class="fl">.416</span>b, <span class="dt">distM=</span><span class="kw">as.matrix</span>(dist<span class="fl">.416</span>b),</a>
-<a class="sourceLine" id="cb235-6" data-line-number="6">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">deepSplit=</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb239-1" data-line-number="1"><span class="kw">library</span>(dynamicTreeCut)</a>
+<a class="sourceLine" id="cb239-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb239-3" data-line-number="3"><span class="co"># minClusterSize needs to be turned down for small datasets.</span></a>
+<a class="sourceLine" id="cb239-4" data-line-number="4"><span class="co"># deepSplit controls the resolution of the partitioning.</span></a>
+<a class="sourceLine" id="cb239-5" data-line-number="5">clust<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">cutreeDynamic</span>(tree<span class="fl">.416</span>b, <span class="dt">distM=</span><span class="kw">as.matrix</span>(dist<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb239-6" data-line-number="6">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">deepSplit=</span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>##  ..cutHeight not given, setting it to 1300  ===&gt;  99% of the (truncated) height range in dendro.
 ##  ..done.</code></pre>
-<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb237-1" data-line-number="1"><span class="kw">table</span>(clust<span class="fl">.416</span>b)</a></code></pre></div>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" data-line-number="1"><span class="kw">table</span>(clust<span class="fl">.416</span>b)</a></code></pre></div>
 <pre><code>## clust.416b
 ##  1  2  3  4  5  6 
 ## 45 44 37 36 13 13</code></pre>
-<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb239-1" data-line-number="1"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span>clust<span class="fl">.416</span>b[<span class="kw">order.dendrogram</span>(dend)]</a>
-<a class="sourceLine" id="cb239-2" data-line-number="2"><span class="kw">plot</span>(dend)</a></code></pre></div>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb243-1" data-line-number="1"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span>clust<span class="fl">.416</span>b[<span class="kw">order.dendrogram</span>(dend)]</a>
+<a class="sourceLine" id="cb243-2" data-line-number="2"><span class="kw">plot</span>(dend)</a></code></pre></div>
 <div class="figure"><span id="fig:dend-cluster"></span>
 <img src="P2_W06.clustering_files/figure-html/dend-cluster-1.png" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its assigned cluster identity from a dynamic tree cut." width="672" />
 <p class="caption">
@@ -943,8 +943,8 @@ Figure 10.9: Hierarchy of cells in the 416B data set after hierarchical clusteri
 </p>
 </div>
 <p>This generally corresponds well to the grouping of cells on a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="clustering-2.html#fig:tsne-416b">10.10</a>).</p>
-<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb240-1" data-line-number="1">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb240-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" data-line-number="1">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb244-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-416b"></span>
 <img src="P2_W06.clustering_files/figure-html/tsne-416b-1.png" alt="$t$-SNE plot of the 416B dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from hierarchical clustering." width="672" />
 <p class="caption">
@@ -962,8 +962,8 @@ Cells with large positive silhouette widths are closer to other cells in the sam
 <p>Each cluster would ideally contain large positive silhouette widths, indicating that it is well-separated from other clusters.
 In Figure <a href="clustering-2.html#fig:silhouette416b">10.11</a>, some clusters are well-separated while others have a substantial proportion of negative widths.
 These can arise from the presence of internal subclusters, which inflates the within-cluster distance; or overclustering, where cells at the boundary of a partition are closer to the neighboring cluster than their own cluster.</p>
-<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" data-line-number="1">sil &lt;-<span class="st"> </span><span class="kw">silhouette</span>(clust<span class="fl">.416</span>b, <span class="dt">dist =</span> dist<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb241-2" data-line-number="2"><span class="kw">plot</span>(sil)</a></code></pre></div>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb245-1" data-line-number="1">sil &lt;-<span class="st"> </span><span class="kw">silhouette</span>(clust<span class="fl">.416</span>b, <span class="dt">dist =</span> dist<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb245-2" data-line-number="2"><span class="kw">plot</span>(sil)</a></code></pre></div>
 <div class="figure"><span id="fig:silhouette416b"></span>
 <img src="P2_W06.clustering_files/figure-html/silhouette416b-1.png" alt="Silhouette widths for cells in each cluster in the 416B dataset. Each bar represents a cell, grouped by the cluster to which it is assigned." width="672" />
 <p class="caption">
@@ -972,8 +972,8 @@ Figure 10.11: Silhouette widths for cells in each cluster in the 416B dataset. E
 </div>
 <p>For a more detailed examination, we identify the closest neighboring cluster for cells with negative widths.
 This provides a perspective on the relationships between clusters that is closer to the raw data than the dendrogram in Figure <a href="clustering-2.html#fig:dend-cluster">10.9</a>.</p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb242-1" data-line-number="1">neg.widths &lt;-<span class="st"> </span>sil[,<span class="dv">3</span>] <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb242-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">Cluster=</span>sil[neg.widths,<span class="dv">1</span>], <span class="dt">Neighbor=</span>sil[neg.widths,<span class="dv">2</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb246-1" data-line-number="1">neg.widths &lt;-<span class="st"> </span>sil[,<span class="dv">3</span>] <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb246-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">Cluster=</span>sil[neg.widths,<span class="dv">1</span>], <span class="dt">Neighbor=</span>sil[neg.widths,<span class="dv">2</span>])</a></code></pre></div>
 <pre><code>##        Neighbor
 ## Cluster  1  2  4  5  6
 ##       1  0  0  1  0  0
@@ -987,70 +987,70 @@ This can be helpful to automatically obtain a “reasonable” clustering, thoug
 </div>
 <div id="session-info-4" class="section level2">
 <h2><span class="header-section-number">10.6</span> Session Info</h2>
-<button class="aaron-collapse">
-View session info
-</button>
-<div class="aaron-content">
-<p>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS</p>
-<p>Matrix products: default
-BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so</p>
-<p>locale:
-[1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C<br />
-[3] LC_TIME=en_US.UTF-8 LC_COLLATE=en_US.UTF-8<br />
-[5] LC_MONETARY=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8<br />
-[7] LC_PAPER=en_US.UTF-8 LC_NAME=C<br />
-[9] LC_ADDRESS=C LC_TELEPHONE=C<br />
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C</p>
-<p>attached base packages:
-[1] parallel stats4 stats graphics grDevices utils datasets
-[8] methods base</p>
-<p>other attached packages:
-[1] dynamicTreeCut_1.63-1 dendextend_1.12.0<br />
-[3] cluster_2.1.0 pheatmap_1.0.12<br />
-[5] scater_1.13.9 ggplot2_3.2.0<br />
-[7] scran_1.13.9 SingleCellExperiment_1.5.3
-[9] SummarizedExperiment_1.15.5 DelayedArray_0.11.4<br />
-[11] BiocParallel_1.19.0 matrixStats_0.54.0<br />
-[13] Biobase_2.45.0 GenomicRanges_1.37.14<br />
-[15] GenomeInfoDb_1.21.1 IRanges_2.19.10<br />
-[17] S4Vectors_0.23.17 BiocGenerics_0.31.5<br />
-[19] BiocStyle_2.13.2</p>
-<p>loaded via a namespace (and not attached):
-[1] viridis_0.5.1 edgeR_3.27.6<br />
-[3] BiocSingular_1.1.5 viridisLite_0.3.0<br />
-[5] DelayedMatrixStats_1.7.1 assertthat_0.2.1<br />
-[7] statmod_1.4.32 highr_0.8<br />
-[9] BiocManager_1.30.4 dqrng_0.2.1<br />
-[11] GenomeInfoDbData_1.2.1 vipor_0.4.5<br />
-[13] yaml_2.2.0 pillar_1.4.2<br />
-[15] lattice_0.20-38 glue_1.3.1<br />
-[17] limma_3.41.6 digest_0.6.20<br />
-[19] RColorBrewer_1.1-2 XVector_0.25.0<br />
-[21] colorspace_1.4-1 cowplot_1.0.0<br />
-[23] htmltools_0.3.6 Matrix_1.2-17<br />
-[25] pkgconfig_2.0.2 bookdown_0.12<br />
-[27] zlibbioc_1.31.0 purrr_0.3.2<br />
-[29] scales_1.0.0 tibble_2.1.3<br />
-[31] withr_2.1.2 lazyeval_0.2.2<br />
-[33] magrittr_1.5 crayon_1.3.4<br />
-[35] evaluate_0.14 beeswarm_0.2.3<br />
-[37] Cairo_1.5-10 tools_3.6.0<br />
-[39] stringr_1.4.0 munsell_0.5.0<br />
-[41] locfit_1.5-9.1 irlba_2.3.3<br />
-[43] compiler_3.6.0 rsvd_1.0.1<br />
-[45] rlang_0.4.0 grid_3.6.0<br />
-[47] RCurl_1.95-4.12 BiocNeighbors_1.3.2<br />
-[49] igraph_1.2.4.1 bitops_1.0-6<br />
-[51] labeling_0.3 rmarkdown_1.14<br />
-[53] gtable_0.3.0 codetools_0.2-16<br />
-[55] R6_2.4.0 gridExtra_2.3<br />
-[57] knitr_1.23 dplyr_0.8.3<br />
-[59] stringi_1.4.3 ggbeeswarm_0.6.0<br />
-[61] Rcpp_1.0.1 tidyselect_0.2.5<br />
-[63] xfun_0.8</p>
-</div>
+<pre><code>## &lt;button class=&quot;aaron-collapse&quot;&gt;View session info&lt;/button&gt;
+## &lt;div class=&quot;aaron-content&quot;&gt;
+## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 14.04.6 LTS
+## 
+## Matrix products: default
+## BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] dynamicTreeCut_1.63-1       dendextend_1.12.0          
+##  [3] cluster_2.1.0               pheatmap_1.0.12            
+##  [5] scater_1.13.9               ggplot2_3.2.0              
+##  [7] scran_1.13.9                SingleCellExperiment_1.5.3 
+##  [9] SummarizedExperiment_1.15.5 DelayedArray_0.11.4        
+## [11] BiocParallel_1.19.0         matrixStats_0.54.0         
+## [13] Biobase_2.45.0              GenomicRanges_1.37.14      
+## [15] GenomeInfoDb_1.21.1         IRanges_2.19.10            
+## [17] S4Vectors_0.23.17           BiocGenerics_0.31.5        
+## [19] BiocStyle_2.13.2            Cairo_1.5-10               
+## 
+## loaded via a namespace (and not attached):
+##  [1] viridis_0.5.1            edgeR_3.27.6            
+##  [3] BiocSingular_1.1.5       viridisLite_0.3.0       
+##  [5] DelayedMatrixStats_1.7.1 assertthat_0.2.1        
+##  [7] statmod_1.4.32           BiocManager_1.30.4      
+##  [9] dqrng_0.2.1              GenomeInfoDbData_1.2.1  
+## [11] vipor_0.4.5              yaml_2.2.0              
+## [13] pillar_1.4.2             lattice_0.20-38         
+## [15] glue_1.3.1               limma_3.41.6            
+## [17] digest_0.6.20            RColorBrewer_1.1-2      
+## [19] XVector_0.25.0           colorspace_1.4-1        
+## [21] htmltools_0.3.6          Matrix_1.2-17           
+## [23] pkgconfig_2.0.2          bookdown_0.12           
+## [25] zlibbioc_1.31.0          purrr_0.3.2             
+## [27] scales_1.0.0             tibble_2.1.3            
+## [29] withr_2.1.2              lazyeval_0.2.2          
+## [31] magrittr_1.5             crayon_1.3.4            
+## [33] evaluate_0.14            beeswarm_0.2.3          
+## [35] tools_3.6.0              stringr_1.4.0           
+## [37] munsell_0.5.0            locfit_1.5-9.1          
+## [39] irlba_2.3.3              compiler_3.6.0          
+## [41] rsvd_1.0.1               rlang_0.4.0             
+## [43] grid_3.6.0               RCurl_1.95-4.12         
+## [45] BiocNeighbors_1.3.2      igraph_1.2.4.1          
+## [47] bitops_1.0-6             rmarkdown_1.14          
+## [49] gtable_0.3.0             R6_2.4.0                
+## [51] gridExtra_2.3            knitr_1.23              
+## [53] dplyr_0.8.3              stringi_1.4.3           
+## [55] ggbeeswarm_0.6.0         Rcpp_1.0.1              
+## [57] tidyselect_0.2.5         xfun_0.8                
+## &lt;/div&gt;</code></pre>
 
 </div>
 </div>

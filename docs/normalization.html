@@ -414,9 +414,9 @@ In contrast, general batch correction methods aim to remove gene-specific differ
 This dataset was generated using the STRT/C1 protocol and contains UMI count data for 3005 cells from the mouse brain.
 ERCC spike-in transcripts were also added to each cell.
 For simplicity, we will trust that sufficient quality control on the cells has already been performed by the original authors.</p>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb176-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb176-2" data-line-number="2">sce.zeisel &lt;-<span class="st"> </span><span class="kw">ZeiselBrainData</span>()</a>
-<a class="sourceLine" id="cb176-3" data-line-number="3">sce.zeisel </a></code></pre></div>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb179-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb179-2" data-line-number="2">sce.zeisel &lt;-<span class="st"> </span><span class="kw">ZeiselBrainData</span>()</a>
+<a class="sourceLine" id="cb179-3" data-line-number="3">sce.zeisel </a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 21135 3005 
 ## metadata(0):
@@ -443,14 +443,14 @@ The “library size factor” for each cell is then directly proportional to its
 The proportionality constant is defined such that the mean size factor across all cells is equal to 1.
 This ensures that the normalized expression values are on the same scale as the original counts, which is useful for interpretation
 - especially when dealing with transformed data (see below).</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb178-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb178-2" data-line-number="2">lib.sf.zeisel &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.zeisel)</a>
-<a class="sourceLine" id="cb178-3" data-line-number="3"><span class="kw">summary</span>(lib.sf.zeisel)</a></code></pre></div>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb181-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb181-2" data-line-number="2">lib.sf.zeisel &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.zeisel)</a>
+<a class="sourceLine" id="cb181-3" data-line-number="3"><span class="kw">summary</span>(lib.sf.zeisel)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.146   0.646   0.899   1.000   1.260   3.738</code></pre>
 <p>In the Zeisel brain data, the library size factors differ by up to 10-fold across cells (Figure <a href="normalization.html#fig:histlib">9.1</a>).
 This is typical of the variability in coverage in scRNA-seq data.</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb180-1" data-line-number="1"><span class="kw">hist</span>(<span class="kw">log10</span>(lib.sf.zeisel), <span class="dt">xlab=</span><span class="st">&quot;Log10[Size factor]&quot;</span>, <span class="dt">col=</span><span class="st">&#39;grey80&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" data-line-number="1"><span class="kw">hist</span>(<span class="kw">log10</span>(lib.sf.zeisel), <span class="dt">xlab=</span><span class="st">&quot;Log10[Size factor]&quot;</span>, <span class="dt">col=</span><span class="st">&#39;grey80&#39;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:histlib"></span>
 <img src="P2_W05.normalization_files/figure-html/histlib-1.png" alt="Distribution of size factors derived from the library size in the Zeisel brain dataset." width="672" />
 <p class="caption">
@@ -481,16 +481,16 @@ Any systematic difference in count size across the non-DE majority of genes betw
 To overcome this, we pool counts from many cells to increase the size of the counts for accurate size factor estimation <span class="citation">(Lun, Bach, and Marioni <a href="#ref-lun2016pooling">2016</a>)</span>.
 Pool-based size factors are then “deconvolved” into cell-based factors for normalization of each cell’s expression profile.
 This is performed using the <code>computeSumFactors()</code> function from <em><a href="https://bioconductor.org/packages/3.10/scran">scran</a></em>, as shown below.</p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb181-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb181-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb181-3" data-line-number="3">clust.zeisel &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.zeisel) </a>
-<a class="sourceLine" id="cb181-4" data-line-number="4"><span class="kw">table</span>(clust.zeisel)</a></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb184-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb184-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb184-3" data-line-number="3">clust.zeisel &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.zeisel) </a>
+<a class="sourceLine" id="cb184-4" data-line-number="4"><span class="kw">table</span>(clust.zeisel)</a></code></pre></div>
 <pre><code>## clust.zeisel
 ##   1   2   3   4   5   6   7   8   9  10  11  12 
 ## 380 162 172 116 426 194 423 252 267 253 166 194</code></pre>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" data-line-number="1">deconv.sf.zeisel &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.zeisel, </a>
-<a class="sourceLine" id="cb183-2" data-line-number="2">    <span class="dt">cluster=</span>clust.zeisel, <span class="dt">sf.out=</span><span class="ot">TRUE</span>, <span class="dt">min.mean=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb183-3" data-line-number="3"><span class="kw">summary</span>(deconv.sf.zeisel)</a></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb186-1" data-line-number="1">deconv.sf.zeisel &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.zeisel, </a>
+<a class="sourceLine" id="cb186-2" data-line-number="2">    <span class="dt">cluster=</span>clust.zeisel, <span class="dt">sf.out=</span><span class="ot">TRUE</span>, <span class="dt">min.mean=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb186-3" data-line-number="3"><span class="kw">summary</span>(deconv.sf.zeisel)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.126   0.461   0.817   1.000   1.335   4.677</code></pre>
 <p>The above code contains several points worth elaborating on:</p>
@@ -508,10 +508,10 @@ For read count data, the default value of 1 is usually satisfactory, but UMI cou
 <p>We see that the deconvolution size factors exhibit cell type-specific deviations from the library size factors in Figure <a href="#deconv-zeisel"><strong>??</strong></a>.
 This is consistent with the presence of composition biases that are introduced by strong differential expression between cell types.
 Use of the deconvolution size factors adjusts for these biases to improve normalization accuracy for downstream applications.</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" data-line-number="1"><span class="kw">plot</span>(lib.sf.zeisel, deconv.sf.zeisel, <span class="dt">xlab=</span><span class="st">&quot;Library size factor&quot;</span>,</a>
-<a class="sourceLine" id="cb185-2" data-line-number="2">    <span class="dt">ylab=</span><span class="st">&quot;Deconvolution size factor&quot;</span>, <span class="dt">log=</span><span class="st">&#39;xy&#39;</span>, <span class="dt">pch=</span><span class="dv">16</span>,</a>
-<a class="sourceLine" id="cb185-3" data-line-number="3">    <span class="dt">col=</span><span class="kw">as.integer</span>(<span class="kw">factor</span>(sce.zeisel<span class="op">$</span>level1class)))</a>
-<a class="sourceLine" id="cb185-4" data-line-number="4"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb188-1" data-line-number="1"><span class="kw">plot</span>(lib.sf.zeisel, deconv.sf.zeisel, <span class="dt">xlab=</span><span class="st">&quot;Library size factor&quot;</span>,</a>
+<a class="sourceLine" id="cb188-2" data-line-number="2">    <span class="dt">ylab=</span><span class="st">&quot;Deconvolution size factor&quot;</span>, <span class="dt">log=</span><span class="st">&#39;xy&#39;</span>, <span class="dt">pch=</span><span class="dv">16</span>,</a>
+<a class="sourceLine" id="cb188-3" data-line-number="3">    <span class="dt">col=</span><span class="kw">as.integer</span>(<span class="kw">factor</span>(sce.zeisel<span class="op">$</span>level1class)))</a>
+<a class="sourceLine" id="cb188-4" data-line-number="4"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:deconv-zeisel"></span>
 <img src="P2_W05.normalization_files/figure-html/deconv-zeisel-1.png" alt="Deconvolution size factor for each cell in the Zeisel brain dataset, compared to the equivalent size factor derived from the library size. The red line corresponds to identity between the two size factors." width="672" />
 <p class="caption">
@@ -537,21 +537,21 @@ Thus, the former will not be represented as part of the bias in the latter, whic
 By comparison, the other normalization methods described above will simply interpret any change in total RNA content as part of the bias and remove it.</p>
 <p>We demonstrate the use of spike-in normalization on a different dataset involving mouse embryonic stem cells (mESCs) and mouse embryonic fibroblasts (MEFs) <span class="citation">(Islam et al. <a href="#ref-islam2011characterization">2011</a>)</span>.
 (We will discuss the application of spike-in normalization to the Zeisel brain data shortly.)</p>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb186-1" data-line-number="1"><span class="kw">library</span>(BiocFileCache)</a>
-<a class="sourceLine" id="cb186-2" data-line-number="2">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb186-3" data-line-number="3">islam.fname &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;ftp://ftp.ncbi.nlm.nih.gov/geo/series&quot;</span>,</a>
-<a class="sourceLine" id="cb186-4" data-line-number="4">    <span class="st">&quot;GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz&quot;</span>))</a>
-<a class="sourceLine" id="cb186-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb186-6" data-line-number="6">counts &lt;-<span class="st"> </span><span class="kw">read.table</span>(islam.fname,</a>
-<a class="sourceLine" id="cb186-7" data-line-number="7">    <span class="dt">colClasses=</span><span class="kw">c</span>(<span class="kw">list</span>(<span class="st">&quot;character&quot;</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>),</a>
-<a class="sourceLine" id="cb186-8" data-line-number="8">    <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">96</span>)), <span class="dt">skip=</span><span class="dv">6</span>, <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">row.names=</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb186-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb186-10" data-line-number="10">is.spike &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;SPIKE&quot;</span>, <span class="kw">rownames</span>(counts))</a>
-<a class="sourceLine" id="cb186-11" data-line-number="11">sce.islam &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="kw">list</span>(<span class="dt">counts=</span><span class="kw">as.matrix</span>(counts)))</a>
-<a class="sourceLine" id="cb186-12" data-line-number="12"><span class="kw">isSpike</span>(sce.islam, <span class="st">&quot;spike&quot;</span>) &lt;-<span class="st"> </span>is.spike</a>
-<a class="sourceLine" id="cb186-13" data-line-number="13">sce.islam<span class="op">$</span>grouping &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;mESC&quot;</span>, <span class="st">&quot;MEF&quot;</span>, <span class="st">&quot;Neg&quot;</span>), <span class="kw">c</span>(<span class="dv">48</span>, <span class="dv">44</span>, <span class="dv">4</span>))</a>
-<a class="sourceLine" id="cb186-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb186-15" data-line-number="15">sce.islam</a></code></pre></div>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb189-1" data-line-number="1"><span class="kw">library</span>(BiocFileCache)</a>
+<a class="sourceLine" id="cb189-2" data-line-number="2">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb189-3" data-line-number="3">islam.fname &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;ftp://ftp.ncbi.nlm.nih.gov/geo/series&quot;</span>,</a>
+<a class="sourceLine" id="cb189-4" data-line-number="4">    <span class="st">&quot;GSE29nnn/GSE29087/suppl/GSE29087_L139_expression_tab.txt.gz&quot;</span>))</a>
+<a class="sourceLine" id="cb189-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb189-6" data-line-number="6">counts &lt;-<span class="st"> </span><span class="kw">read.table</span>(islam.fname,</a>
+<a class="sourceLine" id="cb189-7" data-line-number="7">    <span class="dt">colClasses=</span><span class="kw">c</span>(<span class="kw">list</span>(<span class="st">&quot;character&quot;</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="ot">NULL</span>),</a>
+<a class="sourceLine" id="cb189-8" data-line-number="8">    <span class="kw">rep</span>(<span class="st">&quot;integer&quot;</span>, <span class="dv">96</span>)), <span class="dt">skip=</span><span class="dv">6</span>, <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb189-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb189-10" data-line-number="10">is.spike &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;SPIKE&quot;</span>, <span class="kw">rownames</span>(counts))</a>
+<a class="sourceLine" id="cb189-11" data-line-number="11">sce.islam &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="kw">list</span>(<span class="dt">counts=</span><span class="kw">as.matrix</span>(counts)))</a>
+<a class="sourceLine" id="cb189-12" data-line-number="12"><span class="kw">isSpike</span>(sce.islam, <span class="st">&quot;spike&quot;</span>) &lt;-<span class="st"> </span>is.spike</a>
+<a class="sourceLine" id="cb189-13" data-line-number="13">sce.islam<span class="op">$</span>grouping &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;mESC&quot;</span>, <span class="st">&quot;MEF&quot;</span>, <span class="st">&quot;Neg&quot;</span>), <span class="kw">c</span>(<span class="dv">48</span>, <span class="dv">44</span>, <span class="dv">4</span>))</a>
+<a class="sourceLine" id="cb189-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb189-15" data-line-number="15">sce.islam</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 22936 96 
 ## metadata(0):
@@ -567,16 +567,16 @@ By comparison, the other normalization methods described above will simply inter
 This method computes the total count over all spike-in transcripts in each cell, and calculates size factors to equalize the total spike-in count across cells.
 It assumes that the relevant rows of the <code>SingleCellExperiment</code> have been marked as spike-ins with the <code>isSpike()&lt;-</code> function.
 Again, we set <code>sf.out=TRUE</code> to return the spike-in size factors directly for simplicity.</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb188-1" data-line-number="1">spike.sf.islam &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce.islam, <span class="dt">sf.out=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" data-line-number="1">spike.sf.islam &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce.islam, <span class="dt">sf.out=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <p>We observe a negative correlation between the two sets of size factors (Figure <a href="normalization.html#fig:normplotspikemef">9.3</a>).
 This is because MEFs contain more endogenous RNA, which reduces the relative spike-in coverage in each library (thereby decreasing the spike-in size factors) but increases the coverage of endogenous genes (thus increasing the library size factors).
 If the spike-in size factors were applied to the counts, the expression values in MEFs would be scaled up while expression in mESCs would be scaled down.
 However, the opposite would occur if library size factors were used.</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb189-1" data-line-number="1">lib.sf.islam &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.islam)</a>
-<a class="sourceLine" id="cb189-2" data-line-number="2">colours &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">mESC=</span><span class="st">&quot;red&quot;</span>, <span class="dt">MEF=</span><span class="st">&quot;grey&quot;</span>)</a>
-<a class="sourceLine" id="cb189-3" data-line-number="3"><span class="kw">plot</span>(lib.sf.islam, spike.sf.islam, <span class="dt">col=</span>colours[sce.islam<span class="op">$</span>grouping], <span class="dt">pch=</span><span class="dv">16</span>, </a>
-<a class="sourceLine" id="cb189-4" data-line-number="4">    <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Library size factor&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Spike-in size factor&quot;</span>)</a>
-<a class="sourceLine" id="cb189-5" data-line-number="5"><span class="kw">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="dt">col=</span>colours, <span class="dt">legend=</span><span class="kw">names</span>(colours), <span class="dt">pch=</span><span class="dv">16</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb192-1" data-line-number="1">lib.sf.islam &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.islam)</a>
+<a class="sourceLine" id="cb192-2" data-line-number="2">colours &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">mESC=</span><span class="st">&quot;red&quot;</span>, <span class="dt">MEF=</span><span class="st">&quot;grey&quot;</span>)</a>
+<a class="sourceLine" id="cb192-3" data-line-number="3"><span class="kw">plot</span>(lib.sf.islam, spike.sf.islam, <span class="dt">col=</span>colours[sce.islam<span class="op">$</span>grouping], <span class="dt">pch=</span><span class="dv">16</span>, </a>
+<a class="sourceLine" id="cb192-4" data-line-number="4">    <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Library size factor&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Spike-in size factor&quot;</span>)</a>
+<a class="sourceLine" id="cb192-5" data-line-number="5"><span class="kw">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="dt">col=</span>colours, <span class="dt">legend=</span><span class="kw">names</span>(colours), <span class="dt">pch=</span><span class="dv">16</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:normplotspikemef"></span>
 <img src="P2_W05.normalization_files/figure-html/normplotspikemef-1.png" alt="Size factors from spike-in normalization, plotted against the library size factors for all cells in the mESC/MEF dataset. Each point is a cells, coloured according to its type." width="672" />
 <p class="caption">
@@ -599,23 +599,23 @@ This is discussed below for the Zeisel dataset.</p>
 <p>We calculate all necessary size factors as shown below.
 Each of the <code>compute*Factors()</code> functions now returns a <code>SingleCellExperiment</code> containing the computed size factors.
 We set <code>general.use=FALSE</code> in <code>computeSpikeFactors()</code> to indicate that the spike-in size factors are only to be used for the spike-in transcripts and not for all genes in <code>sce.zeisel</code>.</p>
-<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb190-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb190-2" data-line-number="2">clust.zeisel &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.zeisel) </a>
-<a class="sourceLine" id="cb190-3" data-line-number="3">sce.zeisel &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.zeisel, <span class="dt">cluster=</span>clust.zeisel, <span class="dt">min.mean=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb190-4" data-line-number="4">sce.zeisel &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce.zeisel, <span class="dt">general.use=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb193-2" data-line-number="2">clust.zeisel &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.zeisel) </a>
+<a class="sourceLine" id="cb193-3" data-line-number="3">sce.zeisel &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.zeisel, <span class="dt">cluster=</span>clust.zeisel, <span class="dt">min.mean=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb193-4" data-line-number="4">sce.zeisel &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce.zeisel, <span class="dt">general.use=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Inspection of the <code>SingleCellExperiment</code> indicates that, indeed, two different sets of spike-ins have been added.</p>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.zeisel))</a></code></pre></div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb194-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.zeisel))</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.126   0.461   0.817   1.000   1.335   4.677</code></pre>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.zeisel, <span class="st">&quot;ERCC&quot;</span>)) <span class="co"># for spike-ins.</span></a></code></pre></div>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb196-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.zeisel, <span class="st">&quot;ERCC&quot;</span>)) <span class="co"># for spike-ins.</span></a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.157   0.770   0.984   1.000   1.181   3.417</code></pre>
 <p>We then use the <code>normalize()</code> function from <em><a href="https://bioconductor.org/packages/3.10/scater">scater</a></em> to compute normalized expression values for each cell.
 This is done by dividing the count for each gene/spike-in transcript with the appropriate size factor for that cell.
 The function also log-transforms the normalized values, creating a new assay called <code>&quot;logcounts&quot;</code><a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.
 These log-values will be the basis of our downstream analyses in the following chapters.</p>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb195-1" data-line-number="1">sce.zeisel &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.zeisel)</a>
-<a class="sourceLine" id="cb195-2" data-line-number="2"><span class="kw">assayNames</span>(sce.zeisel)</a></code></pre></div>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb198-1" data-line-number="1">sce.zeisel &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.zeisel)</a>
+<a class="sourceLine" id="cb198-2" data-line-number="2"><span class="kw">assayNames</span>(sce.zeisel)</a></code></pre></div>
 <pre><code>## [1] &quot;counts&quot;    &quot;logcounts&quot;</code></pre>
 </div>
 <div id="why-log-transform" class="section level2">
@@ -642,79 +642,81 @@ In practice, though, the log-transformation is a good default choice due its sim
 </div>
 <div id="session-info-3" class="section level2">
 <h2><span class="header-section-number">9.8</span> Session Info</h2>
-<button class="aaron-collapse">
-View session info
-</button>
-<div class="aaron-content">
-<p>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS</p>
-<p>Matrix products: default
-BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so</p>
-<p>locale:
-[1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C<br />
-[3] LC_TIME=en_US.UTF-8 LC_COLLATE=en_US.UTF-8<br />
-[5] LC_MONETARY=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8<br />
-[7] LC_PAPER=en_US.UTF-8 LC_NAME=C<br />
-[9] LC_ADDRESS=C LC_TELEPHONE=C<br />
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C</p>
-<p>attached base packages:
-[1] parallel stats4 stats graphics grDevices utils datasets
-[8] methods base</p>
-<p>other attached packages:
-[1] BiocFileCache_1.9.1 dbplyr_1.4.2<br />
-[3] scran_1.13.9 scater_1.13.9<br />
-[5] ggplot2_3.2.0 scRNAseq_1.11.8<br />
-[7] SingleCellExperiment_1.5.3 SummarizedExperiment_1.15.5
-[9] DelayedArray_0.11.4 BiocParallel_1.19.0<br />
-[11] matrixStats_0.54.0 Biobase_2.45.0<br />
-[13] GenomicRanges_1.37.14 GenomeInfoDb_1.21.1<br />
-[15] IRanges_2.19.10 S4Vectors_0.23.17<br />
-[17] BiocGenerics_0.31.5 BiocStyle_2.13.2</p>
-<p>loaded via a namespace (and not attached):
-[1] bitops_1.0-6 bit64_0.9-7<br />
-[3] httr_1.4.0 dynamicTreeCut_1.63-1<br />
-[5] tools_3.6.0 backports_1.1.4<br />
-[7] R6_2.4.0 irlba_2.3.3<br />
-[9] vipor_0.4.5 DBI_1.0.0<br />
-[11] lazyeval_0.2.2 colorspace_1.4-1<br />
-[13] withr_2.1.2 tidyselect_0.2.5<br />
-[15] gridExtra_2.3 bit_1.1-14<br />
-[17] curl_4.0 compiler_3.6.0<br />
-[19] BiocNeighbors_1.3.2 Cairo_1.5-10<br />
-[21] bookdown_0.12 scales_1.0.0<br />
-[23] rappdirs_0.3.1 stringr_1.4.0<br />
-[25] digest_0.6.20 rmarkdown_1.14<br />
-[27] XVector_0.25.0 pkgconfig_2.0.2<br />
-[29] htmltools_0.3.6 limma_3.41.6<br />
-[31] highr_0.8 rlang_0.4.0<br />
-[33] RSQLite_2.1.1 shiny_1.3.2<br />
-[35] DelayedMatrixStats_1.7.1 dplyr_0.8.3<br />
-[37] RCurl_1.95-4.12 magrittr_1.5<br />
-[39] BiocSingular_1.1.5 GenomeInfoDbData_1.2.1<br />
-[41] Matrix_1.2-17 Rcpp_1.0.1<br />
-[43] ggbeeswarm_0.6.0 munsell_0.5.0<br />
-[45] viridis_0.5.1 edgeR_3.27.6<br />
-[47] stringi_1.4.3 yaml_2.2.0<br />
-[49] zlibbioc_1.31.0 AnnotationHub_2.17.3<br />
-[51] grid_3.6.0 blob_1.2.0<br />
-[53] promises_1.0.1 dqrng_0.2.1<br />
-[55] ExperimentHub_1.11.1 crayon_1.3.4<br />
-[57] lattice_0.20-38 locfit_1.5-9.1<br />
-[59] zeallot_0.1.0 knitr_1.23<br />
-[61] pillar_1.4.2 igraph_1.2.4.1<br />
-[63] codetools_0.2-16 glue_1.3.1<br />
-[65] evaluate_0.14 BiocManager_1.30.4<br />
-[67] vctrs_0.2.0 httpuv_1.5.1<br />
-[69] gtable_0.3.0 purrr_0.3.2<br />
-[71] assertthat_0.2.1 xfun_0.8<br />
-[73] rsvd_1.0.1 mime_0.7<br />
-[75] xtable_1.8-4 later_0.8.0<br />
-[77] viridisLite_0.3.0 tibble_2.1.3<br />
-[79] AnnotationDbi_1.47.0 beeswarm_0.2.3<br />
-[81] memoise_1.1.0 statmod_1.4.32<br />
-[83] interactiveDisplayBase_1.23.0</p>
-</div>
+<pre><code>## &lt;button class=&quot;aaron-collapse&quot;&gt;View session info&lt;/button&gt;
+## &lt;div class=&quot;aaron-content&quot;&gt;
+## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 14.04.6 LTS
+## 
+## Matrix products: default
+## BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] BiocFileCache_1.9.1         dbplyr_1.4.2               
+##  [3] scran_1.13.9                scater_1.13.9              
+##  [5] ggplot2_3.2.0               scRNAseq_1.11.8            
+##  [7] SingleCellExperiment_1.5.3  SummarizedExperiment_1.15.5
+##  [9] DelayedArray_0.11.4         BiocParallel_1.19.0        
+## [11] matrixStats_0.54.0          Biobase_2.45.0             
+## [13] GenomicRanges_1.37.14       GenomeInfoDb_1.21.1        
+## [15] IRanges_2.19.10             S4Vectors_0.23.17          
+## [17] BiocGenerics_0.31.5         BiocStyle_2.13.2           
+## [19] Cairo_1.5-10               
+## 
+## loaded via a namespace (and not attached):
+##  [1] bitops_1.0-6                  bit64_0.9-7                  
+##  [3] httr_1.4.0                    dynamicTreeCut_1.63-1        
+##  [5] tools_3.6.0                   backports_1.1.4              
+##  [7] R6_2.4.0                      irlba_2.3.3                  
+##  [9] vipor_0.4.5                   DBI_1.0.0                    
+## [11] lazyeval_0.2.2                colorspace_1.4-1             
+## [13] withr_2.1.2                   tidyselect_0.2.5             
+## [15] gridExtra_2.3                 bit_1.1-14                   
+## [17] curl_4.0                      compiler_3.6.0               
+## [19] BiocNeighbors_1.3.2           bookdown_0.12                
+## [21] scales_1.0.0                  rappdirs_0.3.1               
+## [23] stringr_1.4.0                 digest_0.6.20                
+## [25] rmarkdown_1.14                XVector_0.25.0               
+## [27] pkgconfig_2.0.2               htmltools_0.3.6              
+## [29] limma_3.41.6                  rlang_0.4.0                  
+## [31] RSQLite_2.1.1                 shiny_1.3.2                  
+## [33] DelayedMatrixStats_1.7.1      dplyr_0.8.3                  
+## [35] RCurl_1.95-4.12               magrittr_1.5                 
+## [37] BiocSingular_1.1.5            GenomeInfoDbData_1.2.1       
+## [39] Matrix_1.2-17                 Rcpp_1.0.1                   
+## [41] ggbeeswarm_0.6.0              munsell_0.5.0                
+## [43] viridis_0.5.1                 stringi_1.4.3                
+## [45] yaml_2.2.0                    edgeR_3.27.6                 
+## [47] zlibbioc_1.31.0               AnnotationHub_2.17.3         
+## [49] grid_3.6.0                    blob_1.2.0                   
+## [51] promises_1.0.1                dqrng_0.2.1                  
+## [53] ExperimentHub_1.11.1          crayon_1.3.4                 
+## [55] lattice_0.20-38               locfit_1.5-9.1               
+## [57] zeallot_0.1.0                 knitr_1.23                   
+## [59] pillar_1.4.2                  igraph_1.2.4.1               
+## [61] glue_1.3.1                    evaluate_0.14                
+## [63] BiocManager_1.30.4            vctrs_0.2.0                  
+## [65] httpuv_1.5.1                  gtable_0.3.0                 
+## [67] purrr_0.3.2                   assertthat_0.2.1             
+## [69] xfun_0.8                      rsvd_1.0.1                   
+## [71] mime_0.7                      xtable_1.8-4                 
+## [73] later_0.8.0                   viridisLite_0.3.0            
+## [75] tibble_2.1.3                  AnnotationDbi_1.47.0         
+## [77] beeswarm_0.2.3                memoise_1.1.0                
+## [79] statmod_1.4.32                interactiveDisplayBase_1.23.0
+## &lt;/div&gt;</code></pre>
 
 </div>
 </div>
