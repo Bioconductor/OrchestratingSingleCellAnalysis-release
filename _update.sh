@@ -2,11 +2,14 @@
 
 base=OSCABase
 
+## NOTE: To build clean, simply remove all *.Rmd files and docs
+
 # Updating the submodule remotes.
 git submodule update --remote
 
 ###################################################
 # Intro files:
+cp ${base}/intro/index.Rmd index.Rmd
 
 allfiles=(
 introduction.Rmd
@@ -67,3 +70,6 @@ done
 # Build appendix workflow files
 
 R -e "all.workflows <- list.files('workflows', pattern='Rmd$', full=TRUE); for (x in all.workflows) { rmarkdown::render(x) }"
+
+
+
