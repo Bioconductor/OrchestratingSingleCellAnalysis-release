@@ -32,6 +32,8 @@ quick-start.Rmd
 basic-analysis.Rmd
 quality-control.Rmd
 normalization.Rmd
+feature-selection.Rmd
+reduced-dimensions.Rmd
 clustering.Rmd
 marker-detection.Rmd
 data-integration.Rmd
@@ -67,7 +69,7 @@ done
 ###################################################
 # Build appendix workflow files
 
-R -e "all.workflows <- list.files('workflows', pattern='Rmd$', full=TRUE); for (x in all.workflows) { rmarkdown::render(x) }"
+R -e "wf <- list.files('workflows', pattern='Rmd$', full=TRUE, recursive=TRUE); wf <- wf[!grepl('template.Rmd', wf)]; for (x in wf) { rmarkdown::render(x) }"
 
 
 ###################################################
