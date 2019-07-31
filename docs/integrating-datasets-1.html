@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 12 Integrating Datasets | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <title>Chapter 14 Integrating Datasets | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 12 Integrating Datasets | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:title" content="Chapter 14 Integrating Datasets | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
   
   
@@ -16,14 +16,14 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 12 Integrating Datasets | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta name="twitter:title" content="Chapter 14 Integrating Datasets | Orchestrating Single-Cell Analysis with Bioconductor" />
   
   <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   
 
 
 
-<meta name="date" content="2019-07-23" />
+<meta name="date" content="2019-07-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -237,7 +237,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.2</b> Choice of QC metrics</a></li>
 <li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.3</b> Identifying low-quality cells</a><ul>
 <li class="chapter" data-level="8.3.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.3.1</b> With fixed thresholds</a></li>
-<li class="chapter" data-level="8.3.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.3.2</b> With adaptive thresholds</a></li>
+<li class="chapter" data-level="8.3.2" data-path="quality-control.html"><a href="quality-control.html#quality-control-outlier"><i class="fa fa-check"></i><b>8.3.2</b> With adaptive thresholds</a></li>
 <li class="chapter" data-level="8.3.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.3.3</b> Considering experimental factors</a></li>
 </ul></li>
 <li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.4</b> Checking diagnostic plots</a></li>
@@ -259,83 +259,114 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.4" data-path="normalization.html"><a href="normalization.html#normalization-by-deconvolution"><i class="fa fa-check"></i><b>9.4</b> Normalization by deconvolution</a></li>
 <li class="chapter" data-level="9.5" data-path="normalization.html"><a href="normalization.html#normalization-by-spike-ins"><i class="fa fa-check"></i><b>9.5</b> Normalization by spike-ins</a></li>
 <li class="chapter" data-level="9.6" data-path="normalization.html"><a href="normalization.html#putting-it-all-together"><i class="fa fa-check"></i><b>9.6</b> Putting it all together</a></li>
-<li class="chapter" data-level="9.7" data-path="normalization.html"><a href="normalization.html#why-log-transform"><i class="fa fa-check"></i><b>9.7</b> Why (log-)transform?</a></li>
+<li class="chapter" data-level="9.7" data-path="normalization.html"><a href="normalization.html#normalization-transformation"><i class="fa fa-check"></i><b>9.7</b> Why (log-)transform?</a></li>
 <li class="chapter" data-level="9.8" data-path="normalization.html"><a href="normalization.html#session-info-3"><i class="fa fa-check"></i><b>9.8</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>10</b> Clustering</a><ul>
-<li class="chapter" data-level="10.1" data-path="clustering-2.html"><a href="clustering-2.html#motivation-2"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
-<li class="chapter" data-level="10.2" data-path="clustering-2.html"><a href="clustering-2.html#comments-on-truth"><i class="fa fa-check"></i><b>10.2</b> Comments on Truth</a></li>
-<li class="chapter" data-level="10.3" data-path="clustering-2.html"><a href="clustering-2.html#graph-based-clustering"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
-<li class="chapter" data-level="10.3.1" data-path="clustering-2.html"><a href="clustering-2.html#background-1"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
-<li class="chapter" data-level="10.3.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
-<li class="chapter" data-level="10.3.3" data-path="clustering-2.html"><a href="clustering-2.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
-<li class="chapter" data-level="10.3.4" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
+<li class="chapter" data-level="10" data-path="feature-selection-2.html"><a href="feature-selection-2.html"><i class="fa fa-check"></i><b>10</b> Feature selection</a><ul>
+<li class="chapter" data-level="10.1" data-path="feature-selection-2.html"><a href="feature-selection-2.html#motivation-2"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
+<li class="chapter" data-level="10.2" data-path="feature-selection-2.html"><a href="feature-selection-2.html#quantifying-per-gene-variation"><i class="fa fa-check"></i><b>10.2</b> Quantifying per-gene variation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="feature-selection-2.html"><a href="feature-selection-2.html#variance-of-the-log-counts"><i class="fa fa-check"></i><b>10.2.1</b> Variance of the log-counts</a></li>
+<li class="chapter" data-level="10.2.2" data-path="feature-selection-2.html"><a href="feature-selection-2.html#coefficient-of-variation"><i class="fa fa-check"></i><b>10.2.2</b> Coefficient of variation</a></li>
+<li class="chapter" data-level="10.2.3" data-path="feature-selection-2.html"><a href="feature-selection-2.html#sec:spikeins"><i class="fa fa-check"></i><b>10.2.3</b> Quantifying technical noise</a></li>
+<li class="chapter" data-level="10.2.4" data-path="feature-selection-2.html"><a href="feature-selection-2.html#accounting-for-blocking-factors"><i class="fa fa-check"></i><b>10.2.4</b> Accounting for blocking factors</a></li>
 </ul></li>
-<li class="chapter" data-level="10.4" data-path="clustering-2.html"><a href="clustering-2.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="clustering-2.html"><a href="clustering-2.html#background-2"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
-<li class="chapter" data-level="10.4.2" data-path="clustering-2.html"><a href="clustering-2.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
-<li class="chapter" data-level="10.4.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
+<li class="chapter" data-level="10.3" data-path="feature-selection-2.html"><a href="feature-selection-2.html#selecting-highly-variable-genes"><i class="fa fa-check"></i><b>10.3</b> Selecting highly variable genes</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="feature-selection-2.html"><a href="feature-selection-2.html#based-on-the-largest-metrics"><i class="fa fa-check"></i><b>10.3.1</b> Based on the largest metrics</a></li>
+<li class="chapter" data-level="10.3.2" data-path="feature-selection-2.html"><a href="feature-selection-2.html#based-on-a-fixed-threshold"><i class="fa fa-check"></i><b>10.3.2</b> Based on a fixed threshold</a></li>
+<li class="chapter" data-level="10.3.3" data-path="feature-selection-2.html"><a href="feature-selection-2.html#keeping-all-genes-above-the-trend"><i class="fa fa-check"></i><b>10.3.3</b> Keeping all genes above the trend</a></li>
 </ul></li>
-<li class="chapter" data-level="10.5" data-path="clustering-2.html"><a href="clustering-2.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
-<li class="chapter" data-level="10.5.1" data-path="clustering-2.html"><a href="clustering-2.html#background-3"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
-<li class="chapter" data-level="10.5.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
-<li class="chapter" data-level="10.5.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
+<li class="chapter" data-level="10.4" data-path="feature-selection-2.html"><a href="feature-selection-2.html#putting-it-all-together-1"><i class="fa fa-check"></i><b>10.4</b> Putting it all together</a></li>
+<li class="chapter" data-level="10.5" data-path="feature-selection-2.html"><a href="feature-selection-2.html#session-info-4"><i class="fa fa-check"></i><b>10.5</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="10.6" data-path="clustering-2.html"><a href="clustering-2.html#session-info-4"><i class="fa fa-check"></i><b>10.6</b> Session Info</a></li>
+<li class="chapter" data-level="11" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html"><i class="fa fa-check"></i><b>11</b> Dimensionality reduction</a><ul>
+<li class="chapter" data-level="11.1" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#overview-1"><i class="fa fa-check"></i><b>11.1</b> Overview</a></li>
+<li class="chapter" data-level="11.2" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#principal-components-analysis"><i class="fa fa-check"></i><b>11.2</b> Principal components analysis</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#background-1"><i class="fa fa-check"></i><b>11.2.1</b> Background</a></li>
+<li class="chapter" data-level="11.2.2" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#performing-the-pca"><i class="fa fa-check"></i><b>11.2.2</b> Performing the PCA</a></li>
+<li class="chapter" data-level="11.2.3" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#choosing-the-number-of-pcs"><i class="fa fa-check"></i><b>11.2.3</b> Choosing the number of PCs</a></li>
+<li class="chapter" data-level="11.2.4" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#putting-it-together"><i class="fa fa-check"></i><b>11.2.4</b> Putting it together</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>11</b> Marker gene detection</a><ul>
-<li class="chapter" data-level="11.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-3"><i class="fa fa-check"></i><b>11.1</b> Motivation</a></li>
-<li class="chapter" data-level="11.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>11.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
-<li class="chapter" data-level="11.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>11.2.1</b> Standard application</a></li>
-<li class="chapter" data-level="11.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>11.2.2</b> Using the log-fold change</a></li>
-<li class="chapter" data-level="11.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>11.2.3</b> Finding cluster-specific markers</a></li>
+<li class="chapter" data-level="11.3" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>11.3</b> Dimensionality reduction for visualization</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#motivation-4"><i class="fa fa-check"></i><b>11.3.1</b> Motivation</a></li>
+<li class="chapter" data-level="11.3.2" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#visualizating-with-pca"><i class="fa fa-check"></i><b>11.3.2</b> Visualizating with PCA</a></li>
+<li class="chapter" data-level="11.3.3" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>11.3.3</b> t-stochastic neighbor embedding</a></li>
+<li class="chapter" data-level="11.3.4" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>11.3.4</b> Uniform manifold approximation and projection</a></li>
+<li class="chapter" data-level="11.3.5" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#interpreting-the-plots"><i class="fa fa-check"></i><b>11.3.5</b> Interpreting the plots</a></li>
 </ul></li>
-<li class="chapter" data-level="11.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>11.3</b> Alternative testing regimes</a><ul>
-<li class="chapter" data-level="11.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>11.3.1</b> Using the Wilcoxon rank sum test</a></li>
-<li class="chapter" data-level="11.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>11.3.2</b> Using a binomial test</a></li>
-<li class="chapter" data-level="11.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>11.3.3</b> Using custom DE methods</a></li>
+<li class="chapter" data-level="11.4" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#session-info-5"><i class="fa fa-check"></i><b>11.4</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="11.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#handling-blocking-factors"><i class="fa fa-check"></i><b>11.4</b> Handling blocking factors</a></li>
-<li class="chapter" data-level="11.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>11.5</b> Using the <code>block=</code> argument</a></li>
-<li class="chapter" data-level="11.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>11.6</b> Using the <code>design=</code> argument</a></li>
-<li class="chapter" data-level="11.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>11.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
-<li class="chapter" data-level="11.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>11.7.1</b> From data snooping</a></li>
-<li class="chapter" data-level="11.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#nature-of-replication"><i class="fa fa-check"></i><b>11.7.2</b> Nature of replication</a></li>
+<li class="chapter" data-level="12" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>12</b> Clustering</a><ul>
+<li class="chapter" data-level="12.1" data-path="clustering-2.html"><a href="clustering-2.html#motivation-5"><i class="fa fa-check"></i><b>12.1</b> Motivation</a></li>
+<li class="chapter" data-level="12.2" data-path="clustering-2.html"><a href="clustering-2.html#comments-on-truth"><i class="fa fa-check"></i><b>12.2</b> Comments on Truth</a></li>
+<li class="chapter" data-level="12.3" data-path="clustering-2.html"><a href="clustering-2.html#graph-based-clustering"><i class="fa fa-check"></i><b>12.3</b> Graph-based clustering</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="clustering-2.html"><a href="clustering-2.html#background-2"><i class="fa fa-check"></i><b>12.3.1</b> Background</a></li>
+<li class="chapter" data-level="12.3.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation"><i class="fa fa-check"></i><b>12.3.2</b> Implementation</a></li>
+<li class="chapter" data-level="12.3.3" data-path="clustering-2.html"><a href="clustering-2.html#other-parameters"><i class="fa fa-check"></i><b>12.3.3</b> Other parameters</a></li>
+<li class="chapter" data-level="12.3.4" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>12.3.4</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="11.8" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-5"><i class="fa fa-check"></i><b>11.8</b> Session Info</a></li>
+<li class="chapter" data-level="12.4" data-path="clustering-2.html"><a href="clustering-2.html#k-means-clustering"><i class="fa fa-check"></i><b>12.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="clustering-2.html"><a href="clustering-2.html#background-3"><i class="fa fa-check"></i><b>12.4.1</b> Background</a></li>
+<li class="chapter" data-level="12.4.2" data-path="clustering-2.html"><a href="clustering-2.html#base-implementation"><i class="fa fa-check"></i><b>12.4.2</b> Base implementation</a></li>
+<li class="chapter" data-level="12.4.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>12.4.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>12</b> Integrating Datasets</a><ul>
-<li class="chapter" data-level="12.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>12.1</b> Preprocessing</a></li>
-<li class="chapter" data-level="12.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>12.2</b> Fast MNN</a></li>
-<li class="chapter" data-level="12.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>12.3</b> Harmony</a></li>
-<li class="chapter" data-level="12.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>12.4</b> Advanced MNN Workflow</a><ul>
-<li class="chapter" data-level="12.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>12.4.1</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="12.5" data-path="clustering-2.html"><a href="clustering-2.html#hierarchical-clustering"><i class="fa fa-check"></i><b>12.5</b> Hierarchical clustering</a><ul>
+<li class="chapter" data-level="12.5.1" data-path="clustering-2.html"><a href="clustering-2.html#background-4"><i class="fa fa-check"></i><b>12.5.1</b> Background</a></li>
+<li class="chapter" data-level="12.5.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation-1"><i class="fa fa-check"></i><b>12.5.2</b> Implementation</a></li>
+<li class="chapter" data-level="12.5.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>12.5.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="12.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>12.5</b> Naive Method Without Correction</a></li>
-<li class="chapter" data-level="12.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>12.6</b> Limma Batch Correction</a></li>
-<li class="chapter" data-level="12.7" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#session-info-6"><i class="fa fa-check"></i><b>12.7</b> Session Info</a></li>
+<li class="chapter" data-level="12.6" data-path="clustering-2.html"><a href="clustering-2.html#session-info-6"><i class="fa fa-check"></i><b>12.6</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>13</b> Sharing and Interactive Interfaces</a><ul>
-<li class="chapter" data-level="13.1" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html#session-info-7"><i class="fa fa-check"></i><b>13.1</b> Session Info</a></li>
+<li class="chapter" data-level="13" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>13</b> Marker gene detection</a><ul>
+<li class="chapter" data-level="13.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-6"><i class="fa fa-check"></i><b>13.1</b> Motivation</a></li>
+<li class="chapter" data-level="13.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>13.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
+<li class="chapter" data-level="13.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>13.2.1</b> Standard application</a></li>
+<li class="chapter" data-level="13.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>13.2.2</b> Using the log-fold change</a></li>
+<li class="chapter" data-level="13.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>13.2.3</b> Finding cluster-specific markers</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>14</b> Adaptations for Large-scale Data</a><ul>
-<li class="chapter" data-level="14.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>14.1</b> Approximate Methods</a></li>
-<li class="chapter" data-level="14.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>14.2</b> Parallelization</a></li>
-<li class="chapter" data-level="14.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>14.3</b> On-Disk Data</a></li>
-<li class="chapter" data-level="14.4" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-8"><i class="fa fa-check"></i><b>14.4</b> Session Info</a></li>
+<li class="chapter" data-level="13.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>13.3</b> Alternative testing regimes</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>13.3.1</b> Using the Wilcoxon rank sum test</a></li>
+<li class="chapter" data-level="13.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>13.3.2</b> Using a binomial test</a></li>
+<li class="chapter" data-level="13.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>13.3.3</b> Using custom DE methods</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#handling-blocking-factors"><i class="fa fa-check"></i><b>13.4</b> Handling blocking factors</a></li>
+<li class="chapter" data-level="13.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>13.5</b> Using the <code>block=</code> argument</a></li>
+<li class="chapter" data-level="13.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>13.6</b> Using the <code>design=</code> argument</a></li>
+<li class="chapter" data-level="13.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>13.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
+<li class="chapter" data-level="13.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>13.7.1</b> From data snooping</a></li>
+<li class="chapter" data-level="13.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#nature-of-replication"><i class="fa fa-check"></i><b>13.7.2</b> Nature of replication</a></li>
+</ul></li>
+<li class="chapter" data-level="13.8" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-7"><i class="fa fa-check"></i><b>13.8</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>14</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="14.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#motivation-7"><i class="fa fa-check"></i><b>14.1</b> Motivation</a></li>
+<li class="chapter" data-level="14.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#simple-two-batch-example"><i class="fa fa-check"></i><b>14.2</b> Simple two batch example</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#setting-up-the-data-1"><i class="fa fa-check"></i><b>14.2.1</b> Setting up the data</a></li>
+<li class="chapter" data-level="14.2.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#performing-mnn-correction"><i class="fa fa-check"></i><b>14.2.2</b> Performing MNN correction</a></li>
+<li class="chapter" data-level="14.2.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#correction-diagnostics"><i class="fa fa-check"></i><b>14.2.3</b> Correction diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#session-info-8"><i class="fa fa-check"></i><b>14.3</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>15</b> Sharing and Interactive Interfaces</a><ul>
+<li class="chapter" data-level="15.1" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html#session-info-9"><i class="fa fa-check"></i><b>15.1</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>16</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="16.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>16.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="16.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>16.2</b> Parallelization</a></li>
+<li class="chapter" data-level="16.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>16.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="16.4" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-10"><i class="fa fa-check"></i><b>16.4</b> Session Info</a></li>
 </ul></li>
 <li class="part"><span><b>III Appendix</b></span></li>
-<li class="chapter" data-level="15" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>15</b> About the Data</a><ul>
-<li class="chapter" data-level="15.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>15.1</b> 10X Genomics PBMC Data</a></li>
-<li class="chapter" data-level="15.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>15.2</b> Cellbench_data</a></li>
+<li class="chapter" data-level="17" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>17</b> About the Data</a><ul>
+<li class="chapter" data-level="17.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>17.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="17.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>17.2</b> Cellbench_data</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>16</b> About the Contributors</a><ul>
-<li class="chapter" data-level="16.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>16.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
-<li class="chapter" data-level="16.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>16.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
-<li class="chapter" data-level="16.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>16.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
-<li class="chapter" data-level="16.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>16.0.4</b> <em>Aaron Lun, PhD</em></a></li>
+<li class="chapter" data-level="18" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>18</b> About the Contributors</a><ul>
+<li class="chapter" data-level="18.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>18.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
+<li class="chapter" data-level="18.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>18.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
+<li class="chapter" data-level="18.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>18.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
+<li class="chapter" data-level="18.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>18.0.4</b> <em>Aaron Lun, PhD</em></a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="bibliography.html"><a href="bibliography.html"><i class="fa fa-check"></i><b>17</b> Bibliography</a></li>
+<li class="chapter" data-level="19" data-path="bibliography.html"><a href="bibliography.html"><i class="fa fa-check"></i><b>19</b> Bibliography</a></li>
 <li class="divider"></li>
 <li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
 
@@ -357,7 +388,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="integrating-datasets-1" class="section level1">
-<h1><span class="header-section-number">Chapter 12</span> Integrating Datasets</h1>
+<h1><span class="header-section-number">Chapter 14</span> Integrating Datasets</h1>
 <script>
 document.addEventListener("click", function (event) {
     if (event.target.classList.contains("aaron-collapse")) {
@@ -391,260 +422,253 @@ document.addEventListener("click", function (event) {
   background-color: #f1f1f1;
 }
 </style>
-<p>As scRNA-seq approaches continue to gain in popularity, projects that combine independently generated datasets will become increasingly common. While generalized linear modeling frameworks can be used to integrate disparate datasets, the performance of these frameworks in the scRNA-seq context may be sub-optimal, often due to an underlying assumption that the composition of cell populations is either known or identical across batches of cells. This has inspired a new class of methods that leverage the unique properties of scRNA-seq to improve the amelioration of batch effects, which we demonstrate here.</p>
-<p>Here we will work with two PBMC datasets from the <em>TENxPBMCData</em> package - the <code>pbmc3k</code> and <code>pbmc4k</code> datasets - that come from different donors, and integrate them to produce an integrated representation of the data.</p>
-<div id="preprocessing-1" class="section level2">
-<h2><span class="header-section-number">12.1</span> Preprocessing</h2>
-<p>Before proceeding to the integration section, we will first load the data, and subsequently run it through a preprocessing pipeline that ensures we have a common set of genes across both experiments, filters out poor quality cells, and normalizes the expression matrix. The code for this is shown below for completeness.
-Note that here we make use of the <em>purrr</em> package both for code succinctness and to apply the same function to each PBMC dataset contained within the <code>pbmc_l</code> list. (see base <code>lapply()</code> and <code>purrrr::map()</code> for more details).</p>
-<p>Furthermore, to speed up computation, we will subsample each of these datasets down to 1000 cells each.</p>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb296-1" data-line-number="1">## Load the data</a>
-<a class="sourceLine" id="cb296-2" data-line-number="2"><span class="kw">library</span>(TENxPBMCData)</a>
-<a class="sourceLine" id="cb296-3" data-line-number="3">pbmc3k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a>
-<a class="sourceLine" id="cb296-4" data-line-number="4">pbmc4k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</a>
-<a class="sourceLine" id="cb296-5" data-line-number="5">pbmc_l &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">pbmc3k =</span> pbmc3k, <span class="dt">pbmc4k =</span> pbmc4k)</a>
-<a class="sourceLine" id="cb296-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb296-7" data-line-number="7">## Subsample data to 1000 cells each</a>
-<a class="sourceLine" id="cb296-8" data-line-number="8"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb296-9" data-line-number="9"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
-<a class="sourceLine" id="cb296-10" data-line-number="10">pbmc_l &lt;-<span class="st"> </span><span class="kw">map</span>(pbmc_l, <span class="cf">function</span>(x) { x[, <span class="kw">sample</span>(<span class="kw">ncol</span>(x), <span class="dv">1000</span>)] })</a>
-<a class="sourceLine" id="cb296-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb296-12" data-line-number="12">## Retain common genes (rows); reorder rows by common genes</a>
-<a class="sourceLine" id="cb296-13" data-line-number="13">common_genes &lt;-<span class="st"> </span><span class="kw">reduce</span>(<span class="kw">map</span>(pbmc_l, rownames), intersect)</a>
-<a class="sourceLine" id="cb296-14" data-line-number="14">pbmc_l &lt;-<span class="st"> </span><span class="kw">map</span>(pbmc_l, <span class="cf">function</span>(x) { x[common_genes, ] })</a>
-<a class="sourceLine" id="cb296-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb296-16" data-line-number="16">## Save rowData from first object</a>
-<a class="sourceLine" id="cb296-17" data-line-number="17">## remove from each individual object else `cbind` will throw an error</a>
-<a class="sourceLine" id="cb296-18" data-line-number="18">rd &lt;-<span class="st"> </span><span class="kw">rowData</span>(pbmc_l[[<span class="dv">1</span>]])</a>
-<a class="sourceLine" id="cb296-19" data-line-number="19">pbmc_l &lt;-<span class="st"> </span><span class="kw">map</span>(pbmc_l, <span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb296-20" data-line-number="20">    <span class="kw">rowData</span>(x) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb296-21" data-line-number="21">    <span class="kw">return</span>(x)</a>
-<a class="sourceLine" id="cb296-22" data-line-number="22">})</a>
-<a class="sourceLine" id="cb296-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb296-24" data-line-number="24">## Combine the objects via `cbind`</a>
-<a class="sourceLine" id="cb296-25" data-line-number="25">sce &lt;-<span class="st"> </span><span class="kw">reduce</span>(pbmc_l, cbind)</a>
-<a class="sourceLine" id="cb296-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb296-27" data-line-number="27">## Replace rowData within combined object</a>
-<a class="sourceLine" id="cb296-28" data-line-number="28">## Uniquify row ids to use mostly human readable rownames</a>
-<a class="sourceLine" id="cb296-29" data-line-number="29"><span class="kw">rowData</span>(sce) &lt;-<span class="st"> </span>rd</a>
-<a class="sourceLine" id="cb296-30" data-line-number="30"><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">uniquifyFeatureNames</span>(rd<span class="op">$</span>ENSEMBL_ID, rd<span class="op">$</span>Symbol_TENx)</a></code></pre></div>
-<!-- ## HOTFIX NEEDED - RECAST ASSAY INTO MATRIX  -->
-<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb297-1" data-line-number="1">## Calculate and apply QC metrics; filter out cells with low lib or low genes detected</a>
-<a class="sourceLine" id="cb297-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb297-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce)</a>
-<a class="sourceLine" id="cb297-4" data-line-number="4">low_lib &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>log10_total_counts, <span class="dt">type =</span> <span class="st">&quot;lower&quot;</span>, <span class="dt">nmad =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb297-5" data-line-number="5">low_genes &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>log10_total_features_by_counts, <span class="dt">type =</span> <span class="st">&quot;lower&quot;</span>, <span class="dt">nmad =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb297-6" data-line-number="6">sce &lt;-<span class="st"> </span>sce[, <span class="op">!</span>(low_lib <span class="op">|</span><span class="st"> </span>low_genes)]</a>
-<a class="sourceLine" id="cb297-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb297-8" data-line-number="8">## normalize data</a>
-<a class="sourceLine" id="cb297-9" data-line-number="9">sce &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce)</a>
-<a class="sourceLine" id="cb297-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb297-11" data-line-number="11">## feature selection</a>
-<a class="sourceLine" id="cb297-12" data-line-number="12"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb297-13" data-line-number="13">fit &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb297-14" data-line-number="14">dec &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce, fit)</a>
-<a class="sourceLine" id="cb297-15" data-line-number="15">hvg &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec)[dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>] <span class="co"># save gene names</span></a></code></pre></div>
-<p>For faster calculations, here we will subset the <code>hvg</code> object to the top 2000 genes:</p>
-<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb298-1" data-line-number="1">hvg &lt;-<span class="st"> </span>hvg[<span class="dv">1</span><span class="op">:</span><span class="dv">2000</span>]</a></code></pre></div>
-<p>From the combined dataset encapsulated within <code>sce</code>, we note that the origin of each cell is annotated within <code>colData</code> under the column <code>Sample</code>. This will be used as the batch variable throughout.</p>
-<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb299-1" data-line-number="1"><span class="kw">table</span>(sce<span class="op">$</span>Sample) <span class="co"># alternately: colData(sce)$Sample</span></a></code></pre></div>
-<pre><code>## 
-## pbmc3k pbmc4k 
-##    990   1000</code></pre>
+<div id="motivation-7" class="section level2">
+<h2><span class="header-section-number">14.1</span> Motivation</h2>
+<p>Large single-cell RNA sequencing (scRNA-seq) projects usually need to generate data across multiple batches due to logistical constraints.
+However, the processing of different batches is often subject to uncontrollable differences, e.g., changes in operator, differences in reagent quality.
+This results in systematic differences in the observed expression in cells from different batches, which we refer to as “batch effects”.
+Batch effects are problematic as they can be major drivers of heterogeneity in the data, masking the relevant biological differences and complicating interpretation of the results.</p>
+<p>Computational correction of these effects is critical for eliminating batch-to-batch variation, allowing data across multiple batches to be combined for common downstream analysis.
+However, existing methods based on linear models <span class="citation">(Ritchie et al. <a href="#ref-ritchie2015limma">2015</a>; Leek et al. <a href="#ref-leek2012sva">2012</a>)</span> assume that the composition of cell populations are either known or the same across batches.
+To overcome these limitations, bespoke methods have been developed for batch correction of single-cell data <span class="citation">(Haghverdi et al. <a href="#ref-haghverdi2018batch">2018</a>; Butler et al. <a href="#ref-butler2018integrating">2018</a>; Lin et al. <a href="#ref-lin2019scmerge">2019</a>)</span> that do not require <em>a priori</em> knowledge about the composition of the population.
+This allows them to be used in workflows for exploratory analyses of scRNA-seq data where such knowledge is usually unavailable.</p>
+<p>Here, we will demonstrate the application of these methods on two case studies involving PBMCs and pancreatic cells.
+We will focus on the method proposed by <span class="citation">Haghverdi et al. (<a href="#ref-haghverdi2018batch">2018</a>)</span>, which is based on the detection of mutual nearest neighbours (MNNs).
+The MNN approach does not rely on pre-defined or equal population compositions across batches, only requiring that a subset of the population be shared between batches.</p>
 </div>
-<div id="fast-mnn" class="section level2">
-<h2><span class="header-section-number">12.2</span> Fast MNN</h2>
-<p>The <em>batchelor</em> package provides the <code>fastMNN()</code> function, which calculates a dimension reduced representation based on the original principal components derived directly from the normalized expression data. These MNN coordinates can then be used for further dimensionality reduction via UMAP as shown below.</p>
-<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb301-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb301-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb301-3" data-line-number="3">## create new object from sce for mnn simple workflow</a>
-<a class="sourceLine" id="cb301-4" data-line-number="4">sce_mnn_simple &lt;-<span class="st"> </span>sce</a>
-<a class="sourceLine" id="cb301-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb301-6" data-line-number="6">## run MNN with no advanced preprocessing</a>
-<a class="sourceLine" id="cb301-7" data-line-number="7">## BSPARAM/BNPARAM/BPPARAM explained in &quot;adaptations to large scale data&quot;</a>
-<a class="sourceLine" id="cb301-8" data-line-number="8">mnn_simple_out &lt;-<span class="st"> </span>batchelor<span class="op">::</span><span class="kw">fastMNN</span>(sce_mnn_simple,</a>
-<a class="sourceLine" id="cb301-9" data-line-number="9">                                     <span class="dt">subset.row =</span> hvg,</a>
-<a class="sourceLine" id="cb301-10" data-line-number="10">                                     <span class="dt">batch =</span> sce_mnn_simple<span class="op">$</span>Sample)</a>
-<a class="sourceLine" id="cb301-11" data-line-number="11">                                     ## BSPARAM = BiocSingular::IrlbaParam(),</a>
-<a class="sourceLine" id="cb301-12" data-line-number="12">                                     ## BNPARAM = BiocNeighbors::AnnoyParam())</a>
-<a class="sourceLine" id="cb301-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb301-14" data-line-number="14">## add MNN_simple coordinates to the new sce object</a>
-<a class="sourceLine" id="cb301-15" data-line-number="15"><span class="kw">reducedDim</span>(sce_mnn_simple, <span class="st">&#39;MNN&#39;</span>) &lt;-<span class="st"> </span><span class="kw">reducedDim</span>(mnn_simple_out, <span class="st">&#39;corrected&#39;</span>)</a>
-<a class="sourceLine" id="cb301-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb301-17" data-line-number="17">## run UMAP on the &quot;simple MNN&quot; version</a>
-<a class="sourceLine" id="cb301-18" data-line-number="18">sce_mnn_simple &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce_mnn_simple, <span class="dt">use_dimred =</span> <span class="st">&#39;MNN&#39;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb302-1" data-line-number="1"><span class="kw">library</span>(patchwork)</a>
-<a class="sourceLine" id="cb302-2" data-line-number="2">p1 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_mnn_simple, <span class="st">&#39;MNN&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb302-3" data-line-number="3">p2 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_mnn_simple, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb302-4" data-line-number="4"><span class="kw">wrap_plots</span>(p1, p2, <span class="dt">nrow =</span> <span class="dv">1</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-7"></span>
-<img src="P2_W08.data-integration_files/figure-html/unnamed-chunk-7-1.png" alt="Simple MNN method. First two MNN coordinates (left) and UMAP derived from the full MNN coordinate set (right)." width="672" />
+<div id="simple-two-batch-example" class="section level2">
+<h2><span class="header-section-number">14.2</span> Simple two batch example</h2>
+<div id="setting-up-the-data-1" class="section level3">
+<h3><span class="header-section-number">14.2.1</span> Setting up the data</h3>
+<p>We will use two separate 10X Genomics datasets involving PBMCs obtained from different donors.
+Each dataset was obtained from the <em><a href="https://bioconductor.org/packages/3.10/TENxPBMCData">TENxPBMCData</a></em> package and separately subjected to basic processing steps.
+Separate processing prior to the batch correction step is more convenient, scalable and (on occasion) more reliable.
+For example, outlier-based QC on the cells is more effective when performed within a batch (Chapter ???).
+The same can also be said for trend fitting when modelling the mean-variance relationship (Section ???).</p>
+<button class="aaron-collapse">
+View history
+</button>
+<div class="aaron-content">
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb366-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb366-2" data-line-number="2"><span class="kw">library</span>(TENxPBMCData)</a>
+<a class="sourceLine" id="cb366-3" data-line-number="3">pbmc3k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a>
+<a class="sourceLine" id="cb366-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb366-5" data-line-number="5">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb366-6" data-line-number="6">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc3k)<span class="op">$</span>Symbol_TENx)</a>
+<a class="sourceLine" id="cb366-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb366-8" data-line-number="8"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb366-9" data-line-number="9">pbmc3k &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(pbmc3k, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
+<a class="sourceLine" id="cb366-10" data-line-number="10">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(pbmc3k<span class="op">$</span>pct_counts_Mito, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb366-11" data-line-number="11">pbmc3k &lt;-<span class="st"> </span>pbmc3k[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb366-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb366-13" data-line-number="13">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb366-14" data-line-number="14">pbmc3k &lt;-<span class="st"> </span><span class="kw">normalize</span>(pbmc3k)</a>
+<a class="sourceLine" id="cb366-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb366-16" data-line-number="16">### variance-modelling <span class="al">###</span></a>
+<a class="sourceLine" id="cb366-17" data-line-number="17"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb366-18" data-line-number="18">fit3k &lt;-<span class="st"> </span><span class="kw">trendVar</span>(pbmc3k, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb366-19" data-line-number="19">dec3k &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(pbmc3k, fit3k)</a>
+<a class="sourceLine" id="cb366-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb366-21" data-line-number="21">### feature-selection <span class="al">###</span></a>
+<a class="sourceLine" id="cb366-22" data-line-number="22">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">which</span>(dec3k<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
+</div>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb367-1" data-line-number="1">pbmc3k</a></code></pre></div>
+<pre><code>## class: SingleCellExperiment 
+## dim: 32738 2609 
+## metadata(1): log.exprs.offset
+## assays(2): counts logcounts
+## rownames(32738): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000215616 ENSG00000215611
+## rowData names(11): ENSEMBL_ID Symbol_TENx ... total_counts
+##   log10_total_counts
+## colnames: NULL
+## colData names(47): Sample Barcode ...
+##   pct_counts_in_top_200_features_Mito
+##   pct_counts_in_top_500_features_Mito
+## reducedDimNames(0):
+## spikeNames(0):</code></pre>
+<button class="aaron-collapse">
+View history
+</button>
+<div class="aaron-content">
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb369-2" data-line-number="2"><span class="kw">library</span>(TENxPBMCData)</a>
+<a class="sourceLine" id="cb369-3" data-line-number="3">pbmc4k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</a>
+<a class="sourceLine" id="cb369-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb369-5" data-line-number="5">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb369-6" data-line-number="6">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc4k)<span class="op">$</span>Symbol_TENx)</a>
+<a class="sourceLine" id="cb369-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb369-8" data-line-number="8"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb369-9" data-line-number="9">pbmc4k &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(pbmc4k, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
+<a class="sourceLine" id="cb369-10" data-line-number="10">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(pbmc4k<span class="op">$</span>pct_counts_Mito, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb369-11" data-line-number="11">pbmc4k &lt;-<span class="st"> </span>pbmc4k[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb369-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb369-13" data-line-number="13">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb369-14" data-line-number="14">pbmc4k &lt;-<span class="st"> </span><span class="kw">normalize</span>(pbmc4k)</a>
+<a class="sourceLine" id="cb369-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb369-16" data-line-number="16">### variance-modelling <span class="al">###</span></a>
+<a class="sourceLine" id="cb369-17" data-line-number="17"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb369-18" data-line-number="18">fit4k &lt;-<span class="st"> </span><span class="kw">trendVar</span>(pbmc4k, <span class="dt">use.spikes =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb369-19" data-line-number="19">dec4k &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(pbmc4k, fit4k)</a></code></pre></div>
+</div>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" data-line-number="1">pbmc4k</a></code></pre></div>
+<pre><code>## class: SingleCellExperiment 
+## dim: 33694 4182 
+## metadata(1): log.exprs.offset
+## assays(2): counts logcounts
+## rownames(33694): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000277475 ENSG00000268674
+## rowData names(11): ENSEMBL_ID Symbol_TENx ... total_counts
+##   log10_total_counts
+## colnames: NULL
+## colData names(47): Sample Barcode ...
+##   pct_counts_in_top_200_features_Mito
+##   pct_counts_in_top_500_features_Mito
+## reducedDimNames(0):
+## spikeNames(0):</code></pre>
+<p>To prepare for the batch correction:</p>
+<ol style="list-style-type: decimal">
+<li>We subset all batches to the common “universe” of features.
+In this case, it is straightforward as both batches use Ensembl gene annotation<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>.</li>
+</ol>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">rownames</span>(pbmc3k), <span class="kw">rownames</span>(pbmc4k))</a>
+<a class="sourceLine" id="cb372-2" data-line-number="2"><span class="kw">length</span>(universe)</a></code></pre></div>
+<pre><code>## [1] 31232</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>We rescale each batch to adjust for differences in sequencing depth between batches.
+The <code>multiBatchNorm()</code> function recomputes log-normalized expression values after adjusting the size factors for systematic differences in coverage between <code>SingleCellExperiment</code> objects.
+(Size factors only remove biases between cells <em>within</em> a single batch.)
+This improves the quality of the correction by removing one aspect of the technical differences between batches.</li>
+</ol>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb374-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(pbmc3k[universe,], pbmc4k[universe,])</a>
+<a class="sourceLine" id="cb374-3" data-line-number="3">pbmc3k &lt;-<span class="st"> </span>rescaled[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb374-4" data-line-number="4">pbmc4k &lt;-<span class="st"> </span>rescaled[[<span class="dv">2</span>]]</a></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>We obtain a single set of features for batch correction by compute the average biological component across all batches.
+Here, we take all genes with positive biological components to ensure that all interesting biology is retained.
+However, other feature selection strategies described in Chapter ??? are also reasonable.</li>
+</ol>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" data-line-number="1">mean.bio &lt;-<span class="st"> </span>(dec3k[universe,<span class="st">&quot;bio&quot;</span>] <span class="op">+</span><span class="st"> </span>dec4k[universe,<span class="st">&quot;bio&quot;</span>])<span class="op">/</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb375-2" data-line-number="2">chosen &lt;-<span class="st"> </span>universe[mean.bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb375-3" data-line-number="3"><span class="kw">length</span>(chosen)</a></code></pre></div>
+<pre><code>## [1] 8166</code></pre>
+</div>
+<div id="performing-mnn-correction" class="section level3">
+<h3><span class="header-section-number">14.2.2</span> Performing MNN correction</h3>
+<p>Consider a cell <span class="math inline">\(a\)</span> in batch <span class="math inline">\(A\)</span>, and identify the cells in batch <span class="math inline">\(B\)</span> that are nearest neighbours to <span class="math inline">\(a\)</span> in the expression space defined by the selected features.
+Repeat this for a cell <span class="math inline">\(b\)</span> in batch <span class="math inline">\(B\)</span>, identifying its nearest neighbours in <span class="math inline">\(A\)</span>.
+Mutual nearest neighbours are pairs of cells from different batches that belong in each other’s set of nearest neighbours.
+The reasoning is that MNN pairs represent cells from the same biological state prior to the application of a batch effect - see <span class="citation">Haghverdi et al. (<a href="#ref-haghverdi2018batch">2018</a>)</span> for full theoretical details.
+Thus, the difference between cells in MNN pairs can be used as an estimate of the batch effect, the subtraction of which can yield batch-corrected values.</p>
+<p>The <em><a href="https://bioconductor.org/packages/3.10/batchelor">batchelor</a></em> package provides an implementation of the MNN approach via the <code>fastMNN()</code> function.
+We apply it to our two PBMC batches to remove the batch effect across the highly variable genes in <code>chosen</code>.
+To reduce computational work and technical noise, all cells in all batches are projected into the low-dimensional space defined by the top <code>d</code> principal components.
+Identification of MNNs and calculation of correction vectors are then performed in this low-dimensional space.</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="co"># Using randomized SVD here, as this is faster than </span></a>
+<a class="sourceLine" id="cb377-2" data-line-number="2"><span class="co"># irlba for file-backed matrices.</span></a>
+<a class="sourceLine" id="cb377-3" data-line-number="3"><span class="kw">set.seed</span>(<span class="dv">1000101001</span>)</a>
+<a class="sourceLine" id="cb377-4" data-line-number="4">mnn.out &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(pbmc3k, pbmc4k, <span class="dt">d=</span><span class="dv">50</span>, <span class="dt">k=</span><span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb377-5" data-line-number="5">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>(<span class="dt">deferred=</span><span class="ot">TRUE</span>))</a></code></pre></div>
+<p>The function returns a <code>SingleCellExperiment</code> object containing corrected values for downstream analyses like clustering or visualization.
+Each column of <code>mnn.out</code> corresponds to a cell in one of the batches, while each row corresponds to an input gene in <code>chosen</code>.</p>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb378-1" data-line-number="1">mnn.out</a></code></pre></div>
+<pre><code>## class: SingleCellExperiment 
+## dim: 31232 6791 
+## metadata(2): merge.order merge.info
+## assays(1): reconstructed
+## rownames(31232): ENSG00000243485 ENSG00000237613 ...
+##   ENSG00000198695 ENSG00000198727
+## rowData names(1): rotation
+## colnames: NULL
+## colData names(1): batch
+## reducedDimNames(1): corrected
+## spikeNames(0):</code></pre>
+<p>The <code>batch</code> field in the column metadata contains a vector specifying the batch of origin of each cell.</p>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" data-line-number="1"><span class="kw">head</span>(mnn.out<span class="op">$</span>batch) </a></code></pre></div>
+<pre><code>## [1] 1 1 1 1 1 1</code></pre>
+<p>The <code>corrected</code> matrix in the <code>reducedDims</code> slot contains the low-dimensional corrected coordinates for all cells, which we will use in place of the PCs in our downstream analyses.</p>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" data-line-number="1"><span class="kw">dim</span>(<span class="kw">reducedDim</span>(mnn.out, <span class="st">&quot;corrected&quot;</span>))</a></code></pre></div>
+<pre><code>## [1] 6791   50</code></pre>
+<p>The <code>k</code> parameter is the most important and specifies the number of nearest neighbours to consider when defining MNN pairs.
+This should be interpreted as the minimum frequency of any shared cell type or state in each batch.</p>
+<ul>
+<li>Larger values will improve the precision of the correction by increasing the number of MNN pairs.</li>
+<li>Larger <code>k</code> provides some robustness to violations of the assumption that the batch vector is orthogonal to the biological subspace <span class="citation">(Haghverdi et al. <a href="#ref-haghverdi2018batch">2018</a>)</span>, by allowing the neighbour search to ignore biological variation in each batch to identify the correct MNN pairs.</li>
+<li>However, larger <code>k</code> can also reduce accuracy by allowing incorrect MNN pairs to form between cells of different types.</li>
+</ul>
+<p>We suggest starting with the default <code>k</code> and increasing it if one is confident that the same cell types are not adequately merged across batches.
+This is better than starting with a large <code>k</code> as incorrect merging is much harder to diagnose than insufficient merging.</p>
+</div>
+<div id="correction-diagnostics" class="section level3">
+<h3><span class="header-section-number">14.2.3</span> Correction diagnostics</h3>
+<div id="clustering-and-visualization" class="section level4">
+<h4><span class="header-section-number">14.2.3.1</span> Clustering and visualization</h4>
+<p>We use graph-based clustering on the low-dimensional corrected coordinates to obtain a partitioning of the cells that serves as a proxy for the population structure.
+If the batch effect is successfully corrected, clusters corresponding to shared cell types or states should contain cells from both batches.
+In this particular scenario, we expect that both PBMC populations will contain the same set of cell types, so all clusters should contain contributions from both batches.</p>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb384-2" data-line-number="2">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.out, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb384-3" data-line-number="3">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb384-4" data-line-number="4">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>mnn.out<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb384-5" data-line-number="5">tab</a></code></pre></div>
+<pre><code>##        Batch
+## Cluster    1    2
+##      1   152  181
+##      2   331  589
+##      3   531 1205
+##      4   277  502
+##      5   283  597
+##      6   617  579
+##      7   203  181
+##      8    13   51
+##      9    17   69
+##      10    7   18
+##      11   11   16
+##      12   18   61
+##      13  131   86
+##      14    3   36
+##      15    4    8
+##      16   11    3</code></pre>
+<p>We can also visualize the corrected coordinates using a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="integrating-datasets-1.html#fig:tsne-pbmc-corrected">14.1</a>).
+The presence of visual clusters containing cells from both batches provides a comforting illusion that the correction was successful.</p>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb386-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">0010101010</span>)</a>
+<a class="sourceLine" id="cb386-3" data-line-number="3">mnn.out &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.out, <span class="dt">use_dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb386-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb386-5" data-line-number="5">mnn.out<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(mnn.out<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb386-6" data-line-number="6"><span class="kw">plotTSNE</span>(mnn.out, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:tsne-pbmc-corrected"></span>
+<img src="P2_W10.data-integration_files/figure-html/tsne-pbmc-corrected-1.png" alt="$t$-SNE plot of the PBMC datasets after MNN correction. Each point is a cell that is colored according to its batch of origin." width="672" />
 <p class="caption">
-Figure 7.1: Simple MNN method. First two MNN coordinates (left) and UMAP derived from the full MNN coordinate set (right).
+Figure 14.1: <span class="math inline">\(t\)</span>-SNE plot of the PBMC datasets after MNN correction. Each point is a cell that is colored according to its batch of origin.
 </p>
 </div>
+<p>Needless to say, the mixing of cells from different batches is not an effective diagnostic when the batches involved actually contain unique cell subpopulations.
+If a cluster only contains cells from a single batch, one can always debate whether that is caused by a failure of the correction method or if there is truly a batch-specific population.
+For example, do batch-specific metabolic or differentiation states represent distinct subpopulations?
+Or should they be merged together?
+We will not attempt to answer this here, only noting that each batch correction algorithm will make different (and possibly inappropriate) decisions on what constitutes “shared” and “unique” populations.</p>
 </div>
-<div id="harmony" class="section level2">
-<h2><span class="header-section-number">12.3</span> Harmony</h2>
-<p>Harmony provides a unified framework for data visualization, analysis, and interpretation of scRNA-seq data. Included is a method for integrating different batches of scRNA-seq. This produces a new dimension reduction representation, saved as <code>HARMONY</code> within the <em>SingleCellExperiment</em> object, as shown below. Furthermore, this Harmony embedding can be used to produce a UMAP representation as well:</p>
-<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb303-1" data-line-number="1"><span class="kw">library</span>(harmony) <span class="co"># devtools::install_github(&#39;immunogenomics/harmony&#39;)</span></a>
-<a class="sourceLine" id="cb303-2" data-line-number="2"><span class="kw">library</span>(BiocSingular)</a>
-<a class="sourceLine" id="cb303-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb303-4" data-line-number="4">## create a new sce for harmony</a>
-<a class="sourceLine" id="cb303-5" data-line-number="5">sce_harmony &lt;-<span class="st"> </span>sce</a>
-<a class="sourceLine" id="cb303-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb303-7" data-line-number="7">## Add PCA to sce, then run Harmony as its dependent on PCA</a>
-<a class="sourceLine" id="cb303-8" data-line-number="8">sce_harmony &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce_harmony,</a>
-<a class="sourceLine" id="cb303-9" data-line-number="9">                      <span class="dt">feature_set =</span> hvg,</a>
-<a class="sourceLine" id="cb303-10" data-line-number="10">                      <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(),</a>
-<a class="sourceLine" id="cb303-11" data-line-number="11">                      <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
-<a class="sourceLine" id="cb303-12" data-line-number="12">sce_harmony &lt;-<span class="st"> </span><span class="kw">RunHarmony</span>(sce_harmony, <span class="dt">group.by.vars =</span> <span class="st">&quot;Sample&quot;</span>)</a>
-<a class="sourceLine" id="cb303-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb303-14" data-line-number="14">## Calculate UMAP on Harmony embeddings</a>
-<a class="sourceLine" id="cb303-15" data-line-number="15">sce_harmony &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce_harmony, <span class="dt">use_dimred =</span> <span class="st">&#39;HARMONY&#39;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb304-1" data-line-number="1">p1 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_harmony, <span class="st">&#39;HARMONY&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb304-2" data-line-number="2">p2 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_harmony, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb304-3" data-line-number="3"><span class="kw">wrap_plots</span>(p1, p2, <span class="dt">nrow =</span> <span class="dv">1</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-9"></span>
-<img src="P2_W08.data-integration_files/figure-html/unnamed-chunk-9-1.png" alt="Plot of the first two components of the Harmony embedding (left). UMAP calculated on the Harmony embeddings. (right)" width="672" />
-<p class="caption">
-Figure 12.1: Plot of the first two components of the Harmony embedding (left). UMAP calculated on the Harmony embeddings. (right)
-</p>
+<div id="percentage-of-variance-lost" class="section level4">
+<h4><span class="header-section-number">14.2.3.2</span> Percentage of variance lost</h4>
+<p>For <code>fastMNN()</code>, one useful diagnostic is the proportion of variance within each batch that is lost during MNN correction.
+Specifically, this refers to the within-batch variance that is removed during orthogonalization with respect to the average correction vector at each merge step.
+This is returned via the <code>lost.var</code> field in the metadata of <code>mnn.out</code>, which contains a matrix of the variance lost in each batch (column) at each merge step (row).</p>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb387-1" data-line-number="1"><span class="kw">metadata</span>(mnn.out)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
+<pre><code>##          [,1]     [,2]
+## [1,] 0.004368 0.003173</code></pre>
+<p>Large proportions of lost variance suggest that correction is removing genuine biological heterogeneity.
+This would occur due to violations of the assumption of orthogonality between the batch effect and the biological subspace <span class="citation">(Haghverdi et al. <a href="#ref-haghverdi2018batch">2018</a>)</span>.
+In this case, the proportion of lost variance is small, indicating that non-orthogonality is not a major concern.</p>
 </div>
 </div>
-<div id="advanced-mnn-workflow" class="section level2">
-<h2><span class="header-section-number">12.4</span> Advanced MNN Workflow</h2>
-<p>Here we work through a more advanced workflow using MNN as above, but this time walking through the various steps that are otherwise implicit within the <code>fastMNN()</code> function. While not always necessary, it may be informative for those interested in the finer details of a batch correction workflow. Note that this follows the</p>
-<p>For more details, we refer to the <a href="https://github.com/MarioniLab/compareSingleCell/"><code>compareSingleCell</code> vignette</a> vignette by Aaron Lun.</p>
-<!-- ### Feature Selection -->
-<!-- We briefly highlight feature selection within the preprocessing, as the choice of genes used in the integration can have an outsize effect on end result.  -->
-<!-- For brevity, here we use the `scran` package to identify the genes with biological coefficients of variation greater than zero, but leave the choice of method up to the reader. Note that, compared to the basic analysis workflow, we use the `multiBlockVar()` function and block on the origin (`pbmc3k` vs `pbmc4k`). This function models the variance of expression in each block separately. -->
-<!-- Additionally, we turn off weighting such that each sample contributes equally to the results, regardless of the number of cells per sample. This prevents one condition from biasing the combined statistics.  -->
-<!-- For more details, we refer to the [`compareSingleCell` merge](https://github.com/MarioniLab/compareSingleCell/blob/master/vignettes/embryo_merge.Rmd) vignette. -->
-<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb305-1" data-line-number="1">## create a new sce for advanced mnn</a>
-<a class="sourceLine" id="cb305-2" data-line-number="2">sce_mnn_advanced &lt;-<span class="st"> </span>sce</a></code></pre></div>
-<!-- ```{r} -->
-<!-- library(scran) -->
-<!-- dec <- multiBlockVar(sce_mnn_advanced, block = sce_mnn_advanced$Sample, -->
-<!--                      make.tech.trend = TRUE, -->
-<!--                      weighted = FALSE) -->
-<!-- hvg <- rownames(dec)[dec$bio > 0] -->
-<!-- ``` -->
-<!-- In this example, we get back 6001 genes. -->
-<!-- ```{r} -->
-<!-- hvg_subset <- hvg[1:1000] -->
-<!-- ``` -->
-<div id="dimensionality-reduction-2" class="section level3">
-<h3><span class="header-section-number">12.4.1</span> Dimensionality Reduction</h3>
-<p>Principal components analyses can be used to both reduce computational work and remove high-dimensional noise, as discussed in the <a href="https://bioconductor.org/packages/3.10/simpleSingleCell/vignettes/reads.html#denoising-expression-values-using-pca">simpleSingleCell vignette</a>.</p>
-<p>To accomplish this, the <code>multiBatchPCA()</code> function from <em>scran</em> ensures that each sample contributes equally to the new coordinate space. For further discussion on this point, see the <a href="https://bioconductor.org/packages/3.10/simpleSingleCell/vignettes/batch.html#hierarchical-merging">simpleSingleCell vignette</a> section on hierarchical merging.</p>
-<p>We then calculate the number of PCs to retain by comparing the variance explained per principal component versus the technical noise and total variance in the data. This will leave us with a subset of PCA components.</p>
-<p>Note that we will use the features selected from the preproprocessing step earlier in this chapter.</p>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb306-2" data-line-number="2"><span class="kw">library</span>(BiocSingular) <span class="co"># provide approximate pca via IrlbaParam()</span></a>
-<a class="sourceLine" id="cb306-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb306-4" data-line-number="4">## Calculate PCA by batch</a>
-<a class="sourceLine" id="cb306-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">1234</span>) <span class="co"># for Random/IrlbaParam backends</span></a>
-<a class="sourceLine" id="cb306-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb306-7" data-line-number="7">## run batchelor version of multiBatchPCA (use :: notation to override namespace)</a>
-<a class="sourceLine" id="cb306-8" data-line-number="8">pcs &lt;-<span class="st"> </span>batchelor<span class="op">::</span><span class="kw">multiBatchPCA</span>(sce_mnn_advanced,</a>
-<a class="sourceLine" id="cb306-9" data-line-number="9">                                <span class="dt">batch =</span> sce_mnn_advanced<span class="op">$</span>Sample,</a>
-<a class="sourceLine" id="cb306-10" data-line-number="10">                                <span class="dt">subset.row =</span> hvg,</a>
-<a class="sourceLine" id="cb306-11" data-line-number="11">                                <span class="dt">get.variance =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb306-12" data-line-number="12">                                <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(),</a>
-<a class="sourceLine" id="cb306-13" data-line-number="13">                                <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
-<a class="sourceLine" id="cb306-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb306-15" data-line-number="15">## Retain only the top PCs based on variance explained &gt; technical noise</a>
-<a class="sourceLine" id="cb306-16" data-line-number="16">retain &lt;-<span class="st"> </span><span class="kw">denoisePCANumber</span>(</a>
-<a class="sourceLine" id="cb306-17" data-line-number="17">    <span class="kw">metadata</span>(pcs)<span class="op">$</span>var.explained, <span class="co"># variance explained per PC.</span></a>
-<a class="sourceLine" id="cb306-18" data-line-number="18">    <span class="kw">sum</span>(dec[hvg, ]<span class="op">$</span>tech),       <span class="co"># technical noise in subset of genes.</span></a>
-<a class="sourceLine" id="cb306-19" data-line-number="19">    <span class="kw">metadata</span>(pcs)<span class="op">$</span>var.total      <span class="co"># total variance in the data</span></a>
-<a class="sourceLine" id="cb306-20" data-line-number="20">)</a>
-<a class="sourceLine" id="cb306-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb306-22" data-line-number="22">retain</a></code></pre></div>
-<pre><code>## [1] 3</code></pre>
-<p>From the number of PCs to retain, we can filter the PCs as follows:</p>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb308-1" data-line-number="1">## Subset PCA number of components up to the number in retain</a>
-<a class="sourceLine" id="cb308-2" data-line-number="2">top_pcs &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">as.list</span>(pcs), <span class="op">~</span><span class="st"> </span>.[, <span class="dv">1</span><span class="op">:</span>retain])</a></code></pre></div>
-<p>Then, using the retained components as input, we can input them directly into the <code>fastMNN()</code> method as follows, and furthermore produce a UMAP representation based on these MNN coordinates:</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb309-1" data-line-number="1">## Calculate MNN coordinates, add into reducedDims</a>
-<a class="sourceLine" id="cb309-2" data-line-number="2">mnn_advanced_out &lt;-<span class="st"> </span>batchelor<span class="op">::</span><span class="kw">fastMNN</span>(top_pcs<span class="op">$</span>pbmc3k,</a>
-<a class="sourceLine" id="cb309-3" data-line-number="3">                                       top_pcs<span class="op">$</span>pbmc4k,</a>
-<a class="sourceLine" id="cb309-4" data-line-number="4">                                       <span class="dt">pc.input =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb309-5" data-line-number="5"><span class="kw">reducedDim</span>(sce_mnn_advanced, <span class="st">&#39;MNN&#39;</span>) &lt;-<span class="st"> </span>mnn_advanced_out<span class="op">$</span>corrected</a>
-<a class="sourceLine" id="cb309-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb309-7" data-line-number="7">## Run UMAP on MNN coordinates</a>
-<a class="sourceLine" id="cb309-8" data-line-number="8">sce_mnn_advanced &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce_mnn_advanced, <span class="dt">use_dimred =</span> <span class="st">&#39;MNN&#39;</span>)</a></code></pre></div>
-<p>The MNN coordinates and the UMAP coordinates derived from them are visualized below:</p>
-<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb310-1" data-line-number="1">p1 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_mnn_advanced, <span class="st">&#39;MNN&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb310-2" data-line-number="2">p2 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_mnn_advanced, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb310-3" data-line-number="3"><span class="kw">wrap_plots</span>(p1, p2, <span class="dt">nrow =</span> <span class="dv">1</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-14"></span>
-<img src="P2_W08.data-integration_files/figure-html/unnamed-chunk-14-1.png" alt="Plot of first two MNN coordinates (left). UMAP calculated on the MNN coordinates (right). Colour denotes origin of sample." width="672" />
-<p class="caption">
-Figure 12.2: Plot of first two MNN coordinates (left). UMAP calculated on the MNN coordinates (right). Colour denotes origin of sample.
-</p>
 </div>
-<p>Comparing to the simpler MNN workflow shown above (which only used the <code>fastMNN()</code> function on the barely processed <em>SingleCellExperiment</em> class object <code>sce</code>), we see that the two results are fairly comparable, differing only by the number of principal components and the selected number of features (here we chose 1000 for computational efficacy; we leave it to the interested reader to explore the results with a larger feature space).</p>
-</div>
-</div>
-<div id="naive-method-without-correction" class="section level2">
-<h2><span class="header-section-number">12.5</span> Naive Method Without Correction</h2>
-<p>For completeness, we show here the results of performing the correction solely on the gene expression matrix.</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb311-1" data-line-number="1">## create a new sce for naive method</a>
-<a class="sourceLine" id="cb311-2" data-line-number="2">sce_naive &lt;-<span class="st"> </span>sce</a></code></pre></div>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb312-1" data-line-number="1">## run PCA on only the normalized gene expression data</a>
-<a class="sourceLine" id="cb312-2" data-line-number="2">sce_naive &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce_naive,</a>
-<a class="sourceLine" id="cb312-3" data-line-number="3">                    <span class="dt">feature_set =</span> hvg,</a>
-<a class="sourceLine" id="cb312-4" data-line-number="4">                    <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(),</a>
-<a class="sourceLine" id="cb312-5" data-line-number="5">                    <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
-<a class="sourceLine" id="cb312-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb312-7" data-line-number="7">## Run UMAP on the norm gene exp. derived PCA coordinates - use only top PCs</a>
-<a class="sourceLine" id="cb312-8" data-line-number="8">sce_naive &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce_naive, <span class="dt">use_dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb313-1" data-line-number="1">p1 &lt;-<span class="st"> </span><span class="kw">plotPCA</span>(sce_naive, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb313-2" data-line-number="2">p2 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_naive, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb313-3" data-line-number="3"><span class="kw">wrap_plots</span>(p1, p2, <span class="dt">nrow =</span> <span class="dv">1</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-17"></span>
-<img src="P2_W08.data-integration_files/figure-html/unnamed-chunk-17-1.png" alt="First two components of PCA calculated directly from the gene expression matrix (left). UMAP calculated on the PCA derived from the normalized gene expression matrix (right)." width="672" />
-<p class="caption">
-Figure 12.3: First two components of PCA calculated directly from the gene expression matrix (left). UMAP calculated on the PCA derived from the normalized gene expression matrix (right).
-</p>
-</div>
-<p>While the PCA looks well integrated, the UMAP representation - which encapsulates a fuller PCA space - distinctly shows the residual batch effect present.</p>
-</div>
-<div id="limma-batch-correction" class="section level2">
-<h2><span class="header-section-number">12.6</span> Limma Batch Correction</h2>
-<p>The <code>limma</code> package, a popular framework for the statistical analysis of RNA-seq, has a function <code>removeBatchEffect()</code> which will be used here to correct the normalized expression matrix <code>logcounts</code> across the two batches. The result will be assigned into the <code>assays</code> slot of the <code>sce</code> object as <code>limma_corrected</code>, and then used for PCA, saving the result in the <code>reducedDim</code> slot as <code>&quot;PCA_limma&quot;</code>.</p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb314-1" data-line-number="1">## create a new sce for limma method</a>
-<a class="sourceLine" id="cb314-2" data-line-number="2">sce_limma &lt;-<span class="st"> </span>sce</a></code></pre></div>
-<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb315-1" data-line-number="1"><span class="kw">library</span>(limma)</a>
-<a class="sourceLine" id="cb315-2" data-line-number="2">limma_corrected &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce_limma), <span class="dt">batch =</span> sce_limma<span class="op">$</span>Sample)</a>
-<a class="sourceLine" id="cb315-3" data-line-number="3"><span class="kw">assay</span>(sce_limma, <span class="st">&quot;logcounts_limma&quot;</span>) &lt;-<span class="st"> </span>limma_corrected ## add new assay</a>
-<a class="sourceLine" id="cb315-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb315-5" data-line-number="5">## calc a PCA on limma values; save separate to prevent overwriting</a>
-<a class="sourceLine" id="cb315-6" data-line-number="6">sce_limma &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce_limma,</a>
-<a class="sourceLine" id="cb315-7" data-line-number="7">                    <span class="dt">feature_set =</span> hvg,</a>
-<a class="sourceLine" id="cb315-8" data-line-number="8">                    <span class="dt">exprs_values =</span> <span class="st">&quot;logcounts_limma&quot;</span>,</a>
-<a class="sourceLine" id="cb315-9" data-line-number="9">                    <span class="dt">BSPARAM =</span> BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>(),</a>
-<a class="sourceLine" id="cb315-10" data-line-number="10">                    <span class="dt">BPPARAM =</span> BiocParallel<span class="op">::</span><span class="kw">MulticoreParam</span>())</a>
-<a class="sourceLine" id="cb315-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb315-12" data-line-number="12">## run UMAP; save separate to prevent overwriting</a>
-<a class="sourceLine" id="cb315-13" data-line-number="13">sce_limma &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce_limma, <span class="dt">use_dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a></code></pre></div>
-<p>The resulting PCA and UMAP from the limma batch correction method are shown below:</p>
-<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb316-1" data-line-number="1">p1 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_limma, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb316-2" data-line-number="2">p2 &lt;-<span class="st"> </span><span class="kw">plotReducedDim</span>(sce_limma, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;Sample&#39;</span>)</a>
-<a class="sourceLine" id="cb316-3" data-line-number="3"><span class="kw">wrap_plots</span>(p1, p2, <span class="dt">nrow =</span> <span class="dv">1</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="P2_W08.data-integration_files/figure-html/unnamed-chunk-20-1.png" alt="PCA calculated on the limma batch-corrected gene expression matrix (left). UMAP calculated via the PCA derived from limma batch-corrected gene expression matrix (right)." width="672" />
-<p class="caption">
-Figure 12.4: PCA calculated on the limma batch-corrected gene expression matrix (left). UMAP calculated via the PCA derived from limma batch-corrected gene expression matrix (right).
-</p>
-</div>
-</div>
-<div id="session-info-6" class="section level2">
-<h2><span class="header-section-number">12.7</span> Session Info</h2>
+<div id="session-info-8" class="section level2">
+<h2><span class="header-section-number">14.3</span> Session Info</h2>
 <pre><code>## &lt;button class=&quot;aaron-collapse&quot;&gt;View session info&lt;/button&gt;
 ## &lt;div class=&quot;aaron-content&quot;&gt;
+## ```
 ## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 14.04.6 LTS
@@ -661,69 +685,80 @@ Figure 12.4: PCA calculated on the limma batch-corrected gene expression matrix 
 ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
-## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] limma_3.41.6                BiocSingular_1.1.5         
-##  [3] harmony_0.99.9              Rcpp_1.0.1                 
-##  [5] patchwork_0.0.1             batchelor_1.1.4            
-##  [7] scran_1.13.9                scater_1.13.9              
-##  [9] ggplot2_3.2.0               purrr_0.3.2                
-## [11] TENxPBMCData_1.3.0          HDF5Array_1.13.4           
-## [13] rhdf5_2.29.0                SingleCellExperiment_1.5.3 
-## [15] SummarizedExperiment_1.15.5 DelayedArray_0.11.4        
-## [17] BiocParallel_1.19.0         matrixStats_0.54.0         
-## [19] Biobase_2.45.0              GenomicRanges_1.37.14      
-## [21] GenomeInfoDb_1.21.1         IRanges_2.19.10            
-## [23] S4Vectors_0.23.17           BiocGenerics_0.31.5        
-## [25] BiocStyle_2.13.2            Cairo_1.5-10               
+##  [1] scater_1.13.9               ggplot2_3.2.0              
+##  [3] scran_1.13.9                HDF5Array_1.13.4           
+##  [5] rhdf5_2.29.0                batchelor_1.1.4            
+##  [7] SingleCellExperiment_1.7.0  SummarizedExperiment_1.15.5
+##  [9] DelayedArray_0.11.4         BiocParallel_1.19.0        
+## [11] matrixStats_0.54.0          Biobase_2.45.0             
+## [13] GenomicRanges_1.37.14       GenomeInfoDb_1.21.1        
+## [15] IRanges_2.19.10             S4Vectors_0.23.17          
+## [17] BiocGenerics_0.31.5         BiocStyle_2.13.2           
+## [19] Cairo_1.5-10               
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-6                  bit64_0.9-7                  
-##  [3] httr_1.4.0                    dynamicTreeCut_1.63-1        
-##  [5] tools_3.6.0                   backports_1.1.4              
-##  [7] R6_2.4.0                      irlba_2.3.3                  
-##  [9] vipor_0.4.5                   DBI_1.0.0                    
-## [11] lazyeval_0.2.2                colorspace_1.4-1             
-## [13] withr_2.1.2                   tidyselect_0.2.5             
-## [15] gridExtra_2.3                 bit_1.1-14                   
-## [17] curl_4.0                      compiler_3.6.0               
-## [19] BiocNeighbors_1.3.2           bookdown_0.12                
-## [21] scales_1.0.0                  rappdirs_0.3.1               
-## [23] stringr_1.4.0                 digest_0.6.20                
-## [25] rmarkdown_1.14                XVector_0.25.0               
-## [27] pkgconfig_2.0.2               htmltools_0.3.6              
-## [29] dbplyr_1.4.2                  rlang_0.4.0                  
-## [31] RSQLite_2.1.1                 shiny_1.3.2                  
-## [33] DelayedMatrixStats_1.7.1      dplyr_0.8.3                  
-## [35] RCurl_1.95-4.12               magrittr_1.5                 
-## [37] GenomeInfoDbData_1.2.1        Matrix_1.2-17                
-## [39] ggbeeswarm_0.6.0              munsell_0.5.0                
-## [41] Rhdf5lib_1.7.2                viridis_0.5.1                
-## [43] edgeR_3.27.6                  stringi_1.4.3                
-## [45] yaml_2.2.0                    zlibbioc_1.31.0              
-## [47] BiocFileCache_1.9.1           AnnotationHub_2.17.3         
-## [49] grid_3.6.0                    blob_1.2.0                   
-## [51] dqrng_0.2.1                   promises_1.0.1               
-## [53] ExperimentHub_1.11.1          crayon_1.3.4                 
-## [55] lattice_0.20-38               cowplot_1.0.0                
-## [57] locfit_1.5-9.1                zeallot_0.1.0                
-## [59] knitr_1.23                    pillar_1.4.2                 
-## [61] igraph_1.2.4.1                codetools_0.2-16             
-## [63] glue_1.3.1                    evaluate_0.14                
-## [65] BiocManager_1.30.4            vctrs_0.2.0                  
-## [67] httpuv_1.5.1                  gtable_0.3.0                 
-## [69] assertthat_0.2.1              xfun_0.8                     
-## [71] rsvd_1.0.1                    mime_0.7                     
-## [73] xtable_1.8-4                  later_0.8.0                  
-## [75] viridisLite_0.3.0             tibble_2.1.3                 
-## [77] AnnotationDbi_1.47.0          beeswarm_0.2.3               
-## [79] memoise_1.1.0                 statmod_1.4.32               
-## [81] interactiveDisplayBase_1.23.0
+##  [1] viridis_0.5.1            dynamicTreeCut_1.63-1   
+##  [3] edgeR_3.27.9             BiocSingular_1.1.5      
+##  [5] viridisLite_0.3.0        DelayedMatrixStats_1.7.1
+##  [7] assertthat_0.2.1         statmod_1.4.32          
+##  [9] BiocManager_1.30.4       dqrng_0.2.1             
+## [11] GenomeInfoDbData_1.2.1   vipor_0.4.5             
+## [13] yaml_2.2.0               pillar_1.4.2            
+## [15] lattice_0.20-38          glue_1.3.1              
+## [17] limma_3.41.15            digest_0.6.20           
+## [19] XVector_0.25.0           colorspace_1.4-1        
+## [21] htmltools_0.3.6          Matrix_1.2-17           
+## [23] pkgconfig_2.0.2          bookdown_0.12           
+## [25] zlibbioc_1.31.0          purrr_0.3.2             
+## [27] scales_1.0.0             tibble_2.1.3            
+## [29] withr_2.1.2              lazyeval_0.2.2          
+## [31] magrittr_1.5             crayon_1.3.4            
+## [33] evaluate_0.14            beeswarm_0.2.3          
+## [35] tools_3.6.0              stringr_1.4.0           
+## [37] Rhdf5lib_1.7.3           munsell_0.5.0           
+## [39] locfit_1.5-9.1           irlba_2.3.3             
+## [41] compiler_3.6.0           rsvd_1.0.2              
+## [43] rlang_0.4.0              grid_3.6.0              
+## [45] RCurl_1.95-4.12          BiocNeighbors_1.3.3     
+## [47] igraph_1.2.4.1           bitops_1.0-6            
+## [49] rmarkdown_1.14           gtable_0.3.0            
+## [51] R6_2.4.0                 gridExtra_2.3           
+## [53] knitr_1.23               dplyr_0.8.3             
+## [55] stringi_1.4.3            ggbeeswarm_0.6.0        
+## [57] Rcpp_1.0.2               tidyselect_0.2.5        
+## [59] xfun_0.8                
+## ```
 ## &lt;/div&gt;</code></pre>
 
 </div>
+</div>
+<h3> Bibliography</h3>
+<div id="refs" class="references">
+<div id="ref-butler2018integrating">
+<p>Butler, A., P. Hoffman, P. Smibert, E. Papalexi, and R. Satija. 2018. “Integrating single-cell transcriptomic data across different conditions, technologies, and species.” <em>Nat. Biotechnol.</em> 36 (5):411–20.</p>
+</div>
+<div id="ref-haghverdi2018batch">
+<p>Haghverdi, L., A. T. L. Lun, M. D. Morgan, and J. C. Marioni. 2018. “Batch effects in single-cell RNA-sequencing data are corrected by matching mutual nearest neighbors.” <em>Nat. Biotechnol.</em> 36 (5):421–27.</p>
+</div>
+<div id="ref-leek2012sva">
+<p>Leek, J. T., W. E. Johnson, H. S. Parker, A. E. Jaffe, and J. D. Storey. 2012. “The sva package for removing batch effects and other unwanted variation in high-throughput experiments.” <em>Bioinformatics</em> 28 (6):882–83.</p>
+</div>
+<div id="ref-lin2019scmerge">
+<p>Lin, Y., S. Ghazanfar, K. Y. X. Wang, J. A. Gagnon-Bartsch, K. K. Lo, X. Su, Z. G. Han, et al. 2019. “scMerge leverages factor analysis, stable expression, and pseudoreplication to merge multiple single-cell RNA-seq datasets.” <em>Proc. Natl. Acad. Sci. U.S.A.</em> 116 (20):9775–84.</p>
+</div>
+<div id="ref-ritchie2015limma">
+<p>Ritchie, M. E., B. Phipson, D. Wu, Y. Hu, C. W. Law, W. Shi, and G. K. Smyth. 2015. “limma powers differential expression analyses for RNA-sequencing and microarray studies.” <em>Nucleic Acids Res.</em> 43 (7):e47.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="19">
+<li id="fn19"><p>As we shall see later, this step can be much, much, much more painful. As is often said, biologists would rather share a toothbrush than nomenclature.<a href="integrating-datasets-1.html#fnref19" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
             </section>
 
@@ -761,7 +796,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W08.data-integration.Rmd",
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W10.data-integration.Rmd",
 "text": "Edit"
 },
 "history": {

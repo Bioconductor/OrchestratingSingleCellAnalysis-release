@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 11 Marker gene detection | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <title>Chapter 13 Marker gene detection | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 11 Marker gene detection | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:title" content="Chapter 13 Marker gene detection | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
   
   
@@ -16,14 +16,14 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 11 Marker gene detection | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta name="twitter:title" content="Chapter 13 Marker gene detection | Orchestrating Single-Cell Analysis with Bioconductor" />
   
   <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
   
 
 
 
-<meta name="date" content="2019-07-23" />
+<meta name="date" content="2019-07-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -237,7 +237,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>8.2</b> Choice of QC metrics</a></li>
 <li class="chapter" data-level="8.3" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>8.3</b> Identifying low-quality cells</a><ul>
 <li class="chapter" data-level="8.3.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>8.3.1</b> With fixed thresholds</a></li>
-<li class="chapter" data-level="8.3.2" data-path="quality-control.html"><a href="quality-control.html#with-adaptive-thresholds"><i class="fa fa-check"></i><b>8.3.2</b> With adaptive thresholds</a></li>
+<li class="chapter" data-level="8.3.2" data-path="quality-control.html"><a href="quality-control.html#quality-control-outlier"><i class="fa fa-check"></i><b>8.3.2</b> With adaptive thresholds</a></li>
 <li class="chapter" data-level="8.3.3" data-path="quality-control.html"><a href="quality-control.html#considering-experimental-factors"><i class="fa fa-check"></i><b>8.3.3</b> Considering experimental factors</a></li>
 </ul></li>
 <li class="chapter" data-level="8.4" data-path="quality-control.html"><a href="quality-control.html#checking-diagnostic-plots"><i class="fa fa-check"></i><b>8.4</b> Checking diagnostic plots</a></li>
@@ -259,83 +259,114 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.4" data-path="normalization.html"><a href="normalization.html#normalization-by-deconvolution"><i class="fa fa-check"></i><b>9.4</b> Normalization by deconvolution</a></li>
 <li class="chapter" data-level="9.5" data-path="normalization.html"><a href="normalization.html#normalization-by-spike-ins"><i class="fa fa-check"></i><b>9.5</b> Normalization by spike-ins</a></li>
 <li class="chapter" data-level="9.6" data-path="normalization.html"><a href="normalization.html#putting-it-all-together"><i class="fa fa-check"></i><b>9.6</b> Putting it all together</a></li>
-<li class="chapter" data-level="9.7" data-path="normalization.html"><a href="normalization.html#why-log-transform"><i class="fa fa-check"></i><b>9.7</b> Why (log-)transform?</a></li>
+<li class="chapter" data-level="9.7" data-path="normalization.html"><a href="normalization.html#normalization-transformation"><i class="fa fa-check"></i><b>9.7</b> Why (log-)transform?</a></li>
 <li class="chapter" data-level="9.8" data-path="normalization.html"><a href="normalization.html#session-info-3"><i class="fa fa-check"></i><b>9.8</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>10</b> Clustering</a><ul>
-<li class="chapter" data-level="10.1" data-path="clustering-2.html"><a href="clustering-2.html#motivation-2"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
-<li class="chapter" data-level="10.2" data-path="clustering-2.html"><a href="clustering-2.html#comments-on-truth"><i class="fa fa-check"></i><b>10.2</b> Comments on Truth</a></li>
-<li class="chapter" data-level="10.3" data-path="clustering-2.html"><a href="clustering-2.html#graph-based-clustering"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
-<li class="chapter" data-level="10.3.1" data-path="clustering-2.html"><a href="clustering-2.html#background-1"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
-<li class="chapter" data-level="10.3.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
-<li class="chapter" data-level="10.3.3" data-path="clustering-2.html"><a href="clustering-2.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
-<li class="chapter" data-level="10.3.4" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
+<li class="chapter" data-level="10" data-path="feature-selection-2.html"><a href="feature-selection-2.html"><i class="fa fa-check"></i><b>10</b> Feature selection</a><ul>
+<li class="chapter" data-level="10.1" data-path="feature-selection-2.html"><a href="feature-selection-2.html#motivation-2"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
+<li class="chapter" data-level="10.2" data-path="feature-selection-2.html"><a href="feature-selection-2.html#quantifying-per-gene-variation"><i class="fa fa-check"></i><b>10.2</b> Quantifying per-gene variation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="feature-selection-2.html"><a href="feature-selection-2.html#variance-of-the-log-counts"><i class="fa fa-check"></i><b>10.2.1</b> Variance of the log-counts</a></li>
+<li class="chapter" data-level="10.2.2" data-path="feature-selection-2.html"><a href="feature-selection-2.html#coefficient-of-variation"><i class="fa fa-check"></i><b>10.2.2</b> Coefficient of variation</a></li>
+<li class="chapter" data-level="10.2.3" data-path="feature-selection-2.html"><a href="feature-selection-2.html#sec:spikeins"><i class="fa fa-check"></i><b>10.2.3</b> Quantifying technical noise</a></li>
+<li class="chapter" data-level="10.2.4" data-path="feature-selection-2.html"><a href="feature-selection-2.html#accounting-for-blocking-factors"><i class="fa fa-check"></i><b>10.2.4</b> Accounting for blocking factors</a></li>
 </ul></li>
-<li class="chapter" data-level="10.4" data-path="clustering-2.html"><a href="clustering-2.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="clustering-2.html"><a href="clustering-2.html#background-2"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
-<li class="chapter" data-level="10.4.2" data-path="clustering-2.html"><a href="clustering-2.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
-<li class="chapter" data-level="10.4.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
+<li class="chapter" data-level="10.3" data-path="feature-selection-2.html"><a href="feature-selection-2.html#selecting-highly-variable-genes"><i class="fa fa-check"></i><b>10.3</b> Selecting highly variable genes</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="feature-selection-2.html"><a href="feature-selection-2.html#based-on-the-largest-metrics"><i class="fa fa-check"></i><b>10.3.1</b> Based on the largest metrics</a></li>
+<li class="chapter" data-level="10.3.2" data-path="feature-selection-2.html"><a href="feature-selection-2.html#based-on-a-fixed-threshold"><i class="fa fa-check"></i><b>10.3.2</b> Based on a fixed threshold</a></li>
+<li class="chapter" data-level="10.3.3" data-path="feature-selection-2.html"><a href="feature-selection-2.html#keeping-all-genes-above-the-trend"><i class="fa fa-check"></i><b>10.3.3</b> Keeping all genes above the trend</a></li>
 </ul></li>
-<li class="chapter" data-level="10.5" data-path="clustering-2.html"><a href="clustering-2.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
-<li class="chapter" data-level="10.5.1" data-path="clustering-2.html"><a href="clustering-2.html#background-3"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
-<li class="chapter" data-level="10.5.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
-<li class="chapter" data-level="10.5.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
+<li class="chapter" data-level="10.4" data-path="feature-selection-2.html"><a href="feature-selection-2.html#putting-it-all-together-1"><i class="fa fa-check"></i><b>10.4</b> Putting it all together</a></li>
+<li class="chapter" data-level="10.5" data-path="feature-selection-2.html"><a href="feature-selection-2.html#session-info-4"><i class="fa fa-check"></i><b>10.5</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="10.6" data-path="clustering-2.html"><a href="clustering-2.html#session-info-4"><i class="fa fa-check"></i><b>10.6</b> Session Info</a></li>
+<li class="chapter" data-level="11" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html"><i class="fa fa-check"></i><b>11</b> Dimensionality reduction</a><ul>
+<li class="chapter" data-level="11.1" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#overview-1"><i class="fa fa-check"></i><b>11.1</b> Overview</a></li>
+<li class="chapter" data-level="11.2" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#principal-components-analysis"><i class="fa fa-check"></i><b>11.2</b> Principal components analysis</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#background-1"><i class="fa fa-check"></i><b>11.2.1</b> Background</a></li>
+<li class="chapter" data-level="11.2.2" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#performing-the-pca"><i class="fa fa-check"></i><b>11.2.2</b> Performing the PCA</a></li>
+<li class="chapter" data-level="11.2.3" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#choosing-the-number-of-pcs"><i class="fa fa-check"></i><b>11.2.3</b> Choosing the number of PCs</a></li>
+<li class="chapter" data-level="11.2.4" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#putting-it-together"><i class="fa fa-check"></i><b>11.2.4</b> Putting it together</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>11</b> Marker gene detection</a><ul>
-<li class="chapter" data-level="11.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-3"><i class="fa fa-check"></i><b>11.1</b> Motivation</a></li>
-<li class="chapter" data-level="11.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>11.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
-<li class="chapter" data-level="11.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>11.2.1</b> Standard application</a></li>
-<li class="chapter" data-level="11.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>11.2.2</b> Using the log-fold change</a></li>
-<li class="chapter" data-level="11.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>11.2.3</b> Finding cluster-specific markers</a></li>
+<li class="chapter" data-level="11.3" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>11.3</b> Dimensionality reduction for visualization</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#motivation-4"><i class="fa fa-check"></i><b>11.3.1</b> Motivation</a></li>
+<li class="chapter" data-level="11.3.2" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#visualizating-with-pca"><i class="fa fa-check"></i><b>11.3.2</b> Visualizating with PCA</a></li>
+<li class="chapter" data-level="11.3.3" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>11.3.3</b> t-stochastic neighbor embedding</a></li>
+<li class="chapter" data-level="11.3.4" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>11.3.4</b> Uniform manifold approximation and projection</a></li>
+<li class="chapter" data-level="11.3.5" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#interpreting-the-plots"><i class="fa fa-check"></i><b>11.3.5</b> Interpreting the plots</a></li>
 </ul></li>
-<li class="chapter" data-level="11.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>11.3</b> Alternative testing regimes</a><ul>
-<li class="chapter" data-level="11.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>11.3.1</b> Using the Wilcoxon rank sum test</a></li>
-<li class="chapter" data-level="11.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>11.3.2</b> Using a binomial test</a></li>
-<li class="chapter" data-level="11.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>11.3.3</b> Using custom DE methods</a></li>
+<li class="chapter" data-level="11.4" data-path="dimensionality-reduction-2.html"><a href="dimensionality-reduction-2.html#session-info-5"><i class="fa fa-check"></i><b>11.4</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="11.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#handling-blocking-factors"><i class="fa fa-check"></i><b>11.4</b> Handling blocking factors</a></li>
-<li class="chapter" data-level="11.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>11.5</b> Using the <code>block=</code> argument</a></li>
-<li class="chapter" data-level="11.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>11.6</b> Using the <code>design=</code> argument</a></li>
-<li class="chapter" data-level="11.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>11.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
-<li class="chapter" data-level="11.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>11.7.1</b> From data snooping</a></li>
-<li class="chapter" data-level="11.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#nature-of-replication"><i class="fa fa-check"></i><b>11.7.2</b> Nature of replication</a></li>
+<li class="chapter" data-level="12" data-path="clustering-2.html"><a href="clustering-2.html"><i class="fa fa-check"></i><b>12</b> Clustering</a><ul>
+<li class="chapter" data-level="12.1" data-path="clustering-2.html"><a href="clustering-2.html#motivation-5"><i class="fa fa-check"></i><b>12.1</b> Motivation</a></li>
+<li class="chapter" data-level="12.2" data-path="clustering-2.html"><a href="clustering-2.html#comments-on-truth"><i class="fa fa-check"></i><b>12.2</b> Comments on Truth</a></li>
+<li class="chapter" data-level="12.3" data-path="clustering-2.html"><a href="clustering-2.html#graph-based-clustering"><i class="fa fa-check"></i><b>12.3</b> Graph-based clustering</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="clustering-2.html"><a href="clustering-2.html#background-2"><i class="fa fa-check"></i><b>12.3.1</b> Background</a></li>
+<li class="chapter" data-level="12.3.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation"><i class="fa fa-check"></i><b>12.3.2</b> Implementation</a></li>
+<li class="chapter" data-level="12.3.3" data-path="clustering-2.html"><a href="clustering-2.html#other-parameters"><i class="fa fa-check"></i><b>12.3.3</b> Other parameters</a></li>
+<li class="chapter" data-level="12.3.4" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>12.3.4</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="11.8" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-5"><i class="fa fa-check"></i><b>11.8</b> Session Info</a></li>
+<li class="chapter" data-level="12.4" data-path="clustering-2.html"><a href="clustering-2.html#k-means-clustering"><i class="fa fa-check"></i><b>12.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="clustering-2.html"><a href="clustering-2.html#background-3"><i class="fa fa-check"></i><b>12.4.1</b> Background</a></li>
+<li class="chapter" data-level="12.4.2" data-path="clustering-2.html"><a href="clustering-2.html#base-implementation"><i class="fa fa-check"></i><b>12.4.2</b> Base implementation</a></li>
+<li class="chapter" data-level="12.4.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>12.4.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>12</b> Integrating Datasets</a><ul>
-<li class="chapter" data-level="12.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#preprocessing-1"><i class="fa fa-check"></i><b>12.1</b> Preprocessing</a></li>
-<li class="chapter" data-level="12.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#fast-mnn"><i class="fa fa-check"></i><b>12.2</b> Fast MNN</a></li>
-<li class="chapter" data-level="12.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#harmony"><i class="fa fa-check"></i><b>12.3</b> Harmony</a></li>
-<li class="chapter" data-level="12.4" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#advanced-mnn-workflow"><i class="fa fa-check"></i><b>12.4</b> Advanced MNN Workflow</a><ul>
-<li class="chapter" data-level="12.4.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>12.4.1</b> Dimensionality Reduction</a></li>
+<li class="chapter" data-level="12.5" data-path="clustering-2.html"><a href="clustering-2.html#hierarchical-clustering"><i class="fa fa-check"></i><b>12.5</b> Hierarchical clustering</a><ul>
+<li class="chapter" data-level="12.5.1" data-path="clustering-2.html"><a href="clustering-2.html#background-4"><i class="fa fa-check"></i><b>12.5.1</b> Background</a></li>
+<li class="chapter" data-level="12.5.2" data-path="clustering-2.html"><a href="clustering-2.html#implementation-1"><i class="fa fa-check"></i><b>12.5.2</b> Implementation</a></li>
+<li class="chapter" data-level="12.5.3" data-path="clustering-2.html"><a href="clustering-2.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>12.5.3</b> Assessing cluster separation</a></li>
 </ul></li>
-<li class="chapter" data-level="12.5" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#naive-method-without-correction"><i class="fa fa-check"></i><b>12.5</b> Naive Method Without Correction</a></li>
-<li class="chapter" data-level="12.6" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#limma-batch-correction"><i class="fa fa-check"></i><b>12.6</b> Limma Batch Correction</a></li>
-<li class="chapter" data-level="12.7" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#session-info-6"><i class="fa fa-check"></i><b>12.7</b> Session Info</a></li>
+<li class="chapter" data-level="12.6" data-path="clustering-2.html"><a href="clustering-2.html#session-info-6"><i class="fa fa-check"></i><b>12.6</b> Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>13</b> Sharing and Interactive Interfaces</a><ul>
-<li class="chapter" data-level="13.1" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html#session-info-7"><i class="fa fa-check"></i><b>13.1</b> Session Info</a></li>
+<li class="chapter" data-level="13" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>13</b> Marker gene detection</a><ul>
+<li class="chapter" data-level="13.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-6"><i class="fa fa-check"></i><b>13.1</b> Motivation</a></li>
+<li class="chapter" data-level="13.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>13.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
+<li class="chapter" data-level="13.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>13.2.1</b> Standard application</a></li>
+<li class="chapter" data-level="13.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>13.2.2</b> Using the log-fold change</a></li>
+<li class="chapter" data-level="13.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>13.2.3</b> Finding cluster-specific markers</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>14</b> Adaptations for Large-scale Data</a><ul>
-<li class="chapter" data-level="14.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>14.1</b> Approximate Methods</a></li>
-<li class="chapter" data-level="14.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>14.2</b> Parallelization</a></li>
-<li class="chapter" data-level="14.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>14.3</b> On-Disk Data</a></li>
-<li class="chapter" data-level="14.4" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-8"><i class="fa fa-check"></i><b>14.4</b> Session Info</a></li>
+<li class="chapter" data-level="13.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>13.3</b> Alternative testing regimes</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>13.3.1</b> Using the Wilcoxon rank sum test</a></li>
+<li class="chapter" data-level="13.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>13.3.2</b> Using a binomial test</a></li>
+<li class="chapter" data-level="13.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>13.3.3</b> Using custom DE methods</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#handling-blocking-factors"><i class="fa fa-check"></i><b>13.4</b> Handling blocking factors</a></li>
+<li class="chapter" data-level="13.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>13.5</b> Using the <code>block=</code> argument</a></li>
+<li class="chapter" data-level="13.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>13.6</b> Using the <code>design=</code> argument</a></li>
+<li class="chapter" data-level="13.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>13.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
+<li class="chapter" data-level="13.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>13.7.1</b> From data snooping</a></li>
+<li class="chapter" data-level="13.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#nature-of-replication"><i class="fa fa-check"></i><b>13.7.2</b> Nature of replication</a></li>
+</ul></li>
+<li class="chapter" data-level="13.8" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-7"><i class="fa fa-check"></i><b>13.8</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html"><i class="fa fa-check"></i><b>14</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="14.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#motivation-7"><i class="fa fa-check"></i><b>14.1</b> Motivation</a></li>
+<li class="chapter" data-level="14.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#simple-two-batch-example"><i class="fa fa-check"></i><b>14.2</b> Simple two batch example</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#setting-up-the-data-1"><i class="fa fa-check"></i><b>14.2.1</b> Setting up the data</a></li>
+<li class="chapter" data-level="14.2.2" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#performing-mnn-correction"><i class="fa fa-check"></i><b>14.2.2</b> Performing MNN correction</a></li>
+<li class="chapter" data-level="14.2.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#correction-diagnostics"><i class="fa fa-check"></i><b>14.2.3</b> Correction diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="integrating-datasets-1.html"><a href="integrating-datasets-1.html#session-info-8"><i class="fa fa-check"></i><b>14.3</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html"><i class="fa fa-check"></i><b>15</b> Sharing and Interactive Interfaces</a><ul>
+<li class="chapter" data-level="15.1" data-path="sharing-and-interactive-interfaces.html"><a href="sharing-and-interactive-interfaces.html#session-info-9"><i class="fa fa-check"></i><b>15.1</b> Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>16</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="16.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>16.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="16.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>16.2</b> Parallelization</a></li>
+<li class="chapter" data-level="16.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>16.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="16.4" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-10"><i class="fa fa-check"></i><b>16.4</b> Session Info</a></li>
 </ul></li>
 <li class="part"><span><b>III Appendix</b></span></li>
-<li class="chapter" data-level="15" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>15</b> About the Data</a><ul>
-<li class="chapter" data-level="15.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>15.1</b> 10X Genomics PBMC Data</a></li>
-<li class="chapter" data-level="15.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>15.2</b> Cellbench_data</a></li>
+<li class="chapter" data-level="17" data-path="about-the-data.html"><a href="about-the-data.html"><i class="fa fa-check"></i><b>17</b> About the Data</a><ul>
+<li class="chapter" data-level="17.1" data-path="about-the-data.html"><a href="about-the-data.html#x-genomics-pbmc-data"><i class="fa fa-check"></i><b>17.1</b> 10X Genomics PBMC Data</a></li>
+<li class="chapter" data-level="17.2" data-path="about-the-data.html"><a href="about-the-data.html#cellbench_data"><i class="fa fa-check"></i><b>17.2</b> Cellbench_data</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>16</b> About the Contributors</a><ul>
-<li class="chapter" data-level="16.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>16.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
-<li class="chapter" data-level="16.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>16.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
-<li class="chapter" data-level="16.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>16.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
-<li class="chapter" data-level="16.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>16.0.4</b> <em>Aaron Lun, PhD</em></a></li>
+<li class="chapter" data-level="18" data-path="about-the-contributors.html"><a href="about-the-contributors.html"><i class="fa fa-check"></i><b>18</b> About the Contributors</a><ul>
+<li class="chapter" data-level="18.0.1" data-path="about-the-contributors.html"><a href="about-the-contributors.html#stephanie-hicks-phd"><i class="fa fa-check"></i><b>18.0.1</b> <em>Stephanie Hicks, PhD</em></a></li>
+<li class="chapter" data-level="18.0.2" data-path="about-the-contributors.html"><a href="about-the-contributors.html#raphael-gottardo-phd"><i class="fa fa-check"></i><b>18.0.2</b> <em>Raphael Gottardo, PhD</em></a></li>
+<li class="chapter" data-level="18.0.3" data-path="about-the-contributors.html"><a href="about-the-contributors.html#robert-amezquita-phd"><i class="fa fa-check"></i><b>18.0.3</b> <em>Robert Amezquita, PhD</em></a></li>
+<li class="chapter" data-level="18.0.4" data-path="about-the-contributors.html"><a href="about-the-contributors.html#aaron-lun-phd"><i class="fa fa-check"></i><b>18.0.4</b> <em>Aaron Lun, PhD</em></a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="bibliography.html"><a href="bibliography.html"><i class="fa fa-check"></i><b>17</b> Bibliography</a></li>
+<li class="chapter" data-level="19" data-path="bibliography.html"><a href="bibliography.html"><i class="fa fa-check"></i><b>19</b> Bibliography</a></li>
 <li class="divider"></li>
 <li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
 
@@ -357,7 +388,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="marker-gene-detection" class="section level1">
-<h1><span class="header-section-number">Chapter 11</span> Marker gene detection</h1>
+<h1><span class="header-section-number">Chapter 13</span> Marker gene detection</h1>
 <script>
 document.addEventListener("click", function (event) {
     if (event.target.classList.contains("aaron-collapse")) {
@@ -391,8 +422,8 @@ document.addEventListener("click", function (event) {
   background-color: #f1f1f1;
 }
 </style>
-<div id="motivation-3" class="section level2">
-<h2><span class="header-section-number">11.1</span> Motivation</h2>
+<div id="motivation-6" class="section level2">
+<h2><span class="header-section-number">13.1</span> Motivation</h2>
 <p>To interpret our clustering results from Chapter ???, we identify the genes that drive separation between clusters.
 These marker genes allow us to assign biological meaning to each cluster based on their functional annotation.
 In the most obvious case, the marker genes for each cluster are <em>a priori</em> associated with particular cell types, allowing us to treat the clustering as a proxy for cell type identity.
@@ -406,65 +437,65 @@ We will demonstrate using the 10X PBMC dataset:</p>
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb249-1" data-line-number="1">### loading <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-2" data-line-number="2"><span class="kw">library</span>(BiocFileCache)</a>
-<a class="sourceLine" id="cb249-3" data-line-number="3">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb249-4" data-line-number="4">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
-<a class="sourceLine" id="cb249-5" data-line-number="5">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
-<a class="sourceLine" id="cb249-6" data-line-number="6"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
-<a class="sourceLine" id="cb249-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb249-8" data-line-number="8"><span class="kw">library</span>(DropletUtils)</a>
-<a class="sourceLine" id="cb249-9" data-line-number="9">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
-<a class="sourceLine" id="cb249-10" data-line-number="10">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb249-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb249-12" data-line-number="12">### gene-annotation <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb249-14" data-line-number="14"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
-<a class="sourceLine" id="cb249-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb249-16" data-line-number="16"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
-<a class="sourceLine" id="cb249-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
-<a class="sourceLine" id="cb249-18" data-line-number="18">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb249-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb249-20" data-line-number="20">### cell-detection <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-21" data-line-number="21"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb249-22" data-line-number="22">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
-<a class="sourceLine" id="cb249-23" data-line-number="23">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
-<a class="sourceLine" id="cb249-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb249-25" data-line-number="25">### quality-control <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-26" data-line-number="26">sce.pbmc &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce.pbmc, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb249-27" data-line-number="27">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.pbmc<span class="op">$</span>pct_counts_Mito, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb249-28" data-line-number="28">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
-<a class="sourceLine" id="cb249-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb249-30" data-line-number="30">### normalization <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-31" data-line-number="31"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb249-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb249-33" data-line-number="33">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb249-34" data-line-number="34">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
-<a class="sourceLine" id="cb249-35" data-line-number="35">sce.pbmc &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb249-36" data-line-number="36"></a>
-<a class="sourceLine" id="cb249-37" data-line-number="37">### feature-selection <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-38" data-line-number="38">fit.pbmc &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce.pbmc, <span class="dt">use.spikes=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb249-39" data-line-number="39">dec.pbmc &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(<span class="dt">fit=</span>fit.pbmc)</a>
-<a class="sourceLine" id="cb249-40" data-line-number="40">o &lt;-<span class="st"> </span><span class="kw">order</span>(dec.pbmc<span class="op">$</span>bio, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb249-41" data-line-number="41">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec.pbmc)[<span class="kw">head</span>(o, <span class="dv">2000</span>)]</a>
-<a class="sourceLine" id="cb249-42" data-line-number="42"></a>
-<a class="sourceLine" id="cb249-43" data-line-number="43">### dimensionality-reduction <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-44" data-line-number="44"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb249-45" data-line-number="45">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce.pbmc, <span class="dt">feature_set=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb249-46" data-line-number="46">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>())</a>
-<a class="sourceLine" id="cb249-47" data-line-number="47"></a>
-<a class="sourceLine" id="cb249-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb249-49" data-line-number="49">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb249-50" data-line-number="50"></a>
-<a class="sourceLine" id="cb249-51" data-line-number="51"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb249-52" data-line-number="52">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb249-53" data-line-number="53"></a>
-<a class="sourceLine" id="cb249-54" data-line-number="54">### clustering <span class="al">###</span></a>
-<a class="sourceLine" id="cb249-55" data-line-number="55">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb249-56" data-line-number="56">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb249-57" data-line-number="57">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb319-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-2" data-line-number="2"><span class="kw">library</span>(BiocFileCache)</a>
+<a class="sourceLine" id="cb319-3" data-line-number="3">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb319-4" data-line-number="4">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
+<a class="sourceLine" id="cb319-5" data-line-number="5">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
+<a class="sourceLine" id="cb319-6" data-line-number="6"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
+<a class="sourceLine" id="cb319-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb319-8" data-line-number="8"><span class="kw">library</span>(DropletUtils)</a>
+<a class="sourceLine" id="cb319-9" data-line-number="9">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
+<a class="sourceLine" id="cb319-10" data-line-number="10">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb319-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb319-12" data-line-number="12">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb319-14" data-line-number="14"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
+<a class="sourceLine" id="cb319-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb319-16" data-line-number="16"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
+<a class="sourceLine" id="cb319-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
+<a class="sourceLine" id="cb319-18" data-line-number="18">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb319-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb319-20" data-line-number="20">### cell-detection <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-21" data-line-number="21"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb319-22" data-line-number="22">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
+<a class="sourceLine" id="cb319-23" data-line-number="23">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
+<a class="sourceLine" id="cb319-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb319-25" data-line-number="25">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-26" data-line-number="26">sce.pbmc &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce.pbmc, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
+<a class="sourceLine" id="cb319-27" data-line-number="27">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.pbmc<span class="op">$</span>pct_counts_Mito, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb319-28" data-line-number="28">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb319-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb319-30" data-line-number="30">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-31" data-line-number="31"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb319-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb319-33" data-line-number="33">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb319-34" data-line-number="34">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
+<a class="sourceLine" id="cb319-35" data-line-number="35">sce.pbmc &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb319-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb319-37" data-line-number="37">### feature-selection <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-38" data-line-number="38">fit.pbmc &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce.pbmc, <span class="dt">use.spikes=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb319-39" data-line-number="39">dec.pbmc &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(<span class="dt">fit=</span>fit.pbmc)</a>
+<a class="sourceLine" id="cb319-40" data-line-number="40">o &lt;-<span class="st"> </span><span class="kw">order</span>(dec.pbmc<span class="op">$</span>bio, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb319-41" data-line-number="41">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec.pbmc)[<span class="kw">head</span>(o, <span class="dv">2000</span>)]</a>
+<a class="sourceLine" id="cb319-42" data-line-number="42"></a>
+<a class="sourceLine" id="cb319-43" data-line-number="43">### dimensionality-reduction <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-44" data-line-number="44"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb319-45" data-line-number="45">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce.pbmc, <span class="dt">feature_set=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb319-46" data-line-number="46">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>())</a>
+<a class="sourceLine" id="cb319-47" data-line-number="47"></a>
+<a class="sourceLine" id="cb319-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb319-49" data-line-number="49">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb319-50" data-line-number="50"></a>
+<a class="sourceLine" id="cb319-51" data-line-number="51"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb319-52" data-line-number="52">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb319-53" data-line-number="53"></a>
+<a class="sourceLine" id="cb319-54" data-line-number="54">### clustering <span class="al">###</span></a>
+<a class="sourceLine" id="cb319-55" data-line-number="55">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb319-56" data-line-number="56">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb319-57" data-line-number="57">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb250-1" data-line-number="1">sce.pbmc</a></code></pre></div>
+<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb320-1" data-line-number="1">sce.pbmc</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 33694 3922 
 ## metadata(1): log.exprs.offset
@@ -476,35 +507,34 @@ View history
 ## colData names(39): Sample Barcode ...
 ##   pct_counts_in_top_500_features_Mito cluster
 ## reducedDimNames(3): PCA TSNE UMAP
-## spikeNames(0):
-## altExpNames(0):</code></pre>
+## spikeNames(0):</code></pre>
 </div>
 <div id="using-pairwise-t-tests" class="section level2">
-<h2><span class="header-section-number">11.2</span> Using pairwise <span class="math inline">\(t\)</span>-tests</h2>
+<h2><span class="header-section-number">13.2</span> Using pairwise <span class="math inline">\(t\)</span>-tests</h2>
 <div id="standard-application" class="section level3">
-<h3><span class="header-section-number">11.2.1</span> Standard application</h3>
+<h3><span class="header-section-number">13.2.1</span> Standard application</h3>
 <p>The Welch <span class="math inline">\(t\)</span>-test is an obvious choice of statistical method to test for differences in expression between clusters.
 It is quickly computed and has good statistical properties for large numbers of cells [soneson2018bias].
 We use the <code>findMarkers()</code> function to perform pairwise comparisons between clusters for each gene.
 This yields a list of <code>DataFrame</code>s contained ranked candidate markers for each cluster.</p>
-<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb252-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb252-2" data-line-number="2">markers.pbmc &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb252-3" data-line-number="3">markers.pbmc</a></code></pre></div>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb322-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb322-2" data-line-number="2">markers.pbmc &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb322-3" data-line-number="3">markers.pbmc</a></code></pre></div>
 <pre><code>## DataFrameList of length 12
 ## names(12): 1 2 3 4 5 6 7 8 9 10 11 12</code></pre>
 <p>To demonstrate, we use cluster 9 as our cluster of interest for this section.
 The relevant <code>DataFrame</code> contains log<sub>2</sub>-fold changes of expression in cluster 9 over each other cluster, along with several statistics obtained by combining <span class="math inline">\(p\)</span>-values <span class="citation">(Simes <a href="#ref-simes1986improved">1986</a>)</span> across the pairwise comparisons involving 9.</p>
-<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb254-1" data-line-number="1">chosen &lt;-<span class="st"> &quot;9&quot;</span></a>
-<a class="sourceLine" id="cb254-2" data-line-number="2">interesting &lt;-<span class="st"> </span>markers.pbmc[[chosen]]</a>
-<a class="sourceLine" id="cb254-3" data-line-number="3"><span class="kw">colnames</span>(interesting)</a></code></pre></div>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb324-1" data-line-number="1">chosen &lt;-<span class="st"> &quot;9&quot;</span></a>
+<a class="sourceLine" id="cb324-2" data-line-number="2">interesting &lt;-<span class="st"> </span>markers.pbmc[[chosen]]</a>
+<a class="sourceLine" id="cb324-3" data-line-number="3"><span class="kw">colnames</span>(interesting)</a></code></pre></div>
 <pre><code>##  [1] &quot;Top&quot;      &quot;p.value&quot;  &quot;FDR&quot;      &quot;logFC.1&quot;  &quot;logFC.2&quot;  &quot;logFC.3&quot; 
 ##  [7] &quot;logFC.4&quot;  &quot;logFC.5&quot;  &quot;logFC.6&quot;  &quot;logFC.7&quot;  &quot;logFC.8&quot;  &quot;logFC.10&quot;
 ## [13] &quot;logFC.11&quot; &quot;logFC.12&quot;</code></pre>
-<p>Of particular interest is the <code>Top</code> field, which contains the highest<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a> rank for each gene across all pairwise comparisons involving cluster 9.
+<p>Of particular interest is the <code>Top</code> field, which contains the highest<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a> rank for each gene across all pairwise comparisons involving cluster 9.
 The set of genes with <code>Top</code> values of 1 contains the gene with the lowest <span class="math inline">\(p\)</span>-value from each comparison.
 Similarly, the set of genes with <code>Top</code> values less than or equal to 10 contains the top 10 genes from each comparison.
 Each <code>DataFrame</code> produced by <code>findMarkers()</code> will order genes based on the <code>Top</code> value.</p>
-<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb256-1" data-line-number="1">interesting[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb326-1" data-line-number="1">interesting[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##                Top               p.value                   FDR
 ##          &lt;integer&gt;             &lt;numeric&gt;             &lt;numeric&gt;
@@ -519,30 +549,30 @@ Each <code>DataFrame</code> produced by <code>findMarkers()</code> will order ge
 ## PF4              1  2.35117342678427e-28  1.53231020197426e-26
 ## LYAR             2 4.83449973651891e-131 2.71489390203784e-127</code></pre>
 <p>We use the <code>Top</code> value to identify a set of genes that is guaranteed to distinguish cluster 9 from any other cluster.
-Here, we examine the top 5 genes from each pairwise comparison (Figure <a href="marker-gene-detection.html#fig:heat-basic-pbmc">11.1</a>).
+Here, we examine the top 5 genes from each pairwise comparison (Figure <a href="marker-gene-detection.html#fig:heat-basic-pbmc">13.1</a>).
 Some inspection of the most upregulated genes suggest that cluster 9 contains platelets or their precursors, based on the expression of platelet factor 4 (<em>PF4</em>) and pro-platelet basic protein (<em>PPBP</em>).</p>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb258-1" data-line-number="1">best.set &lt;-<span class="st"> </span>interesting[interesting<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,]</a>
-<a class="sourceLine" id="cb258-2" data-line-number="2">logFCs &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(best.set[,<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)])</a>
-<a class="sourceLine" id="cb258-3" data-line-number="3"><span class="kw">colnames</span>(logFCs) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;logFC.&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(logFCs))</a>
-<a class="sourceLine" id="cb258-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb258-5" data-line-number="5"><span class="kw">library</span>(pheatmap)</a>
-<a class="sourceLine" id="cb258-6" data-line-number="6"><span class="kw">pheatmap</span>(logFCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">length.out=</span><span class="dv">101</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" data-line-number="1">best.set &lt;-<span class="st"> </span>interesting[interesting<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,]</a>
+<a class="sourceLine" id="cb328-2" data-line-number="2">logFCs &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(best.set[,<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)])</a>
+<a class="sourceLine" id="cb328-3" data-line-number="3"><span class="kw">colnames</span>(logFCs) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;logFC.&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(logFCs))</a>
+<a class="sourceLine" id="cb328-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb328-5" data-line-number="5"><span class="kw">library</span>(pheatmap)</a>
+<a class="sourceLine" id="cb328-6" data-line-number="6"><span class="kw">pheatmap</span>(logFCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">length.out=</span><span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-basic-pbmc"></span>
-<img src="P2_W07.marker-detection_files/figure-html/heat-basic-pbmc-1.png" alt="Heatmap of log-fold changes for cluster `r chosen` over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
+<img src="P2_W09.marker-detection_files/figure-html/heat-basic-pbmc-1.png" alt="Heatmap of log-fold changes for cluster `r chosen` over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
 <p class="caption">
-Figure 11.1: Heatmap of log-fold changes for cluster <code>r chosen</code> over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range.
+Figure 13.1: Heatmap of log-fold changes for cluster <code>r chosen</code> over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range.
 </p>
 </div>
 </div>
 <div id="using-the-log-fold-change" class="section level3">
-<h3><span class="header-section-number">11.2.2</span> Using the log-fold change</h3>
+<h3><span class="header-section-number">13.2.2</span> Using the log-fold change</h3>
 <p>Our previous <code>findMarkers()</code> call considers both up- and downregulated genes to be potential markers.
 However, downregulated genes are less appealing as markers as it is more difficult to interpret and experimentally validate an absence of expression.
 To focus on up-regulated markers, we can instead perform a one-sided <span class="math inline">\(t\)</span>-test to identify genes that are upregulated in each cluster compared to the others.
 This is achieved by setting <code>direction=&quot;up&quot;</code> in the <code>findMarkers()</code> call.</p>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" data-line-number="1">markers.pbmc.up &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb259-2" data-line-number="2">interesting.up &lt;-<span class="st"> </span>markers.pbmc.up[[chosen]]</a>
-<a class="sourceLine" id="cb259-3" data-line-number="3">interesting.up[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb329-1" data-line-number="1">markers.pbmc.up &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb329-2" data-line-number="2">interesting.up &lt;-<span class="st"> </span>markers.pbmc.up[[chosen]]</a>
+<a class="sourceLine" id="cb329-3" data-line-number="3">interesting.up[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##                 Top              p.value                  FDR
 ##           &lt;integer&gt;            &lt;numeric&gt;            &lt;numeric&gt;
@@ -560,10 +590,10 @@ This is achieved by setting <code>direction=&quot;up&quot;</code> in the <code>f
 This allows us to consider the magnitude of the log-fold change in our <span class="math inline">\(p\)</span>-value calculations, in a manner that is more rigorous than simply filtering directly on the log-fold changes <span class="citation">(McCarthy and Smyth <a href="#ref-mccarthy2009treat">2009</a>)</span>.
 (Specifically, a simple threshold does not consider the variance and can enrich for genes that have both large log-fold changes and large variances.)
 We perform this by setting <code>lfc=</code> in our <code>findMarkers()</code> call - when combined with <code>direction=</code>, this tests for genes with log-fold changes that are significantly greater than 1:</p>
-<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" data-line-number="1">markers.pbmc.up2 &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, </a>
-<a class="sourceLine" id="cb261-2" data-line-number="2">    <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">lfc=</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb261-3" data-line-number="3">interesting.up2 &lt;-<span class="st"> </span>markers.pbmc.up2[[chosen]]</a>
-<a class="sourceLine" id="cb261-4" data-line-number="4">interesting.up2[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb331-1" data-line-number="1">markers.pbmc.up2 &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, </a>
+<a class="sourceLine" id="cb331-2" data-line-number="2">    <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">lfc=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb331-3" data-line-number="3">interesting.up2 &lt;-<span class="st"> </span>markers.pbmc.up2[[chosen]]</a>
+<a class="sourceLine" id="cb331-4" data-line-number="4">interesting.up2[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##                 Top              p.value                  FDR
 ##           &lt;integer&gt;            &lt;numeric&gt;            &lt;numeric&gt;
@@ -578,36 +608,36 @@ We perform this by setting <code>lfc=</code> in our <code>findMarkers()</code> c
 ## HIST1H2AC         6 6.53594082728356e-16 2.44691100260547e-12
 ## TUBB1             7 2.07146248785668e-15 6.97958570658431e-12</code></pre>
 <p>These two settings yield a more focused set of candidate marker genes that are upregulated in cluster 9 (Figure <a href="#heat-focused-pbmc"><strong>??</strong></a>).</p>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb263-1" data-line-number="1">best.set &lt;-<span class="st"> </span>interesting.up2[interesting.up2<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,]</a>
-<a class="sourceLine" id="cb263-2" data-line-number="2">logFCs &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(best.set[,<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)])</a>
-<a class="sourceLine" id="cb263-3" data-line-number="3"><span class="kw">colnames</span>(logFCs) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;logFC.&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(logFCs))</a>
-<a class="sourceLine" id="cb263-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb263-5" data-line-number="5"><span class="kw">library</span>(pheatmap)</a>
-<a class="sourceLine" id="cb263-6" data-line-number="6"><span class="kw">pheatmap</span>(logFCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">length.out=</span><span class="dv">101</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb333-1" data-line-number="1">best.set &lt;-<span class="st"> </span>interesting.up2[interesting.up2<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,]</a>
+<a class="sourceLine" id="cb333-2" data-line-number="2">logFCs &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(best.set[,<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)])</a>
+<a class="sourceLine" id="cb333-3" data-line-number="3"><span class="kw">colnames</span>(logFCs) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;logFC.&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(logFCs))</a>
+<a class="sourceLine" id="cb333-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb333-5" data-line-number="5"><span class="kw">library</span>(pheatmap)</a>
+<a class="sourceLine" id="cb333-6" data-line-number="6"><span class="kw">pheatmap</span>(logFCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">length.out=</span><span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-focused-pbmc"></span>
-<img src="P2_W07.marker-detection_files/figure-html/heat-focused-pbmc-1.png" alt="Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
+<img src="P2_W09.marker-detection_files/figure-html/heat-focused-pbmc-1.png" alt="Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
 <p class="caption">
-Figure 11.2: Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range.
+Figure 13.2: Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range.
 </p>
 </div>
 <p>Of course, this increased stringency is not without cost.
 If only upregulated genes are requested from <code>findMarkers()</code>, any cluster defined by downregulation of a marker gene will not contain that gene among the top set of features in its <code>DataFrame</code>.
-This is occasionally relevant for subtypes or other states that are distinguished by high versus low expression of particular genes<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>.
+This is occasionally relevant for subtypes or other states that are distinguished by high versus low expression of particular genes<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>.
 Similarly, setting an excessively high log-fold change threshold may discard otherwise useful genes.
 For example, a gene upregulated in a small proportion of cells of a cluster will have a small log-fold change but can still be an effective marker if the focus is on specificity rather than sensitivity.</p>
 </div>
 <div id="finding-cluster-specific-markers" class="section level3">
-<h3><span class="header-section-number">11.2.3</span> Finding cluster-specific markers</h3>
+<h3><span class="header-section-number">13.2.3</span> Finding cluster-specific markers</h3>
 <p>By default, <code>findMarkers()</code> will give a high ranking to genes that are differentially expressed in any pairwise comparison.
 This is because a gene only needs a very low <span class="math inline">\(p\)</span>-value in a single pairwise comparison to achieve a low <code>Top</code> value.
 A more stringent approach would onlly consider genes that are differentially expressed in all pairwise comparisons involving the cluster of interest.
 To achieve this, we set <code>pval.type=&quot;all&quot;</code> in <code>findMarkers()</code> to use an intersection-union test <span class="citation">(Berger and Hsu <a href="#ref-berger1996bioequivalence">1996</a>)</span> where the combined <span class="math inline">\(p\)</span>-value for each gene is the maximum of the <span class="math inline">\(p\)</span>-values from all pairwise comparisons.
 A gene will only achieve a low combined <span class="math inline">\(p\)</span>-value if it is strongly DE in all comparisons to other clusters.</p>
-<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" data-line-number="1"><span class="co"># We can combine this with &#39;direction=&#39;.</span></a>
-<a class="sourceLine" id="cb264-2" data-line-number="2">markers.pbmc.up3 &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, </a>
-<a class="sourceLine" id="cb264-3" data-line-number="3">    <span class="dt">pval.type=</span><span class="st">&quot;all&quot;</span>, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb264-4" data-line-number="4">interesting.up3 &lt;-<span class="st"> </span>markers.pbmc.up3[[chosen]]</a>
-<a class="sourceLine" id="cb264-5" data-line-number="5">interesting.up3[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" data-line-number="1"><span class="co"># We can combine this with &#39;direction=&#39;.</span></a>
+<a class="sourceLine" id="cb334-2" data-line-number="2">markers.pbmc.up3 &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, </a>
+<a class="sourceLine" id="cb334-3" data-line-number="3">    <span class="dt">pval.type=</span><span class="st">&quot;all&quot;</span>, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb334-4" data-line-number="4">interesting.up3 &lt;-<span class="st"> </span>markers.pbmc.up3[[chosen]]</a>
+<a class="sourceLine" id="cb334-5" data-line-number="5">interesting.up3[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 2 columns
 ##                        p.value                  FDR
 ##                      &lt;numeric&gt;            &lt;numeric&gt;
@@ -632,9 +662,9 @@ This reliability motivates the use of the latter setting as the default in <code
 </div>
 </div>
 <div id="alternative-testing-regimes" class="section level2">
-<h2><span class="header-section-number">11.3</span> Alternative testing regimes</h2>
+<h2><span class="header-section-number">13.3</span> Alternative testing regimes</h2>
 <div id="using-the-wilcoxon-rank-sum-test" class="section level3">
-<h3><span class="header-section-number">11.3.1</span> Using the Wilcoxon rank sum test</h3>
+<h3><span class="header-section-number">13.3.1</span> Using the Wilcoxon rank sum test</h3>
 <p>The Wilcoxon rank sum test (also known as the Wilcoxon-Mann-Whitney test, or WMW test) is another widely used method for pairwise comparisons between groups of observations.
 Its strength lies in the fact that it directly assesses separation between the expression distributions of different clusters.
 The WMW test statistic is proportional to the area-under-the-curve (AUC), i.e., the concordance probability, which is the probability of a random cell from one cluster having higher expression than a random cell from another cluster.
@@ -644,16 +674,16 @@ Thus, the WMW test directly addresses the most desirable property of a candidate
 This returns a list of <code>DataFrame</code>s containing ranked candidate markers for each cluster.
 The <code>direction=</code>, <code>lfc=</code> and <code>pval.type=</code> arguments can be specified and have the same interpretation as described for <span class="math inline">\(t\)</span> tests.
 We demonstrate below by detecting upregulated genes in each cluster with <code>direction=&quot;up&quot;</code>.</p>
-<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb266-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: make findMarkers() accept a method= option that</span></a>
-<a class="sourceLine" id="cb266-2" data-line-number="2"><span class="co"># switches between these things, rather than having a </span></a>
-<a class="sourceLine" id="cb266-3" data-line-number="3"><span class="co"># different function altogether. Also need a lfc= option.</span></a>
-<a class="sourceLine" id="cb266-4" data-line-number="4">markers.pbmc.wmw &lt;-<span class="st"> </span><span class="kw">overlapExprs</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb266-5" data-line-number="5"><span class="kw">names</span>(markers.pbmc.wmw)</a></code></pre></div>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb336-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: make findMarkers() accept a method= option that</span></a>
+<a class="sourceLine" id="cb336-2" data-line-number="2"><span class="co"># switches between these things, rather than having a </span></a>
+<a class="sourceLine" id="cb336-3" data-line-number="3"><span class="co"># different function altogether. Also need a lfc= option.</span></a>
+<a class="sourceLine" id="cb336-4" data-line-number="4">markers.pbmc.wmw &lt;-<span class="st"> </span><span class="kw">overlapExprs</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb336-5" data-line-number="5"><span class="kw">names</span>(markers.pbmc.wmw)</a></code></pre></div>
 <pre><code>##  [1] &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;8&quot;  &quot;9&quot;  &quot;10&quot; &quot;11&quot; &quot;12&quot;</code></pre>
 <p>To explore the results in more detail, we focus on the <code>DataFrame</code> for cluster 9.
 The interpretation of <code>Top</code> is the same as described for <span class="math inline">\(t\)</span> tests, and Simes’ method is again used to combine <span class="math inline">\(p\)</span>-values across pairwise comparisons.</p>
-<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb268-1" data-line-number="1">interesting.wmw &lt;-<span class="st"> </span>markers.pbmc.wmw[[chosen]]</a>
-<a class="sourceLine" id="cb268-2" data-line-number="2">interesting.wmw[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb338-1" data-line-number="1">interesting.wmw &lt;-<span class="st"> </span>markers.pbmc.wmw[[chosen]]</a>
+<a class="sourceLine" id="cb338-2" data-line-number="2">interesting.wmw[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##                 Top               p.value                   FDR
 ##           &lt;integer&gt;             &lt;numeric&gt;             &lt;numeric&gt;
@@ -667,21 +697,21 @@ The interpretation of <code>Top</code> is the same as described for <span class=
 ## CLU               5 1.29715673377618e-149 5.46329987348186e-146
 ## HIST1H2AC         5 2.48168081125816e-106 5.57451688363549e-103
 ## TAGLN2            5  2.32628433861945e-34  7.60988587431489e-32</code></pre>
-<p>The <code>DataFrame</code> contains the AUCs from comparing cluster 9 to every other cluster (Figure <a href="marker-gene-detection.html#fig:heat-wmw-pbmc">11.3</a>).
+<p>The <code>DataFrame</code> contains the AUCs from comparing cluster 9 to every other cluster (Figure <a href="marker-gene-detection.html#fig:heat-wmw-pbmc">13.3</a>).
 A value greater than 0.5 indicates that the gene is upregulated in the current cluster compared to the other cluster,
 while values less than 0.5 correspond to downregulation.
 We would typically expect AUCs of 0.7-0.8 for a strongly upregulated candidate marker.</p>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb270-1" data-line-number="1">best.set &lt;-<span class="st"> </span>interesting.wmw[interesting.wmw<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,]</a>
-<a class="sourceLine" id="cb270-2" data-line-number="2">AUCs &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(best.set[,<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)])</a>
-<a class="sourceLine" id="cb270-3" data-line-number="3"><span class="kw">colnames</span>(AUCs) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;AUC.&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(AUCs))</a>
-<a class="sourceLine" id="cb270-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb270-5" data-line-number="5"><span class="kw">library</span>(pheatmap)</a>
-<a class="sourceLine" id="cb270-6" data-line-number="6"><span class="kw">pheatmap</span>(AUCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out=</span><span class="dv">21</span>),</a>
-<a class="sourceLine" id="cb270-7" data-line-number="7">    <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">21</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb340-1" data-line-number="1">best.set &lt;-<span class="st"> </span>interesting.wmw[interesting.wmw<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,]</a>
+<a class="sourceLine" id="cb340-2" data-line-number="2">AUCs &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(best.set[,<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)])</a>
+<a class="sourceLine" id="cb340-3" data-line-number="3"><span class="kw">colnames</span>(AUCs) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;AUC.&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">colnames</span>(AUCs))</a>
+<a class="sourceLine" id="cb340-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb340-5" data-line-number="5"><span class="kw">library</span>(pheatmap)</a>
+<a class="sourceLine" id="cb340-6" data-line-number="6"><span class="kw">pheatmap</span>(AUCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out=</span><span class="dv">21</span>),</a>
+<a class="sourceLine" id="cb340-7" data-line-number="7">    <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">21</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-wmw-pbmc"></span>
-<img src="P2_W07.marker-detection_files/figure-html/heat-wmw-pbmc-1.png" alt="Heatmap of AUCs for cluster `r chosen` over all other clusters." width="672" />
+<img src="P2_W09.marker-detection_files/figure-html/heat-wmw-pbmc-1.png" alt="Heatmap of AUCs for cluster `r chosen` over all other clusters." width="672" />
 <p class="caption">
-Figure 11.3: Heatmap of AUCs for cluster <code>r chosen</code> over all other clusters.
+Figure 13.3: Heatmap of AUCs for cluster <code>r chosen</code> over all other clusters.
 </p>
 </div>
 <p>The main disadvantage of the WMW test is that the AUCs are much slower to compute compared to <span class="math inline">\(t\)</span>-statistics.
@@ -689,7 +719,7 @@ This may be inconvenient for interactive analyses involving multiple iterations 
 We can mitigate this to some extent by parallelizing these calculations using the <code>BPPARAM=</code> argument in <code>overlapExprs()</code>.</p>
 </div>
 <div id="using-a-binomial-test" class="section level3">
-<h3><span class="header-section-number">11.3.2</span> Using a binomial test</h3>
+<h3><span class="header-section-number">13.3.2</span> Using a binomial test</h3>
 <p>The binomial test identifies genes that differ in the proportion of expressing cells between clusters.
 (For the purposes of this section, a cell is considered to express a gene simply if it has non-zero expression for that gene.)
 This represents a much more stringent definition of marker genes compared to the other methods, as differences in expression between clusters are effectively ignored if both distributions of expression values are not near zero.
@@ -700,68 +730,68 @@ This returns a list of <code>DataFrame</code>s containing marker statistics for 
 Here, the effect size is reported as the log-fold change in this proportion between each pair of clusters.
 Large positive log-fold changes indicate that the gene is more frequently expressed in one cluster compared to the other.
 Here, we focus on genes that are upregulated in each cluster compared to the others by setting <code>direction=&quot;up&quot;</code>.</p>
-<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb271-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: push this into another findMarkers() option. </span></a>
-<a class="sourceLine" id="cb271-2" data-line-number="2">b.pairs &lt;-<span class="st"> </span><span class="kw">pairwiseBinom</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb271-3" data-line-number="3">markers.pbmc.binom &lt;-<span class="st"> </span><span class="kw">combineMarkers</span>(b.pairs<span class="op">$</span>statistics, b.pairs<span class="op">$</span>pairs)</a>
-<a class="sourceLine" id="cb271-4" data-line-number="4"><span class="kw">names</span>(markers.pbmc.binom)</a></code></pre></div>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb341-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: push this into another findMarkers() option. </span></a>
+<a class="sourceLine" id="cb341-2" data-line-number="2">b.pairs &lt;-<span class="st"> </span><span class="kw">pairwiseBinom</span>(sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb341-3" data-line-number="3">markers.pbmc.binom &lt;-<span class="st"> </span><span class="kw">combineMarkers</span>(b.pairs<span class="op">$</span>statistics, b.pairs<span class="op">$</span>pairs)</a>
+<a class="sourceLine" id="cb341-4" data-line-number="4"><span class="kw">names</span>(markers.pbmc.binom)</a></code></pre></div>
 <pre><code>##  [1] &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;8&quot;  &quot;9&quot;  &quot;10&quot; &quot;11&quot; &quot;12&quot;</code></pre>
-<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb273-1" data-line-number="1">interesting.binom &lt;-<span class="st"> </span>markers.pbmc.binom[[chosen]]</a>
-<a class="sourceLine" id="cb273-2" data-line-number="2"><span class="kw">colnames</span>(interesting.binom)</a></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb343-1" data-line-number="1">interesting.binom &lt;-<span class="st"> </span>markers.pbmc.binom[[chosen]]</a>
+<a class="sourceLine" id="cb343-2" data-line-number="2"><span class="kw">colnames</span>(interesting.binom)</a></code></pre></div>
 <pre><code>##  [1] &quot;Top&quot;      &quot;p.value&quot;  &quot;FDR&quot;      &quot;logFC.1&quot;  &quot;logFC.2&quot;  &quot;logFC.3&quot; 
 ##  [7] &quot;logFC.4&quot;  &quot;logFC.5&quot;  &quot;logFC.6&quot;  &quot;logFC.7&quot;  &quot;logFC.8&quot;  &quot;logFC.10&quot;
 ## [13] &quot;logFC.11&quot; &quot;logFC.12&quot;</code></pre>
 <p>Figure (fig:viol-de-binom) confirms that the top genes exhibit strong differences in the proportion of expressing cells in cluster 9 compared to the others.</p>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb275-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb275-2" data-line-number="2">top.genes &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">rownames</span>(interesting.binom))</a>
-<a class="sourceLine" id="cb275-3" data-line-number="3"><span class="kw">plotExpression</span>(sce.pbmc, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">features=</span>top.genes)</a></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb345-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb345-2" data-line-number="2">top.genes &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">rownames</span>(interesting.binom))</a>
+<a class="sourceLine" id="cb345-3" data-line-number="3"><span class="kw">plotExpression</span>(sce.pbmc, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">features=</span>top.genes)</a></code></pre></div>
 <div class="figure"><span id="fig:viol-de-binom"></span>
-<img src="P2_W07.marker-detection_files/figure-html/viol-de-binom-1.png" alt="Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell." width="672" />
+<img src="P2_W09.marker-detection_files/figure-html/viol-de-binom-1.png" alt="Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell." width="672" />
 <p class="caption">
-Figure 11.4: Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell.
+Figure 13.4: Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell.
 </p>
 </div>
 <p>The disadvantage of the binomial test is that its increased stringency can lead to the loss of good candidate markers.
-For example, <em>GCG</em> is a known marker for pancreatic alpha cells but is expressed in almost every other cell of the <span class="citation">Lawlor et al. (<a href="#ref-lawlor2017singlecell">2017</a>)</span> pancreas data (Figure <a href="marker-gene-detection.html#fig:viol-gcg-lawlor">11.5</a>) and would not be highly ranked by the binomial test.</p>
+For example, <em>GCG</em> is a known marker for pancreatic alpha cells but is expressed in almost every other cell of the <span class="citation">Lawlor et al. (<a href="#ref-lawlor2017singlecell">2017</a>)</span> pancreas data (Figure <a href="marker-gene-detection.html#fig:viol-gcg-lawlor">13.5</a>) and would not be highly ranked by the binomial test.</p>
 <button class="aaron-collapse">
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" data-line-number="1">### loading <span class="al">###</span></a>
-<a class="sourceLine" id="cb276-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb276-3" data-line-number="3">sce.lawlor &lt;-<span class="st"> </span><span class="kw">LawlorPancreasData</span>()</a>
-<a class="sourceLine" id="cb276-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb276-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
-<a class="sourceLine" id="cb276-6" data-line-number="6"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb276-7" data-line-number="7">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
-<a class="sourceLine" id="cb276-8" data-line-number="8">anno &lt;-<span class="st"> </span><span class="kw">select</span>(edb, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.lawlor), <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, </a>
-<a class="sourceLine" id="cb276-9" data-line-number="9">    <span class="dt">columns=</span><span class="kw">c</span>(<span class="st">&quot;SYMBOL&quot;</span>, <span class="st">&quot;SEQNAME&quot;</span>))</a>
-<a class="sourceLine" id="cb276-10" data-line-number="10"><span class="kw">rowData</span>(sce.lawlor) &lt;-<span class="st"> </span>anno[<span class="kw">match</span>(<span class="kw">rownames</span>(sce.lawlor), anno[,<span class="dv">1</span>]),<span class="op">-</span><span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb276-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb276-12" data-line-number="12">### quality-control <span class="al">###</span></a>
-<a class="sourceLine" id="cb276-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb276-14" data-line-number="14">sce.lawlor &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce.lawlor, <span class="dt">compact=</span><span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb276-15" data-line-number="15">    <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(<span class="kw">rowData</span>(sce.lawlor)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb276-16" data-line-number="16">NFeatures &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.lawlor<span class="op">$</span>scater_qc<span class="op">$</span>all<span class="op">$</span>total_features_by_counts, </a>
-<a class="sourceLine" id="cb276-17" data-line-number="17">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb276-18" data-line-number="18">LibSize &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.lawlor<span class="op">$</span>scater_qc<span class="op">$</span>all<span class="op">$</span>total_counts, </a>
-<a class="sourceLine" id="cb276-19" data-line-number="19">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb276-20" data-line-number="20">Mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.lawlor<span class="op">$</span>scater_qc<span class="op">$</span>feature_control_Mito<span class="op">$</span>pct_counts,</a>
-<a class="sourceLine" id="cb276-21" data-line-number="21">    <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb276-22" data-line-number="22">discard &lt;-<span class="st"> </span>NFeatures <span class="op">|</span><span class="st"> </span>LibSize <span class="op">|</span><span class="st"> </span>Mito</a>
-<a class="sourceLine" id="cb276-23" data-line-number="23">sce.lawlor &lt;-<span class="st"> </span>sce.lawlor[,<span class="op">!</span>discard]</a>
-<a class="sourceLine" id="cb276-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb276-25" data-line-number="25">### normalization <span class="al">###</span></a>
-<a class="sourceLine" id="cb276-26" data-line-number="26"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb276-27" data-line-number="27"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb276-28" data-line-number="28">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.lawlor)</a>
-<a class="sourceLine" id="cb276-29" data-line-number="29">sce.lawlor &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.lawlor, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb276-30" data-line-number="30">sce.lawlor &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.lawlor)</a></code></pre></div>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb346-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb346-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb346-3" data-line-number="3">sce.lawlor &lt;-<span class="st"> </span><span class="kw">LawlorPancreasData</span>()</a>
+<a class="sourceLine" id="cb346-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb346-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb346-6" data-line-number="6"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb346-7" data-line-number="7">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
+<a class="sourceLine" id="cb346-8" data-line-number="8">anno &lt;-<span class="st"> </span><span class="kw">select</span>(edb, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.lawlor), <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, </a>
+<a class="sourceLine" id="cb346-9" data-line-number="9">    <span class="dt">columns=</span><span class="kw">c</span>(<span class="st">&quot;SYMBOL&quot;</span>, <span class="st">&quot;SEQNAME&quot;</span>))</a>
+<a class="sourceLine" id="cb346-10" data-line-number="10"><span class="kw">rowData</span>(sce.lawlor) &lt;-<span class="st"> </span>anno[<span class="kw">match</span>(<span class="kw">rownames</span>(sce.lawlor), anno[,<span class="dv">1</span>]),<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb346-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb346-12" data-line-number="12">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb346-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb346-14" data-line-number="14">sce.lawlor &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce.lawlor, <span class="dt">compact=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb346-15" data-line-number="15">    <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(<span class="kw">rowData</span>(sce.lawlor)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
+<a class="sourceLine" id="cb346-16" data-line-number="16">NFeatures &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.lawlor<span class="op">$</span>scater_qc<span class="op">$</span>all<span class="op">$</span>total_features_by_counts, </a>
+<a class="sourceLine" id="cb346-17" data-line-number="17">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb346-18" data-line-number="18">LibSize &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.lawlor<span class="op">$</span>scater_qc<span class="op">$</span>all<span class="op">$</span>total_counts, </a>
+<a class="sourceLine" id="cb346-19" data-line-number="19">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb346-20" data-line-number="20">Mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce.lawlor<span class="op">$</span>scater_qc<span class="op">$</span>feature_control_Mito<span class="op">$</span>pct_counts,</a>
+<a class="sourceLine" id="cb346-21" data-line-number="21">    <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb346-22" data-line-number="22">discard &lt;-<span class="st"> </span>NFeatures <span class="op">|</span><span class="st"> </span>LibSize <span class="op">|</span><span class="st"> </span>Mito</a>
+<a class="sourceLine" id="cb346-23" data-line-number="23">sce.lawlor &lt;-<span class="st"> </span>sce.lawlor[,<span class="op">!</span>discard]</a>
+<a class="sourceLine" id="cb346-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb346-25" data-line-number="25">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb346-26" data-line-number="26"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb346-27" data-line-number="27"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb346-28" data-line-number="28">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.lawlor)</a>
+<a class="sourceLine" id="cb346-29" data-line-number="29">sce.lawlor &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.lawlor, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb346-30" data-line-number="30">sce.lawlor &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce.lawlor)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.lawlor, <span class="dt">x=</span><span class="st">&quot;cell type&quot;</span>, <span class="dt">features=</span><span class="st">&quot;ENSG00000115263&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb347-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.lawlor, <span class="dt">x=</span><span class="st">&quot;cell type&quot;</span>, <span class="dt">features=</span><span class="st">&quot;ENSG00000115263&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:viol-gcg-lawlor"></span>
-<img src="P2_W07.marker-detection_files/figure-html/viol-gcg-lawlor-1.png" alt="Distribution of log-normalized expression values for _GCG_ across different pancreatic cell types in GSE86469." width="672" />
+<img src="P2_W09.marker-detection_files/figure-html/viol-gcg-lawlor-1.png" alt="Distribution of log-normalized expression values for _GCG_ across different pancreatic cell types in GSE86469." width="672" />
 <p class="caption">
-Figure 11.5: Distribution of log-normalized expression values for <em>GCG</em> across different pancreatic cell types in GSE86469.
+Figure 13.5: Distribution of log-normalized expression values for <em>GCG</em> across different pancreatic cell types in GSE86469.
 </p>
 </div>
 <p>Another property of the binomial test is that it will not respond to scaling normalization.
@@ -770,68 +800,68 @@ This is not necessarily problematic for marker gene detection -
 users can treat this as retaining information about the total RNA content, analogous to spike-in normalization.</p>
 </div>
 <div id="using-custom-de-methods" class="section level3">
-<h3><span class="header-section-number">11.3.3</span> Using custom DE methods</h3>
+<h3><span class="header-section-number">13.3.3</span> Using custom DE methods</h3>
 <p>It is possible to perform marker gene detection based on precomputed DE statistics.
 This allows us to take advantage of more sophisticated tests in dedicated DE analysis packages.
 To demonstrate, consider the <code>voom()</code> approach from the <em><a href="https://bioconductor.org/packages/3.10/limma">limma</a></em> package <span class="citation">(Law et al. <a href="#ref-law2014voom">2014</a>)</span>.
 We first process our <code>SingleCellExperiment</code> to obtain a <code>fit</code> object as shown below.</p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" data-line-number="1"><span class="kw">library</span>(limma)</a>
-<a class="sourceLine" id="cb278-2" data-line-number="2">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>cluster, <span class="dt">data=</span><span class="kw">colData</span>(sce.pbmc))</a>
-<a class="sourceLine" id="cb278-3" data-line-number="3"><span class="kw">colnames</span>(design)</a></code></pre></div>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb348-1" data-line-number="1"><span class="kw">library</span>(limma)</a>
+<a class="sourceLine" id="cb348-2" data-line-number="2">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>cluster, <span class="dt">data=</span><span class="kw">colData</span>(sce.pbmc))</a>
+<a class="sourceLine" id="cb348-3" data-line-number="3"><span class="kw">colnames</span>(design)</a></code></pre></div>
 <pre><code>##  [1] &quot;cluster1&quot;  &quot;cluster2&quot;  &quot;cluster3&quot;  &quot;cluster4&quot;  &quot;cluster5&quot; 
 ##  [6] &quot;cluster6&quot;  &quot;cluster7&quot;  &quot;cluster8&quot;  &quot;cluster9&quot;  &quot;cluster10&quot;
 ## [11] &quot;cluster11&quot; &quot;cluster12&quot;</code></pre>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" data-line-number="1"><span class="co"># Removing very low-abundance genes.</span></a>
-<a class="sourceLine" id="cb280-2" data-line-number="2">keep &lt;-<span class="st"> </span><span class="kw">calculateAverage</span>(sce.pbmc) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.1</span> </a>
-<a class="sourceLine" id="cb280-3" data-line-number="3"><span class="kw">summary</span>(keep)</a></code></pre></div>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb350-1" data-line-number="1"><span class="co"># Removing very low-abundance genes.</span></a>
+<a class="sourceLine" id="cb350-2" data-line-number="2">keep &lt;-<span class="st"> </span><span class="kw">calculateAverage</span>(sce.pbmc) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.1</span> </a>
+<a class="sourceLine" id="cb350-3" data-line-number="3"><span class="kw">summary</span>(keep)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
 ## logical   29387    4307</code></pre>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb282-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">convertTo</span>(sce.pbmc, <span class="dt">subset.row=</span>keep)</a>
-<a class="sourceLine" id="cb282-2" data-line-number="2">v &lt;-<span class="st"> </span><span class="kw">voom</span>(y, design)</a>
-<a class="sourceLine" id="cb282-3" data-line-number="3">fit &lt;-<span class="st"> </span><span class="kw">lmFit</span>(v, design)</a></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb352-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">convertTo</span>(sce.pbmc, <span class="dt">subset.row=</span>keep)</a>
+<a class="sourceLine" id="cb352-2" data-line-number="2">v &lt;-<span class="st"> </span><span class="kw">voom</span>(y, design)</a>
+<a class="sourceLine" id="cb352-3" data-line-number="3">fit &lt;-<span class="st"> </span><span class="kw">lmFit</span>(v, design)</a></code></pre></div>
 <p>We then perform pairwise comparisons between clusters using the TREAT strategy <span class="citation">(McCarthy and Smyth <a href="#ref-mccarthy2009treat">2009</a>)</span> to test for log-fold changes that are significantly greater than 0.5.
 For each comparison, we store the corresponding data frame of statistics in <code>all.results</code>, along with the identities of the clusters involved in <code>all.pairs</code>.</p>
-<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb283-1" data-line-number="1">nclust &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(sce.pbmc<span class="op">$</span>cluster))</a>
-<a class="sourceLine" id="cb283-2" data-line-number="2">all.results &lt;-<span class="st"> </span>all.pairs &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb283-3" data-line-number="3">counter &lt;-<span class="st"> </span>1L</a>
-<a class="sourceLine" id="cb283-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb283-5" data-line-number="5"><span class="co"># Iterating across the first &#39;nclust&#39; coefficients in design,</span></a>
-<a class="sourceLine" id="cb283-6" data-line-number="6"><span class="co"># and comparing them to each other in a pairwise manner.</span></a>
-<a class="sourceLine" id="cb283-7" data-line-number="7"><span class="cf">for</span> (x <span class="cf">in</span> <span class="kw">seq_len</span>(nclust)) {</a>
-<a class="sourceLine" id="cb283-8" data-line-number="8">    <span class="cf">for</span> (y <span class="cf">in</span> <span class="kw">seq_len</span>(x<span class="op">-</span>1L)) {</a>
-<a class="sourceLine" id="cb283-9" data-line-number="9">        con &lt;-<span class="st"> </span><span class="kw">integer</span>(<span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb283-10" data-line-number="10">        con[x] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb283-11" data-line-number="11">        con[y] &lt;-<span class="st"> </span><span class="dv">-1</span></a>
-<a class="sourceLine" id="cb283-12" data-line-number="12">        fit2 &lt;-<span class="st"> </span><span class="kw">contrasts.fit</span>(fit, con)</a>
-<a class="sourceLine" id="cb283-13" data-line-number="13">        fit2 &lt;-<span class="st"> </span><span class="kw">treat</span>(fit2, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">lfc=</span><span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb283-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb283-15" data-line-number="15">        res &lt;-<span class="st"> </span><span class="kw">topTreat</span>(fit2, <span class="dt">n=</span><span class="ot">Inf</span>, <span class="dt">sort.by=</span><span class="st">&quot;none&quot;</span>)</a>
-<a class="sourceLine" id="cb283-16" data-line-number="16">        all.results[[counter]] &lt;-<span class="st"> </span>res</a>
-<a class="sourceLine" id="cb283-17" data-line-number="17">        all.pairs[[counter]] &lt;-<span class="st"> </span><span class="kw">colnames</span>(design)[<span class="kw">c</span>(x, y)]</a>
-<a class="sourceLine" id="cb283-18" data-line-number="18">        counter &lt;-<span class="st"> </span>counter<span class="op">+</span>1L</a>
-<a class="sourceLine" id="cb283-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb283-20" data-line-number="20">        <span class="co"># Also filling the reverse comparison.</span></a>
-<a class="sourceLine" id="cb283-21" data-line-number="21">        res<span class="op">$</span>logFC &lt;-<span class="st"> </span><span class="op">-</span>res<span class="op">$</span>logFC</a>
-<a class="sourceLine" id="cb283-22" data-line-number="22">        all.results[[counter]] &lt;-<span class="st"> </span>res</a>
-<a class="sourceLine" id="cb283-23" data-line-number="23">        all.pairs[[counter]] &lt;-<span class="st"> </span><span class="kw">colnames</span>(design)[<span class="kw">c</span>(y, x)]</a>
-<a class="sourceLine" id="cb283-24" data-line-number="24">        counter &lt;-<span class="st"> </span>counter<span class="op">+</span>1L</a>
-<a class="sourceLine" id="cb283-25" data-line-number="25">    }</a>
-<a class="sourceLine" id="cb283-26" data-line-number="26">}</a></code></pre></div>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb353-1" data-line-number="1">nclust &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(sce.pbmc<span class="op">$</span>cluster))</a>
+<a class="sourceLine" id="cb353-2" data-line-number="2">all.results &lt;-<span class="st"> </span>all.pairs &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb353-3" data-line-number="3">counter &lt;-<span class="st"> </span>1L</a>
+<a class="sourceLine" id="cb353-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb353-5" data-line-number="5"><span class="co"># Iterating across the first &#39;nclust&#39; coefficients in design,</span></a>
+<a class="sourceLine" id="cb353-6" data-line-number="6"><span class="co"># and comparing them to each other in a pairwise manner.</span></a>
+<a class="sourceLine" id="cb353-7" data-line-number="7"><span class="cf">for</span> (x <span class="cf">in</span> <span class="kw">seq_len</span>(nclust)) {</a>
+<a class="sourceLine" id="cb353-8" data-line-number="8">    <span class="cf">for</span> (y <span class="cf">in</span> <span class="kw">seq_len</span>(x<span class="op">-</span>1L)) {</a>
+<a class="sourceLine" id="cb353-9" data-line-number="9">        con &lt;-<span class="st"> </span><span class="kw">integer</span>(<span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb353-10" data-line-number="10">        con[x] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb353-11" data-line-number="11">        con[y] &lt;-<span class="st"> </span><span class="dv">-1</span></a>
+<a class="sourceLine" id="cb353-12" data-line-number="12">        fit2 &lt;-<span class="st"> </span><span class="kw">contrasts.fit</span>(fit, con)</a>
+<a class="sourceLine" id="cb353-13" data-line-number="13">        fit2 &lt;-<span class="st"> </span><span class="kw">treat</span>(fit2, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">lfc=</span><span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb353-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb353-15" data-line-number="15">        res &lt;-<span class="st"> </span><span class="kw">topTreat</span>(fit2, <span class="dt">n=</span><span class="ot">Inf</span>, <span class="dt">sort.by=</span><span class="st">&quot;none&quot;</span>)</a>
+<a class="sourceLine" id="cb353-16" data-line-number="16">        all.results[[counter]] &lt;-<span class="st"> </span>res</a>
+<a class="sourceLine" id="cb353-17" data-line-number="17">        all.pairs[[counter]] &lt;-<span class="st"> </span><span class="kw">colnames</span>(design)[<span class="kw">c</span>(x, y)]</a>
+<a class="sourceLine" id="cb353-18" data-line-number="18">        counter &lt;-<span class="st"> </span>counter<span class="op">+</span>1L</a>
+<a class="sourceLine" id="cb353-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb353-20" data-line-number="20">        <span class="co"># Also filling the reverse comparison.</span></a>
+<a class="sourceLine" id="cb353-21" data-line-number="21">        res<span class="op">$</span>logFC &lt;-<span class="st"> </span><span class="op">-</span>res<span class="op">$</span>logFC</a>
+<a class="sourceLine" id="cb353-22" data-line-number="22">        all.results[[counter]] &lt;-<span class="st"> </span>res</a>
+<a class="sourceLine" id="cb353-23" data-line-number="23">        all.pairs[[counter]] &lt;-<span class="st"> </span><span class="kw">colnames</span>(design)[<span class="kw">c</span>(y, x)]</a>
+<a class="sourceLine" id="cb353-24" data-line-number="24">        counter &lt;-<span class="st"> </span>counter<span class="op">+</span>1L</a>
+<a class="sourceLine" id="cb353-25" data-line-number="25">    }</a>
+<a class="sourceLine" id="cb353-26" data-line-number="26">}</a></code></pre></div>
 <p>These custom results are consolidated into a single marker list for each cluster with the <code>combineMarkers()</code> function.
 This combines test statistics across all pairwise comparisons involving a single cluster,
 yielding a per-cluster <code>DataFrame</code> that can be interpreted in the same manner as discussed previously.</p>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb284-1" data-line-number="1">all.pairs &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, all.pairs)</a>
-<a class="sourceLine" id="cb284-2" data-line-number="2">combined &lt;-<span class="st"> </span><span class="kw">combineMarkers</span>(all.results, all.pairs, <span class="dt">pval.field=</span><span class="st">&quot;P.Value&quot;</span>)</a>
-<a class="sourceLine" id="cb284-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb284-4" data-line-number="4"><span class="co"># Inspecting results for our cluster of interest again.</span></a>
-<a class="sourceLine" id="cb284-5" data-line-number="5">interesting.voom &lt;-<span class="st"> </span>combined[[<span class="kw">paste0</span>(<span class="st">&quot;cluster&quot;</span>, chosen)]] </a>
-<a class="sourceLine" id="cb284-6" data-line-number="6"><span class="kw">colnames</span>(interesting.voom)</a></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb354-1" data-line-number="1">all.pairs &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, all.pairs)</a>
+<a class="sourceLine" id="cb354-2" data-line-number="2">combined &lt;-<span class="st"> </span><span class="kw">combineMarkers</span>(all.results, all.pairs, <span class="dt">pval.field=</span><span class="st">&quot;P.Value&quot;</span>)</a>
+<a class="sourceLine" id="cb354-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb354-4" data-line-number="4"><span class="co"># Inspecting results for our cluster of interest again.</span></a>
+<a class="sourceLine" id="cb354-5" data-line-number="5">interesting.voom &lt;-<span class="st"> </span>combined[[<span class="kw">paste0</span>(<span class="st">&quot;cluster&quot;</span>, chosen)]] </a>
+<a class="sourceLine" id="cb354-6" data-line-number="6"><span class="kw">colnames</span>(interesting.voom)</a></code></pre></div>
 <pre><code>##  [1] &quot;Top&quot;             &quot;p.value&quot;         &quot;FDR&quot;            
 ##  [4] &quot;logFC.cluster1&quot;  &quot;logFC.cluster2&quot;  &quot;logFC.cluster3&quot; 
 ##  [7] &quot;logFC.cluster4&quot;  &quot;logFC.cluster5&quot;  &quot;logFC.cluster6&quot; 
 ## [10] &quot;logFC.cluster7&quot;  &quot;logFC.cluster8&quot;  &quot;logFC.cluster10&quot;
 ## [13] &quot;logFC.cluster11&quot; &quot;logFC.cluster12&quot;</code></pre>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb286-1" data-line-number="1"><span class="kw">head</span>(interesting.voom[,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb356-1" data-line-number="1"><span class="kw">head</span>(interesting.voom[,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</a></code></pre></div>
 <pre><code>## DataFrame with 6 rows and 3 columns
 ##                Top   p.value       FDR
 ##          &lt;integer&gt; &lt;numeric&gt; &lt;numeric&gt;
@@ -850,10 +880,10 @@ Nonetheless, some custom methods (e.g., <em><a href="https://bioconductor.org/pa
 </div>
 </div>
 <div id="handling-blocking-factors" class="section level2">
-<h2><span class="header-section-number">11.4</span> Handling blocking factors</h2>
+<h2><span class="header-section-number">13.4</span> Handling blocking factors</h2>
 </div>
 <div id="using-the-block-argument" class="section level2">
-<h2><span class="header-section-number">11.5</span> Using the <code>block=</code> argument</h2>
+<h2><span class="header-section-number">13.5</span> Using the <code>block=</code> argument</h2>
 <p>Large studies may contain factors of variation that are known and not interesting (e.g., batch effects, sex differences).
 If these are not modelled, they can interfere with marker gene detection - most obviously by inflating the variance within each cluster, but also by distorting the log-fold changes if the cluster composition varies across levels of the blocking factor.
 To avoid these issues, we set the <code>block=</code> argument in the <code>findMarkers()</code> call, as demonstrated below for the 416B data set.</p>
@@ -861,103 +891,115 @@ To avoid these issues, we set the <code>block=</code> argument in the <code>find
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb288-1" data-line-number="1">### loading <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb288-3" data-line-number="3">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
-<a class="sourceLine" id="cb288-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb288-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-6" data-line-number="6"><span class="kw">library</span>(org.Mm.eg.db)</a>
-<a class="sourceLine" id="cb288-7" data-line-number="7">symb &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b), </a>
-<a class="sourceLine" id="cb288-8" data-line-number="8">    <span class="dt">keytype=</span><span class="st">&quot;ENSEMBL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
-<a class="sourceLine" id="cb288-9" data-line-number="9"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb288-10" data-line-number="10"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span>symb</a>
-<a class="sourceLine" id="cb288-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb288-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb288-13" data-line-number="13"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
-<a class="sourceLine" id="cb288-14" data-line-number="14">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb288-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb288-16" data-line-number="16"><span class="kw">library</span>(TxDb.Mmusculus.UCSC.mm10.ensGene)</a>
-<a class="sourceLine" id="cb288-17" data-line-number="17">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(TxDb.Mmusculus.UCSC.mm10.ensGene, </a>
-<a class="sourceLine" id="cb288-18" data-line-number="18">    <span class="dt">keys=</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
-<a class="sourceLine" id="cb288-19" data-line-number="19">    <span class="dt">column=</span><span class="st">&quot;CDSCHROM&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb288-20" data-line-number="20"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>CHR &lt;-<span class="st"> </span>location</a>
-<a class="sourceLine" id="cb288-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb288-22" data-line-number="22">### quality-control <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-23" data-line-number="23">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>CHR<span class="op">==</span><span class="st">&quot;chrM&quot;</span>)</a>
-<a class="sourceLine" id="cb288-24" data-line-number="24">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
-<a class="sourceLine" id="cb288-25" data-line-number="25">libsize.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_counts, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, </a>
-<a class="sourceLine" id="cb288-26" data-line-number="26">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
-<a class="sourceLine" id="cb288-27" data-line-number="27">feature.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_features_by_counts, <span class="dt">nmads=</span><span class="dv">3</span>, </a>
-<a class="sourceLine" id="cb288-28" data-line-number="28">    <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
-<a class="sourceLine" id="cb288-29" data-line-number="29">spike.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>pct_counts_ERCC, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>,</a>
-<a class="sourceLine" id="cb288-30" data-line-number="30">    <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>PlateOnco)</a>
-<a class="sourceLine" id="cb288-31" data-line-number="31">keep &lt;-<span class="st"> </span><span class="op">!</span>(libsize.drop <span class="op">|</span><span class="st"> </span>feature.drop <span class="op">|</span><span class="st"> </span>spike.drop)</a>
-<a class="sourceLine" id="cb288-32" data-line-number="32">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,keep]</a>
-<a class="sourceLine" id="cb288-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb288-34" data-line-number="34">### normalization <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-35" data-line-number="35"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb288-36" data-line-number="36">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb288-37" data-line-number="37">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce<span class="fl">.416</span>b, <span class="dt">general.use=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb288-38" data-line-number="38">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb288-39" data-line-number="39"></a>
-<a class="sourceLine" id="cb288-40" data-line-number="40">### variance-modelling <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-41" data-line-number="41">fit<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce<span class="fl">.416</span>b, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>Plate)</a>
-<a class="sourceLine" id="cb288-42" data-line-number="42">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce<span class="fl">.416</span>b, fit<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb288-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb288-44" data-line-number="44"><span class="co"># Taking all of the genes with positive biological components.</span></a>
-<a class="sourceLine" id="cb288-45" data-line-number="45">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec<span class="fl">.416</span>b)[dec<span class="fl">.416</span>b<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a>
-<a class="sourceLine" id="cb288-46" data-line-number="46"></a>
-<a class="sourceLine" id="cb288-47" data-line-number="47">### batch-correction <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-48" data-line-number="48"><span class="co"># Composition of the plates is expected to be the same,</span></a>
-<a class="sourceLine" id="cb288-49" data-line-number="49"><span class="co"># hence the use of a simple &#39;removeBatchEffect&#39;.</span></a>
-<a class="sourceLine" id="cb288-50" data-line-number="50"><span class="kw">library</span>(limma)</a>
-<a class="sourceLine" id="cb288-51" data-line-number="51"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
-<a class="sourceLine" id="cb288-52" data-line-number="52">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>Plate)</a>
-<a class="sourceLine" id="cb288-53" data-line-number="53"></a>
-<a class="sourceLine" id="cb288-54" data-line-number="54">### dimensionality-reduction <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-55" data-line-number="55">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce<span class="fl">.416</span>b, <span class="dt">technical=</span>dec<span class="fl">.416</span>b, </a>
-<a class="sourceLine" id="cb288-56" data-line-number="56">    <span class="dt">subset.row=</span>chosen.hvgs, <span class="dt">assay.type=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb288-57" data-line-number="57"></a>
-<a class="sourceLine" id="cb288-58" data-line-number="58"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
-<a class="sourceLine" id="cb288-59" data-line-number="59">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb288-60" data-line-number="60"></a>
-<a class="sourceLine" id="cb288-61" data-line-number="61">### clustering <span class="al">###</span></a>
-<a class="sourceLine" id="cb288-62" data-line-number="62">my.dist &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
-<a class="sourceLine" id="cb288-63" data-line-number="63">my.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(my.dist, <span class="dt">method=</span><span class="st">&quot;ward.D2&quot;</span>)</a>
-<a class="sourceLine" id="cb288-64" data-line-number="64"></a>
-<a class="sourceLine" id="cb288-65" data-line-number="65"><span class="kw">library</span>(dynamicTreeCut)</a>
-<a class="sourceLine" id="cb288-66" data-line-number="66">my.clusters &lt;-<span class="st"> </span><span class="kw">unname</span>(<span class="kw">cutreeDynamic</span>(my.tree, <span class="dt">distM=</span><span class="kw">as.matrix</span>(my.dist),</a>
-<a class="sourceLine" id="cb288-67" data-line-number="67">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">verbose=</span><span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb288-68" data-line-number="68">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(my.clusters)</a></code></pre></div>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb358-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb358-3" data-line-number="3">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
+<a class="sourceLine" id="cb358-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb358-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-6" data-line-number="6"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb358-7" data-line-number="7">ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]</a>
+<a class="sourceLine" id="cb358-8" data-line-number="8"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb358-9" data-line-number="9"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb358-10" data-line-number="10">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
+<a class="sourceLine" id="cb358-11" data-line-number="11"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb358-12" data-line-number="12">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)</a>
+<a class="sourceLine" id="cb358-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb358-14" data-line-number="14"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb358-15" data-line-number="15"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
+<a class="sourceLine" id="cb358-16" data-line-number="16">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb358-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb358-18" data-line-number="18">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-19" data-line-number="19">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)</a>
+<a class="sourceLine" id="cb358-20" data-line-number="20">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">feature_controls=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
+<a class="sourceLine" id="cb358-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb358-22" data-line-number="22">combined &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce<span class="fl">.416</span>b<span class="op">$</span>block, <span class="st">&quot;:&quot;</span>, sce<span class="fl">.416</span>b<span class="op">$</span>phenotype)</a>
+<a class="sourceLine" id="cb358-23" data-line-number="23">libsize.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_counts, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, </a>
+<a class="sourceLine" id="cb358-24" data-line-number="24">    <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>combined)</a>
+<a class="sourceLine" id="cb358-25" data-line-number="25">feature.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>total_features_by_counts, <span class="dt">nmads=</span><span class="dv">3</span>, </a>
+<a class="sourceLine" id="cb358-26" data-line-number="26">    <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">batch=</span>combined)</a>
+<a class="sourceLine" id="cb358-27" data-line-number="27">spike.drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="fl">.416</span>b<span class="op">$</span>pct_counts_ERCC, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>,</a>
+<a class="sourceLine" id="cb358-28" data-line-number="28">    <span class="dt">batch=</span>combined)</a>
+<a class="sourceLine" id="cb358-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb358-30" data-line-number="30">keep &lt;-<span class="st"> </span><span class="op">!</span>(libsize.drop <span class="op">|</span><span class="st"> </span>feature.drop <span class="op">|</span><span class="st"> </span>spike.drop)</a>
+<a class="sourceLine" id="cb358-31" data-line-number="31">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,keep]</a>
+<a class="sourceLine" id="cb358-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb358-33" data-line-number="33">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-34" data-line-number="34"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb358-35" data-line-number="35">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb358-36" data-line-number="36">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce<span class="fl">.416</span>b, <span class="dt">general.use=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb358-37" data-line-number="37">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">normalize</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb358-38" data-line-number="38"></a>
+<a class="sourceLine" id="cb358-39" data-line-number="39">### variance-modelling <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-40" data-line-number="40">fit<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">trendVar</span>(sce<span class="fl">.416</span>b, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb358-41" data-line-number="41">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">decomposeVar</span>(sce<span class="fl">.416</span>b, fit<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb358-42" data-line-number="42"></a>
+<a class="sourceLine" id="cb358-43" data-line-number="43"><span class="co"># Taking all of the genes with positive biological components.</span></a>
+<a class="sourceLine" id="cb358-44" data-line-number="44">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">rownames</span>(dec<span class="fl">.416</span>b)[dec<span class="fl">.416</span>b<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb358-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb358-46" data-line-number="46">### batch-correction <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-47" data-line-number="47"><span class="co"># Composition of the plates is expected to be the same,</span></a>
+<a class="sourceLine" id="cb358-48" data-line-number="48"><span class="co"># hence the use of a simple &#39;removeBatchEffect&#39;.</span></a>
+<a class="sourceLine" id="cb358-49" data-line-number="49"><span class="kw">library</span>(limma)</a>
+<a class="sourceLine" id="cb358-50" data-line-number="50"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
+<a class="sourceLine" id="cb358-51" data-line-number="51">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb358-52" data-line-number="52"></a>
+<a class="sourceLine" id="cb358-53" data-line-number="53">### dimensionality-reduction <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-54" data-line-number="54">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce<span class="fl">.416</span>b, <span class="dt">technical=</span>dec<span class="fl">.416</span>b, </a>
+<a class="sourceLine" id="cb358-55" data-line-number="55">    <span class="dt">subset.row=</span>chosen.hvgs, <span class="dt">assay.type=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb358-56" data-line-number="56"></a>
+<a class="sourceLine" id="cb358-57" data-line-number="57"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
+<a class="sourceLine" id="cb358-58" data-line-number="58">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb358-59" data-line-number="59"></a>
+<a class="sourceLine" id="cb358-60" data-line-number="60">### clustering <span class="al">###</span></a>
+<a class="sourceLine" id="cb358-61" data-line-number="61">my.dist &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
+<a class="sourceLine" id="cb358-62" data-line-number="62">my.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(my.dist, <span class="dt">method=</span><span class="st">&quot;ward.D2&quot;</span>)</a>
+<a class="sourceLine" id="cb358-63" data-line-number="63"></a>
+<a class="sourceLine" id="cb358-64" data-line-number="64"><span class="kw">library</span>(dynamicTreeCut)</a>
+<a class="sourceLine" id="cb358-65" data-line-number="65">my.clusters &lt;-<span class="st"> </span><span class="kw">unname</span>(<span class="kw">cutreeDynamic</span>(my.tree, <span class="dt">distM=</span><span class="kw">as.matrix</span>(my.dist),</a>
+<a class="sourceLine" id="cb358-66" data-line-number="66">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">verbose=</span><span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb358-67" data-line-number="67">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(my.clusters)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb289-1" data-line-number="1">m.out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, sce<span class="fl">.416</span>b<span class="op">$</span>cluster, </a>
-<a class="sourceLine" id="cb289-2" data-line-number="2">                     <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>) </a></code></pre></div>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb359-1" data-line-number="1">m.out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, sce<span class="fl">.416</span>b<span class="op">$</span>cluster, </a>
+<a class="sourceLine" id="cb359-2" data-line-number="2">                     <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>) </a></code></pre></div>
 <p>For each gene, each pairwise comparion between clusters is performed separately in each level of the blocking factor - in this case, the plate of origin.
 The function will then combine <span class="math inline">\(p\)</span>-values from different plates using Stouffer’s Z method to obtain a single <span class="math inline">\(p\)</span>-value per pairwise comparison.
 (These <span class="math inline">\(p\)</span>-values are further combined across comparisons to obtain a single <span class="math inline">\(p\)</span>-value per gene, using either Simes’ method or an intersection-union test depending on the value of <code>pval.type=</code>.)
 This approach favours genes that exhibit consistent DE in the same direction in each plate.</p>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" data-line-number="1">demo &lt;-<span class="st"> </span>m.out[[<span class="st">&quot;1&quot;</span>]] </a>
-<a class="sourceLine" id="cb290-2" data-line-number="2">demo[demo<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
-<pre><code>## NULL</code></pre>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb360-1" data-line-number="1">demo &lt;-<span class="st"> </span>m.out[[<span class="st">&quot;1&quot;</span>]] </a>
+<a class="sourceLine" id="cb360-2" data-line-number="2">demo[demo<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<pre><code>## DataFrame with 24 rows and 3 columns
+##                          Top              p.value                  FDR
+##                    &lt;integer&gt;            &lt;numeric&gt;            &lt;numeric&gt;
+## Cenpk                      1 3.64842075891759e-38 1.70031001048595e-33
+## Uhrf1                      1 1.27436092404157e-31 2.96951582520165e-27
+## Pkp4                       1 2.10780869575213e-27 1.63720527428053e-23
+## ENSMUSG00000082279         1 1.62145081562279e-23 5.03697869568323e-20
+## Hbb-bt                     1 1.47303160270372e-21 2.14528640038763e-18
+## ...                      ...                  ...                  ...
+## Rfc5                       5 1.43735740166193e-26 8.37332554338155e-23
+## Elp4                       5 1.85254656015266e-23 5.07859293466794e-20
+## ENSMUSG00000082043         5 4.23815536237289e-19 3.46517530715835e-16
+## Cxcr5                      5 2.68967679921673e-15 9.35445504109675e-13
+## Kcnk1                      5  7.8504116345369e-13 1.35880722663217e-10</code></pre>
 <p>The <code>block=</code> argument works with all tests shown above and is robust to difference in the log-fold changes or variance between batches.
 However, it assumes that each pair of clusters is present in at least one batch.
 In scenarios where cells from two clusters never co-occur in the same batch, the comparison will be impossible and <code>NA</code>s will be reported in the output.</p>
 </div>
 <div id="using-the-design-argument" class="section level2">
-<h2><span class="header-section-number">11.6</span> Using the <code>design=</code> argument</h2>
+<h2><span class="header-section-number">13.6</span> Using the <code>design=</code> argument</h2>
 <p>Another approach is to define a design matrix containing the batch of origin as the sole factor.
 <code>findMarkers()</code> will then fit a linear model to the log-expression values, similar to the use of <em><a href="https://bioconductor.org/packages/3.10/limma">limma</a></em> for bulk RNA sequencing data <span class="citation">(Ritchie et al. <a href="#ref-ritchie2015limma">2015</a>)</span>.
 This handles situations where multiple batches contain unique clusters, as comparisons can be implicitly performed via shared cell types in each batch.
 There is also a slight increase in power when information is shared across clusters for variance estimation.</p>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" data-line-number="1"><span class="co"># Setting up the design matrix (we remove intercept for full rank</span></a>
-<a class="sourceLine" id="cb292-2" data-line-number="2"><span class="co"># in the final design matrix with the cluster-specific terms).</span></a>
-<a class="sourceLine" id="cb292-3" data-line-number="3">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
-<a class="sourceLine" id="cb292-4" data-line-number="4">design &lt;-<span class="st"> </span>design[,<span class="op">-</span><span class="dv">1</span>,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb292-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb292-6" data-line-number="6">m.alt &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, sce<span class="fl">.416</span>b<span class="op">$</span>cluster, </a>
-<a class="sourceLine" id="cb292-7" data-line-number="7">    <span class="dt">design=</span>design, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb292-8" data-line-number="8">demo &lt;-<span class="st"> </span>m.alt[[<span class="st">&quot;1&quot;</span>]]</a>
-<a class="sourceLine" id="cb292-9" data-line-number="9">demo[demo<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" data-line-number="1"><span class="co"># Setting up the design matrix (we remove intercept for full rank</span></a>
+<a class="sourceLine" id="cb362-2" data-line-number="2"><span class="co"># in the final design matrix with the cluster-specific terms).</span></a>
+<a class="sourceLine" id="cb362-3" data-line-number="3">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb362-4" data-line-number="4">design &lt;-<span class="st"> </span>design[,<span class="op">-</span><span class="dv">1</span>,drop=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb362-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb362-6" data-line-number="6">m.alt &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, sce<span class="fl">.416</span>b<span class="op">$</span>cluster, </a>
+<a class="sourceLine" id="cb362-7" data-line-number="7">    <span class="dt">design=</span>design, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb362-8" data-line-number="8">demo &lt;-<span class="st"> </span>m.alt[[<span class="st">&quot;1&quot;</span>]]</a>
+<a class="sourceLine" id="cb362-9" data-line-number="9">demo[demo<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
 <pre><code>## DataFrame with 18 rows and 3 columns
 ##                          Top              p.value                  FDR
 ##                    &lt;integer&gt;            &lt;numeric&gt;            &lt;numeric&gt;
@@ -979,28 +1021,28 @@ In particular, the presence of clusters in which a gene is silent will shrink th
 Thus, we generally recommend the use of <code>block=</code> where possible.</p>
 </div>
 <div id="invalidity-of-p-values" class="section level2">
-<h2><span class="header-section-number">11.7</span> Invalidity of <span class="math inline">\(p\)</span>-values</h2>
+<h2><span class="header-section-number">13.7</span> Invalidity of <span class="math inline">\(p\)</span>-values</h2>
 <div id="from-data-snooping" class="section level3">
-<h3><span class="header-section-number">11.7.1</span> From data snooping</h3>
+<h3><span class="header-section-number">13.7.1</span> From data snooping</h3>
 <p>All of our DE strategies for detecting marker genes between clusters are statistically flawed to some extent.
 The DE analysis is performed on the same data used to obtain the clusters, which represents “data dredging” (also known as fishing or data snooping).
 The hypothesis of interest - that are there differences between clusters? - is formulated from the data, so we are more likely to get a positive result when we re-use the data set to test that hypothesis.</p>
 <p>The practical effect of data dredging is best illustrated with a simple simulation.
 We simulate i.i.d. normal values, perform <span class="math inline">\(k\)</span>-means clustering and test for DE between clusters of cells with <code>findMarkers()</code>.
-The resulting distribution of <span class="math inline">\(p\)</span>-values is heavily skewed towards low values (Figure <a href="marker-gene-detection.html#fig:pval-dist">11.6</a>).
+The resulting distribution of <span class="math inline">\(p\)</span>-values is heavily skewed towards low values (Figure <a href="marker-gene-detection.html#fig:pval-dist">13.6</a>).
 Thus, we can detect “significant” differences between clusters even in the absence of any real substructure in the data.
 This effect arises from the fact that clustering, by definition, yields groups of cells that are separated in expression space.
 Testing for DE genes between clusters will inevitably yield some significant results as that is how the clusters were defined.</p>
-<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb294-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb294-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb294-3" data-line-number="3">y &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">100000</span>), <span class="dt">ncol=</span><span class="dv">200</span>)</a>
-<a class="sourceLine" id="cb294-4" data-line-number="4">clusters &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">t</span>(y), <span class="dt">centers=</span><span class="dv">2</span>)<span class="op">$</span>cluster</a>
-<a class="sourceLine" id="cb294-5" data-line-number="5">out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(y, clusters)</a>
-<a class="sourceLine" id="cb294-6" data-line-number="6"><span class="kw">hist</span>(out[[<span class="dv">1</span>]]<span class="op">$</span>p.value, <span class="dt">col=</span><span class="st">&quot;grey80&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;p-value&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb364-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb364-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb364-3" data-line-number="3">y &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">100000</span>), <span class="dt">ncol=</span><span class="dv">200</span>)</a>
+<a class="sourceLine" id="cb364-4" data-line-number="4">clusters &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">t</span>(y), <span class="dt">centers=</span><span class="dv">2</span>)<span class="op">$</span>cluster</a>
+<a class="sourceLine" id="cb364-5" data-line-number="5">out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(y, clusters)</a>
+<a class="sourceLine" id="cb364-6" data-line-number="6"><span class="kw">hist</span>(out[[<span class="dv">1</span>]]<span class="op">$</span>p.value, <span class="dt">col=</span><span class="st">&quot;grey80&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;p-value&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:pval-dist"></span>
-<img src="P2_W07.marker-detection_files/figure-html/pval-dist-1.png" alt="Distribution of $p$-values from a DE analysis between two clusters in a simulation with no true subpopulation structure." width="672" />
+<img src="P2_W09.marker-detection_files/figure-html/pval-dist-1.png" alt="Distribution of $p$-values from a DE analysis between two clusters in a simulation with no true subpopulation structure." width="672" />
 <p class="caption">
-Figure 11.6: Distribution of <span class="math inline">\(p\)</span>-values from a DE analysis between two clusters in a simulation with no true subpopulation structure.
+Figure 13.6: Distribution of <span class="math inline">\(p\)</span>-values from a DE analysis between two clusters in a simulation with no true subpopulation structure.
 </p>
 </div>
 <p>For marker gene detection, this effect is largely harmless as the <span class="math inline">\(p\)</span>-values are used only for ranking.
@@ -1009,7 +1051,7 @@ Meaningful interpretation of error rates require consideration of the long-run b
 The concept of statistical significance for differences between clusters is not applicable if clusters and their interpretations are not stably reproducible across (hypothetical) replicate experiments.</p>
 </div>
 <div id="nature-of-replication" class="section level3">
-<h3><span class="header-section-number">11.7.2</span> Nature of replication</h3>
+<h3><span class="header-section-number">13.7.2</span> Nature of replication</h3>
 <p>The naive application of DE analysis methods will treat counts from the same cluster of cells as replicate observations.
 This is not the most relevant level of replication when cells are derived from the same biological sample (i.e., cell culture, animal or patient).
 DE analyses that treat cells as replicates fail to properly model the sample-to-sample variability <span class="citation">(A. T. L. Lun and Marioni <a href="#ref-lun2017overcoming">2017</a>)</span>.
@@ -1018,10 +1060,11 @@ Indeed, the use of cells as replicates only masks the fact that the sample size 
 This reinforces the inappropriateness of using the marker gene <span class="math inline">\(p\)</span>-values to make statements about statistical inference.</p>
 </div>
 </div>
-<div id="session-info-5" class="section level2">
-<h2><span class="header-section-number">11.8</span> Session Info</h2>
+<div id="session-info-7" class="section level2">
+<h2><span class="header-section-number">13.8</span> Session Info</h2>
 <pre><code>## &lt;button class=&quot;aaron-collapse&quot;&gt;View session info&lt;/button&gt;
 ## &lt;div class=&quot;aaron-content&quot;&gt;
+## ```
 ## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 14.04.6 LTS
@@ -1038,13 +1081,13 @@ This reinforces the inappropriateness of using the marker gene <span class="math
 ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
-## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] limma_3.41.6                scater_1.13.9              
+##  [1] limma_3.41.15               scater_1.13.9              
 ##  [3] ggplot2_3.2.0               pheatmap_1.0.12            
-##  [5] scran_1.13.9                SingleCellExperiment_1.5.3 
+##  [5] scran_1.13.9                SingleCellExperiment_1.7.0 
 ##  [7] SummarizedExperiment_1.15.5 DelayedArray_0.11.4        
 ##  [9] BiocParallel_1.19.0         matrixStats_0.54.0         
 ## [11] Biobase_2.45.0              GenomicRanges_1.37.14      
@@ -1054,34 +1097,37 @@ This reinforces the inappropriateness of using the marker gene <span class="math
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] viridis_0.5.1            dynamicTreeCut_1.63-1   
-##  [3] edgeR_3.27.6             BiocSingular_1.1.5      
+##  [3] edgeR_3.27.9             BiocSingular_1.1.5      
 ##  [5] viridisLite_0.3.0        DelayedMatrixStats_1.7.1
 ##  [7] assertthat_0.2.1         statmod_1.4.32          
-##  [9] BiocManager_1.30.4       dqrng_0.2.1             
-## [11] GenomeInfoDbData_1.2.1   vipor_0.4.5             
-## [13] yaml_2.2.0               pillar_1.4.2            
-## [15] lattice_0.20-38          glue_1.3.1              
-## [17] digest_0.6.20            RColorBrewer_1.1-2      
-## [19] XVector_0.25.0           colorspace_1.4-1        
-## [21] htmltools_0.3.6          Matrix_1.2-17           
-## [23] pkgconfig_2.0.2          bookdown_0.12           
-## [25] zlibbioc_1.31.0          purrr_0.3.2             
-## [27] scales_1.0.0             tibble_2.1.3            
-## [29] withr_2.1.2              lazyeval_0.2.2          
-## [31] magrittr_1.5             crayon_1.3.4            
-## [33] evaluate_0.14            beeswarm_0.2.3          
-## [35] tools_3.6.0              stringr_1.4.0           
-## [37] munsell_0.5.0            locfit_1.5-9.1          
-## [39] irlba_2.3.3              compiler_3.6.0          
-## [41] rsvd_1.0.1               rlang_0.4.0             
-## [43] grid_3.6.0               RCurl_1.95-4.12         
-## [45] BiocNeighbors_1.3.2      igraph_1.2.4.1          
-## [47] bitops_1.0-6             rmarkdown_1.14          
-## [49] gtable_0.3.0             R6_2.4.0                
-## [51] gridExtra_2.3            knitr_1.23              
-## [53] dplyr_0.8.3              stringi_1.4.3           
-## [55] ggbeeswarm_0.6.0         Rcpp_1.0.1              
-## [57] tidyselect_0.2.5         xfun_0.8                
+##  [9] BiocManager_1.30.4       highr_0.8               
+## [11] dqrng_0.2.1              GenomeInfoDbData_1.2.1  
+## [13] vipor_0.4.5              yaml_2.2.0              
+## [15] pillar_1.4.2             lattice_0.20-38         
+## [17] glue_1.3.1               digest_0.6.20           
+## [19] RColorBrewer_1.1-2       XVector_0.25.0          
+## [21] colorspace_1.4-1         cowplot_1.0.0           
+## [23] htmltools_0.3.6          Matrix_1.2-17           
+## [25] pkgconfig_2.0.2          bookdown_0.12           
+## [27] zlibbioc_1.31.0          purrr_0.3.2             
+## [29] scales_1.0.0             tibble_2.1.3            
+## [31] withr_2.1.2              lazyeval_0.2.2          
+## [33] magrittr_1.5             crayon_1.3.4            
+## [35] evaluate_0.14            beeswarm_0.2.3          
+## [37] tools_3.6.0              stringr_1.4.0           
+## [39] munsell_0.5.0            locfit_1.5-9.1          
+## [41] irlba_2.3.3              compiler_3.6.0          
+## [43] rsvd_1.0.2               rlang_0.4.0             
+## [45] grid_3.6.0               RCurl_1.95-4.12         
+## [47] BiocNeighbors_1.3.3      igraph_1.2.4.1          
+## [49] labeling_0.3             bitops_1.0-6            
+## [51] rmarkdown_1.14           gtable_0.3.0            
+## [53] codetools_0.2-16         R6_2.4.0                
+## [55] gridExtra_2.3            knitr_1.23              
+## [57] dplyr_0.8.3              stringi_1.4.3           
+## [59] ggbeeswarm_0.6.0         Rcpp_1.0.2              
+## [61] tidyselect_0.2.5         xfun_0.8                
+## ```
 ## &lt;/div&gt;</code></pre>
 
 </div>
@@ -1112,9 +1158,9 @@ This reinforces the inappropriateness of using the marker gene <span class="math
 </div>
 <div class="footnotes">
 <hr />
-<ol start="15">
-<li id="fn15"><p>That is, the lowest rank value. So 1st is 1, and 2nd is 2, so 1 is higher than 2. Geez.<a href="marker-gene-detection.html#fnref15" class="footnote-back">↩</a></p></li>
-<li id="fn16"><p>Standard operating procedure is to (i) experience a brief but crushing bout of disappointment due to the poor quality of upregulated candidate markers, (ii) rage-quit, and (iii) remember to check the genes that are changing in the other direction.<a href="marker-gene-detection.html#fnref16" class="footnote-back">↩</a></p></li>
+<ol start="17">
+<li id="fn17"><p>That is, the lowest rank value. So 1st is 1, and 2nd is 2, so 1 is higher than 2. Geez.<a href="marker-gene-detection.html#fnref17" class="footnote-back">↩</a></p></li>
+<li id="fn18"><p>Standard operating procedure is to (i) experience a brief but crushing bout of disappointment due to the poor quality of upregulated candidate markers, (ii) rage-quit, and (iii) remember to check the genes that are changing in the other direction.<a href="marker-gene-detection.html#fnref18" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -1153,7 +1199,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W07.marker-detection.Rmd",
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/P2_W09.marker-detection.Rmd",
 "text": "Edit"
 },
 "history": {
