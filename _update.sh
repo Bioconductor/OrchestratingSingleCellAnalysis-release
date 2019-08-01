@@ -96,7 +96,8 @@ R --no-save --slave -e "install.packages('BiocManager'); install.packages('devto
 
 ## Dependencies
 PKGS=$(grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\",/g' | tr -d '\n\r')
-CMD=$(echo "BiocManager::install(c(${PKGS} 'knitr'))", ask = FALSE, update = TRUE) ## add pkg to end line properly
+CMD=$(echo "BiocManager::install(c(${PKGS} 'knitr'), ask = FALSE, update = TRUE)") ## add pkg to end line properly
+
 R --no-save --slave -e "${CMD}" 
 
 ## Remote packages (manually added)
