@@ -67,12 +67,6 @@ done
 
 
 ###################################################
-# Build appendix workflow files
-
-R --no-save --slave -e "wf <- list.files('workflows', pattern='Rmd$', full=TRUE, recursive=TRUE); wf <- wf[!grepl('template.Rmd', wf)]; for (x in wf) { rmarkdown::render(x) }"
-
-
-###################################################
 ## Write the DESCRIPTION file automagically 
 
 echo "Package: OrchestratingSingleCellAnalysis" > DESCRIPTION
@@ -94,4 +88,24 @@ echo "    devtools" >> DESCRIPTION
 echo "    bookdown" >> DESCRIPTION
 
 
+###################################################
+## Install/update all libraries
+
+## Prereq packages
+R --no-save --slave -e "install.packages('BiocManager'); install.packages('devtools'); install.packages('bookdown')"
+
+## Dependencies
+PKGS=$(grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\",/g' | tr -d '\n\r')
+CMD=$(echo "BiocManager::install(c(${PKGS} 'knitr'))", ask = FALSE, update = TRUE) ## add pkg to end line properly
+R --no-save --slave -e "${CMD}" 
+
+## Remote packages (manually added)
+R --no-save --slave -e "devtools::install_github('stephenturner/msigdf'); devtools::install_github('irrationone/cellassign', ask = FALSE, update = TRUE)"
+
+
+
+###################################################
+# Build appendix workflow files
+
+R --no-save --slave -e "wf <- list.files('workflows', pattern='Rmd$', full=TRUE, recursive=TRUE); wf <- wf[!grepl('template.Rmd', wf)]; for (x in wf) { rmarkdown::render(x) }"
 
