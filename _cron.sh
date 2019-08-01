@@ -11,8 +11,13 @@ ml pandoc
 mkdir -p ~/cronjobs/builds ~/cronjobs/logs
 cd ~/cronjobs/builds
 
+
+
 ## Cron job script ------------------------------------
 echo "Build time is $(date) ..."
+
+TMPDIR=$(mktemp -d)
+cd $TMPDIR
 
 REPO=OrchestratingSingleCellAnalysis
 
@@ -43,5 +48,5 @@ git add docs/
 git commit -m "Rebuilt book."
 
 # Make a personal access token.
-# TOKEN=${GITHUB_PAT}
-# git push https://${TOKEN}:x-oauth-basic@github.com/Bioconductor/${REPO} master
+TOKEN=${GITHUB_PAT}
+git push https://${TOKEN}:x-oauth-basic@github.com/Bioconductor/${REPO} master
