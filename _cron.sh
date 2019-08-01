@@ -2,12 +2,17 @@
 
 ## cron job to build book from scratch routinely
 
-## FHCRC specific modules
-## ml R # should load the latest R version
+## FHCRC specific modules -----------------------------
+source /app/Lmod/lmod/lmod/init/bash
+module use /app/easybuild/modules/all
+source ~/.github_pat   # github access token env var
 ml R/3.6.1-foss-2016b-fh1
 ml pandoc
-source ~/.github_pat
+mkdir -p ~/cronjobs/builds ~/cronjobs/logs
+cd ~/cronjobs/builds
 
+## Cron job script ------------------------------------
+echo "Build time is $(date) ..."
 
 REPO=OrchestratingSingleCellAnalysis
 
