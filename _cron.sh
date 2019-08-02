@@ -10,7 +10,7 @@ ml R/3.6.1-foss-2016b-fh1
 ml pandoc
 
 ## Cron saver
-mkdir -p ~/cronjobs/builds ~/cronjobs/logs
+mkdir -p ~/cronjobs/logs
 cd ~/cronjobs/builds
 
 TMPDIR=$(mktemp -d)
