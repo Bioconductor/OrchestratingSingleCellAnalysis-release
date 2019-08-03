@@ -52,6 +52,28 @@ cp -r ${base}/analysis/workflows .
 cp ${base}/ref.bib .
 
 ###################################################
+# Workflow files.
+
+# NOTE: these are copied *in addition* to the copying of the workflows above.
+# This is to enable them to be chapters in their own right.
+
+allfiles=(
+grun-pancreas.Rmd
+lun-416b.Rmd
+segerstolpe-pancreas.Rmd
+zeisel-brain.Rmd
+lawlor-pancreas.Rmd
+muraro-pancreas.Rmd
+tenx-pbmc4k.Rmd
+)
+
+for i in "${!allfiles[@]}"; do 
+    newfile=$(printf "P3_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
+    cp ${base}/analysis/workflows/${allfiles[$i]} $newfile
+done
+
+
+###################################################
 # About files:
 
 allfiles=(
@@ -61,7 +83,7 @@ bibliography.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
-    newfile=$(printf "P3_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
+    newfile=$(printf "P4_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
     cp ${base}/about/${allfiles[$i]} $newfile
 done
 
