@@ -13,7 +13,7 @@ ml R/3.6.1-foss-2016b-fh1
 ml pandoc
 
 
-## Cron job script -------------------------------------------------------------
+## Build book -------------------------------------------------------------------
 ## Set the working TEMP directory
 TMPDIR=$(mktemp -d)
 cd $TMPDIR
@@ -29,18 +29,12 @@ then
     rm -rf ${REPO}
 fi
 
-## git clone https://github.com/Bioconductor/${REPO}.git # for token method
-git clone git@github.com:Bioconductor/${REPO}.git
-cd ${REPO}
-git pull
 
-## Add OSCABase submodule
-git submodule add https://github.com/Bioconductor/OSCABase
-git submodule update --init
+## Run the whole make pipeline - clean, update, install, knit, build
+make all
 
-# Copy over Rmds from OSCABase; run workflows; update DESCRIPTION
-make all  # update docs, (re)install/update pkgs, knit workflows, build book
 
+## Update online book ----------------------------------------------------------
 # There had better be nothing in 'docs' that is not meant to be added!
 git add docs/
 git commit -m "Rebuilt book on $(date)."

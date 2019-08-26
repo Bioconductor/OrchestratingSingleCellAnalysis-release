@@ -2,7 +2,7 @@
 
 ## Write the DESCRIPTION file and install/update libraries used throughout the book
 
-base=OSCAbase
+base=OSCABase
 
 ###################################################
 ## Write the DESCRIPTION file automagically 
