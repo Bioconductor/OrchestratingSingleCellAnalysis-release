@@ -1,8 +1,16 @@
-all: update build
+all: clean update install knit build
 
 update:
-	@echo "Updating repo..."
+	@echo "Updating files..."
 	./_update.sh
+
+install:
+	@echo "Installing prerequisite packages..."
+	./_install.sh
+
+knit:
+	@echo "Knitting workflows..."
+	./_knit.sh
 
 build:
 	@echo "Building book..."
