@@ -36,7 +36,9 @@ feature-selection.Rmd
 reduced-dimensions.Rmd
 clustering.Rmd
 marker-detection.Rmd
+doublet-detection.Rmd
 data-integration.Rmd
+sample-comparisons.Rmd
 interactive.Rmd
 big-data.Rmd
 )
@@ -65,13 +67,14 @@ zeisel-brain.Rmd
 lawlor-pancreas.Rmd
 muraro-pancreas.Rmd
 tenx-pbmc4k.Rmd
+pijuan-embryo.Rmd
+bach-mammary.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
     newfile=$(printf "P3_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
     cp ${base}/analysis/workflows/${allfiles[$i]} $newfile
 done
-
 
 ###################################################
 # About files:
