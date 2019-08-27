@@ -29,13 +29,17 @@ echo "    bookdown" >> DESCRIPTION
 ###################################################
 ## Install/update all libraries
 
-## Prereq packages
-R --no-save --slave -e "install.packages('BiocManager'); install.packages('devtools'); install.packages('bookdown')"
-
 ## Dependencies
 PKGS=$(grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\",/g' | tr -d '\n\r')
 CMD=$(echo "BiocManager::install(c(${PKGS} 'knitr'), ask = FALSE, update = TRUE)") ## add pkg to end line properly
 
+## Remove any LOCK instances
+rm -Rf ~/R/*/*/*LOCK*
+
+## Prereq packages
+R --no-save --slave -e "install.packages('BiocManager'); install.packages('devtools'); install.packages('bookdown')"
+
+## Install dependencies
 R --no-save --slave -e "${CMD}" 
 
 ## Remote packages (manually added)

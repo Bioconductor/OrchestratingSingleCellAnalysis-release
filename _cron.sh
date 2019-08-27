@@ -29,29 +29,7 @@ then
     rm -rf ${REPO}
 fi
 
-
-## Run the whole make pipeline - clean, update, install, knit, build
+## Make everything, log output/errors
 make all
-
-
-## Update online book ----------------------------------------------------------
-# There had better be nothing in 'docs' that is not meant to be added!
-git add docs/
-git commit -m "Rebuilt book on $(date)."
-
-# Make a personal access tokenized push
-## TOKEN=${GITHUB_PAT}  ## required for remote to use https
-## git push https://${TOKEN}:x-oauth-basic@github.com/Bioconductor/${REPO} master
-git push # only works if pushing via ssh
-
-
-## Logging ---------------------------------------------------------------------
-## Push some logs out
-git clone git@github.com:robertamezquita/OSCAlogs.git
-cd OSCAlogs
-cp ~/cronjobs/logs/* .
-git add -A
-git commit -m "Logs compiled on $(date)."
-git push
 
 

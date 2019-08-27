@@ -7,6 +7,10 @@ base=OSCABase
 # Updating the submodule remotes.
 git submodule update --remote
 
+# Clone the logs storage repo
+git clone git@github.com:robertamezquita/OSCAlogs.git
+
+
 ###################################################
 # Intro files:
 cp ${base}/intro/index.Rmd index.Rmd

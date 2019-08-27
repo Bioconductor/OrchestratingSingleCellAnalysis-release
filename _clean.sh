@@ -4,14 +4,20 @@
 rm -R P*_W*.*
 rm -Rf docs
 rm index.*
-rm -R _bookdown_files
-rm -R raw_data
-rm -R workflow workflows
+rm -Rf _bookdown_files
+rm -Rf raw_data
+rm -Rf workflow workflows
 rm render*.rds
 rm OSCA.rds
 rm -Rf cache
-rm -R figure
+rm -Rf figure
 
-## Recreate docs folder; readd CNAME
+rm -Rf logs
+rm -Rf OSCAlogs
+
+## Recreate docs folder; re-add CNAME
 mkdir -p docs
 echo "osca.bioconductor.org" > docs/CNAME
+
+## Clean logs dir
+mkdir -p logs
