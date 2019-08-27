@@ -29,7 +29,9 @@ then
     rm -rf ${REPO}
 fi
 
-## Make everything, log output/errors
+## Make everything
+## If successful, pushes new book version automatically
 make all
 
-
+## And no matter what, by running this the logs are saved to the cloud
+make log
