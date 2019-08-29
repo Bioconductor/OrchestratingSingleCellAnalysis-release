@@ -29,9 +29,12 @@ then
     rm -rf ${REPO}
 fi
 
-## Make everything
-## If successful, pushes new book version automatically
-make all
+## Clone and change permission on executables
+git clone git@github.com:Bioconductor/${REPO}.git
+cd $REPO
+chmod 755 *.sh
 
-## And no matter what, by running this the logs are saved to the cloud
+## Make everything
+## If successful, pushes new book version automatically; if fail push the log out
+make all || (make log && exit 1)
 make log

@@ -10,7 +10,12 @@
 
 for I in $(ls workflows/*.Rmd); do
     echo "Rendering $I .."
-    R --no-save --quiet -e "knitr::knit('${I}', output = 'workflows/$(basename ${I} .Rmd).html')"
+    R --no-save --quiet -e "rmarkdown::render('${I}')"
+done
+
+for I in $(ls workflows/tenx-batch-pbmc/*k.Rmd); do
+    echo "Rendering pbmc batches .."
+    R --no-save --quiet -e "rmarkdown::render('${I}')"
 done
 
 ## Original command:

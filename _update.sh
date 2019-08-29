@@ -5,6 +5,7 @@ base=OSCABase
 ## NOTE: To build clean, run `make clean` (or run _cron.sh)
 
 # Updating the submodule remotes.
+git submodule update --init
 git submodule update --remote
 
 # Clone the logs storage repo
