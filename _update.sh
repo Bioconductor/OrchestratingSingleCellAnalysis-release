@@ -33,8 +33,6 @@ done
 
 allfiles=(
 overview.Rmd
-quick-start.Rmd
-basic-analysis.Rmd
 quality-control.Rmd
 normalization.Rmd
 feature-selection.Rmd
@@ -43,6 +41,7 @@ clustering.Rmd
 marker-detection.Rmd
 doublet-detection.Rmd
 data-integration.Rmd
+cell-annotation.Rmd
 sample-comparisons.Rmd
 interactive.Rmd
 big-data.Rmd
