@@ -1,6 +1,6 @@
 --- 
 title: "Orchestrating Single-Cell Analysis with Bioconductor"
-date: "2019-07-31"
+date: "2019-08-31"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [ref.bib, packages.bib]
@@ -36,4 +36,4 @@ This website is (and will always be) __free to use__, and is licensed under the 
 
 
 _Version 0.0.1.9999_
-_Built on 2019-07-31_
+_Built on 2019-08-31_
