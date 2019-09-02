@@ -39,10 +39,10 @@ feature-selection.Rmd
 reduced-dimensions.Rmd
 clustering.Rmd
 marker-detection.Rmd
-doublet-detection.Rmd
-data-integration.Rmd
 cell-annotation.Rmd
+data-integration.Rmd
 sample-comparisons.Rmd
+doublet-detection.Rmd
 interactive.Rmd
 big-data.Rmd
 )
@@ -70,7 +70,9 @@ segerstolpe-pancreas.Rmd
 zeisel-brain.Rmd
 lawlor-pancreas.Rmd
 muraro-pancreas.Rmd
-tenx-pbmc4k.Rmd
+tenx-unfiltered-pbmc4k.Rmd
+tenx-filtered-pbmc3k.Rmd
+tenx-filtered-pbmc4k.Rmd
 pijuan-embryo.Rmd
 bach-mammary.Rmd
 )
