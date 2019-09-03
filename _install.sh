@@ -43,4 +43,4 @@ R --no-save --slave -e "install.packages('BiocManager'); install.packages('devto
 R --no-save --slave -e "${CMD}" 
 
 ## Remote packages (manually added)
-R --no-save --slave -e "devtools::install_github('stephenturner/msigdf'); devtools::install_github('LTLA/SingleR')"
+# R --no-save --slave -e "devtools::install_github('stephenturner/msigdf'); devtools::install_github('LTLA/SingleR')"
