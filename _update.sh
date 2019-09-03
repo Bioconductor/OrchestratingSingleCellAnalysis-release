@@ -4,7 +4,10 @@ base=OSCABase
 
 ## NOTE: To build clean, run `make clean` (or run _cron.sh)
 
-# Updating the submodule remotes.
+## Update the local repo `OrchestratingSingleCellAnalysis`
+git pull
+
+# Updating the submodule remotes of `OSCABase`
 git submodule update --init
 git submodule update --remote
 
