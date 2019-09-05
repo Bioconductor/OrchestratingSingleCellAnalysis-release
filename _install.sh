@@ -4,7 +4,8 @@
 
 base=OSCABase
 
-LIBLOC=/home/ramezqui/R/x86_64-pc-linux-gnu-library/3.6 # for FHCRC cluster
+## Library location; assume R_LIBS_USER is first in .libPaths()
+LIBLOC=$(R --no-save --slave -e "cat(.libPaths()[1])") 
 
 
 ###################################################
@@ -27,9 +28,6 @@ R --no-save --slave -e "install.packages(c('devtools', 'BiocManager', 'knitr', '
 
 ## Install dependencies
 R --no-save --slave -e "${CMD}" 
-
-## Supplementary packages (manually added)
-R --no-save --slave -e "BiocManager::install(c('GO.db', 'PCAtools'), lib = '$LIBLOC')"
 
 ## Remote packages (manually added)
 R --no-save --slave -e "devtools::install_github('stephenturner/msigdf', lib = '$LIBLOC')"
@@ -54,10 +52,10 @@ echo "Encoding: UTF-8" >> DESCRIPTION
 echo "LazyData: true" >> DESCRIPTION
 echo "Imports:" >> DESCRIPTION
 
-## Where the magic happens to grab all the uses of library
-grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/    /g' | sed 's/)/,/g' >> DESCRIPTION
+## Add all the libraries discovered in the first section
+ALL=$(echo "$PKGS $SUPP" | sed 's/", /\n\r/g' | sed 's/"//g' | sed 's/,//' | sort | uniq)
+echo "$ALL" >> DESCRIPTION
 
 ## Add some extra packages that aren't mentioned explicitly throughout
-echo "    BiocManager" >> DESCRIPTION
 echo "    devtools" >> DESCRIPTION
 echo "    bookdown" >> DESCRIPTION

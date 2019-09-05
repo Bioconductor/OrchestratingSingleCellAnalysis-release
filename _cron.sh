@@ -9,7 +9,7 @@
 source /app/Lmod/lmod/lmod/init/bash
 module use /app/easybuild/modules/all
 ## source ~/.github_pat   # github access token only needed for https remotes
-ml R/3.6.1-foss-2016b-fh1
+ml R/3.6.1-foss-2016b
 ml pandoc
 
 
