@@ -8,6 +8,7 @@ base=OSCABase
 git pull
 
 # Updating the submodule remotes of `OSCABase`
+## git submodule add git@github.com:Bioconductor/OSCABase.git
 git submodule update --init
 git submodule update --remote
 

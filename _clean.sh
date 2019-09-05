@@ -14,7 +14,7 @@ rm -Rf figure
 
 rm -Rf logs
 rm -Rf OSCAlogs
-rm -Rf OSCABase
+## rm -Rf OSCABase
 
 ## Recreate docs folder; re-add CNAME
 mkdir -p docs
