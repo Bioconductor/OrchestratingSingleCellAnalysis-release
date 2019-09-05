@@ -4,18 +4,23 @@
 
 base=OSCABase
 
-LIBLOC=/home/ramezqui/R/x86_64-pc-linux-gnu-library/3.6
+LIBLOC=/home/ramezqui/R/x86_64-pc-linux-gnu-library/3.6 # for FHCRC cluster
 
 
 ###################################################
 ## Install/update all libraries
 
 ## Dependencies
-PKGS=$(grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\",/g' | tr -d '\n\r')
-CMD=$(echo "BiocManager::install(c(${PKGS}), lib = '$LIBLOC', ask = FALSE, update = TRUE)") ## add pkg to end line properly
+PKGS=$(grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
+PKGS=$(echo "$PKGS" | rev | cut -c 2- | rev) # remove trailing comma
 
-## Remove any LOCK instances
-rm -Rf ~/R/*/*/*LOCK*
+## Supplemental pkgs invoked by namespace
+SUPP=$(grep -o -h -r "\b\w*::\b" ${base} | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
+SUPP=$(echo \""$SUPP") # add " at beginning
+SUPP=$(echo "$SUPP" | rev | cut -c 4- | rev) # remove trailing ", "
+
+CMD=$(echo "BiocManager::install(c(${PKGS}, ${SUPP}), lib = '$LIBLOC', ask = FALSE, update = TRUE)") ## add pkg to end line properly
+
 
 ## Prereq packages
 R --no-save --slave -e "install.packages(c('devtools', 'BiocManager', 'knitr', 'bookdown'), lib = '$LIBLOC')"
@@ -24,8 +29,7 @@ R --no-save --slave -e "install.packages(c('devtools', 'BiocManager', 'knitr', '
 R --no-save --slave -e "${CMD}" 
 
 ## Supplementary packages (manually added)
-R --no-save --slave -e "BiocManager::install('GO.db', lib = '$LIBLOC')"
-
+R --no-save --slave -e "BiocManager::install(c('GO.db', 'PCAtools'), lib = '$LIBLOC')"
 
 ## Remote packages (manually added)
 R --no-save --slave -e "devtools::install_github('stephenturner/msigdf', lib = '$LIBLOC')"
@@ -33,6 +37,8 @@ R --no-save --slave -e "devtools::install_github('LTLA/SingleR', lib = '$LIBLOC'
 
 ## Check that Bioc pkgs are valid, else fix it!
 R --no-save --slave -e "valid <- BiocManager::valid('$LIBLOC'); if (identical(valid, TRUE)) { quit('no') } else { BiocManager::install(rownames(valid$out_of_date), lib = '$LIBLOC') }"
+
+## Get namespaced packages
 
 
 ###################################################
