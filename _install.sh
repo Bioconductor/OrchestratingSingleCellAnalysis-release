@@ -36,7 +36,11 @@ R --no-save --slave -e "devtools::install_github('LTLA/SingleR', lib = '$LIBLOC'
 ## Check that Bioc pkgs are valid, else fix it!
 R --no-save --slave -e "valid <- BiocManager::valid('$LIBLOC'); if (identical(valid, TRUE)) { quit('no') } else { BiocManager::install(rownames(valid$out_of_date), lib = '$LIBLOC') }"
 
-## Get namespaced packages
+
+###################################################
+## Install OSCAUtils (package inside OSCABase)
+
+R --no-save --slave -e "devtools::install('OSCABase/package')"
 
 
 ###################################################
