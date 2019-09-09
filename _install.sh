@@ -12,11 +12,11 @@ LIBLOC=$(R --no-save --slave -e "cat(.libPaths()[1])")
 ## Install/update all libraries
 
 ## Dependencies
-PKGS=$(grep --text -h -r "^library(" ${base} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
-PKGS=$(echo "$PKGS" | rev | cut -c 2- | rev) # remove trailing comma
+PKGS=$(grep --text -h "^library(" ${base}/*/*.R* | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
+PKGS=$(echo "$PKGS" | rev | cut -c 3- | rev) # remove trailing comma
 
 ## Supplemental pkgs invoked by namespace
-SUPP=$(grep -o -h -r "\b\w*::\b" ${base} | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
+SUPP=$(grep -o -h -r "\b\w*::\b" ${base}/*/*.R* | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
 SUPP=$(echo \""$SUPP") # add " at beginning
 SUPP=$(echo "$SUPP" | rev | cut -c 4- | rev) # remove trailing ", "
 
