@@ -24,14 +24,13 @@ CMD=$(echo "BiocManager::install(c(${PKGS}, ${SUPP}), lib = '$LIBLOC', ask = FAL
 
 
 ## Prereq packages
-R --no-save --slave -e "install.packages(c('devtools', 'BiocManager', 'knitr', 'bookdown'), lib = '$LIBLOC')"
+R --no-save --slave -e "install.packages(c('devtools', 'remotes', 'BiocManager', 'knitr', 'bookdown'), lib = '$LIBLOC')"
 
 ## Install dependencies
 R --no-save --slave -e "${CMD}" 
 
 ## Remote packages (manually added)
-R --no-save --slave -e "devtools::install_github('stephenturner/msigdf', lib = '$LIBLOC')"
-R --no-save --slave -e "devtools::install_github('LTLA/SingleR', lib = '$LIBLOC')"
+R --no-save --slave -e "remotes::install_github('stephenturner/msigdf', lib = '$LIBLOC', ask = FALSE, update = TRUE)"
 
 ## Check that Bioc pkgs are valid, else fix it!
 R --no-save --slave -e "valid <- BiocManager::valid('$LIBLOC'); if (identical(valid, TRUE)) { quit('no') } else { BiocManager::install(rownames(valid$out_of_date), lib = '$LIBLOC') }"
