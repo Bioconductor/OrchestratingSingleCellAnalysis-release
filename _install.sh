@@ -2,25 +2,27 @@
 
 ## Write the DESCRIPTION file and install/update libraries used throughout the book
 
-base=OSCABase
+BASE=OSCABase
+BIOCVERSION=3.10
 
 ## Library location; assume R_LIBS_USER is first in .libPaths()
 LIBLOC=$(R --no-save --slave -e "cat(.libPaths()[1])") 
+
 
 
 ###################################################
 ## Install/update all libraries
 
 ## Dependencies
-PKGS=$(grep --text -h "^library(" ${base}/*/*.R* | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
+PKGS=$(grep --text -h "^library(" ${BASE}/*/*.R* | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
 PKGS=$(echo "$PKGS" | rev | cut -c 3- | rev) # remove trailing comma
 
 ## Supplemental pkgs invoked by namespace
-SUPP=$(grep -o -h -r "\b\w*::\b" ${base}/*/*.R* | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
+SUPP=$(grep -o -h -r "\b\w*::\b" ${BASE}/*/*.R* | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
 SUPP=$(echo \""$SUPP") # add " at beginning
 SUPP=$(echo "$SUPP" | rev | cut -c 4- | rev) # remove trailing ", "
 
-CMD=$(echo "BiocManager::install(c(${PKGS}, ${SUPP}), lib = '$LIBLOC', ask = FALSE, update = TRUE)") ## add pkg to end line properly
+CMD=$(echo "BiocManager::install(c(${PKGS}, ${SUPP}), lib = '$LIBLOC', ask = FALSE, update = TRUE, version = '$BIOCVERSION')") ## add pkg to end line properly
 
 
 ## Prereq packages
@@ -33,7 +35,7 @@ R --no-save --slave -e "${CMD}"
 R --no-save --slave -e "remotes::install_github('stephenturner/msigdf', lib = '$LIBLOC', ask = FALSE, update = TRUE)"
 
 ## Check that Bioc pkgs are valid, else fix it!
-R --no-save --slave -e "valid <- BiocManager::valid('$LIBLOC'); if (identical(valid, TRUE)) { quit('no') } else { BiocManager::install(rownames(valid$out_of_date), lib = '$LIBLOC') }"
+R --no-save --slave -e "valid <- BiocManager::valid('$LIBLOC'); if (identical(valid, TRUE)) { quit('no') } else { BiocManager::install(rownames(valid$out_of_date), lib = '$LIBLOC', version = '$BIOCVERSION') }"
 
 
 ###################################################
