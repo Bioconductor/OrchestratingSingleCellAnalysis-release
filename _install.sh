@@ -9,29 +9,29 @@ BIOCVERSION=3.10
 LIBLOC=$(R --no-save --slave -e "cat(.libPaths()[1])") 
 
 
-
 ###################################################
 ## Install/update all libraries
 
-## Dependencies
-PKGS=$(grep --text -h "^library(" ${BASE}/*/*.R* | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
+## Core libraries
+PKGS=$(grep -h -r "^library(" ${BASE} | awk '{FS=" "}{print $1}' | sort | uniq | sed 's/library(/\"/g' | sed 's/)/\", /g' | tr -d '\n\r')
 PKGS=$(echo "$PKGS" | rev | cut -c 3- | rev) # remove trailing comma
 
 ## Supplemental pkgs invoked by namespace
-SUPP=$(grep -o -h -r "\b\w*::\b" ${BASE}/*/*.R* | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
+SUPP=$(grep -o -h -r "\b\w*::\b" ${BASE} | sed 's/::/", "/g' | sort | uniq | tr -d '\n\r')
 SUPP=$(echo \""$SUPP") # add " at beginning
 SUPP=$(echo "$SUPP" | rev | cut -c 4- | rev) # remove trailing ", "
 
-CMD=$(echo "BiocManager::install(c(${PKGS}, ${SUPP}), lib = '$LIBLOC', ask = FALSE, update = TRUE, version = '$BIOCVERSION')") ## add pkg to end line properly
+CMD=$(echo "BiocManager::install(unique((c(${PKGS}, ${SUPP}))), lib = '$LIBLOC', ask = FALSE, update = TRUE, version = '$BIOCVERSION')") ## add pkg to end line properly
 
 
-## Prereq packages
-R --no-save --slave -e "install.packages(c('devtools', 'remotes', 'BiocManager', 'knitr', 'bookdown'), lib = '$LIBLOC')"
+## Install prerequisite packages
+R --no-save --slave -e "install.packages(c('devtools', 'remotes', 'BiocManager', 'knitr', 'bookdown'), lib = '$LIBLOC', ask = FALSE, update = TRUE)"
 
-## Install dependencies
-R --no-save --slave -e "${CMD}" 
+## Install core libraries
+R --no-save --slave -e "BiocManager::install(version = '3.10')"
+R --no-save --slave -e "${CMD}"
 
-## Remote packages (manually added)
+## Install remote (github) packages (manually added)
 R --no-save --slave -e "remotes::install_github('stephenturner/msigdf', lib = '$LIBLOC', ask = FALSE, update = TRUE)"
 
 ## Check that Bioc pkgs are valid, else fix it!
