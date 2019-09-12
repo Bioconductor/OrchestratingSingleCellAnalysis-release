@@ -37,6 +37,9 @@ R --no-save --slave -e "remotes::install_github('stephenturner/msigdf', lib = '$
 ## Check that Bioc pkgs are valid, else fix it!
 R --no-save --slave -e "valid <- BiocManager::valid('$LIBLOC'); if (identical(valid, TRUE)) { quit('no') } else { BiocManager::install(rownames(valid$out_of_date), lib = '$LIBLOC', version = '$BIOCVERSION') }"
 
+## Install some Bioc packages manually
+R --no-save --slave -e "BiocManager::install('GO.db', lib = '$LIBLOC', version = '$BIOCVERSION')"
+
 
 ###################################################
 ## Install OSCAUtils (package inside OSCABase)
