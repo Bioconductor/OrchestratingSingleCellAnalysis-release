@@ -1,6 +1,6 @@
 --- 
 title: "Orchestrating Single-Cell Analysis with Bioconductor"
-date: "2019-09-05"
+date: "2019-09-12"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [ref.bib, packages.bib]
@@ -24,7 +24,7 @@ The second part, _Focus Topics_, begins with an overview of the framework for an
 
 THe third part, _Workflows_, provides primarily code detailing the analysis of various datasets throughout the book.
 
-Finally, the _Appendix_ has information about the data used throughout the book, and highlights our contributors.
+Finally, the _Appendix_ highlights our contributors.
 
 If you would like to cite this work, please use the reference [__"Orchestrating Single-Cell Analysis with Bioconductor"__](https://www.biorxiv.org/content/10.1101/590562v1). 
 
@@ -32,10 +32,10 @@ If you would like to cite this work, please use the reference [__"Orchestrating 
 
 The book is written in [RMarkdown](https://rmarkdown.rstudio.com) with [bookdown](https://bookdown.org). OSCA is a collaborative effort, supported by various folks from the Bioconductor team who have contributed workflows, fixes, and improvements.
 
-This website is (and will always be) __free to use__, and is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivs 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/us/) License.
+This website is __free to use__, and is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivs 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/us/) License.
 
 
 
 
 _Version 0.0.1.9999_
-_Built on 2019-09-05_
+_Built on 2019-09-12_
