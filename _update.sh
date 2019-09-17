@@ -79,6 +79,7 @@ tenx-filtered-pbmc3k.Rmd
 tenx-filtered-pbmc4k.Rmd
 pijuan-embryo.Rmd
 bach-mammary.Rmd
+hca-analysis.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
