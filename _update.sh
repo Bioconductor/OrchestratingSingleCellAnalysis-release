@@ -90,7 +90,6 @@ done
 # About files:
 
 allfiles=(
-about-the-data.Rmd
 about-the-contributors.Rmd
 bibliography.Rmd
 )

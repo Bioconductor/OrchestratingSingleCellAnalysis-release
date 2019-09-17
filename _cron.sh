@@ -7,11 +7,7 @@
 
 ## FHCRC specific modules ------------------------------------------------------
 source /app/Lmod/lmod/lmod/init/bash
-module use /app/easybuild/modules/all
-## source ~/.github_pat   # github access token only needed for https remotes
-ml R/3.6.1-foss-2016b
-ml pandoc
-
+source /home/ramezqui/.bashrc  # contains custom R + module system + pandoc
 
 ## Build book -------------------------------------------------------------------
 ## Set the working TEMP directory
