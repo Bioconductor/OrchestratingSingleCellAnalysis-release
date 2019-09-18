@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 10 Clustering | Orchestrating Single-Cell Analysis with Bioconductor</title>
+  <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 10 Clustering | Orchestrating Single-Cell Analysis with Bioconductor" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 10 Clustering | Orchestrating Single-Cell Analysis with Bioconductor" />
+  
+  <meta name="twitter:description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
+  
+
+
+
+<meta name="date" content="2019-09-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="prev" href="dimensionality-reduction.html"/>
+<link rel="next" href="marker-gene-detection.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Orchestrating Single-Cell Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I Preamble</b></span></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#what-you-will-learn"><i class="fa fa-check"></i><b>1.1</b> What you will learn</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="introduction.html"><a href="introduction.html#preliminaries"><i class="fa fa-check"></i><b>1.1.1</b> Preliminaries</a></li>
+<li class="chapter" data-level="1.1.2" data-path="introduction.html"><a href="introduction.html#workflows"><i class="fa fa-check"></i><b>1.1.2</b> Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#what-you-wont-learn"><i class="fa fa-check"></i><b>1.2</b> What you won’t learn</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#who-we-wrote-this-for"><i class="fa fa-check"></i><b>1.3</b> Who we wrote this for</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#why-we-wrote-this"><i class="fa fa-check"></i><b>1.4</b> Why we wrote this</a></li>
+<li class="chapter" data-level="1.5" data-path="introduction.html"><a href="introduction.html#acknowledgements"><i class="fa fa-check"></i><b>1.5</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html"><i class="fa fa-check"></i><b>2</b> Learning R and Bioconductor</a><ul>
+<li class="chapter" data-level="2.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#the-benefits-of-r-and-bioconductor"><i class="fa fa-check"></i><b>2.1</b> The Benefits of R and Bioconductor</a></li>
+<li class="chapter" data-level="2.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-started-with-r"><i class="fa fa-check"></i><b>2.2</b> Learning R Online</a></li>
+<li class="chapter" data-level="2.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#running-r-locally"><i class="fa fa-check"></i><b>2.3</b> Running R Locally</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r"><i class="fa fa-check"></i><b>2.3.1</b> Installing R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#installing-r-bioconductor-packages"><i class="fa fa-check"></i><b>2.3.2</b> Installing R &amp; Bioconductor Packages</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#getting-help-in-and-out-of-r"><i class="fa fa-check"></i><b>2.4</b> Getting Help In (and Out) of R</a></li>
+<li class="chapter" data-level="2.5" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-documentation"><i class="fa fa-check"></i><b>2.5</b> Bioconductor Help</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-packages"><i class="fa fa-check"></i><b>2.5.1</b> Bioconductor Packages</a></li>
+<li class="chapter" data-level="2.5.2" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#biocviews"><i class="fa fa-check"></i><b>2.5.2</b> biocViews</a></li>
+<li class="chapter" data-level="2.5.3" data-path="learning-r-and-more.html"><a href="learning-r-and-more.html#bioconductor-forums"><i class="fa fa-check"></i><b>2.5.3</b> Bioconductor Forums</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html"><i class="fa fa-check"></i><b>3</b> Beyond R Basics</a><ul>
+<li class="chapter" data-level="3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-an-r-expert"><i class="fa fa-check"></i><b>3.1</b> Becoming an R Expert</a></li>
+<li class="chapter" data-level="3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#becoming-a-bioconductor-developer"><i class="fa fa-check"></i><b>3.2</b> Becoming an R/Bioconductor Developer</a></li>
+<li class="chapter" data-level="3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#nice-companions-for-r"><i class="fa fa-check"></i><b>3.3</b> Nice Companions for R</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#shellbash"><i class="fa fa-check"></i><b>3.3.1</b> Shell/Bash</a></li>
+<li class="chapter" data-level="3.3.2" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#git"><i class="fa fa-check"></i><b>3.3.2</b> Git</a></li>
+<li class="chapter" data-level="3.3.3" data-path="beyond-r-basics.html"><a href="beyond-r-basics.html#other-languages"><i class="fa fa-check"></i><b>3.3.3</b> Other Languages</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-infrastructure.html"><a href="data-infrastructure.html"><i class="fa fa-check"></i><b>4</b> Data Infrastructure</a><ul>
+<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#prerequisites"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-singlecellexperiment-class"><i class="fa fa-check"></i><b>4.2</b> The <em>SingleCellExperiment</em> Class</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#primary-data-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Primary Data: The <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#extending-the-assays-slot"><i class="fa fa-check"></i><b>4.2.2</b> Extending the <code>assays</code> Slot</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#column-metadata-coldata-slot"><i class="fa fa-check"></i><b>4.2.3</b> Column (Meta)Data: <code>colData</code> Slot</a></li>
+<li class="chapter" data-level="4.2.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#feature-metadata-rowdatarowranges"><i class="fa fa-check"></i><b>4.2.4</b> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></a></li>
+<li class="chapter" data-level="4.2.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors-slot-sizefactors"><i class="fa fa-check"></i><b>4.2.5</b> Size Factors Slot: <code>sizeFactors</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#a-brief-recap-from-se-to-sce"><i class="fa fa-check"></i><b>4.3</b> A Brief Recap: From <code>se</code> to <code>sce</code></a></li>
+<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-reduceddims-slot"><i class="fa fa-check"></i><b>4.4</b> The <code>reducedDims</code> Slot</a></li>
+<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#one-more-thing-metadata-slot"><i class="fa fa-check"></i><b>4.5</b> One More Thing: <code>metadata</code> Slot</a></li>
+<li class="chapter" data-level="4.6" data-path="data-infrastructure.html"><a href="data-infrastructure.html#about-spike-ins"><i class="fa fa-check"></i><b>4.6</b> About Spike-Ins</a></li>
+<li class="chapter" data-level="4.7" data-path="data-infrastructure.html"><a href="data-infrastructure.html#working-with-singlecellexperiment"><i class="fa fa-check"></i><b>4.7</b> Working with <em>SingleCellExperiment</em></a></li>
+<li class="chapter" data-level="4.8" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-centrality-of-singlecellexperiment"><i class="fa fa-check"></i><b>4.8</b> The Centrality of SingleCellExperiment</a></li>
+<li class="chapter" data-level="4.9" data-path="data-infrastructure.html"><a href="data-infrastructure.html#multimodal-data-multiassayexperiment"><i class="fa fa-check"></i><b>4.9</b> Multimodal Data: <em>MultiAssayExperiment</em></a></li>
+</ul></li>
+<li class="part"><span><b>II Focus Topics</b></span></li>
+<li class="chapter" data-level="5" data-path="overview.html"><a href="overview.html"><i class="fa fa-check"></i><b>5</b> Overview</a><ul>
+<li class="chapter" data-level="5.1" data-path="overview.html"><a href="overview.html#introduction-1"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="overview.html"><a href="overview.html#experimental-design"><i class="fa fa-check"></i><b>5.2</b> Experimental Design</a></li>
+<li class="chapter" data-level="5.3" data-path="overview.html"><a href="overview.html#preprocessing"><i class="fa fa-check"></i><b>5.3</b> Preprocessing</a></li>
+<li class="chapter" data-level="5.4" data-path="overview.html"><a href="overview.html#data-processing-and-downstream-analysis"><i class="fa fa-check"></i><b>5.4</b> Data processing and downstream analysis</a></li>
+<li class="chapter" data-level="5.5" data-path="overview.html"><a href="overview.html#quick-start"><i class="fa fa-check"></i><b>5.5</b> Quick start</a></li>
+<li class="chapter" data-level="" data-path="overview.html"><a href="overview.html#session-info"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="quality-control.html"><a href="quality-control.html"><i class="fa fa-check"></i><b>6</b> Quality Control</a><ul>
+<li class="chapter" data-level="6.1" data-path="quality-control.html"><a href="quality-control.html#quality-control-motivation"><i class="fa fa-check"></i><b>6.1</b> Motivation</a></li>
+<li class="chapter" data-level="6.2" data-path="quality-control.html"><a href="quality-control.html#choice-of-qc-metrics"><i class="fa fa-check"></i><b>6.2</b> Choice of QC metrics</a></li>
+<li class="chapter" data-level="6.3" data-path="quality-control.html"><a href="quality-control.html#identifying-low-quality-cells"><i class="fa fa-check"></i><b>6.3</b> Identifying low-quality cells</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="quality-control.html"><a href="quality-control.html#with-fixed-thresholds"><i class="fa fa-check"></i><b>6.3.1</b> With fixed thresholds</a></li>
+<li class="chapter" data-level="6.3.2" data-path="quality-control.html"><a href="quality-control.html#quality-control-outlier"><i class="fa fa-check"></i><b>6.3.2</b> With adaptive thresholds</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="quality-control.html"><a href="quality-control.html#quality-control-plots"><i class="fa fa-check"></i><b>6.4</b> Checking diagnostic plots</a></li>
+<li class="chapter" data-level="6.5" data-path="quality-control.html"><a href="quality-control.html#cell-calling-in-droplet-data"><i class="fa fa-check"></i><b>6.5</b> Cell calling in droplet data</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>6.5.1</b> Background</a></li>
+<li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
+<li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#examining-cell-calling-diagnostics"><i class="fa fa-check"></i><b>6.5.3</b> Examining cell-calling diagnostics</a></li>
+<li class="chapter" data-level="6.5.4" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.4</b> Relationship with other QC metrics</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Checking for discarded cell types</a></li>
+<li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="normalization.html"><a href="normalization.html"><i class="fa fa-check"></i><b>7</b> Normalization</a><ul>
+<li class="chapter" data-level="7.1" data-path="normalization.html"><a href="normalization.html#motivation"><i class="fa fa-check"></i><b>7.1</b> Motivation</a></li>
+<li class="chapter" data-level="7.2" data-path="normalization.html"><a href="normalization.html#setting-up-the-data"><i class="fa fa-check"></i><b>7.2</b> Setting up the data</a></li>
+<li class="chapter" data-level="7.3" data-path="normalization.html"><a href="normalization.html#library-size-normalization"><i class="fa fa-check"></i><b>7.3</b> Library size normalization</a></li>
+<li class="chapter" data-level="7.4" data-path="normalization.html"><a href="normalization.html#normalization-by-deconvolution"><i class="fa fa-check"></i><b>7.4</b> Normalization by deconvolution</a></li>
+<li class="chapter" data-level="7.5" data-path="normalization.html"><a href="normalization.html#spike-norm"><i class="fa fa-check"></i><b>7.5</b> Normalization by spike-ins</a></li>
+<li class="chapter" data-level="7.6" data-path="normalization.html"><a href="normalization.html#normalization-transformation"><i class="fa fa-check"></i><b>7.6</b> Normalizing and (log-)transforming</a></li>
+<li class="chapter" data-level="" data-path="normalization.html"><a href="normalization.html#session-info-2"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="feature-selection.html"><a href="feature-selection.html"><i class="fa fa-check"></i><b>8</b> Feature selection</a><ul>
+<li class="chapter" data-level="8.1" data-path="feature-selection.html"><a href="feature-selection.html#motivation-1"><i class="fa fa-check"></i><b>8.1</b> Motivation</a></li>
+<li class="chapter" data-level="8.2" data-path="feature-selection.html"><a href="feature-selection.html#quantifying-per-gene-variation"><i class="fa fa-check"></i><b>8.2</b> Quantifying per-gene variation</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="feature-selection.html"><a href="feature-selection.html#variance-of-the-log-counts"><i class="fa fa-check"></i><b>8.2.1</b> Variance of the log-counts</a></li>
+<li class="chapter" data-level="8.2.2" data-path="feature-selection.html"><a href="feature-selection.html#coefficient-of-variation"><i class="fa fa-check"></i><b>8.2.2</b> Coefficient of variation</a></li>
+<li class="chapter" data-level="8.2.3" data-path="feature-selection.html"><a href="feature-selection.html#sec:spikeins"><i class="fa fa-check"></i><b>8.2.3</b> Quantifying technical noise</a></li>
+<li class="chapter" data-level="8.2.4" data-path="feature-selection.html"><a href="feature-selection.html#accounting-for-blocking-factors"><i class="fa fa-check"></i><b>8.2.4</b> Accounting for blocking factors</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="feature-selection.html"><a href="feature-selection.html#hvg-selection"><i class="fa fa-check"></i><b>8.3</b> Selecting highly variable genes</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="feature-selection.html"><a href="feature-selection.html#based-on-the-largest-metrics"><i class="fa fa-check"></i><b>8.3.1</b> Based on the largest metrics</a></li>
+<li class="chapter" data-level="8.3.2" data-path="feature-selection.html"><a href="feature-selection.html#based-on-a-fixed-threshold"><i class="fa fa-check"></i><b>8.3.2</b> Based on a fixed threshold</a></li>
+<li class="chapter" data-level="8.3.3" data-path="feature-selection.html"><a href="feature-selection.html#keeping-all-genes-above-the-trend"><i class="fa fa-check"></i><b>8.3.3</b> Keeping all genes above the trend</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="feature-selection.html"><a href="feature-selection.html#putting-it-all-together"><i class="fa fa-check"></i><b>8.4</b> Putting it all together</a></li>
+<li class="chapter" data-level="" data-path="feature-selection.html"><a href="feature-selection.html#session-info-3"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html"><i class="fa fa-check"></i><b>9</b> Dimensionality reduction</a><ul>
+<li class="chapter" data-level="9.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#overview-1"><i class="fa fa-check"></i><b>9.1</b> Overview</a></li>
+<li class="chapter" data-level="9.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#principal-components-analysis"><i class="fa fa-check"></i><b>9.2</b> Principal components analysis</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#background-1"><i class="fa fa-check"></i><b>9.2.1</b> Background</a></li>
+<li class="chapter" data-level="9.2.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#performing-the-pca"><i class="fa fa-check"></i><b>9.2.2</b> Performing the PCA</a></li>
+<li class="chapter" data-level="9.2.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#choosing-the-number-of-pcs"><i class="fa fa-check"></i><b>9.2.3</b> Choosing the number of PCs</a></li>
+<li class="chapter" data-level="9.2.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#putting-it-together"><i class="fa fa-check"></i><b>9.2.4</b> Putting it together</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>9.3</b> Dimensionality reduction for visualization</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#motivation-3"><i class="fa fa-check"></i><b>9.3.1</b> Motivation</a></li>
+<li class="chapter" data-level="9.3.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualizating-with-pca"><i class="fa fa-check"></i><b>9.3.2</b> Visualizating with PCA</a></li>
+<li class="chapter" data-level="9.3.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>9.3.3</b> t-stochastic neighbor embedding</a></li>
+<li class="chapter" data-level="9.3.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>9.3.4</b> Uniform manifold approximation and projection</a></li>
+<li class="chapter" data-level="9.3.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#interpreting-the-plots"><i class="fa fa-check"></i><b>9.3.5</b> Interpreting the plots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#session-info-4"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="clustering.html"><a href="clustering.html"><i class="fa fa-check"></i><b>10</b> Clustering</a><ul>
+<li class="chapter" data-level="10.1" data-path="clustering.html"><a href="clustering.html#motivation-4"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
+<li class="chapter" data-level="10.2" data-path="clustering.html"><a href="clustering.html#what-is-the-true-clustering"><i class="fa fa-check"></i><b>10.2</b> What is the “true clustering”?</a></li>
+<li class="chapter" data-level="10.3" data-path="clustering.html"><a href="clustering.html#graph-based-clustering"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="clustering.html"><a href="clustering.html#background-2"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
+<li class="chapter" data-level="10.3.2" data-path="clustering.html"><a href="clustering.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
+<li class="chapter" data-level="10.3.3" data-path="clustering.html"><a href="clustering.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
+<li class="chapter" data-level="10.3.4" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="clustering.html"><a href="clustering.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="clustering.html"><a href="clustering.html#background-3"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
+<li class="chapter" data-level="10.4.2" data-path="clustering.html"><a href="clustering.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
+<li class="chapter" data-level="10.4.3" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="clustering.html"><a href="clustering.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="clustering.html"><a href="clustering.html#background-4"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
+<li class="chapter" data-level="10.5.2" data-path="clustering.html"><a href="clustering.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
+<li class="chapter" data-level="10.5.3" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="clustering.html"><a href="clustering.html#session-info-5"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html"><i class="fa fa-check"></i><b>11</b> Marker gene detection</a><ul>
+<li class="chapter" data-level="11.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#motivation-5"><i class="fa fa-check"></i><b>11.1</b> Motivation</a></li>
+<li class="chapter" data-level="11.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-pairwise-t-tests"><i class="fa fa-check"></i><b>11.2</b> Using pairwise <span class="math inline">\(t\)</span>-tests</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#standard-application"><i class="fa fa-check"></i><b>11.2.1</b> Standard application</a></li>
+<li class="chapter" data-level="11.2.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-log-fold-change"><i class="fa fa-check"></i><b>11.2.2</b> Using the log-fold change</a></li>
+<li class="chapter" data-level="11.2.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#finding-cluster-specific-markers"><i class="fa fa-check"></i><b>11.2.3</b> Finding cluster-specific markers</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#alternative-testing-regimes"><i class="fa fa-check"></i><b>11.3</b> Alternative testing regimes</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>11.3.1</b> Using the Wilcoxon rank sum test</a></li>
+<li class="chapter" data-level="11.3.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-a-binomial-test"><i class="fa fa-check"></i><b>11.3.2</b> Using a binomial test</a></li>
+<li class="chapter" data-level="11.3.3" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-custom-de-methods"><i class="fa fa-check"></i><b>11.3.3</b> Using custom DE methods</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#marker-batch"><i class="fa fa-check"></i><b>11.4</b> Handling blocking factors</a></li>
+<li class="chapter" data-level="11.5" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-block-argument"><i class="fa fa-check"></i><b>11.5</b> Using the <code>block=</code> argument</a></li>
+<li class="chapter" data-level="11.6" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#using-the-design-argument"><i class="fa fa-check"></i><b>11.6</b> Using the <code>design=</code> argument</a></li>
+<li class="chapter" data-level="11.7" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#invalidity-of-p-values"><i class="fa fa-check"></i><b>11.7</b> Invalidity of <span class="math inline">\(p\)</span>-values</a><ul>
+<li class="chapter" data-level="11.7.1" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#from-data-snooping"><i class="fa fa-check"></i><b>11.7.1</b> From data snooping</a></li>
+<li class="chapter" data-level="11.7.2" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#false-replicates"><i class="fa fa-check"></i><b>11.7.2</b> Nature of replication</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marker-gene-detection.html"><a href="marker-gene-detection.html#session-info-6"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html"><i class="fa fa-check"></i><b>12</b> Cell type annotation</a><ul>
+<li class="chapter" data-level="12.1" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#motivation-6"><i class="fa fa-check"></i><b>12.1</b> Motivation</a></li>
+<li class="chapter" data-level="12.2" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-reference-data"><i class="fa fa-check"></i><b>12.2</b> Assigning cell labels from reference data</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#overview-2"><i class="fa fa-check"></i><b>12.2.1</b> Overview</a></li>
+<li class="chapter" data-level="12.2.2" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#using-the-in-built-references"><i class="fa fa-check"></i><b>12.2.2</b> Using the in-built references</a></li>
+<li class="chapter" data-level="12.2.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#using-custom-references"><i class="fa fa-check"></i><b>12.2.3</b> Using custom references</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
+<li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
+<li class="chapter" data-level="13.1" data-path="integrating-datasets.html"><a href="integrating-datasets.html#motivation-7"><i class="fa fa-check"></i><b>13.1</b> Motivation</a></li>
+<li class="chapter" data-level="13.2" data-path="integrating-datasets.html"><a href="integrating-datasets.html#setting-up-the-data-1"><i class="fa fa-check"></i><b>13.2</b> Setting up the data</a></li>
+<li class="chapter" data-level="13.3" data-path="integrating-datasets.html"><a href="integrating-datasets.html#batch-diagnosis"><i class="fa fa-check"></i><b>13.3</b> Diagnosing batch effects</a></li>
+<li class="chapter" data-level="13.4" data-path="integrating-datasets.html"><a href="integrating-datasets.html#linear-regression"><i class="fa fa-check"></i><b>13.4</b> Linear regression</a></li>
+<li class="chapter" data-level="13.5" data-path="integrating-datasets.html"><a href="integrating-datasets.html#performing-mnn-correction"><i class="fa fa-check"></i><b>13.5</b> Performing MNN correction</a><ul>
+<li class="chapter" data-level="13.5.1" data-path="integrating-datasets.html"><a href="integrating-datasets.html#application-to-the-pbmc-data"><i class="fa fa-check"></i><b>13.5.1</b> Application to the PBMC data</a></li>
+<li class="chapter" data-level="13.5.2" data-path="integrating-datasets.html"><a href="integrating-datasets.html#correction-diagnostics"><i class="fa fa-check"></i><b>13.5.2</b> Correction diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="13.6" data-path="integrating-datasets.html"><a href="integrating-datasets.html#preserving-biological-heterogeneity"><i class="fa fa-check"></i><b>13.6</b> Preserving biological heterogeneity</a></li>
+<li class="chapter" data-level="13.7" data-path="integrating-datasets.html"><a href="integrating-datasets.html#application-to-a-pancreas-dataset"><i class="fa fa-check"></i><b>13.7</b> Application to a pancreas dataset</a></li>
+<li class="chapter" data-level="13.8" data-path="integrating-datasets.html"><a href="integrating-datasets.html#using-the-corrected-values"><i class="fa fa-check"></i><b>13.8</b> Using the corrected values</a></li>
+<li class="chapter" data-level="" data-path="integrating-datasets.html"><a href="integrating-datasets.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html"><i class="fa fa-check"></i><b>14</b> Multi-sample comparisons</a><ul>
+<li class="chapter" data-level="14.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#motivation-8"><i class="fa fa-check"></i><b>14.1</b> Motivation</a></li>
+<li class="chapter" data-level="14.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#setting-up-the-data-2"><i class="fa fa-check"></i><b>14.2</b> Setting up the data</a></li>
+<li class="chapter" data-level="14.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#differential-expression-between-conditions"><i class="fa fa-check"></i><b>14.3</b> Differential expression between conditions</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#creating-pseudo-bulk-samples"><i class="fa fa-check"></i><b>14.3.1</b> Creating pseudo-bulk samples</a></li>
+<li class="chapter" data-level="14.3.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#performing-the-de-analysis"><i class="fa fa-check"></i><b>14.3.2</b> Performing the DE analysis</a></li>
+<li class="chapter" data-level="14.3.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#putting-it-all-together-1"><i class="fa fa-check"></i><b>14.3.3</b> Putting it all together</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#differential-abundance-between-conditions"><i class="fa fa-check"></i><b>14.4</b> Differential abundance between conditions</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#overview-3"><i class="fa fa-check"></i><b>14.4.1</b> Overview</a></li>
+<li class="chapter" data-level="14.4.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#performing-the-da-analysis"><i class="fa fa-check"></i><b>14.4.2</b> Performing the DA analysis</a></li>
+<li class="chapter" data-level="14.4.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#composition-effects"><i class="fa fa-check"></i><b>14.4.3</b> Handling composition effects</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#de-da-duality"><i class="fa fa-check"></i><b>14.5</b> DE or DA? Two sides of the same coin</a></li>
+<li class="chapter" data-level="14.6" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#avoiding-problems-with-ambient-rna"><i class="fa fa-check"></i><b>14.6</b> Avoiding problems with ambient RNA</a><ul>
+<li class="chapter" data-level="14.6.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#motivation-9"><i class="fa fa-check"></i><b>14.6.1</b> Motivation</a></li>
+<li class="chapter" data-level="14.6.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#discarding-ambient-degs"><i class="fa fa-check"></i><b>14.6.2</b> Discarding ambient DEGs</a></li>
+<li class="chapter" data-level="14.6.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#subtracting-ambient-counts"><i class="fa fa-check"></i><b>14.6.3</b> Subtracting ambient counts</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#session-info-8"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="doublet-detection.html"><a href="doublet-detection.html"><i class="fa fa-check"></i><b>15</b> Doublet detection</a><ul>
+<li class="chapter" data-level="15.1" data-path="doublet-detection.html"><a href="doublet-detection.html#overview-4"><i class="fa fa-check"></i><b>15.1</b> Overview</a></li>
+<li class="chapter" data-level="15.2" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-with-clusters"><i class="fa fa-check"></i><b>15.2</b> Doublet detection with clusters</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="doublet-detection.html"><a href="doublet-detection.html#overview-5"><i class="fa fa-check"></i><b>15.2.1</b> Overview</a></li>
+<li class="chapter" data-level="15.2.2" data-path="doublet-detection.html"><a href="doublet-detection.html#application-to-the-mammary-data"><i class="fa fa-check"></i><b>15.2.2</b> Application to the mammary data</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-by-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a><ul>
+<li class="chapter" data-level="15.3.1" data-path="doublet-detection.html"><a href="doublet-detection.html#overview-6"><i class="fa fa-check"></i><b>15.3.1</b> Overview</a></li>
+<li class="chapter" data-level="15.3.2" data-path="doublet-detection.html"><a href="doublet-detection.html#application-to-the-mammary-data-1"><i class="fa fa-check"></i><b>15.3.2</b> Application to the mammary data</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#strengths-and-weaknesses"><i class="fa fa-check"></i><b>15.4</b> Strengths and weaknesses</a></li>
+<li class="chapter" data-level="15.5" data-path="doublet-detection.html"><a href="doublet-detection.html#further-comments"><i class="fa fa-check"></i><b>15.5</b> Further comments</a></li>
+<li class="chapter" data-level="" data-path="doublet-detection.html"><a href="doublet-detection.html#session-info-9"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="15.6" data-path="doublet-detection.html"><a href="doublet-detection.html#references"><i class="fa fa-check"></i><b>15.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="interactive-sharing.html"><a href="interactive-sharing.html"><i class="fa fa-check"></i><b>16</b> Interactive Interfaces and Sharing</a><ul>
+<li class="chapter" data-level="16.1" data-path="interactive-sharing.html"><a href="interactive-sharing.html#motivation-10"><i class="fa fa-check"></i><b>16.1</b> Motivation</a></li>
+<li class="chapter" data-level="16.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#interactive-quickstart"><i class="fa fa-check"></i><b>16.2</b> Quick start</a></li>
+<li class="chapter" data-level="16.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#isee-examples"><i class="fa fa-check"></i><b>16.3</b> Examples of usages for iSEE apps</a><ul>
+<li class="chapter" data-level="16.3.1" data-path="interactive-sharing.html"><a href="interactive-sharing.html#quality-control-1"><i class="fa fa-check"></i><b>16.3.1</b> Quality control</a></li>
+<li class="chapter" data-level="16.3.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#annotation-and-identification-of-cell-populations"><i class="fa fa-check"></i><b>16.3.2</b> Annotation and identification of cell populations</a></li>
+<li class="chapter" data-level="16.3.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#collaborative-analysis"><i class="fa fa-check"></i><b>16.3.3</b> Collaborative analysis</a></li>
+<li class="chapter" data-level="16.3.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#dissemination"><i class="fa fa-check"></i><b>16.3.4</b> Dissemination of analysis results</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#reproducibility"><i class="fa fa-check"></i><b>16.4</b> Reproducibility</a></li>
+<li class="chapter" data-level="16.5" data-path="interactive-sharing.html"><a href="interactive-sharing.html#additional-resources"><i class="fa fa-check"></i><b>16.5</b> Additional resources</a></li>
+<li class="chapter" data-level="" data-path="interactive-sharing.html"><a href="interactive-sharing.html#session-info-10"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html"><i class="fa fa-check"></i><b>17</b> Adaptations for Large-scale Data</a><ul>
+<li class="chapter" data-level="17.1" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#approximate-methods"><i class="fa fa-check"></i><b>17.1</b> Approximate Methods</a></li>
+<li class="chapter" data-level="17.2" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#parallelization"><i class="fa fa-check"></i><b>17.2</b> Parallelization</a></li>
+<li class="chapter" data-level="17.3" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#on-disk-data"><i class="fa fa-check"></i><b>17.3</b> On-Disk Data</a></li>
+<li class="chapter" data-level="" data-path="adaptations-for-large-scale-data.html"><a href="adaptations-for-large-scale-data.html#session-info-11"><i class="fa fa-check"></i>Session Info</a></li>
+</ul></li>
+<li class="part"><span><b>III Workflows</b></span></li>
+<li class="chapter" data-level="18" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html"><i class="fa fa-check"></i><b>18</b> Human pancreas dataset (Grun)</a><ul>
+<li class="chapter" data-level="18.1" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#introduction-3"><i class="fa fa-check"></i><b>18.1</b> Introduction</a></li>
+<li class="chapter" data-level="18.2" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#analysis-code"><i class="fa fa-check"></i><b>18.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="18.2.1" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#data-loading"><i class="fa fa-check"></i><b>18.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="18.2.2" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#gene-annotation"><i class="fa fa-check"></i><b>18.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="18.2.3" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#quality-control-2"><i class="fa fa-check"></i><b>18.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="18.2.4" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#normalization-1"><i class="fa fa-check"></i><b>18.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="18.2.5" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#variance-modelling"><i class="fa fa-check"></i><b>18.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="18.2.6" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#data-integration"><i class="fa fa-check"></i><b>18.2.6</b> Data integration</a></li>
+<li class="chapter" data-level="18.2.7" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#dimensionality-reduction-1"><i class="fa fa-check"></i><b>18.2.7</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="18.2.8" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#clustering-1"><i class="fa fa-check"></i><b>18.2.8</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="18.3" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#results"><i class="fa fa-check"></i><b>18.3</b> Results</a><ul>
+<li class="chapter" data-level="18.3.1" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#quality-control-statistics"><i class="fa fa-check"></i><b>18.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="18.3.2" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#normalization-2"><i class="fa fa-check"></i><b>18.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="18.3.3" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#variance-modelling-1"><i class="fa fa-check"></i><b>18.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="18.3.4" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#data-integration-1"><i class="fa fa-check"></i><b>18.3.4</b> Data integration</a></li>
+<li class="chapter" data-level="18.3.5" data-path="human-pancreas-dataset-grun.html"><a href="human-pancreas-dataset-grun.html#clustering-2"><i class="fa fa-check"></i><b>18.3.5</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html"><i class="fa fa-check"></i><b>19</b> 416B Smart-seq2 dataset</a><ul>
+<li class="chapter" data-level="19.1" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#introduction-4"><i class="fa fa-check"></i><b>19.1</b> Introduction</a></li>
+<li class="chapter" data-level="19.2" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#analysis-code-1"><i class="fa fa-check"></i><b>19.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="19.2.1" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#data-loading-1"><i class="fa fa-check"></i><b>19.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="19.2.2" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#gene-annotation-1"><i class="fa fa-check"></i><b>19.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="19.2.3" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#quality-control-3"><i class="fa fa-check"></i><b>19.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="19.2.4" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#normalization-3"><i class="fa fa-check"></i><b>19.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="19.2.5" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#variance-modelling-2"><i class="fa fa-check"></i><b>19.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="19.2.6" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#batch-correction"><i class="fa fa-check"></i><b>19.2.6</b> Batch correction</a></li>
+<li class="chapter" data-level="19.2.7" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>19.2.7</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="19.2.8" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#clustering-3"><i class="fa fa-check"></i><b>19.2.8</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="19.3" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#results-1"><i class="fa fa-check"></i><b>19.3</b> Results</a><ul>
+<li class="chapter" data-level="19.3.1" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#quality-control-statistics-1"><i class="fa fa-check"></i><b>19.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="19.3.2" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#normalization-4"><i class="fa fa-check"></i><b>19.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="19.3.3" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#variance-modelling-3"><i class="fa fa-check"></i><b>19.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="19.3.4" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#dimensionality-reduction-3"><i class="fa fa-check"></i><b>19.3.4</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="19.3.5" data-path="b-smart-seq2-dataset.html"><a href="b-smart-seq2-dataset.html#clustering-4"><i class="fa fa-check"></i><b>19.3.5</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html"><i class="fa fa-check"></i><b>20</b> Human pancreas dataset (Segerstolpe)</a><ul>
+<li class="chapter" data-level="20.1" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#introduction-5"><i class="fa fa-check"></i><b>20.1</b> Introduction</a></li>
+<li class="chapter" data-level="20.2" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#analysis-code-2"><i class="fa fa-check"></i><b>20.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="20.2.1" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#data-loading-2"><i class="fa fa-check"></i><b>20.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="20.2.2" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#gene-annotation-2"><i class="fa fa-check"></i><b>20.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="20.2.3" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#sample-annotation"><i class="fa fa-check"></i><b>20.2.3</b> Sample annotation</a></li>
+<li class="chapter" data-level="20.2.4" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#quality-control-4"><i class="fa fa-check"></i><b>20.2.4</b> Quality control</a></li>
+<li class="chapter" data-level="20.2.5" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#normalization-5"><i class="fa fa-check"></i><b>20.2.5</b> Normalization</a></li>
+<li class="chapter" data-level="20.2.6" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#variance-modelling-4"><i class="fa fa-check"></i><b>20.2.6</b> Variance modelling</a></li>
+<li class="chapter" data-level="20.2.7" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#dimensionality-reduction-4"><i class="fa fa-check"></i><b>20.2.7</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="20.2.8" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#clustering-5"><i class="fa fa-check"></i><b>20.2.8</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="20.3" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#results-2"><i class="fa fa-check"></i><b>20.3</b> Results</a><ul>
+<li class="chapter" data-level="20.3.1" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#quality-control-statistics-2"><i class="fa fa-check"></i><b>20.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="20.3.2" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#normalization-6"><i class="fa fa-check"></i><b>20.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="20.3.3" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#variance-modelling-5"><i class="fa fa-check"></i><b>20.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="20.3.4" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#dimensionality-reduction-5"><i class="fa fa-check"></i><b>20.3.4</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="20.3.5" data-path="human-pancreas-dataset-segerstolpe.html"><a href="human-pancreas-dataset-segerstolpe.html#clustering-6"><i class="fa fa-check"></i><b>20.3.5</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html"><i class="fa fa-check"></i><b>21</b> Mouse brain dataset</a><ul>
+<li class="chapter" data-level="21.1" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#introduction-6"><i class="fa fa-check"></i><b>21.1</b> Introduction</a></li>
+<li class="chapter" data-level="21.2" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#analysis"><i class="fa fa-check"></i><b>21.2</b> Analysis</a><ul>
+<li class="chapter" data-level="21.2.1" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#data-loading-3"><i class="fa fa-check"></i><b>21.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="21.2.2" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#gene-annotation-3"><i class="fa fa-check"></i><b>21.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="21.2.3" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#quality-control-5"><i class="fa fa-check"></i><b>21.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="21.2.4" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#normalization-7"><i class="fa fa-check"></i><b>21.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="21.2.5" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#variance-modelling-6"><i class="fa fa-check"></i><b>21.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="21.2.6" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#dimensionality-reduction-6"><i class="fa fa-check"></i><b>21.2.6</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="21.2.7" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#clustering-7"><i class="fa fa-check"></i><b>21.2.7</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="21.3" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#results-3"><i class="fa fa-check"></i><b>21.3</b> Results</a><ul>
+<li class="chapter" data-level="21.3.1" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#quality-control-statistics-3"><i class="fa fa-check"></i><b>21.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="21.3.2" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#normalization-8"><i class="fa fa-check"></i><b>21.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="21.3.3" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#variance-modelling-7"><i class="fa fa-check"></i><b>21.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="21.3.4" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#dimensionality-reduction-7"><i class="fa fa-check"></i><b>21.3.4</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="21.3.5" data-path="mouse-brain-dataset.html"><a href="mouse-brain-dataset.html#clustering-8"><i class="fa fa-check"></i><b>21.3.5</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="22" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html"><i class="fa fa-check"></i><b>22</b> Human pancreas dataset (Lawlor)</a><ul>
+<li class="chapter" data-level="22.1" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#introduction-7"><i class="fa fa-check"></i><b>22.1</b> Introduction</a></li>
+<li class="chapter" data-level="22.2" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#analysis-code-3"><i class="fa fa-check"></i><b>22.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="22.2.1" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#data-loading-4"><i class="fa fa-check"></i><b>22.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="22.2.2" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#gene-annotation-4"><i class="fa fa-check"></i><b>22.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="22.2.3" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#quality-control-6"><i class="fa fa-check"></i><b>22.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="22.2.4" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#normalization-9"><i class="fa fa-check"></i><b>22.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="22.2.5" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#variance-modelling-8"><i class="fa fa-check"></i><b>22.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="22.2.6" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#dimensionality-reduction-8"><i class="fa fa-check"></i><b>22.2.6</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="22.2.7" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#clustering-9"><i class="fa fa-check"></i><b>22.2.7</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="22.3" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#results-4"><i class="fa fa-check"></i><b>22.3</b> Results</a><ul>
+<li class="chapter" data-level="22.3.1" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#quality-control-statistics-4"><i class="fa fa-check"></i><b>22.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="22.3.2" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#normalization-10"><i class="fa fa-check"></i><b>22.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="22.3.3" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#variance-modelling-9"><i class="fa fa-check"></i><b>22.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="22.3.4" data-path="human-pancreas-dataset-lawlor.html"><a href="human-pancreas-dataset-lawlor.html#clustering-10"><i class="fa fa-check"></i><b>22.3.4</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="23" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html"><i class="fa fa-check"></i><b>23</b> Human pancreas dataset (Muraro)</a><ul>
+<li class="chapter" data-level="23.1" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#introduction-8"><i class="fa fa-check"></i><b>23.1</b> Introduction</a></li>
+<li class="chapter" data-level="23.2" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#analysis-code-4"><i class="fa fa-check"></i><b>23.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="23.2.1" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#data-loading-5"><i class="fa fa-check"></i><b>23.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="23.2.2" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#gene-annotation-5"><i class="fa fa-check"></i><b>23.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="23.2.3" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#quality-control-7"><i class="fa fa-check"></i><b>23.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="23.2.4" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#normalization-11"><i class="fa fa-check"></i><b>23.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="23.2.5" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#variance-modelling-10"><i class="fa fa-check"></i><b>23.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="23.2.6" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#data-integration-2"><i class="fa fa-check"></i><b>23.2.6</b> Data integration</a></li>
+<li class="chapter" data-level="23.2.7" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#dimensionality-reduction-9"><i class="fa fa-check"></i><b>23.2.7</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="23.2.8" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#clustering-11"><i class="fa fa-check"></i><b>23.2.8</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="23.3" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#results-5"><i class="fa fa-check"></i><b>23.3</b> Results</a><ul>
+<li class="chapter" data-level="23.3.1" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#quality-control-statistics-5"><i class="fa fa-check"></i><b>23.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="23.3.2" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#normalization-12"><i class="fa fa-check"></i><b>23.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="23.3.3" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#variance-modelling-11"><i class="fa fa-check"></i><b>23.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="23.3.4" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#data-integration-3"><i class="fa fa-check"></i><b>23.3.4</b> Data integration</a></li>
+<li class="chapter" data-level="23.3.5" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#clustering-12"><i class="fa fa-check"></i><b>23.3.5</b> Clustering</a></li>
+<li class="chapter" data-level="23.3.6" data-path="human-pancreas-dataset-muraro.html"><a href="human-pancreas-dataset-muraro.html#clustering-13"><i class="fa fa-check"></i><b>23.3.6</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="24" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html"><i class="fa fa-check"></i><b>24</b> PBMC 10X dataset (unfiltered)</a><ul>
+<li class="chapter" data-level="24.1" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#introduction-9"><i class="fa fa-check"></i><b>24.1</b> Introduction</a></li>
+<li class="chapter" data-level="24.2" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#analysis-code-5"><i class="fa fa-check"></i><b>24.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="24.2.1" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#data-loading-6"><i class="fa fa-check"></i><b>24.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="24.2.2" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#gene-annotation-6"><i class="fa fa-check"></i><b>24.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="24.2.3" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#cell-detection"><i class="fa fa-check"></i><b>24.2.3</b> Cell detection</a></li>
+<li class="chapter" data-level="24.2.4" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#quality-control-8"><i class="fa fa-check"></i><b>24.2.4</b> Quality control</a></li>
+<li class="chapter" data-level="24.2.5" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#normalization-13"><i class="fa fa-check"></i><b>24.2.5</b> Normalization</a></li>
+<li class="chapter" data-level="24.2.6" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#variance-modelling-12"><i class="fa fa-check"></i><b>24.2.6</b> Variance modelling</a></li>
+<li class="chapter" data-level="24.2.7" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#dimensionality-reduction-10"><i class="fa fa-check"></i><b>24.2.7</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="24.2.8" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#clustering-14"><i class="fa fa-check"></i><b>24.2.8</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="24.3" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#results-6"><i class="fa fa-check"></i><b>24.3</b> Results</a><ul>
+<li class="chapter" data-level="24.3.1" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#quality-control-statistics-6"><i class="fa fa-check"></i><b>24.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="24.3.2" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#normalization-14"><i class="fa fa-check"></i><b>24.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="24.3.3" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#variance-modelling-13"><i class="fa fa-check"></i><b>24.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="24.3.4" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#dimensionality-reduction-11"><i class="fa fa-check"></i><b>24.3.4</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="24.3.5" data-path="pbmc-10x-dataset-unfiltered.html"><a href="pbmc-10x-dataset-unfiltered.html#clustering-15"><i class="fa fa-check"></i><b>24.3.5</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="25" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html"><i class="fa fa-check"></i><b>25</b> PBMC 3k 10X dataset (filtered)</a><ul>
+<li class="chapter" data-level="25.1" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#introduction-10"><i class="fa fa-check"></i><b>25.1</b> Introduction</a></li>
+<li class="chapter" data-level="25.2" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#analysis-code-6"><i class="fa fa-check"></i><b>25.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="25.2.1" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#data-loading-7"><i class="fa fa-check"></i><b>25.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="25.2.2" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#quality-control-9"><i class="fa fa-check"></i><b>25.2.2</b> Quality control</a></li>
+<li class="chapter" data-level="25.2.3" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#normalization-15"><i class="fa fa-check"></i><b>25.2.3</b> Normalization</a></li>
+<li class="chapter" data-level="25.2.4" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#variance-modelling-14"><i class="fa fa-check"></i><b>25.2.4</b> Variance modelling</a></li>
+<li class="chapter" data-level="25.2.5" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#dimensionality-reduction-12"><i class="fa fa-check"></i><b>25.2.5</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="25.2.6" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#clustering-16"><i class="fa fa-check"></i><b>25.2.6</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="25.3" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#results-7"><i class="fa fa-check"></i><b>25.3</b> Results</a><ul>
+<li class="chapter" data-level="25.3.1" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#quality-control-statistics-7"><i class="fa fa-check"></i><b>25.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="25.3.2" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#normalization-16"><i class="fa fa-check"></i><b>25.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="25.3.3" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#variance-modelling-15"><i class="fa fa-check"></i><b>25.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="25.3.4" data-path="pbmc-3k-10x-dataset-filtered.html"><a href="pbmc-3k-10x-dataset-filtered.html#clustering-17"><i class="fa fa-check"></i><b>25.3.4</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="26" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html"><i class="fa fa-check"></i><b>26</b> PBMC 4k 10X dataset (filtered)</a><ul>
+<li class="chapter" data-level="26.1" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#introduction-11"><i class="fa fa-check"></i><b>26.1</b> Introduction</a></li>
+<li class="chapter" data-level="26.2" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#analysis-code-7"><i class="fa fa-check"></i><b>26.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="26.2.1" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#data-loading-8"><i class="fa fa-check"></i><b>26.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="26.2.2" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#quality-control-10"><i class="fa fa-check"></i><b>26.2.2</b> Quality control</a></li>
+<li class="chapter" data-level="26.2.3" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#normalization-17"><i class="fa fa-check"></i><b>26.2.3</b> Normalization</a></li>
+<li class="chapter" data-level="26.2.4" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#variance-modelling-16"><i class="fa fa-check"></i><b>26.2.4</b> Variance modelling</a></li>
+<li class="chapter" data-level="26.2.5" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#dimensionality-reduction-13"><i class="fa fa-check"></i><b>26.2.5</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="26.2.6" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#clustering-18"><i class="fa fa-check"></i><b>26.2.6</b> Clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="26.3" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#results-8"><i class="fa fa-check"></i><b>26.3</b> Results</a><ul>
+<li class="chapter" data-level="26.3.1" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#quality-control-statistics-8"><i class="fa fa-check"></i><b>26.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="26.3.2" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#normalization-18"><i class="fa fa-check"></i><b>26.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="26.3.3" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#variance-modelling-17"><i class="fa fa-check"></i><b>26.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="26.3.4" data-path="pbmc-4k-10x-dataset-filtered.html"><a href="pbmc-4k-10x-dataset-filtered.html#clustering-19"><i class="fa fa-check"></i><b>26.3.4</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="27" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html"><i class="fa fa-check"></i><b>27</b> Chimeric embryo 10X dataset</a><ul>
+<li class="chapter" data-level="27.1" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#introduction-12"><i class="fa fa-check"></i><b>27.1</b> Introduction</a></li>
+<li class="chapter" data-level="27.2" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#analysis-code-8"><i class="fa fa-check"></i><b>27.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="27.2.1" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#data-loading-9"><i class="fa fa-check"></i><b>27.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="27.2.2" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#feature-annotation"><i class="fa fa-check"></i><b>27.2.2</b> Feature annotation</a></li>
+<li class="chapter" data-level="27.2.3" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#quality-control-11"><i class="fa fa-check"></i><b>27.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="27.2.4" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#normalization-19"><i class="fa fa-check"></i><b>27.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="27.2.5" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#variance-modelling-18"><i class="fa fa-check"></i><b>27.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="27.2.6" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#merging"><i class="fa fa-check"></i><b>27.2.6</b> Merging</a></li>
+<li class="chapter" data-level="27.2.7" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#clustering-20"><i class="fa fa-check"></i><b>27.2.7</b> Clustering</a></li>
+<li class="chapter" data-level="27.2.8" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#dimensionality-reduction-14"><i class="fa fa-check"></i><b>27.2.8</b> Dimensionality reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="27.3" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#results-9"><i class="fa fa-check"></i><b>27.3</b> Results</a><ul>
+<li class="chapter" data-level="27.3.1" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#variance-modelling-19"><i class="fa fa-check"></i><b>27.3.1</b> Variance modelling</a></li>
+<li class="chapter" data-level="27.3.2" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#batch-correction-1"><i class="fa fa-check"></i><b>27.3.2</b> Batch correction</a></li>
+<li class="chapter" data-level="27.3.3" data-path="chimeric-embryo-10x-dataset.html"><a href="chimeric-embryo-10x-dataset.html#clustering-21"><i class="fa fa-check"></i><b>27.3.3</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="28" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html"><i class="fa fa-check"></i><b>28</b> Mammary gland dataset</a><ul>
+<li class="chapter" data-level="28.1" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#introduction-13"><i class="fa fa-check"></i><b>28.1</b> Introduction</a></li>
+<li class="chapter" data-level="28.2" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#analysis-code-9"><i class="fa fa-check"></i><b>28.2</b> Analysis code</a><ul>
+<li class="chapter" data-level="28.2.1" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#data-loading-10"><i class="fa fa-check"></i><b>28.2.1</b> Data loading</a></li>
+<li class="chapter" data-level="28.2.2" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#gene-annotation-7"><i class="fa fa-check"></i><b>28.2.2</b> Gene annotation</a></li>
+<li class="chapter" data-level="28.2.3" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#quality-control-12"><i class="fa fa-check"></i><b>28.2.3</b> Quality control</a></li>
+<li class="chapter" data-level="28.2.4" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#normalization-20"><i class="fa fa-check"></i><b>28.2.4</b> Normalization</a></li>
+<li class="chapter" data-level="28.2.5" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#variance-modelling-20"><i class="fa fa-check"></i><b>28.2.5</b> Variance modelling</a></li>
+<li class="chapter" data-level="28.2.6" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#dimensionality-reduction-15"><i class="fa fa-check"></i><b>28.2.6</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="28.2.7" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#clustering-22"><i class="fa fa-check"></i><b>28.2.7</b> Clustering</a></li>
+<li class="chapter" data-level="28.2.8" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#marker-detection"><i class="fa fa-check"></i><b>28.2.8</b> Marker detection</a></li>
+</ul></li>
+<li class="chapter" data-level="28.3" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#results-10"><i class="fa fa-check"></i><b>28.3</b> Results</a><ul>
+<li class="chapter" data-level="28.3.1" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#quality-control-statistics-9"><i class="fa fa-check"></i><b>28.3.1</b> Quality control statistics</a></li>
+<li class="chapter" data-level="28.3.2" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#normalization-21"><i class="fa fa-check"></i><b>28.3.2</b> Normalization</a></li>
+<li class="chapter" data-level="28.3.3" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#variance-modelling-21"><i class="fa fa-check"></i><b>28.3.3</b> Variance modelling</a></li>
+<li class="chapter" data-level="28.3.4" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#dimensionality-reduction-16"><i class="fa fa-check"></i><b>28.3.4</b> Dimensionality reduction</a></li>
+<li class="chapter" data-level="28.3.5" data-path="mammary-gland-dataset.html"><a href="mammary-gland-dataset.html#clustering-23"><i class="fa fa-check"></i><b>28.3.5</b> Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>IV Appendix</b></span></li>
+<li class="chapter" data-level="29" data-path="contributors.html"><a href="contributors.html"><i class="fa fa-check"></i><b>29</b> Contributors</a><ul>
+<li><a href="contributors.html#aaron-lun-phd"><em>Aaron Lun, PhD</em></a></li>
+<li><a href="contributors.html#robert-amezquita-phd"><em>Robert Amezquita, PhD</em></a></li>
+<li><a href="contributors.html#stephanie-hicks-phd"><em>Stephanie Hicks, PhD</em></a></li>
+<li><a href="contributors.html#raphael-gottardo-phd"><em>Raphael Gottardo, PhD</em></a></li>
+</ul></li>
+<li class="chapter" data-level="30" data-path="bibliography.html"><a href="bibliography.html"><i class="fa fa-check"></i><b>30</b> Bibliography</a></li>
+<li class="divider"></li>
+<li><a href="https://bioconductor.org" target="blank">Published by Bioconductor</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Orchestrating Single-Cell Analysis with Bioconductor</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="clustering" class="section level1">
+<h1><span class="header-section-number">Chapter 10</span> Clustering</h1>
+<script>
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("aaron-collapse")) {
+        event.target.classList.toggle("active");
+        var content = event.target.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+    }
+})
+</script>
+<style>
+.aaron-collapse {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.aaron-content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
+<div id="motivation-4" class="section level2">
+<h2><span class="header-section-number">10.1</span> Motivation</h2>
+<p>Clustering is an unsupervised learning procedure that is used in scRNA-seq data analysis to empirically define groups of cells with similar expression profiles.
+Its primary purpose is to summarize the data in a digestible format for human interpretation.
+This allows us to describe population heterogeneity in terms of discrete labels that are easily understood, rather than attempting to comprehend the high-dimensional manifold on which the cells truly reside.
+After annotation based on marker genes, the clusters can be treated as proxies for more abstract biological concepts such as cell types or states.
+Clustering is thus a critical step for extracting biological insights from scRNA-seq data.
+Here, we demonstrate the application of several commonly used methods with the 10X PBMC dataset.</p>
+<button class="aaron-collapse">
+View history
+</button>
+<div class="aaron-content">
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-2" data-line-number="2"><span class="kw">library</span>(BiocFileCache)</a>
+<a class="sourceLine" id="cb211-3" data-line-number="3">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb211-4" data-line-number="4">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
+<a class="sourceLine" id="cb211-5" data-line-number="5">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
+<a class="sourceLine" id="cb211-6" data-line-number="6"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
+<a class="sourceLine" id="cb211-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb211-8" data-line-number="8"><span class="kw">library</span>(DropletUtils)</a>
+<a class="sourceLine" id="cb211-9" data-line-number="9">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
+<a class="sourceLine" id="cb211-10" data-line-number="10">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb211-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb211-12" data-line-number="12">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-13" data-line-number="13"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb211-14" data-line-number="14"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb211-15" data-line-number="15">    <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
+<a class="sourceLine" id="cb211-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb211-17" data-line-number="17"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
+<a class="sourceLine" id="cb211-18" data-line-number="18">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
+<a class="sourceLine" id="cb211-19" data-line-number="19">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb211-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb211-21" data-line-number="21">### cell-detection <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-22" data-line-number="22"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb211-23" data-line-number="23">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
+<a class="sourceLine" id="cb211-24" data-line-number="24">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
+<a class="sourceLine" id="cb211-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb211-26" data-line-number="26">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-27" data-line-number="27">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.pbmc, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
+<a class="sourceLine" id="cb211-28" data-line-number="28">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb211-29" data-line-number="29">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb211-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb211-31" data-line-number="31">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-32" data-line-number="32"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb211-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb211-34" data-line-number="34">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb211-35" data-line-number="35">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
+<a class="sourceLine" id="cb211-36" data-line-number="36">sce.pbmc &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb211-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb211-38" data-line-number="38">### variance-modelling <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-39" data-line-number="39"><span class="kw">set.seed</span>(<span class="dv">1001</span>)</a>
+<a class="sourceLine" id="cb211-40" data-line-number="40">dec.pbmc &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb211-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb211-42" data-line-number="42">### dimensionality-reduction <span class="al">###</span></a>
+<a class="sourceLine" id="cb211-43" data-line-number="43"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb211-44" data-line-number="44">sce.pbmc &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce.pbmc, <span class="dt">technical=</span>dec.pbmc,</a>
+<a class="sourceLine" id="cb211-45" data-line-number="45">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">IrlbaParam</span>())</a>
+<a class="sourceLine" id="cb211-46" data-line-number="46"></a>
+<a class="sourceLine" id="cb211-47" data-line-number="47"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb211-48" data-line-number="48">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb211-49" data-line-number="49"></a>
+<a class="sourceLine" id="cb211-50" data-line-number="50"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb211-51" data-line-number="51">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+</div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" data-line-number="1">sce.pbmc</a></code></pre></div>
+<pre><code>## class: SingleCellExperiment 
+## dim: 33694 3922 
+## metadata(0):
+## assays(2): counts logcounts
+## rownames(33694): RP11-34P13.3 FAM138A ... AC213203.1 FAM231B
+## rowData names(2): ID Symbol
+## colnames(3922): AAACCTGAGAAGGCCT-1 AAACCTGAGACAGACC-1 ...
+##   TTTGTCACAGGTCCAC-1 TTTGTCATCCCAAGAT-1
+## colData names(2): Sample Barcode
+## reducedDimNames(3): PCA TSNE UMAP
+## spikeNames(0):
+## altExpNames(0):</code></pre>
+</div>
+<div id="what-is-the-true-clustering" class="section level2">
+<h2><span class="header-section-number">10.2</span> What is the “true clustering”?</h2>
+<p>At this point, it is worth stressing the distinction between clusters and cell types.
+The former is an empirical construct while the latter is a biological truth (albeit a vaguely defined one).
+For this reason, questions like “what is the true number of clusters?” are usually meaningless.
+We can define as many clusters as we like, with whatever algorithm we like - each clustering will represent its own partitioning of the high-dimensional expression space, and is as “real” as any other clustering.</p>
+<p>A more relevant question is “how well do the clusters approximate the cell types?”
+Unfortunately, this is difficult to answer given the context-dependent interpretation of biological truth.
+Some analysts will be satisfied with resolution of the major cell types; other analysts may want resolution of subtypes; and others still may require resolution of different states (e.g., metabolic activity, stress) within those subtypes.
+Morevoer, two clusterings can be highly inconsistent yet both valid, simply partitioning the cells based on different aspects of biology.
+Indeed, asking for an unqualified “best” clustering is akin to asking for the best magnification on a microscope without any context.</p>
+<p>It is helpful to realize that clustering, like a microscope, is simply a tool to explore the data.
+We can zoom in and out by changing the resolution of the clustering parameters, and we can experiment with different clustering algorithms to obtain alternative perspectives of the data.
+This iterative approach is entirely permissible for data exploration, which constitutes the majority of all scRNA-seq data analysis.</p>
+</div>
+<div id="graph-based-clustering" class="section level2">
+<h2><span class="header-section-number">10.3</span> Graph-based clustering</h2>
+<div id="background-2" class="section level3">
+<h3><span class="header-section-number">10.3.1</span> Background</h3>
+<p>Popularized by its use in <em><a href="https://CRAN.R-project.org/package=Seurat">Seurat</a></em>, graph-based clustering is a flexible and scalable technique for clustering large scRNA-seq datasets.
+We first build a graph where each node is a cell that is connected to its nearest neighbours in the high-dimensional space.
+Edges are weighted based on the similarity between the cells involved, with higher weight given to cells that are more closely related.
+We then apply algorithms to identify “communities” of cells that are more connected to cells in the same community than they are to cells of different communities.
+Each community represents a cluster that we can use for downstream interpretation.</p>
+<p>The major advantage of graph-based clustering lies in its scalability.
+It only requires a <span class="math inline">\(k\)</span>-nearest neighbor search that can be done in log-linear time on average, in contrast to hierachical clustering methods with runtimes that are quadratic with respect to the number of cells.
+Graph construction avoids making strong assumptions about the shape of the clusters or the distribution of cells within each cluster, compared to other methods like <span class="math inline">\(k\)</span>-means (that favor spherical clusters) or Gaussian mixture models (that require normality).
+From a practical perspective, each cell is forcibly connected to a minimum number of neighboring cells, which reduces the risk of generating many uninformative clusters consisting of one or two outlier cells.</p>
+<p>The main drawback of graph-based methods is that, after graph construction, no information is retained about relationships beyond the neighbouring cells<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.
+This has some practical consequences in datasets that exhibit differences in cell density, as more steps through the graph are required to move the same distance through a region of higher cell density.
+From the perspective of community detection algorithms, this effect “inflates” the high-density regions such that any internal substructure or noise is more likely to cause formation of subclusters.
+The resolution of clustering thus becomes dependent on the density of cells, which can occasionally be misleading if it overstates the heterogeneity in the data.</p>
+</div>
+<div id="implementation" class="section level3">
+<h3><span class="header-section-number">10.3.2</span> Implementation</h3>
+<p>There are several considerations in the practical execution of a graph-based clustering method:</p>
+<ul>
+<li>How many neighbors are considered when constructing the graph.</li>
+<li>What scheme is used to weight the edges.</li>
+<li>Which community detection algorithm is used to define the clusters.</li>
+</ul>
+<p>For example, the following code uses the 10 nearest neighbors of each cell to construct a shared nearest neighbor graph.
+Two cells are connected by an edge if any of their nearest neighbors are shared,
+with the edge weight defined from the highest average rank of the shared neighbors <span class="citation">(Xu and Su <a href="#ref-xu2015identification">2015</a>)</span>.
+The Walktrap method from the <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em> package is then used to identify communities.
+All calculations are performed using the top PCs to take advantage of data compression and denoising.</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb214-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb214-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb214-3" data-line-number="3">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb214-4" data-line-number="4"><span class="kw">table</span>(clust)</a></code></pre></div>
+<pre><code>## clust
+##   1   2   3   4   5   6   7   8   9  10  11  12  13 
+## 785 198  56 541 529 516 128 824  45 151  92  21  36</code></pre>
+<p>We assign the cluster assignments back into our <code>SingleCellExperiment</code> object as a factor in the column metadata.
+This allows us to conveniently visualize the distribution of clusters in a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="clustering.html#fig:tsne-clust-graph">10.1</a>).</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb216-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb216-2" data-line-number="2">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a>
+<a class="sourceLine" id="cb216-3" data-line-number="3"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:tsne-clust-graph"></span>
+<img src="P2_W06.clustering_files/figure-html/tsne-clust-graph-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from graph-based clustering." width="672" />
+<p class="caption">
+Figure 10.1: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from graph-based clustering.
+</p>
+</div>
+<p>The most important parameter is <code>k</code>, the number of nearest neighbors used to construct the graph.
+This controls the resolution of the clustering with higher <code>k</code> yielding a more inter-connected graph and larger clusters.
+Users can exploit this by experimenting with different values of <code>k</code> to obtain a satisfactory resolution.</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" data-line-number="1"><span class="co"># More resolved.</span></a>
+<a class="sourceLine" id="cb217-2" data-line-number="2">g<span class="fl">.5</span> &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb217-3" data-line-number="3">clust<span class="fl">.5</span> &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g<span class="fl">.5</span>)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb217-4" data-line-number="4"><span class="kw">table</span>(clust<span class="fl">.5</span>)</a></code></pre></div>
+<pre><code>## clust.5
+##   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18 
+##  40  45 499 487 335 121 171 620  18 825 202  55  73 142  81  41  54  29 
+##  19  20  21  22 
+##  21  17  10  36</code></pre>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1"><span class="co"># Less resolved.</span></a>
+<a class="sourceLine" id="cb219-2" data-line-number="2">g<span class="fl">.50</span> &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">50</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb219-3" data-line-number="3">clust<span class="fl">.50</span> &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g<span class="fl">.50</span>)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb219-4" data-line-number="4"><span class="kw">table</span>(clust<span class="fl">.50</span>)</a></code></pre></div>
+<pre><code>## clust.50
+##    1    2    3    4    5    6    7    8    9 
+##  553  832  198  121 1114  455  498  106   45</code></pre>
+</div>
+<div id="other-parameters" class="section level3">
+<h3><span class="header-section-number">10.3.3</span> Other parameters</h3>
+<p>Further tweaking can be performed by changing the edge weighting scheme during graph construction.
+Setting <code>type=&quot;number&quot;</code> will weight edges based on the number of nearest neighbors that are shared between two cells.
+Similarly, <code>type=&quot;jaccard&quot;</code> will weight edges according to the Jaccard index of the two sets of neighbors.
+We can also disable weighting altogether by using <code>buildKNNGraph()</code>, which is occasionally useful for downstream graph operations that do not support weights.</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" data-line-number="1">g.num &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">type=</span><span class="st">&quot;number&quot;</span>)</a>
+<a class="sourceLine" id="cb221-2" data-line-number="2">g.jaccard &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">type=</span><span class="st">&quot;jaccard&quot;</span>)</a>
+<a class="sourceLine" id="cb221-3" data-line-number="3">g.none &lt;-<span class="st"> </span><span class="kw">buildKNNGraph</span>(sce.pbmc, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+<p>All of these <code>g</code> variables are <code>graph</code> objects from the <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em> package and can be used with any of the community detection algorithms provided by <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em>.
+We have already mentioned the Walktrap approach, but many others are available to choose from:</p>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" data-line-number="1">clust.louvain &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb222-2" data-line-number="2">clust.infomap &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_infomap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb222-3" data-line-number="3">clust.fast &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_fast_greedy</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb222-4" data-line-number="4">clust.labprop &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_label_prop</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb222-5" data-line-number="5">clust.eigen &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_leading_eigen</span>(g)<span class="op">$</span>membership</a></code></pre></div>
+<p>It is then straightforward to compare two clustering strategies to see how they differ.
+For example, the results below suggest that Louvain is similar to Walktrap;
+fast-greedy yields coarser clusters; and Infomap provides higher resolution.</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Louvain=</span>clust.louvain, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
+<pre><code>##        Walktrap
+## Louvain   1   2   3   4   5   6   7   8   9  10  11  12  13
+##      1    0 198   0   1   0   0   0   0   0   0   0   0   0
+##      2    0   0   0   0   3   0   0 810   0   9   0   0   0
+##      3    1   0   0 516   4   0   0   0   0   0   0   0   0
+##      4    0   0   0   1 400   0   0  14   0   1   0   0   0
+##      5    0   0   0  23 122   0   0   0   0 141   0   0   0
+##      6    0   0   0   0   0   0   0   0   0   0   0   0  36
+##      7    0   0   0   0   0 516   0   0   0   0   0   0   0
+##      8    0   0   0   0   0   0   0   0   0   0   0  21   0
+##      9   29   0  37   0   0   0   0   0   0   0  92   0   0
+##      10   1   0   0   0   0   0   0   0  45   0   0   0   0
+##      11   1   0   0   0   0   0 128   0   0   0   0   0   0
+##      12 753   0  19   0   0   0   0   0   0   0   0   0   0</code></pre>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Infomap=</span>clust.infomap, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
+<pre><code>##        Walktrap
+## Infomap   1   2   3   4   5   6   7   8   9  10  11  12  13
+##      1    0   0   0   0   0   0   0 491   0   7   0   0   0
+##      2    0   0   0   0   1   0   0 315   0   1   0   0   0
+##      3    0   0   0   0   0 234   0   0   0   0   0   0   0
+##      4  216   0   0   0   0   0   0   0   0   0   0   0   0
+##      5    0   0   0   0   0 189   0   0   0   0   0   0   0
+##      6    0   0   0 178   0   0   0   0   0   0   0   0   0
+##      7  157   0   0   0   0   0   0   0   0   0   0   0   0
+##      8    0 169   0   0   0   0   0   0   0   0   0   0   0
+##      9    0   0   0 149   0   0   0   0   0   0   0   0   0
+##      10 135   0   0   0   0   0   0   0   0   0   0   0   0
+##      11   0   0   0   0   6   0   0   0   0 137   0   0   0
+##      12   0   0   0  27 102   0   0   0   0   2   0   0   0
+##      13 131   0   0   0   0   0   0   0   0   0   0   0   0
+##      14   0   0   0   0   0   0 128   0   0   0   0   0   0
+##      15   0   0   0   0 104   0   0   0   0   0   0   0   0
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 22 rows ]</code></pre>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Fast=</span>clust.fast, <span class="dt">Walktrap=</span>clust)</a></code></pre></div>
+<pre><code>##     Walktrap
+## Fast   1   2   3   4   5   6   7   8   9  10  11  12  13
+##    1   0   0   0   0   0   0   0 771   0   0   0   0   0
+##    2   0   0   0   0   0   0   0   0   0   0   0   0  36
+##    3   0   0   0   0   0   0   0   0  45   0   0   0   0
+##    4   0   0   0   0   0 515   0   0   0   0   0   0   0
+##    5   0 194   0   0   0   1   0   0   0   0   0  21   0
+##    6   0   4   0 541 529   0   0  53   0 151   0   0   0
+##    7 785   0  56   0   0   0 128   0   0   0  92   0   0</code></pre>
+<p>Pipelines involving <em><a href="https://bioconductor.org/packages/3.10/scran">scran</a></em> default to rank-based weights followed by Walktrap clustering.
+In contrast, <em><a href="https://CRAN.R-project.org/package=Seurat">Seurat</a></em> uses Jaccard-based weights followed by Louvain clustering.
+Both of these strategies work well, and it is likely that the same could be said for many other combinations of weighting schemes and community detection algorithms.</p>
+</div>
+<div id="assessing-cluster-separation" class="section level3">
+<h3><span class="header-section-number">10.3.4</span> Assessing cluster separation</h3>
+<p>When dealing with graphs, the modularity is a natural metric for evaluating the separation between communities/clusters.
+This is defined as the (scaled) difference between the observed total weight of edges between nodes in the same cluster and the expected total weight if edge weights were randomly distributed across all pairs of nodes.
+Larger modularity values indicate that there most edges occur within clusters, suggesting that the clusters are sufficiently well separated to avoid edges forming between neighboring cells in different clusters.</p>
+<p>The standard approach is to report a single modularity value for a clustering on a given graph.
+This is useful for comparing different clusterings on the same graph - and indeed, some community detection algorithms are designed with the aim of maximizing the modularity - but it is less helpful for interpreting a given clustering.
+Rather, we use the <code>clusterModularity()</code> function with <code>as.ratio=TRUE</code>, which returns the ratio of the observed to expected sum of weights between each pair of clusters.
+We use the ratio instead of the difference as the former is less dependent on the number of cells in each cluster.</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb229-1" data-line-number="1">ratio &lt;-<span class="st"> </span><span class="kw">clusterModularity</span>(g, clust, <span class="dt">as.ratio=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb229-2" data-line-number="2">ratio</a></code></pre></div>
+<pre><code>##        1     2        3        4         5         6         7         8
+## 1  4.747  0.00   0.9718 0.001922 0.0006179 0.0005444  0.182848 0.0000000
+## 2    NaN 24.15   0.0000 0.100412 0.0082216 0.0054301  0.000000 0.0003150
+## 3    NaN   NaN 110.8276 0.000000 0.0000000 0.0000000  0.655614 0.0035376
+## 4    NaN   NaN      NaN 7.499941 0.3127186 0.0019267  0.000000 0.0006704
+## 5    NaN   NaN      NaN      NaN 7.2359911 0.0051028  0.007241 0.2307472
+## 6    NaN   NaN      NaN      NaN       NaN 7.3736323  0.000000 0.0000000
+## 7    NaN   NaN      NaN      NaN       NaN       NaN 44.094696 0.0000000
+## 8    NaN   NaN      NaN      NaN       NaN       NaN       NaN 3.5142511
+## 9    NaN   NaN      NaN      NaN       NaN       NaN       NaN       NaN
+## 10   NaN   NaN      NaN      NaN       NaN       NaN       NaN       NaN
+## 11   NaN   NaN      NaN      NaN       NaN       NaN       NaN       NaN
+## 12   NaN   NaN      NaN      NaN       NaN       NaN       NaN       NaN
+## 13   NaN   NaN      NaN      NaN       NaN       NaN       NaN       NaN
+##            9        10      11        12        13
+## 1    0.02839  0.000000  0.1947   0.00000 4.357e-03
+## 2    0.00000  0.004791  0.0000   0.54527 0.000e+00
+## 3    0.00000  0.000000  0.9157   0.00000 0.000e+00
+## 4    0.00000  0.103582  0.0000   0.00000 0.000e+00
+## 5    0.00000  0.393945  0.0000   0.08774 1.040e-02
+## 6    0.00000  0.000000  0.0000   0.00000 0.000e+00
+## 7    0.00000  0.000000  0.0000   0.00000 0.000e+00
+## 8    0.00000  0.320243  0.0000   0.00000 0.000e+00
+## 9  171.65490  0.000000  0.0000   0.00000 0.000e+00
+## 10       NaN 23.689777  0.0000   0.00000 0.000e+00
+## 11       NaN       NaN 57.8148   0.00000 0.000e+00
+## 12       NaN       NaN     NaN 514.42466 0.000e+00
+## 13       NaN       NaN     NaN       NaN 1.887e+02</code></pre>
+<p>In each matrix, each row/column corresponds to a cluster, and each entry of the matrix contains the ratio of the observed to total weight of edges between cells in the respective clusters.
+A dataset containing well-separated clusters should contain most of the observed total weight on the diagonal entries, i.e., most edges occur between cells in the same cluster.
+Indeed, concentration of the weight on the diagonal of (Figure <a href="clustering.html#fig:cluster-mod">10.2</a>) indicates that most of the clusters are well-separated, while some modest off-diagonal entries represent closely related clusters with more inter-connecting edges.</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" data-line-number="1"><span class="kw">library</span>(pheatmap)</a>
+<a class="sourceLine" id="cb231-2" data-line-number="2"><span class="kw">pheatmap</span>(<span class="kw">log2</span>(ratio<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>, <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb231-3" data-line-number="3">    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">100</span>))</a></code></pre></div>
+<div class="figure"><span id="fig:cluster-mod"></span>
+<img src="P2_W06.clustering_files/figure-html/cluster-mod-1.png" alt="Heatmap of the log~2~-ratio of the total weight between nodes in the same cluster or in different clusters, relative to the total weight expected under a null model of random links." width="672" />
+<p class="caption">
+Figure 10.2: Heatmap of the log<sub>2</sub>-ratio of the total weight between nodes in the same cluster or in different clusters, relative to the total weight expected under a null model of random links.
+</p>
+</div>
+<p>One useful approach is to use the <code>ratio</code> matrix to form another graph where the nodes are clusters rather than cells.
+Edges between nodes are weighted according to the ratio of observed to expected edge weights between cells in those clusters.
+We can then repeat our graph operations on this new cluster-level graph.
+For example, we could obtain clusters of clusters, or we could simply create a new cluster-based layout for visualization (Figure <a href="clustering.html#fig:cluster-graph">10.3</a>).
+This is analogous to the “graph abstraction” approach described by <span class="citation">Wolf et al. (<a href="#ref-wolf2017graph">2017</a>)</span>.</p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb232-1" data-line-number="1">cluster.gr &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">graph_from_adjacency_matrix</span>(ratio, </a>
+<a class="sourceLine" id="cb232-2" data-line-number="2">    <span class="dt">mode=</span><span class="st">&quot;upper&quot;</span>, <span class="dt">weighted=</span><span class="ot">TRUE</span>, <span class="dt">diag=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb232-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb232-4" data-line-number="4"><span class="kw">set.seed</span>(<span class="dv">11001010</span>)</a>
+<a class="sourceLine" id="cb232-5" data-line-number="5"><span class="kw">plot</span>(cluster.gr, <span class="dt">edge.width=</span>igraph<span class="op">::</span><span class="kw">E</span>(cluster.gr)<span class="op">$</span>weight<span class="op">*</span><span class="dv">20</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:cluster-graph"></span>
+<img src="P2_W06.clustering_files/figure-html/cluster-graph-1.png" alt="Force-directed layout showing the relationships between clusters based on the log-ratio of observed to expected total weights between nodes in different clusters. The thickness of the edge between a pair of clusters is proportional to the corresponding log-ratio." width="672" />
+<p class="caption">
+Figure 10.3: Force-directed layout showing the relationships between clusters based on the log-ratio of observed to expected total weights between nodes in different clusters. The thickness of the edge between a pair of clusters is proportional to the corresponding log-ratio.
+</p>
+</div>
+<p>Incidentally, some readers may have noticed that all <em><a href="https://CRAN.R-project.org/package=igraph">igraph</a></em> commands were prefixed with <code>igraph::</code>.
+We have done this deliberately to avoid bringing <code>igraph::normalize</code> into the global namespace.
+Rather unfortunately, this <code>normalize</code> function accepts any argument and returns <code>NULL</code>, which causes difficult-to-diagnose bugs when it overwrites our intended <code>normalize</code> from <em><a href="https://bioconductor.org/packages/3.10/scater">scater</a></em>.</p>
+</div>
+</div>
+<div id="k-means-clustering" class="section level2">
+<h2><span class="header-section-number">10.4</span> <span class="math inline">\(k\)</span>-means clustering</h2>
+<div id="background-3" class="section level3">
+<h3><span class="header-section-number">10.4.1</span> Background</h3>
+<p><span class="math inline">\(k\)</span>-means clustering is a classic technique that aims to partition cells into <span class="math inline">\(k\)</span> clusters.
+Each cell is assigned to the cluster with the closest centroid, which is done by minimizing the within-cluster sum of squares using a random starting configuration for the <span class="math inline">\(k\)</span> centroids.
+The main advantage of this approach lies in its speed, given the simplicity and ease of implementation of the algorithm.
+However, it suffers from a number of serious shortcomings that reduce its appeal for obtaining interpretable clusters:</p>
+<ul>
+<li>It implicitly favours spherical clusters of equal radius.
+This can lead to unintuitive partitionings on real datasets that contain groupings with irregular sizes and shapes.</li>
+<li>The number of clusters <span class="math inline">\(k\)</span> must be specified beforehand and represents a hard cap on the resolution of the clustering..
+For example, setting <span class="math inline">\(k\)</span> to be below the number of cell types will always lead to co-clustering of two cell types, regardless of how well separated they are.
+In contrast, other methods like graph-based clustering will respect strong separation even if the relevant resolution parameter is set to a low value.</li>
+<li>It is dependent on the randomly chosen initial coordinates.
+This requires multiple runs to verify that the clustering is stable.</li>
+</ul>
+<p>That said, <span class="math inline">\(k\)</span>-means clustering is still one of the best approaches for sample-based data compression.
+In this application, we set <span class="math inline">\(k\)</span> to a large value such as the square root of the number of cells to obtain fine-grained clusters.
+These are not meant to be interpreted directly, but rather, the centroids are treated as “samples” for further analyses.
+The idea here is to obtain a single representative of each region of the expression space, reducing the number of samples and computational work in later steps like, e.g., trajectory reconstruction <span class="citation">(Ji and Ji <a href="#ref-ji2016tscan">2016</a>)</span>.
+This approach will also eliminate differences in cell density across the expression space, ensuring that the most abundant cell type does not dominate downstream results.</p>
+</div>
+<div id="base-implementation" class="section level3">
+<h3><span class="header-section-number">10.4.2</span> Base implementation</h3>
+<p>Base R provides the <code>kmeans()</code> function that does as its name suggests.
+We call this on our top PCs to obtain a clustering for a specified number of clusters in the <code>centers=</code> argument, after setting the random seed to ensure that the results are reproducible.
+In general, the <span class="math inline">\(k\)</span>-means clusters correspond to the visual clusters on the <span class="math inline">\(t\)</span>-SNE plot in Figure <a href="clustering.html#fig:tsne-clust-kmeans">10.4</a>, though there are some divergences that are not observed in, say, Figure <a href="clustering.html#fig:tsne-clust-graph">10.1</a>.
+(This is at least partially due to the fact that <span class="math inline">\(t\)</span>-SNE is itself graph-based and so will naturally agree more with a graph-based clustering strategy.)</p>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb233-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb233-2" data-line-number="2">clust.kmeans &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb233-3" data-line-number="3"><span class="kw">table</span>(clust.kmeans<span class="op">$</span>cluster)</a></code></pre></div>
+<pre><code>## 
+##    1    2    3    4    5    6    7    8    9   10 
+##  539  188   59  515   39  375  191  605 1054  357</code></pre>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb235-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:tsne-clust-kmeans"></span>
+<img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering." width="672" />
+<p class="caption">
+Figure 10.4: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from <span class="math inline">\(k\)</span>-means clustering.
+</p>
+</div>
+<p>We obtain a “reasonable” choice of <span class="math inline">\(k\)</span> by computing the gap statistic using methods from the <em><a href="https://CRAN.R-project.org/package=cluster">cluster</a></em> package.
+This is the log-ratio of the expected to observed within-cluster sum of squares, where the expected value is computed by randomly distributingn cells throughout high-dimensional space using the bounding box of the original data.
+A larger gap statistic represents a lower observed sum of squares - and thus better clustering - compared to a population with no structure.
+Ideally, we would choose the <span class="math inline">\(k\)</span> that maximizes the gap statistic, but this is often unhelpful as the tendency of <span class="math inline">\(k\)</span>-means to favour spherical clusters results in a large choice <span class="math inline">\(k\)</span> to capture different cluster shapes.
+Instead, we choose the most parsimonious <span class="math inline">\(k\)</span> beyond which the increases in the gap statistic are considered insignificant (Figure <a href="clustering.html#fig:kmeans-gap">10.5</a>).</p>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb236-1" data-line-number="1"><span class="kw">library</span>(cluster)</a>
+<a class="sourceLine" id="cb236-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">110010101</span>)</a>
+<a class="sourceLine" id="cb236-3" data-line-number="3">gaps &lt;-<span class="st"> </span><span class="kw">clusGap</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), kmeans, <span class="dt">K.max=</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb236-4" data-line-number="4">best.k &lt;-<span class="st"> </span><span class="kw">maxSE</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], gaps<span class="op">$</span>Tab[,<span class="st">&quot;SE.sim&quot;</span>])</a>
+<a class="sourceLine" id="cb236-5" data-line-number="5">best.k</a></code></pre></div>
+<pre><code>## [1] 8</code></pre>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb238-1" data-line-number="1"><span class="kw">plot</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], <span class="dt">xlab=</span><span class="st">&quot;Number of clusters&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Gap statistic&quot;</span>)</a>
+<a class="sourceLine" id="cb238-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v=</span>best.k, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:kmeans-gap"></span>
+<img src="P2_W06.clustering_files/figure-html/kmeans-gap-1.png" alt="Gap statistic with respect to increasing number of $k$-means clusters in the 10X PBMC dataset. The red line represents the chosen $k$." width="672" />
+<p class="caption">
+Figure 10.5: Gap statistic with respect to increasing number of <span class="math inline">\(k\)</span>-means clusters in the 10X PBMC dataset. The red line represents the chosen <span class="math inline">\(k\)</span>.
+</p>
+</div>
+<p>It is then straightforward to repeat the clustering with the <code>best.k</code> (Figure <a href="clustering.html#fig:tsne-clust-kmeans-best">10.6</a>.</p>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb239-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb239-2" data-line-number="2">clust.kmeans2 &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers=</span>best.k)</a>
+<a class="sourceLine" id="cb239-3" data-line-number="3"><span class="kw">table</span>(clust.kmeans2<span class="op">$</span>cluster)</a></code></pre></div>
+<pre><code>## 
+##    1    2    3    4    5    6    7    8 
+##  190   59 1054  552  458  539  201  869</code></pre>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans2<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb241-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:tsne-clust-kmeans-best"></span>
+<img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-best-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering. Here, $k$ is chosen based on the gap statistic." width="672" />
+<p class="caption">
+Figure 10.6: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from <span class="math inline">\(k\)</span>-means clustering. Here, <span class="math inline">\(k\)</span> is chosen based on the gap statistic.
+</p>
+</div>
+</div>
+<div id="assessing-cluster-separation-1" class="section level3">
+<h3><span class="header-section-number">10.4.3</span> Assessing cluster separation</h3>
+<p>The within-cluster sum of squares (WCSS) for each cluster is the relevant diagnostic for <span class="math inline">\(k\)</span>-means, given that the algorithm aims to find a clustering that minimizes the WCSS.
+Specifically, we use the WCSS to compute the root-mean-squared deviation (RMSD) that represents the spread of cells within each cluster.
+A cluster is more likely to have a low RMSD if it has no internal structure and is separated from other clusters (such that there are not many cells on the boundaries between clusters, which results in a higher sum of squares from the centroid).</p>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb242-1" data-line-number="1">ncells &lt;-<span class="st"> </span><span class="kw">tabulate</span>(clust.kmeans2<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb242-2" data-line-number="2">tab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">wcss=</span>clust.kmeans2<span class="op">$</span>withinss, <span class="dt">ncells=</span>ncells)</a>
+<a class="sourceLine" id="cb242-3" data-line-number="3">tab<span class="op">$</span>rms &lt;-<span class="st"> </span><span class="kw">sqrt</span>(tab<span class="op">$</span>wcss<span class="op">/</span>tab<span class="op">$</span>ncells)</a>
+<a class="sourceLine" id="cb242-4" data-line-number="4">tab</a></code></pre></div>
+<pre><code>##    wcss ncells    rms
+## 1 11431    190  7.756
+## 2 15070     59 15.982
+## 3 86631   1054  9.066
+## 4 32732    552  7.700
+## 5 19196    458  6.474
+## 6 29981    539  7.458
+## 7  5731    201  5.340
+## 8 16791    869  4.396</code></pre>
+<p>(As an aside, the cluster with the largest RMSD also appears to be the least dispersed in Figure <a href="#fig:pbmc-kmeans-best"><strong>??</strong></a>.
+This highlights the risks of attempting to quantitatively interpret the shape of visual clusters in <span class="math inline">\(t\)</span>-SNE plots.)</p>
+<p>To explore the relationships between <span class="math inline">\(k\)</span>-means clusters, a natural approach is to compute distances between their centroids.
+This directly lends itself to visualization as a tree after hierarchical clustering (Figure <a href="clustering.html#fig:kmeans-tree">10.7</a>).</p>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" data-line-number="1">cent.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(clust.kmeans2<span class="op">$</span>centers), <span class="st">&quot;ward.D2&quot;</span>)</a>
+<a class="sourceLine" id="cb244-2" data-line-number="2"><span class="kw">plot</span>(cent.tree)</a></code></pre></div>
+<div class="figure"><span id="fig:kmeans-tree"></span>
+<img src="P2_W06.clustering_files/figure-html/kmeans-tree-1.png" alt="Hierarchy of $k$-means cluster centroids, using Ward's minimum variance method." width="672" />
+<p class="caption">
+Figure 10.7: Hierarchy of <span class="math inline">\(k\)</span>-means cluster centroids, using Ward’s minimum variance method.
+</p>
+</div>
+</div>
+</div>
+<div id="hierarchical-clustering" class="section level2">
+<h2><span class="header-section-number">10.5</span> Hierarchical clustering</h2>
+<div id="background-4" class="section level3">
+<h3><span class="header-section-number">10.5.1</span> Background</h3>
+<p>Hierarchical clustering is an ancient technique that aims to generate a dendrogram containing a hierarchy of samples.
+This is most commonly done by greedily agglomerating samples into clusters, then agglomerating those clusters into larger clusters, and so on until all samples belong to a single cluster.
+Variants of hierarchical clustering methods primarily differ in how they choose to perform the agglomerations.
+For example, complete linkage aims to merge clusters with the smallest maximum distance between their elements, while Ward’s method aims to minimize the increase in within-cluster variance.</p>
+<p>In the context of scRNA-seq, the main advantage of hierarchical clustering lies in the production of the dendrogram.
+This is a rich summary that describes not only the relationships between cells but also the relationships between clusters at varying resolution.
+Users can easily “cut” the tree at different heights to define clusters with different granularity, where clusters defined at high resolution are guaranteed to be nested within those defined at a lower resolution.
+The dendrogram is also a natural representation of the data in situations where cells have descended from a relatively recent common ancestor.</p>
+<p>In practice, hierachical clustering is too slow to be used for anything but the smallest scRNA-seq datasets.
+Most variants require a cell-cell distance matrix that is prohibitively expensive to compute for many cells.
+Greedy agglomeration is also likely to result in a quantitatively suboptimal partitioning (as defined by the agglomeration measure) at higher levels of the dendrogram when the number of cells and merge steps is high.
+Nonetheless, we will still demonstrate the application of hierarchical clustering here, as it is useful for squeezing more information out of datasets with very few cells<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.</p>
+</div>
+<div id="implementation-1" class="section level3">
+<h3><span class="header-section-number">10.5.2</span> Implementation</h3>
+<p>As the PBMC dataset is too large, we will demonstrate on the 416B dataset instead.</p>
+<button class="aaron-collapse">
+View history
+</button>
+<div class="aaron-content">
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb245-1" data-line-number="1">### loading <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-2" data-line-number="2"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb245-3" data-line-number="3">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
+<a class="sourceLine" id="cb245-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb245-5" data-line-number="5">### gene-annotation <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-6" data-line-number="6"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb245-7" data-line-number="7">ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]</a>
+<a class="sourceLine" id="cb245-8" data-line-number="8"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb245-9" data-line-number="9"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb245-10" data-line-number="10">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
+<a class="sourceLine" id="cb245-11" data-line-number="11"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb245-12" data-line-number="12">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)</a>
+<a class="sourceLine" id="cb245-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb245-14" data-line-number="14"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb245-15" data-line-number="15"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
+<a class="sourceLine" id="cb245-16" data-line-number="16">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb245-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb245-18" data-line-number="18">### quality-control <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-19" data-line-number="19">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)</a>
+<a class="sourceLine" id="cb245-20" data-line-number="20">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
+<a class="sourceLine" id="cb245-21" data-line-number="21">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mt_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb245-22" data-line-number="22">    <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb245-23" data-line-number="23">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
+<a class="sourceLine" id="cb245-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb245-25" data-line-number="25">### normalization <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-26" data-line-number="26"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb245-27" data-line-number="27">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb245-28" data-line-number="28">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb245-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb245-30" data-line-number="30">### variance-modelling <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-31" data-line-number="31">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb245-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb245-33" data-line-number="33">### batch-correction <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-34" data-line-number="34"><span class="kw">library</span>(limma)</a>
+<a class="sourceLine" id="cb245-35" data-line-number="35"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
+<a class="sourceLine" id="cb245-36" data-line-number="36">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb245-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb245-38" data-line-number="38">### dimensionality-reduction <span class="al">###</span></a>
+<a class="sourceLine" id="cb245-39" data-line-number="39">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce<span class="fl">.416</span>b, <span class="dt">technical=</span>dec<span class="fl">.416</span>b, </a>
+<a class="sourceLine" id="cb245-40" data-line-number="40">    <span class="dt">assay.type=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb245-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb245-42" data-line-number="42"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
+<a class="sourceLine" id="cb245-43" data-line-number="43">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a></code></pre></div>
+</div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb246-1" data-line-number="1">sce<span class="fl">.416</span>b</a></code></pre></div>
+<pre><code>## class: SingleCellExperiment 
+## dim: 46604 185 
+## metadata(0):
+## assays(3): counts logcounts corrected
+## rownames(46604): 4933401J01Rik Gm26206 ... CAAA01147332.1
+##   CBFB-MYH11-mcherry
+## rowData names(4): Length ENSEMBL SYMBOL SEQNAME
+## colnames(185): SLX-9555.N701_S502.C89V9ANXX.s_1.r_1
+##   SLX-9555.N701_S503.C89V9ANXX.s_1.r_1 ...
+##   SLX-11312.N712_S507.H5H5YBBXX.s_8.r_1
+##   SLX-11312.N712_S517.H5H5YBBXX.s_8.r_1
+## colData names(9): Source Name cell line ... spike-in addition
+##   block
+## reducedDimNames(2): PCA TSNE
+## spikeNames(0):
+## altExpNames(2): ERCC SIRV</code></pre>
+<p>We compute a cell-cell distance matrix using the top PCs and we apply hierarchical clustering with Ward’s method.
+This aims to minimize the increase in the intra-cluster variance at each merge step.
+The resulting tree in Figure <a href="clustering.html#fig:dend-416b">10.8</a> shows a clear split in the population caused by oncogene induction.</p>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb248-1" data-line-number="1">dist<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
+<a class="sourceLine" id="cb248-2" data-line-number="2">tree<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist<span class="fl">.416</span>b, <span class="st">&quot;ward.D2&quot;</span>)</a>
+<a class="sourceLine" id="cb248-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb248-4" data-line-number="4"><span class="co"># Making a prettier plot.</span></a>
+<a class="sourceLine" id="cb248-5" data-line-number="5"><span class="kw">library</span>(dendextend)</a>
+<a class="sourceLine" id="cb248-6" data-line-number="6">tree<span class="fl">.416</span>b<span class="op">$</span>labels &lt;-<span class="st"> </span><span class="kw">seq_along</span>(tree<span class="fl">.416</span>b<span class="op">$</span>labels)</a>
+<a class="sourceLine" id="cb248-7" data-line-number="7">dend &lt;-<span class="st"> </span><span class="kw">as.dendrogram</span>(tree<span class="fl">.416</span>b, <span class="dt">hang=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb248-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb248-9" data-line-number="9">combined.fac &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce<span class="fl">.416</span>b<span class="op">$</span>block, <span class="st">&quot;.&quot;</span>, </a>
+<a class="sourceLine" id="cb248-10" data-line-number="10">    <span class="kw">sub</span>(<span class="st">&quot; .*&quot;</span>, <span class="st">&quot;&quot;</span>, sce<span class="fl">.416</span>b<span class="op">$</span>phenotype))</a>
+<a class="sourceLine" id="cb248-11" data-line-number="11"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb248-12" data-line-number="12">    <span class="st">`</span><span class="dt">20160113.wild</span><span class="st">`</span>=<span class="st">&quot;blue&quot;</span>,</a>
+<a class="sourceLine" id="cb248-13" data-line-number="13">    <span class="st">`</span><span class="dt">20160113.induced</span><span class="st">`</span>=<span class="st">&quot;red&quot;</span>,</a>
+<a class="sourceLine" id="cb248-14" data-line-number="14">    <span class="st">`</span><span class="dt">20160325.wild</span><span class="st">`</span>=<span class="st">&quot;dodgerblue&quot;</span>,</a>
+<a class="sourceLine" id="cb248-15" data-line-number="15">    <span class="st">`</span><span class="dt">20160325.induced</span><span class="st">`</span>=<span class="st">&quot;salmon&quot;</span></a>
+<a class="sourceLine" id="cb248-16" data-line-number="16">)[combined.fac][<span class="kw">order.dendrogram</span>(dend)]</a>
+<a class="sourceLine" id="cb248-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb248-18" data-line-number="18"><span class="kw">plot</span>(dend)</a></code></pre></div>
+<div class="figure"><span id="fig:dend-416b"></span>
+<img src="P2_W06.clustering_files/figure-html/dend-416b-1.png" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its oncogene induction status (red is induced, blue is control) and plate of origin (light or dark)." width="672" />
+<p class="caption">
+Figure 10.8: Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its oncogene induction status (red is induced, blue is control) and plate of origin (light or dark).
+</p>
+</div>
+<p>To obtain explicit clusters, we “cut” the tree by removing internal branches such that every subtree represents a distinct cluster.
+This is most simply done by removing internal branches above a certain height of the tree, as performed by the <code>cutree()</code> function.
+We generally prefer to use the <em><a href="https://CRAN.R-project.org/package=dynamicTreeCut">dynamicTreeCut</a></em> package, which uses the shape of the tree to choose a suitable partitioning (Figure <a href="#dend-cluster"><strong>??</strong></a>).</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb249-1" data-line-number="1"><span class="kw">library</span>(dynamicTreeCut)</a>
+<a class="sourceLine" id="cb249-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb249-3" data-line-number="3"><span class="co"># minClusterSize needs to be turned down for small datasets.</span></a>
+<a class="sourceLine" id="cb249-4" data-line-number="4"><span class="co"># deepSplit controls the resolution of the partitioning.</span></a>
+<a class="sourceLine" id="cb249-5" data-line-number="5">clust<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">cutreeDynamic</span>(tree<span class="fl">.416</span>b, <span class="dt">distM=</span><span class="kw">as.matrix</span>(dist<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb249-6" data-line-number="6">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">deepSplit=</span><span class="dv">1</span>)</a></code></pre></div>
+<pre><code>##  ..cutHeight not given, setting it to 1280  ===&gt;  99% of the (truncated) height range in dendro.
+##  ..done.</code></pre>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" data-line-number="1"><span class="kw">table</span>(clust<span class="fl">.416</span>b)</a></code></pre></div>
+<pre><code>## clust.416b
+##  1  2  3  4  5 
+## 80 36 32 24 13</code></pre>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb253-1" data-line-number="1"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span>clust<span class="fl">.416</span>b[<span class="kw">order.dendrogram</span>(dend)]</a>
+<a class="sourceLine" id="cb253-2" data-line-number="2"><span class="kw">plot</span>(dend)</a></code></pre></div>
+<div class="figure"><span id="fig:dend-cluster"></span>
+<img src="P2_W06.clustering_files/figure-html/dend-cluster-1.png" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its assigned cluster identity from a dynamic tree cut." width="672" />
+<p class="caption">
+Figure 10.9: Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its assigned cluster identity from a dynamic tree cut.
+</p>
+</div>
+<p>This generally corresponds well to the grouping of cells on a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="clustering.html#fig:tsne-416b">10.10</a>).</p>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb254-1" data-line-number="1">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb254-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:tsne-416b"></span>
+<img src="P2_W06.clustering_files/figure-html/tsne-416b-1.png" alt="$t$-SNE plot of the 416B dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from hierarchical clustering." width="672" />
+<p class="caption">
+Figure 10.10: <span class="math inline">\(t\)</span>-SNE plot of the 416B dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from hierarchical clustering.
+</p>
+</div>
+</div>
+<div id="assessing-cluster-separation-2" class="section level3">
+<h3><span class="header-section-number">10.5.3</span> Assessing cluster separation</h3>
+<p>We check the separation of the clusters using the silhouette width (Figure <a href="clustering.html#fig:silhouette416b">10.11</a>).
+For each cell, we compute the average distance to cells in each other cluster.
+We then compute the minimum of these average distances across all clusters, as well as the average distance to cells in the same cluster.
+The silhouette width for each cell is defined as the difference between these two values divided by their maximum.
+Cells with large positive silhouette widths are closer to other cells in the same cluster than to cells in different clusters.</p>
+<p>Each cluster would ideally contain large positive silhouette widths, indicating that it is well-separated from other clusters.
+In Figure <a href="clustering.html#fig:silhouette416b">10.11</a>, some clusters are well-separated while others have a substantial proportion of negative widths.
+These can arise from the presence of internal subclusters, which inflates the within-cluster distance; or overclustering, where cells at the boundary of a partition are closer to the neighboring cluster than their own cluster.</p>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb255-1" data-line-number="1">sil &lt;-<span class="st"> </span><span class="kw">silhouette</span>(clust<span class="fl">.416</span>b, <span class="dt">dist =</span> dist<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb255-2" data-line-number="2"><span class="kw">plot</span>(sil)</a></code></pre></div>
+<div class="figure"><span id="fig:silhouette416b"></span>
+<img src="P2_W06.clustering_files/figure-html/silhouette416b-1.png" alt="Silhouette widths for cells in each cluster in the 416B dataset. Each bar represents a cell, grouped by the cluster to which it is assigned." width="672" />
+<p class="caption">
+Figure 10.11: Silhouette widths for cells in each cluster in the 416B dataset. Each bar represents a cell, grouped by the cluster to which it is assigned.
+</p>
+</div>
+<p>For a more detailed examination, we identify the closest neighboring cluster for cells with negative widths.
+This provides a perspective on the relationships between clusters that is closer to the raw data than the dendrogram in Figure <a href="clustering.html#fig:dend-cluster">10.9</a>.</p>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb256-1" data-line-number="1">neg.widths &lt;-<span class="st"> </span>sil[,<span class="dv">3</span>] <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb256-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">Cluster=</span>sil[neg.widths,<span class="dv">1</span>], <span class="dt">Neighbor=</span>sil[neg.widths,<span class="dv">2</span>])</a></code></pre></div>
+<pre><code>##        Neighbor
+## Cluster  2  3  4  5
+##       1  0  1 17 10
+##       3  5  0  0  0
+##       4  5  2  0  0</code></pre>
+<p>The average silhouette width across all cells can also be used to choose clustering parameters.
+The aim is to maximize the average silhouette width in order to obtain well-separated clusters.
+This can be helpful to automatically obtain a “reasonable” clustering, though in practice, the clustering that yields the strongest separation is usually trivial and not biologically informative.</p>
+</div>
+</div>
+<div id="session-info-5" class="section level2 unnumbered">
+<h2>Session Info</h2>
+<button class="aaron-collapse">
+View session info
+</button>
+<div class="aaron-content">
+<pre><code>R version 3.6.1 (2019-07-05)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 14.04.5 LTS
+
+Matrix products: default
+BLAS:   /home/ramezqui/Rbuild/danbuild/R-3.6.1/lib/libRblas.so
+LAPACK: /home/ramezqui/Rbuild/danbuild/R-3.6.1/lib/libRlapack.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=C              
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] dynamicTreeCut_1.63-1       dendextend_1.12.0          
+ [3] cluster_2.1.0               pheatmap_1.0.12            
+ [5] scater_1.13.18              ggplot2_3.2.1              
+ [7] scran_1.13.18               SingleCellExperiment_1.7.8 
+ [9] SummarizedExperiment_1.15.9 DelayedArray_0.11.4        
+[11] BiocParallel_1.19.2         matrixStats_0.55.0         
+[13] Biobase_2.45.1              GenomicRanges_1.37.15      
+[15] GenomeInfoDb_1.21.1         IRanges_2.19.14            
+[17] S4Vectors_0.23.21           BiocGenerics_0.31.5        
+[19] Cairo_1.5-10                BiocStyle_2.13.2           
+[21] OSCAUtils_0.0.1            
+
+loaded via a namespace (and not attached):
+ [1] viridis_0.5.1            edgeR_3.27.13           
+ [3] BiocSingular_1.1.5       viridisLite_0.3.0       
+ [5] DelayedMatrixStats_1.7.2 assertthat_0.2.1        
+ [7] statmod_1.4.32           BiocManager_1.30.4      
+ [9] highr_0.8                dqrng_0.2.1             
+[11] GenomeInfoDbData_1.2.1   vipor_0.4.5             
+[13] yaml_2.2.0               pillar_1.4.2            
+[15] lattice_0.20-38          glue_1.3.1              
+[17] limma_3.41.16            digest_0.6.20           
+[19] RColorBrewer_1.1-2       XVector_0.25.0          
+[21] colorspace_1.4-1         cowplot_1.0.0           
+[23] htmltools_0.3.6          Matrix_1.2-17           
+[25] pkgconfig_2.0.2          bookdown_0.13           
+[27] zlibbioc_1.31.0          purrr_0.3.2             
+[29] scales_1.0.0             tibble_2.1.3            
+[31] withr_2.1.2              lazyeval_0.2.2          
+[33] magrittr_1.5             crayon_1.3.4            
+[35] evaluate_0.14            beeswarm_0.2.3          
+[37] tools_3.6.1              stringr_1.4.0           
+[39] munsell_0.5.0            locfit_1.5-9.1          
+[41] irlba_2.3.3              compiler_3.6.1          
+[43] rsvd_1.0.2               rlang_0.4.0             
+[45] grid_3.6.1               RCurl_1.95-4.12         
+[47] BiocNeighbors_1.3.3      igraph_1.2.4.1          
+[49] bitops_1.0-6             labeling_0.3            
+[51] rmarkdown_1.15           gtable_0.3.0            
+[53] R6_2.4.0                 gridExtra_2.3           
+[55] knitr_1.24               dplyr_0.8.3             
+[57] stringi_1.4.3            ggbeeswarm_0.6.0        
+[59] Rcpp_1.0.2               tidyselect_0.2.5        
+[61] xfun_0.9                </code></pre>
+</div>
+
+</div>
+</div>
+<h3> Bibliography</h3>
+<div id="refs" class="references">
+<div id="ref-ji2016tscan">
+<p>Ji, Z., and H. Ji. 2016. “TSCAN: Pseudo-time reconstruction and evaluation in single-cell RNA-seq analysis.” <em>Nucleic Acids Res.</em> 44 (13):e117.</p>
+</div>
+<div id="ref-wolf2017graph">
+<p>Wolf, F. Alexander, Fiona Hamey, Mireya Plass, Jordi Solana, Joakim S. Dahlin, Berthold Gottgens, Nikolaus Rajewsky, Lukas Simon, and Fabian J. Theis. 2017. “Graph Abstraction Reconciles Clustering with Trajectory Inference Through a Topology Preserving Map of Single Cells.” <em>bioRxiv</em>. Cold Spring Harbor Laboratory. <a href="https://doi.org/10.1101/208819" class="uri">https://doi.org/10.1101/208819</a>.</p>
+</div>
+<div id="ref-xu2015identification">
+<p>Xu, C., and Z. Su. 2015. “Identification of cell types from single-cell transcriptomes using a novel clustering method.” <em>Bioinformatics</em> 31 (12):1974–80.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="11">
+<li id="fn11"><p>Sten Linarrsson talked about this in SCG2018, but I don’t know where that work ended up. So this is what passes as a reference for the time being.<a href="clustering.html#fnref11" class="footnote-back">↩</a></p></li>
+<li id="fn12"><p>And, hey, this book isn’t going to add padding to itself. Gotta write something to look productive.<a href="clustering.html#fnref12" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dimensionality-reduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="marker-gene-detection.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": true,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "night",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/Bioconductor/OrchestratingSingleCellAnalysis/edit/master/docs/P2_W06.clustering.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+},
+"bookdown::epub_book": "default",
+"cover": "images/cover.png"
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
