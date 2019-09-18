@@ -27,7 +27,7 @@ The `Makefile` contains all the individual steps that can be run through. In ord
 
 ## Requirements
 
-Requires the latest version of R (3.6.1) and pandoc. Various R packages are required, which can be seen in `DESCRIPTION` and discovered/installed directly from the book contents via `_install.sh`.
+Requires the latest version of R (3.6.1) and pandoc to compile the book. Currently requires Bioconductor 3.10 (devel). Various R packages are required, which can be seen in `DESCRIPTION` and discovered/installed directly from the book contents via `_install.sh`.
 
 
 
