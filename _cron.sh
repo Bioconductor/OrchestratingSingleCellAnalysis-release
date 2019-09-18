@@ -30,7 +30,19 @@ git clone git@github.com:Bioconductor/${REPO}.git
 cd $REPO
 chmod 755 *.sh
 
-## Make everything
-## If successful, pushes new book version automatically; if fail push the log out
-make all || (make log && exit 1)
-make log
+## Make everything; trigger knit/build again if "empty reply from server" error is encountered
+make all
+
+FLAG=1
+while [ $FLAG -eq 1 ]; do
+    ## Check based on log if "Empty reply" failure mode was invoked
+    EMPTY_FAIL=$(tail -50 logs/*.out | grep "reason: Empty reply from server")
+    if [ ! -z "$EMPTY_FAIL" ]; then
+	echo "Build failed with empty reply from server bug, triggering a downstream job.."
+	make downstream
+    else
+	echo "Build either succeeded or failed by some other means..wrapping up.."
+	FLAG=0
+    fi
+done
+

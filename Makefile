@@ -1,5 +1,6 @@
 all: clean update install knit build push log
 no-install: clean update knit build push log
+downstream: knit build push log
 
 clean:
 	@echo "Cleaning up..."
