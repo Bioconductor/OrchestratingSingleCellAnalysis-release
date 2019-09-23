@@ -7,17 +7,23 @@
 ## NOTE: rmarkdown::render() does not seem to work
 ## well with BiocFileCache() files..switching to knitr
 
+set -ev
 
-for I in $(ls workflows/*.Rmd); do
+WORKFLOWS=(
+    bach-mammary
+    grun-pancreas
+    lawlor-pancreas
+    lun-416b
+    muraro-pancreas
+    pijuan-embryo
+    segerstolpe-pancreas
+    tenx-filtered-pbmc3k
+    tenx-filtered-pbmc4k
+    tenx-unfiltered-pbmc4k
+    zeisel-brain
+)
+
+for I in ${WORKFLOWS[*]}; do
     echo "Rendering $I .."
-    R --no-save --quiet -e "rmarkdown::render('${I}')"
+    R --no-save --quiet -e "rmarkdown::render('workflows/${I}.Rmd')"
 done
-
-for I in $(ls workflows/tenx-batch-pbmc/*k.Rmd); do
-    echo "Rendering pbmc batches .."
-    R --no-save --quiet -e "rmarkdown::render('${I}')"
-done
-
-## Original command:
-## R --no-save --quiet -e "wf <- list.files('workflows', pattern='Rmd$', full=TRUE, recursive=TRUE); wf <- wf[!grepl('template.Rmd', wf)]; for (x in wf) { rmarkdown::render(x) }"
-

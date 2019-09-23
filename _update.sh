@@ -4,7 +4,11 @@ base=OSCABase
 
 ## NOTE: To build clean, run `make clean` (or run _cron.sh)
 
-# Updating the submodule remotes.
+## Update the local repo `OrchestratingSingleCellAnalysis`
+git pull
+
+# Updating the submodule remotes of `OSCABase`
+## git submodule add git@github.com:Bioconductor/OSCABase.git
 git submodule update --init
 git submodule update --remote
 
@@ -76,6 +80,7 @@ tenx-filtered-pbmc3k.Rmd
 tenx-filtered-pbmc4k.Rmd
 pijuan-embryo.Rmd
 bach-mammary.Rmd
+hca-analysis.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
@@ -87,7 +92,6 @@ done
 # About files:
 
 allfiles=(
-about-the-data.Rmd
 about-the-contributors.Rmd
 bibliography.Rmd
 )
