@@ -43,6 +43,7 @@ cell-annotation.Rmd
 data-integration.Rmd
 sample-comparisons.Rmd
 doublet-detection.Rmd
+cell-cycle.Rmd
 interactive.Rmd
 big-data.Rmd
 )
