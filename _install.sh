@@ -8,6 +8,8 @@ BIOCVERSION=3.10
 ## Library location; assume R_LIBS_USER is first in .libPaths()
 LIBLOC=$(R --no-save --slave -e "cat(.libPaths()[1])") 
 
+## Remove any lock files
+rm -Rf $LIBLOC/*LOCK*
 
 ###################################################
 ## Install/update all libraries
@@ -28,7 +30,7 @@ CMD=$(echo "BiocManager::install(unique((c(${PKGS}, ${SUPP}))), lib = '$LIBLOC',
 R --no-save --slave -e "install.packages(c('devtools', 'remotes', 'BiocManager', 'knitr', 'bookdown'), lib = '$LIBLOC', ask = FALSE, update = TRUE)"
 
 ## Install core libraries
-R --no-save --slave -e "BiocManager::install(version = '3.10')"
+R --no-save --slave -e "BiocManager::install(version = '$BIOCVERSION')"
 R --no-save --slave -e "${CMD}"
 
 ## Install remote (github) packages (manually added)
