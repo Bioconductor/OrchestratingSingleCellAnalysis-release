@@ -48,8 +48,10 @@ data-integration.Rmd
 sample-comparisons.Rmd
 doublet-detection.Rmd
 cell-cycle.Rmd
+trajectory.Rmd
 interactive.Rmd
 big-data.Rmd
+import-export.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
