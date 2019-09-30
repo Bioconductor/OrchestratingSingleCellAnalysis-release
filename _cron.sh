@@ -31,7 +31,8 @@ cd $REPO
 chmod 755 *.sh
 
 ## Make everything; trigger knit/build again if "empty reply from server" error is encountered
-make all
+## make all
+make no-install
 
 FLAG=1
 while [ $FLAG -eq 1 ]; do
