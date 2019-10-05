@@ -71,15 +71,16 @@ cp ${base}/ref.bib .
 # This is to enable them to be chapters in their own right.
 
 allfiles=(
-grun-pancreas.Rmd
 lun-416b.Rmd
-segerstolpe-pancreas.Rmd
 zeisel-brain.Rmd
-lawlor-pancreas.Rmd
-muraro-pancreas.Rmd
 tenx-unfiltered-pbmc4k.Rmd
 tenx-filtered-pbmc3k.Rmd
 tenx-filtered-pbmc4k.Rmd
+grun-pancreas.Rmd
+muraro-pancreas.Rmd
+lawlor-pancreas.Rmd
+segerstolpe-pancreas.Rmd
+merged-pancreas.Rmd
 pijuan-embryo.Rmd
 bach-mammary.Rmd
 hca-analysis.Rmd
