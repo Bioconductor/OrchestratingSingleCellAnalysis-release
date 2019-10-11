@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -718,16 +718,16 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">counts</span>(sce)</a></code></pre></div>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1      13      4     40
-## gene_2      17      9     23
-## gene_3       5     16     29
-## gene_4      12     13     25
-## gene_5      10      8     20
-## gene_6       8     11     24
-## gene_7      12     15     33
-## gene_8       8     15     30
-## gene_9       8      6     25
-## gene_10     12      8     39</code></pre>
+## gene_1      13      7     35
+## gene_2      13      8     23
+## gene_3      14      9     37
+## gene_4      12     13     29
+## gene_5      14      9     22
+## gene_6      15     12     44
+## gene_7       7     10     27
+## gene_8       4     15     30
+## gene_9      10      7     32
+## gene_10     10      5     32</code></pre>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">## assay(sce, &quot;counts&quot;) ## same as above in this special case</a></code></pre></div>
 </div>
 <div id="extending-the-assays-slot" class="section level3">
@@ -752,16 +752,16 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p>Specifically, we see that the <code>assays</code> slot has grown to be comprised of two entries: <code>counts</code> (our initial data) and <code>logcounts</code> (the normalized data). Similar to <code>counts</code>, the <code>logcounts</code> name is a special name which lets us access it simply by typing <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">logcounts</span>(sce)</a></code></pre></div>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1    4.43   2.87   4.59
-## gene_2    4.80   3.93   3.83
-## gene_3    3.15   4.72   4.15
-## gene_4    4.32   4.43   3.95
-## gene_5    4.07   3.77   3.65
-## gene_6    3.77   4.20   3.89
-## gene_7    4.32   4.63   4.32
-## gene_8    3.77   4.63   4.19
-## gene_9    3.77   3.39   3.95
-## gene_10   4.32   3.77   4.55</code></pre>
+## gene_1    4.40   3.78   4.35
+## gene_2    4.40   3.96   3.78
+## gene_3    4.50   4.12   4.43
+## gene_4    4.29   4.62   4.10
+## gene_5    4.50   4.12   3.72
+## gene_6    4.59   4.51   4.67
+## gene_7    3.56   4.26   4.00
+## gene_8    2.84   4.82   4.14
+## gene_9    4.04   3.78   4.23
+## gene_10   4.04   3.33   4.23</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">## assay(sce, &quot;logcounts&quot;) ## same as above</a></code></pre></div>
 <p>Notice that the data before had a severe discrepancy in counts between cells 1/2 versus 3, and that normalization has ameliorated this difference.</p>
 <p>To look at all the available assays within <code>sce</code>, we can type:</p>
@@ -840,9 +840,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## cell_3         2           FALSE                       10
 ##        log10_total_features_by_counts total_counts
 ##                             &lt;numeric&gt;    &lt;integer&gt;
-## cell_1               1.04139268515822          105
-## cell_2               1.04139268515822          105
-## cell_3               1.04139268515822          288</code></pre>
+## cell_1               1.04139268515822          112
+## cell_2               1.04139268515822           95
+## cell_3               1.04139268515822          311</code></pre>
 <div id="using-coldata-for-subsetting" class="section level4">
 <h4><span class="header-section-number">4.2.3.1</span> Using <code>colData</code> for Subsetting</h4>
 <p>A common operation with <code>colData</code> is its use in subsetting. One simple way to access <code>colData</code> is through the use of the <code>$</code> operator, which is a shortcut for accessing a variable within the <code>colData</code> slot:</p>
@@ -907,16 +907,16 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## DataFrame with 10 rows and 3 columns
 ##         is_feature_control      mean_counts log10_mean_counts
 ##                  &lt;logical&gt;        &lt;numeric&gt;         &lt;numeric&gt;
-## gene_1               FALSE               19  1.30102999566398
-## gene_2               FALSE 16.3333333333333  1.23888208891514
-## gene_3               FALSE 16.6666666666667  1.24715461488113
-## gene_4               FALSE 16.6666666666667  1.24715461488113
-## gene_5               FALSE 12.6666666666667  1.13566260200007
-## gene_6               FALSE 14.3333333333333  1.18563657696191
-## gene_7               FALSE               20  1.32221929473392
-## gene_8               FALSE 17.6666666666667  1.27106677228654
-## gene_9               FALSE               13  1.14612803567824
-## gene_10              FALSE 19.6666666666667  1.31527043477859</code></pre>
+## gene_1               FALSE 18.3333333333333  1.28630673884327
+## gene_2               FALSE 14.6666666666667  1.19497660321605
+## gene_3               FALSE               20  1.32221929473392
+## gene_4               FALSE               18  1.27875360095283
+## gene_5               FALSE               15  1.20411998265592
+## gene_6               FALSE 23.6666666666667  1.39211046501131
+## gene_7               FALSE 14.6666666666667  1.19497660321605
+## gene_8               FALSE 16.3333333333333  1.23888208891514
+## gene_9               FALSE 16.3333333333333  1.23888208891514
+## gene_10              FALSE 15.6666666666667  1.22184874961636</code></pre>
 <p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <em>SingleCellExperiment</em> object, which we leave up to the reader as an exercise.</p>
 <div id="subsetting-by-rows" class="section level4">
 <h4><span class="header-section-number">4.2.4.1</span> Subsetting by Rows</h4>
@@ -947,7 +947,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)</a>
 <a class="sourceLine" id="cb48-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a>
 <a class="sourceLine" id="cb48-3" data-line-number="3"><span class="kw">sizeFactors</span>(sce)</a></code></pre></div>
-<pre><code>## [1] 0.633 0.633 1.735</code></pre>
+<pre><code>## [1] 0.649 0.550 1.801</code></pre>
 </div>
 </div>
 <div id="a-brief-recap-from-se-to-sce" class="section level2">
@@ -966,20 +966,20 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p>In our example, we can calculate a PCA representation of our data as follows using the <code>scater</code> package function <code>runPCA()</code>. We see that the <code>sce</code> now shows a new <code>reducedDim</code> and that the accessor <code>reducedDim()</code> produces the results of running PCA on the normalized data from <code>logcounts(sce)</code>.</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)</a>
 <a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
-<pre><code>##           PC1    PC2
-## cell_1 -1.126 -0.598
-## cell_2  1.529 -0.224
-## cell_3 -0.402  0.823
+<pre><code>##            PC1    PC2
+## cell_1 -1.2686 -0.321
+## cell_2  1.1692 -0.411
+## cell_3  0.0994  0.732
 ## attr(,&quot;percentVar&quot;)
-## [1] 77.6 22.4</code></pre>
+## [1] 78.7 21.3</code></pre>
 <p>From this, we can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>, and see that it can be seen both in the default view of <code>sce</code> and via accession:</p>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</a></code></pre></div>
 <pre><code>## Perplexity should be lower than K!</code></pre>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</a></code></pre></div>
-<pre><code>##         [,1]    [,2]
-## cell_1 -2786  4966.5
-## cell_2 -2909 -4896.8
-## cell_3  5695   -69.7</code></pre>
+<pre><code>##         [,1]  [,2]
+## cell_1  -818  5636
+## cell_2  5290 -2110
+## cell_3 -4472 -3527</code></pre>
 <p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code> (notice that this is plural, and thus not the same as <code>reducedDim()</code>:</p>
 <div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="kw">reducedDims</span>(sce)</a></code></pre></div>
 <pre><code>## List of length 2
@@ -990,12 +990,12 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb58-2" data-line-number="2"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) &lt;-<span class="st"> </span>u</a>
 <a class="sourceLine" id="cb58-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb58-4" data-line-number="4"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>)</a></code></pre></div>
-<pre><code>##          [,1]   [,2]
-## cell_1  0.459  0.534
-## cell_2 -0.573 -0.244
-## cell_3  0.114 -0.290
+<pre><code>##           [,1]    [,2]
+## cell_1 -0.5392 -0.5401
+## cell_2  0.4865  0.4864
+## cell_3  0.0527  0.0537
 ## attr(,&quot;scaled:center&quot;)
-## [1]  13.3 -12.9</code></pre>
+## [1] 17.52  1.64</code></pre>
 <p>And now we can also see its entry when we look at the <code>reducedDims()</code> accessor output:</p>
 <div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1"><span class="kw">reducedDims</span>(sce)</a></code></pre></div>
 <pre><code>## List of length 3

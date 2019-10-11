@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -735,7 +735,7 @@ View history
 <a class="sourceLine" id="cb783-18" data-line-number="18">### quality-control <span class="al">###</span></a>
 <a class="sourceLine" id="cb783-19" data-line-number="19"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb783-20" data-line-number="20">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.grun)</a>
-<a class="sourceLine" id="cb783-21" data-line-number="21">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb783-21" data-line-number="21">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb783-22" data-line-number="22">sce.grun &lt;-<span class="st"> </span>sce.grun[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
 <a class="sourceLine" id="cb783-23" data-line-number="23"></a>
 <a class="sourceLine" id="cb783-24" data-line-number="24">### normalization <span class="al">###</span></a>
@@ -789,7 +789,7 @@ View history
 <a class="sourceLine" id="cb786-21" data-line-number="21">### quality-control <span class="al">###</span></a>
 <a class="sourceLine" id="cb786-22" data-line-number="22"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb786-23" data-line-number="23">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.muraro)</a>
-<a class="sourceLine" id="cb786-24" data-line-number="24">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb786-24" data-line-number="24">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
 <a class="sourceLine" id="cb786-25" data-line-number="25">sce.muraro &lt;-<span class="st"> </span>sce.muraro[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
 <a class="sourceLine" id="cb786-26" data-line-number="26"></a>
 <a class="sourceLine" id="cb786-27" data-line-number="27">### normalization <span class="al">###</span></a>
@@ -908,7 +908,7 @@ View history
 <a class="sourceLine" id="cb794-17" data-line-number="17"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb794-18" data-line-number="18">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.lawlor, </a>
 <a class="sourceLine" id="cb794-19" data-line-number="19">    <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(<span class="kw">rowData</span>(sce.lawlor)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb794-20" data-line-number="20">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb794-20" data-line-number="20">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb794-21" data-line-number="21">sce.lawlor &lt;-<span class="st"> </span>sce.lawlor[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
 <a class="sourceLine" id="cb794-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb794-23" data-line-number="23">### normalization <span class="al">###</span></a>
@@ -976,7 +976,7 @@ View history
 <a class="sourceLine" id="cb797-34" data-line-number="34"></a>
 <a class="sourceLine" id="cb797-35" data-line-number="35"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb797-36" data-line-number="36">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.seger)</a>
-<a class="sourceLine" id="cb797-37" data-line-number="37">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb797-37" data-line-number="37">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
 <a class="sourceLine" id="cb797-38" data-line-number="38">sce.seger &lt;-<span class="st"> </span>sce.seger[,<span class="op">!</span>(qc<span class="op">$</span>discard <span class="op">|</span><span class="st"> </span>low.qual)]</a>
 <a class="sourceLine" id="cb797-39" data-line-number="39"></a>
 <a class="sourceLine" id="cb797-40" data-line-number="40">### normalization <span class="al">###</span></a>
@@ -1041,7 +1041,7 @@ There are few clusters that are specific to the Segerstolpe dataset, and if we w
 <pre><code>##        Batch
 ## Cluster Grun Lawlor Muraro Seger
 ##      1   338     26    256   391
-##      2   243    242    857   343
+##      2   243    242    858   344
 ##      3    39     12     53    59
 ##      4   197     10    229   129
 ##      5    62     20    197   112
@@ -1050,8 +1050,8 @@ There are few clusters that are specific to the Segerstolpe dataset, and if we w
 ##      8   106      0      1     0
 ##      9   123    246    397   206
 ##      10    0      0      0   219
-##      11   54      0      0     0
-##      12   23     19    128   196
+##      11   23     19    127   195
+##      12   54      0      0     0
 ##      13   25     19    108    56
 ##      14   59     11     74    13
 ##      15    0      0      0    27
@@ -1236,14 +1236,14 @@ attached base packages:
 other attached packages:
  [1] fossil_0.3.7                shapefiles_0.7             
  [3] foreign_0.8-72              maps_3.3.0                 
- [5] sp_1.3-1                    scater_1.13.24             
- [7] ggplot2_3.2.1               scran_1.13.25              
- [9] batchelor_1.1.15            SingleCellExperiment_1.7.11
-[11] SummarizedExperiment_1.15.9 DelayedArray_0.11.6        
+ [5] sp_1.3-1                    scater_1.13.25             
+ [7] ggplot2_3.2.1               scran_1.13.26              
+ [9] batchelor_1.1.17            SingleCellExperiment_1.7.11
+[11] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
 [13] BiocParallel_1.19.3         matrixStats_0.55.0         
 [15] Biobase_2.45.1              GenomicRanges_1.37.16      
 [17] GenomeInfoDb_1.21.2         IRanges_2.19.16            
-[19] S4Vectors_0.23.24           BiocGenerics_0.31.6        
+[19] S4Vectors_0.23.25           BiocGenerics_0.31.6        
 [21] Cairo_1.5-10                BiocStyle_2.13.2           
 [23] OSCAUtils_0.0.1            
 
@@ -1252,13 +1252,13 @@ loaded via a namespace (and not attached):
  [3] BiocSingular_1.1.7       viridisLite_0.3.0       
  [5] DelayedMatrixStats_1.7.2 assertthat_0.2.1        
  [7] statmod_1.4.32           highr_0.8               
- [9] BiocManager_1.30.4       dqrng_0.2.1             
+ [9] BiocManager_1.30.7       dqrng_0.2.1             
 [11] GenomeInfoDbData_1.2.1   vipor_0.4.5             
 [13] yaml_2.2.0               pillar_1.4.2            
 [15] lattice_0.20-38          glue_1.3.1              
 [17] limma_3.41.17            digest_0.6.21           
 [19] XVector_0.25.0           colorspace_1.4-1        
-[21] cowplot_1.0.0            htmltools_0.3.6         
+[21] cowplot_1.0.0            htmltools_0.4.0         
 [23] Matrix_1.2-17            pkgconfig_2.0.3         
 [25] bookdown_0.14            zlibbioc_1.31.0         
 [27] purrr_0.3.2              scales_1.0.0            

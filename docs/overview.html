@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -766,7 +766,7 @@ Similar workflows are available in abbreviated form in the Appendices.</p>
 <a class="sourceLine" id="cb66-5" data-line-number="5"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb66-6" data-line-number="6">is.mito &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;^MT-&quot;</span>, <span class="kw">rownames</span>(sce))</a>
 <a class="sourceLine" id="cb66-7" data-line-number="7">qcstats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
-<a class="sourceLine" id="cb66-8" data-line-number="8">filtered &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(qcstats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb66-8" data-line-number="8">filtered &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(qcstats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>)</a>
 <a class="sourceLine" id="cb66-9" data-line-number="9">sce &lt;-<span class="st"> </span>sce[, <span class="op">!</span>filtered<span class="op">$</span>discard]</a>
 <a class="sourceLine" id="cb66-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb66-11" data-line-number="11"><span class="co"># Normalization.</span></a>
@@ -823,14 +823,14 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] BiocSingular_1.1.7          scran_1.13.25              
- [3] scater_1.13.24              ggplot2_3.2.1              
+ [1] BiocSingular_1.1.7          scran_1.13.26              
+ [3] scater_1.13.25              ggplot2_3.2.1              
  [5] scRNAseq_1.99.6             SingleCellExperiment_1.7.11
- [7] SummarizedExperiment_1.15.9 DelayedArray_0.11.6        
+ [7] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
  [9] BiocParallel_1.19.3         matrixStats_0.55.0         
 [11] Biobase_2.45.1              GenomicRanges_1.37.16      
 [13] GenomeInfoDb_1.21.2         IRanges_2.19.16            
-[15] S4Vectors_0.23.24           BiocGenerics_0.31.6        
+[15] S4Vectors_0.23.25           BiocGenerics_0.31.6        
 [17] Cairo_1.5-10                BiocStyle_2.13.2           
 [19] OSCAUtils_0.0.1            
 
@@ -849,36 +849,36 @@ loaded via a namespace (and not attached):
 [23] rappdirs_0.3.1                stringr_1.4.0                
 [25] digest_0.6.21                 rmarkdown_1.16               
 [27] XVector_0.25.0                pkgconfig_2.0.3              
-[29] htmltools_0.3.6               limma_3.41.17                
-[31] dbplyr_1.4.2                  highr_0.8                    
-[33] rlang_0.4.0                   RSQLite_2.1.2                
-[35] shiny_1.3.2                   DelayedMatrixStats_1.7.2     
-[37] dplyr_0.8.3                   RCurl_1.95-4.12              
-[39] magrittr_1.5                  GenomeInfoDbData_1.2.1       
-[41] Matrix_1.2-17                 Rcpp_1.0.2                   
-[43] ggbeeswarm_0.6.0              munsell_0.5.0                
-[45] viridis_0.5.1                 edgeR_3.27.13                
-[47] stringi_1.4.3                 yaml_2.2.0                   
-[49] zlibbioc_1.31.0               BiocFileCache_1.9.1          
-[51] AnnotationHub_2.17.10         grid_3.6.1                   
-[53] blob_1.2.0                    dqrng_0.2.1                  
-[55] promises_1.0.1                ExperimentHub_1.11.6         
-[57] crayon_1.3.4                  lattice_0.20-38              
-[59] cowplot_1.0.0                 locfit_1.5-9.1               
-[61] zeallot_0.1.0                 knitr_1.25                   
-[63] pillar_1.4.2                  igraph_1.2.4.1               
-[65] glue_1.3.1                    evaluate_0.14                
-[67] RcppParallel_4.4.3            BiocManager_1.30.4           
-[69] png_0.1-7                     vctrs_0.2.0                  
-[71] httpuv_1.5.2                  gtable_0.3.0                 
-[73] purrr_0.3.2                   assertthat_0.2.1             
-[75] xfun_0.10                     rsvd_1.0.2                   
-[77] mime_0.7                      xtable_1.8-4                 
-[79] RSpectra_0.15-0               later_0.8.0                  
-[81] viridisLite_0.3.0             tibble_2.1.3                 
-[83] AnnotationDbi_1.47.1          beeswarm_0.2.3               
-[85] memoise_1.1.0                 statmod_1.4.32               
-[87] interactiveDisplayBase_1.23.0</code></pre>
+[29] htmltools_0.4.0               limma_3.41.17                
+[31] dbplyr_1.4.2                  fastmap_1.0.1                
+[33] highr_0.8                     rlang_0.4.0                  
+[35] RSQLite_2.1.2                 shiny_1.4.0                  
+[37] DelayedMatrixStats_1.7.2      dplyr_0.8.3                  
+[39] RCurl_1.95-4.12               magrittr_1.5                 
+[41] GenomeInfoDbData_1.2.1        Matrix_1.2-17                
+[43] Rcpp_1.0.2                    ggbeeswarm_0.6.0             
+[45] munsell_0.5.0                 viridis_0.5.1                
+[47] edgeR_3.27.13                 stringi_1.4.3                
+[49] yaml_2.2.0                    zlibbioc_1.31.0              
+[51] BiocFileCache_1.9.1           AnnotationHub_2.17.10        
+[53] grid_3.6.1                    blob_1.2.0                   
+[55] dqrng_0.2.1                   promises_1.1.0               
+[57] ExperimentHub_1.11.6          crayon_1.3.4                 
+[59] lattice_0.20-38               cowplot_1.0.0                
+[61] locfit_1.5-9.1                zeallot_0.1.0                
+[63] knitr_1.25                    pillar_1.4.2                 
+[65] igraph_1.2.4.1                glue_1.3.1                   
+[67] evaluate_0.14                 RcppParallel_4.4.3           
+[69] BiocManager_1.30.7            png_0.1-7                    
+[71] vctrs_0.2.0                   httpuv_1.5.2                 
+[73] gtable_0.3.0                  purrr_0.3.2                  
+[75] assertthat_0.2.1              xfun_0.10                    
+[77] rsvd_1.0.2                    mime_0.7                     
+[79] xtable_1.8-4                  RSpectra_0.15-0              
+[81] later_1.0.0                   viridisLite_0.3.0            
+[83] tibble_2.1.3                  AnnotationDbi_1.47.1         
+[85] beeswarm_0.2.3                memoise_1.1.0                
+[87] statmod_1.4.32                interactiveDisplayBase_1.23.0</code></pre>
 </div>
 
 </div>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -798,11 +798,11 @@ and then merge samples across different genotypes.</p>
 <h3><span class="header-section-number">31.3.2</span> Batch correction</h3>
 <div class="sourceCode" id="cb828"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb828-1" data-line-number="1"><span class="kw">metadata</span>(merged)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
 <pre><code>##              5         6         7         8        9       10
-## [1,] 0.000e+00 0.0204433 0.0000000 0.0169566 0.000000 0.000000
-## [2,] 0.000e+00 0.0007385 0.0000000 0.0004406 0.000000 0.015473
-## [3,] 3.090e-02 0.0000000 0.0201194 0.0000000 0.000000 0.000000
-## [4,] 9.015e-05 0.0000000 0.0000826 0.0000000 0.018047 0.000000
-## [5,] 4.321e-03 0.0072530 0.0041237 0.0078296 0.003831 0.007788</code></pre>
+## [1,] 0.000e+00 0.0204433 0.000e+00 0.0169567 0.000000 0.000000
+## [2,] 0.000e+00 0.0007386 0.000e+00 0.0004406 0.000000 0.015474
+## [3,] 3.090e-02 0.0000000 2.012e-02 0.0000000 0.000000 0.000000
+## [4,] 9.021e-05 0.0000000 8.268e-05 0.0000000 0.018047 0.000000
+## [5,] 4.321e-03 0.0072530 4.124e-03 0.0078296 0.003831 0.007788</code></pre>
 </div>
 <div id="clustering-20" class="section level3">
 <h3><span class="header-section-number">31.3.3</span> Clustering</h3>
@@ -810,30 +810,30 @@ and then merge samples across different genotypes.</p>
 <pre><code>##        Sample
 ## Cluster   5   6   7   8   9  10
 ##      1  152  72  85  88 164 386
-##      2   51  24  77  66  76 182
-##      3   19   7  13  17  20  36
-##      4  130  96 109  63 159 310
-##      5   43  35  81  81  87 354
+##      2   19   7  13  17  20  36
+##      3  130  96 109  63 159 310
+##      4   43  35  81  81  87 354
+##      5   68  31 120 107  83 197
 ##      6  122  65  64  52  63 141
-##      7  187 115 323 590 460 541
+##      7  187 115 323 589 459 540
 ##      8   47  22  84  50  90 131
-##      9  184  47 233 193 220 392
+##      9  185  47 236 192 217 391
 ##      10   9   7  18  13  30  27
 ##      11 110  69  73  96 127 252
 ##      12  96  16 162 124 364 272
 ##      13   0   2   0  51   0   5
 ##      14  38  39  50  47 126 123
-##      15 146  37 132 110 231 216
-##      16 164  79 137 104 146 409
-##      17 109  41  44  34  39 147
-##      18  78  45 189 119 340 493
-##      19 181  39  98  71 201 108
+##      15 147  37 132 110 231 216
+##      16 114  43  44  37  40 154
+##      17  78  45 189 119 340 493
+##      18 159  77 137 101 147 401
+##      19 181  39  98  71 203 108
 ##      20   2   1   7   3  65 133
 ##      21  11  16  20   9  47  57
 ##      22   1   5   0  84   0  66
-##      23 198  50 326 198 543 627
+##      23 196  50 323 199 542 629
 ##      24  81  20  75  31 158 202
-##      25 139  77 340 610 301 791</code></pre>
+##      25 122  70 297 570 295 777</code></pre>
 <div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb832-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W11.pijuan-embryo_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb833-1" data-line-number="1"><span class="kw">plotUMAP</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
@@ -867,14 +867,14 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] batchelor_1.1.15              scran_1.13.25                
- [3] scater_1.13.24                ggplot2_3.2.1                
+ [1] batchelor_1.1.17              scran_1.13.26                
+ [3] scater_1.13.25                ggplot2_3.2.1                
  [5] MouseGastrulationData_0.99.12 SingleCellExperiment_1.7.11  
- [7] SummarizedExperiment_1.15.9   DelayedArray_0.11.6          
+ [7] SummarizedExperiment_1.15.9   DelayedArray_0.11.8          
  [9] BiocParallel_1.19.3           matrixStats_0.55.0           
 [11] Biobase_2.45.1                GenomicRanges_1.37.16        
 [13] GenomeInfoDb_1.21.2           IRanges_2.19.16              
-[15] S4Vectors_0.23.24             BiocGenerics_0.31.6          
+[15] S4Vectors_0.23.25             BiocGenerics_0.31.6          
 [17] Cairo_1.5-10                  BiocStyle_2.13.2             
 [19] OSCAUtils_0.0.1              
 
@@ -893,36 +893,36 @@ loaded via a namespace (and not attached):
 [23] rappdirs_0.3.1                stringr_1.4.0                
 [25] digest_0.6.21                 rmarkdown_1.16               
 [27] XVector_0.25.0                pkgconfig_2.0.3              
-[29] htmltools_0.3.6               limma_3.41.17                
-[31] dbplyr_1.4.2                  rlang_0.4.0                  
-[33] RSQLite_2.1.2                 shiny_1.3.2                  
-[35] DelayedMatrixStats_1.7.2      dplyr_0.8.3                  
-[37] RCurl_1.95-4.12               magrittr_1.5                 
-[39] BiocSingular_1.1.7            GenomeInfoDbData_1.2.1       
-[41] Matrix_1.2-17                 Rcpp_1.0.2                   
-[43] ggbeeswarm_0.6.0              munsell_0.5.0                
-[45] viridis_0.5.1                 edgeR_3.27.13                
-[47] stringi_1.4.3                 yaml_2.2.0                   
-[49] zlibbioc_1.31.0               Rtsne_0.15                   
-[51] BiocFileCache_1.9.1           AnnotationHub_2.17.10        
-[53] grid_3.6.1                    blob_1.2.0                   
-[55] dqrng_0.2.1                   promises_1.0.1               
-[57] ExperimentHub_1.11.6          crayon_1.3.4                 
-[59] lattice_0.20-38               cowplot_1.0.0                
-[61] locfit_1.5-9.1                zeallot_0.1.0                
-[63] knitr_1.25                    pillar_1.4.2                 
-[65] igraph_1.2.4.1                codetools_0.2-16             
-[67] glue_1.3.1                    evaluate_0.14                
-[69] RcppParallel_4.4.3            BiocManager_1.30.4           
-[71] vctrs_0.2.0                   httpuv_1.5.2                 
-[73] gtable_0.3.0                  purrr_0.3.2                  
-[75] assertthat_0.2.1              xfun_0.10                    
-[77] rsvd_1.0.2                    mime_0.7                     
-[79] xtable_1.8-4                  later_0.8.0                  
-[81] viridisLite_0.3.0             tibble_2.1.3                 
-[83] AnnotationDbi_1.47.1          beeswarm_0.2.3               
-[85] memoise_1.1.0                 statmod_1.4.32               
-[87] interactiveDisplayBase_1.23.0</code></pre>
+[29] htmltools_0.4.0               limma_3.41.17                
+[31] dbplyr_1.4.2                  fastmap_1.0.1                
+[33] rlang_0.4.0                   RSQLite_2.1.2                
+[35] shiny_1.4.0                   DelayedMatrixStats_1.7.2     
+[37] dplyr_0.8.3                   RCurl_1.95-4.12              
+[39] magrittr_1.5                  BiocSingular_1.1.7           
+[41] GenomeInfoDbData_1.2.1        Matrix_1.2-17                
+[43] Rcpp_1.0.2                    ggbeeswarm_0.6.0             
+[45] munsell_0.5.0                 viridis_0.5.1                
+[47] edgeR_3.27.13                 stringi_1.4.3                
+[49] yaml_2.2.0                    zlibbioc_1.31.0              
+[51] Rtsne_0.15                    BiocFileCache_1.9.1          
+[53] AnnotationHub_2.17.10         grid_3.6.1                   
+[55] blob_1.2.0                    dqrng_0.2.1                  
+[57] promises_1.1.0                ExperimentHub_1.11.6         
+[59] crayon_1.3.4                  lattice_0.20-38              
+[61] cowplot_1.0.0                 locfit_1.5-9.1               
+[63] zeallot_0.1.0                 knitr_1.25                   
+[65] pillar_1.4.2                  igraph_1.2.4.1               
+[67] codetools_0.2-16              glue_1.3.1                   
+[69] evaluate_0.14                 RcppParallel_4.4.3           
+[71] BiocManager_1.30.7            vctrs_0.2.0                  
+[73] httpuv_1.5.2                  gtable_0.3.0                 
+[75] purrr_0.3.2                   assertthat_0.2.1             
+[77] xfun_0.10                     rsvd_1.0.2                   
+[79] mime_0.7                      xtable_1.8-4                 
+[81] later_1.0.0                   viridisLite_0.3.0            
+[83] tibble_2.1.3                  AnnotationDbi_1.47.1         
+[85] beeswarm_0.2.3                memoise_1.1.0                
+[87] statmod_1.4.32                interactiveDisplayBase_1.23.0</code></pre>
 </div>
 
 </div>

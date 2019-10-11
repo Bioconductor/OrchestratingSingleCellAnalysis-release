@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1077,7 +1077,7 @@ View history
 <a class="sourceLine" id="cb286-17" data-line-number="17"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb286-18" data-line-number="18">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.lawlor, </a>
 <a class="sourceLine" id="cb286-19" data-line-number="19">    <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(<span class="kw">rowData</span>(sce.lawlor)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb286-20" data-line-number="20">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb286-20" data-line-number="20">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb286-21" data-line-number="21">sce.lawlor &lt;-<span class="st"> </span>sce.lawlor[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
 <a class="sourceLine" id="cb286-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb286-23" data-line-number="23">### normalization <span class="al">###</span></a>
@@ -1216,7 +1216,7 @@ View history
 <a class="sourceLine" id="cb298-23" data-line-number="23">### quality-control <span class="al">###</span></a>
 <a class="sourceLine" id="cb298-24" data-line-number="24">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)</a>
 <a class="sourceLine" id="cb298-25" data-line-number="25">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
-<a class="sourceLine" id="cb298-26" data-line-number="26">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="kw">c</span>(<span class="st">&quot;subsets_Mt_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb298-26" data-line-number="26">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="kw">c</span>(<span class="st">&quot;subsets_Mt_percent&quot;</span>,</a>
 <a class="sourceLine" id="cb298-27" data-line-number="27">    <span class="st">&quot;altexps_ERCC_percent&quot;</span>), <span class="dt">nmads=</span><span class="dv">3</span>, <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
 <a class="sourceLine" id="cb298-28" data-line-number="28">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
 <a class="sourceLine" id="cb298-29" data-line-number="29"></a>
@@ -1397,14 +1397,14 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] limma_3.41.17               scater_1.13.24             
+ [1] limma_3.41.17               scater_1.13.25             
  [3] ggplot2_3.2.1               pheatmap_1.0.12            
- [5] scran_1.13.25               SingleCellExperiment_1.7.11
- [7] SummarizedExperiment_1.15.9 DelayedArray_0.11.6        
+ [5] scran_1.13.26               SingleCellExperiment_1.7.11
+ [7] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
  [9] BiocParallel_1.19.3         matrixStats_0.55.0         
 [11] Biobase_2.45.1              GenomicRanges_1.37.16      
 [13] GenomeInfoDb_1.21.2         IRanges_2.19.16            
-[15] S4Vectors_0.23.24           BiocGenerics_0.31.6        
+[15] S4Vectors_0.23.25           BiocGenerics_0.31.6        
 [17] Cairo_1.5-10                BiocStyle_2.13.2           
 [19] OSCAUtils_0.0.1            
 
@@ -1412,14 +1412,14 @@ loaded via a namespace (and not attached):
  [1] viridis_0.5.1            edgeR_3.27.13           
  [3] BiocSingular_1.1.7       viridisLite_0.3.0       
  [5] DelayedMatrixStats_1.7.2 assertthat_0.2.1        
- [7] statmod_1.4.32           BiocManager_1.30.4      
+ [7] statmod_1.4.32           BiocManager_1.30.7      
  [9] highr_0.8                dqrng_0.2.1             
 [11] GenomeInfoDbData_1.2.1   vipor_0.4.5             
 [13] yaml_2.2.0               pillar_1.4.2            
 [15] lattice_0.20-38          glue_1.3.1              
 [17] digest_0.6.21            RColorBrewer_1.1-2      
 [19] XVector_0.25.0           colorspace_1.4-1        
-[21] cowplot_1.0.0            htmltools_0.3.6         
+[21] cowplot_1.0.0            htmltools_0.4.0         
 [23] Matrix_1.2-17            pkgconfig_2.0.3         
 [25] bookdown_0.14            zlibbioc_1.31.0         
 [27] purrr_0.3.2              scales_1.0.0            

@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -728,7 +728,7 @@ consisting of human pancreas cells from various donors.</p>
 <div class="sourceCode" id="cb696"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb696-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>sce.grun</a></code></pre></div>
 <div class="sourceCode" id="cb697"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb697-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
 <a class="sourceLine" id="cb697-2" data-line-number="2">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.grun)</a>
-<a class="sourceLine" id="cb697-3" data-line-number="3">qc &lt;-<span class="st"> </span><span class="kw">quickCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb697-3" data-line-number="3">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>, <span class="dt">nmads=</span><span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb697-4" data-line-number="4">sce.grun &lt;-<span class="st"> </span>sce.grun[,<span class="op">!</span>qc<span class="op">$</span>discard]</a></code></pre></div>
 </div>
 <div id="normalization-11" class="section level3">
@@ -864,15 +864,15 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] batchelor_1.1.15            scran_1.13.25              
- [3] scater_1.13.24              ggplot2_3.2.1              
+ [1] batchelor_1.1.17            scran_1.13.26              
+ [3] scater_1.13.25              ggplot2_3.2.1              
  [5] org.Hs.eg.db_3.8.2          AnnotationDbi_1.47.1       
  [7] scRNAseq_1.99.6             SingleCellExperiment_1.7.11
- [9] SummarizedExperiment_1.15.9 DelayedArray_0.11.6        
+ [9] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
 [11] BiocParallel_1.19.3         matrixStats_0.55.0         
 [13] Biobase_2.45.1              GenomicRanges_1.37.16      
 [15] GenomeInfoDb_1.21.2         IRanges_2.19.16            
-[17] S4Vectors_0.23.24           BiocGenerics_0.31.6        
+[17] S4Vectors_0.23.25           BiocGenerics_0.31.6        
 [19] Cairo_1.5-10                BiocStyle_2.13.2           
 [21] OSCAUtils_0.0.1            
 
@@ -890,35 +890,36 @@ loaded via a namespace (and not attached):
 [21] scales_1.0.0                  rappdirs_0.3.1               
 [23] stringr_1.4.0                 digest_0.6.21                
 [25] rmarkdown_1.16                XVector_0.25.0               
-[27] pkgconfig_2.0.3               htmltools_0.3.6              
+[27] pkgconfig_2.0.3               htmltools_0.4.0              
 [29] limma_3.41.17                 dbplyr_1.4.2                 
-[31] rlang_0.4.0                   RSQLite_2.1.2                
-[33] shiny_1.3.2                   DelayedMatrixStats_1.7.2     
-[35] dplyr_0.8.3                   RCurl_1.95-4.12              
-[37] magrittr_1.5                  BiocSingular_1.1.7           
-[39] GenomeInfoDbData_1.2.1        Matrix_1.2-17                
-[41] Rcpp_1.0.2                    ggbeeswarm_0.6.0             
-[43] munsell_0.5.0                 viridis_0.5.1                
-[45] edgeR_3.27.13                 stringi_1.4.3                
-[47] yaml_2.2.0                    zlibbioc_1.31.0              
-[49] Rtsne_0.15                    BiocFileCache_1.9.1          
-[51] AnnotationHub_2.17.10         grid_3.6.1                   
-[53] blob_1.2.0                    dqrng_0.2.1                  
-[55] promises_1.0.1                ExperimentHub_1.11.6         
-[57] crayon_1.3.4                  lattice_0.20-38              
-[59] cowplot_1.0.0                 locfit_1.5-9.1               
-[61] zeallot_0.1.0                 knitr_1.25                   
-[63] pillar_1.4.2                  igraph_1.2.4.1               
-[65] codetools_0.2-16              glue_1.3.1                   
-[67] evaluate_0.14                 BiocManager_1.30.4           
-[69] vctrs_0.2.0                   httpuv_1.5.2                 
-[71] gtable_0.3.0                  purrr_0.3.2                  
-[73] assertthat_0.2.1              xfun_0.10                    
-[75] rsvd_1.0.2                    mime_0.7                     
-[77] xtable_1.8-4                  later_0.8.0                  
-[79] viridisLite_0.3.0             tibble_2.1.3                 
-[81] beeswarm_0.2.3                memoise_1.1.0                
-[83] statmod_1.4.32                interactiveDisplayBase_1.23.0</code></pre>
+[31] fastmap_1.0.1                 rlang_0.4.0                  
+[33] RSQLite_2.1.2                 shiny_1.4.0                  
+[35] DelayedMatrixStats_1.7.2      dplyr_0.8.3                  
+[37] RCurl_1.95-4.12               magrittr_1.5                 
+[39] BiocSingular_1.1.7            GenomeInfoDbData_1.2.1       
+[41] Matrix_1.2-17                 Rcpp_1.0.2                   
+[43] ggbeeswarm_0.6.0              munsell_0.5.0                
+[45] viridis_0.5.1                 edgeR_3.27.13                
+[47] stringi_1.4.3                 yaml_2.2.0                   
+[49] zlibbioc_1.31.0               Rtsne_0.15                   
+[51] BiocFileCache_1.9.1           AnnotationHub_2.17.10        
+[53] grid_3.6.1                    blob_1.2.0                   
+[55] dqrng_0.2.1                   promises_1.1.0               
+[57] ExperimentHub_1.11.6          crayon_1.3.4                 
+[59] lattice_0.20-38               cowplot_1.0.0                
+[61] locfit_1.5-9.1                zeallot_0.1.0                
+[63] knitr_1.25                    pillar_1.4.2                 
+[65] igraph_1.2.4.1                codetools_0.2-16             
+[67] glue_1.3.1                    evaluate_0.14                
+[69] BiocManager_1.30.7            vctrs_0.2.0                  
+[71] httpuv_1.5.2                  gtable_0.3.0                 
+[73] purrr_0.3.2                   assertthat_0.2.1             
+[75] xfun_0.10                     rsvd_1.0.2                   
+[77] mime_0.7                      xtable_1.8-4                 
+[79] later_1.0.0                   viridisLite_0.3.0            
+[81] tibble_2.1.3                  beeswarm_0.2.3               
+[83] memoise_1.1.0                 statmod_1.4.32               
+[85] interactiveDisplayBase_1.23.0</code></pre>
 </div>
 
 </div>
