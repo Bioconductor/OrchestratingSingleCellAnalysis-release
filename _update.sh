@@ -51,7 +51,7 @@ cell-cycle.Rmd
 trajectory.Rmd
 interactive.Rmd
 big-data.Rmd
-import-export.Rmd
+interoperability.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
