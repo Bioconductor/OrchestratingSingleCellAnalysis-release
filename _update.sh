@@ -83,7 +83,7 @@ segerstolpe-pancreas.Rmd
 merged-pancreas.Rmd
 pijuan-embryo.Rmd
 bach-mammary.Rmd
-hca-analysis.Rmd
+hca-bone-marrow.Rmd
 )
 
 for i in "${!allfiles[@]}"; do 
