@@ -2,8 +2,7 @@
 
 ## cron job to build book from scratch routinely; save logs to ~/cronjobs/logs
 ## script:
-## 59 23 * * * bash /home/{USER}/cronjobs/_OSCA-cron.sh >/home/{USER}/cronjobs/logs/_OSCA-cron.log 2>/home/{USER}/cronjobs/logs/_OSCA-cron.out
-
+## 59 23 * * * sbatch -p largenode -n 1 -c 8 --mem=128000 --tmp=20000 --wrap="bash /home/ramezqui/cronjobs/_OSCA-cron.sh 2>&1 | tee -a /home/ramezqui/cronjobs/logs/_OSCA-cron.log"
 
 ## FHCRC specific modules ------------------------------------------------------
 source /app/Lmod/lmod/lmod/init/bash
