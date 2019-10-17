@@ -12,15 +12,15 @@ update:
 
 install:
 	@echo "Installing prerequisite packages..."
-	./_install.sh  > logs/_OSCA-logs.out 2>&1
+	./_install.sh #  > logs/_OSCA-logs.out 2>&1
 
 knit:
 	@echo "Knitting workflows..."
-	./_knit.sh >> logs/_OSCA-logs.out 2>&1
+	./_knit.sh # >> logs/_OSCA-logs.out 2>&1
 
 build:
 	@echo "Building book..."
-	./_build.sh >> logs/_OSCA-logs.out 2>&1
+	./_build.sh # >> logs/_OSCA-logs.out 2>&1
 
 
 ## Note that if build fails, push will not be performed: ---
