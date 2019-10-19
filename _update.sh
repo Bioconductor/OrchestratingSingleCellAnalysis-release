@@ -49,6 +49,7 @@ sample-comparisons.Rmd
 doublet-detection.Rmd
 cell-cycle.Rmd
 trajectory.Rmd
+protein-abundance.Rmd
 interactive.Rmd
 big-data.Rmd
 interoperability.Rmd
