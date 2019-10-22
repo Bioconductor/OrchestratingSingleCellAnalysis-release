@@ -11,7 +11,6 @@ rm render*.rds
 rm OSCA.rds
 rm -Rf cache
 rm -Rf figure
-
 rm -Rf logs
 rm -Rf OSCAlogs
 ## rm -Rf OSCABase
@@ -22,3 +21,6 @@ echo "osca.bioconductor.org" > docs/CNAME
 
 ## Clean logs dir
 mkdir -p logs
+
+## Accidental cluster builds logs
+rm slurm*.out
