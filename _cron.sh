@@ -15,6 +15,7 @@ cd $TMPDIR
 
 echo "Build time is $(date) ..."
 echo "Writing to ${TMPDIR} ..."
+echo "Using the following R: $(echo $(which R))"
 
 REPO=OrchestratingSingleCellAnalysis
 
