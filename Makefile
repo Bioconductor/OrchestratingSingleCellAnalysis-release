@@ -4,7 +4,7 @@ downstream: knit build push log
 
 clean:
 	@echo "Cleaning up..."
-	./_clean.sh 
+	-./_clean.sh 
 
 update:
 	@echo "Updating files..."
