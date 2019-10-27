@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-24" />
+<meta name="date" content="2019-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -377,7 +377,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="18.4" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#proceeding-to-downstream-analysis"><i class="fa fa-check"></i><b>18.4</b> Proceeding to downstream analysis</a></li>
 <li class="chapter" data-level="18.5" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#integration-with-gene-expression-data"><i class="fa fa-check"></i><b>18.5</b> Integration with gene expression data</a><ul>
 <li class="chapter" data-level="18.5.1" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-subclustering"><i class="fa fa-check"></i><b>18.5.1</b> By subclustering</a></li>
-<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-analysis"><i class="fa fa-check"></i><b>18.5.2</b> By combined analysis</a></li>
+<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-clustering"><i class="fa fa-check"></i><b>18.5.2</b> By combined clustering</a></li>
+<li class="chapter" data-level="18.5.3" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-differential-testing"><i class="fa fa-check"></i><b>18.5.3</b> By differential testing</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -719,96 +720,96 @@ starting from the filtered count matrix.</p>
 <h2><span class="header-section-number">25.2</span> Analysis code</h2>
 <div id="data-loading-3" class="section level3">
 <h3><span class="header-section-number">25.2.1</span> Data loading</h3>
-<div class="sourceCode" id="cb708"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb708-1" data-line-number="1"><span class="kw">library</span>(TENxPBMCData)</a>
-<a class="sourceLine" id="cb708-2" data-line-number="2">pbmc3k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb713"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb713-1" data-line-number="1"><span class="kw">library</span>(TENxPBMCData)</a>
+<a class="sourceLine" id="cb713-2" data-line-number="2">pbmc3k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a></code></pre></div>
 </div>
 <div id="quality-control-6" class="section level3">
 <h3><span class="header-section-number">25.2.2</span> Quality control</h3>
-<div class="sourceCode" id="cb709"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb709-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>pbmc3k</a></code></pre></div>
+<div class="sourceCode" id="cb714"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb714-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>pbmc3k</a></code></pre></div>
 <p>Cell calling implicitly serves as a QC step to remove libraries with low total counts and number of detected genes.
 Thus, we will only filter on the mitochondrial proportion.</p>
-<div class="sourceCode" id="cb710"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb710-1" data-line-number="1">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc3k)<span class="op">$</span>Symbol_TENx)</a>
-<a class="sourceLine" id="cb710-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb710-3" data-line-number="3"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb710-4" data-line-number="4">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(pbmc3k, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
-<a class="sourceLine" id="cb710-5" data-line-number="5">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb710-6" data-line-number="6">pbmc3k &lt;-<span class="st"> </span>pbmc3k[,<span class="op">!</span>high.mito]</a></code></pre></div>
+<div class="sourceCode" id="cb715"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb715-1" data-line-number="1">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc3k)<span class="op">$</span>Symbol_TENx)</a>
+<a class="sourceLine" id="cb715-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb715-3" data-line-number="3"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb715-4" data-line-number="4">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(pbmc3k, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
+<a class="sourceLine" id="cb715-5" data-line-number="5">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb715-6" data-line-number="6">pbmc3k &lt;-<span class="st"> </span>pbmc3k[,<span class="op">!</span>high.mito]</a></code></pre></div>
 </div>
 <div id="normalization-8" class="section level3">
 <h3><span class="header-section-number">25.2.3</span> Normalization</h3>
-<div class="sourceCode" id="cb711"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb711-1" data-line-number="1">pbmc3k &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(pbmc3k)</a></code></pre></div>
+<div class="sourceCode" id="cb716"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb716-1" data-line-number="1">pbmc3k &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(pbmc3k)</a></code></pre></div>
 </div>
 <div id="variance-modelling-6" class="section level3">
 <h3><span class="header-section-number">25.2.4</span> Variance modelling</h3>
-<div class="sourceCode" id="cb712"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb712-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb712-2" data-line-number="2">dec3k &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(pbmc3k)</a>
-<a class="sourceLine" id="cb712-3" data-line-number="3">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec3k, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb717"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb717-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb717-2" data-line-number="2">dec3k &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(pbmc3k)</a>
+<a class="sourceLine" id="cb717-3" data-line-number="3">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec3k, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
 </div>
 <div id="dimensionality-reduction-7" class="section level3">
 <h3><span class="header-section-number">25.2.5</span> Dimensionality reduction</h3>
 <p>We use randomized SVD, which is more efficient for file-backed matrices.</p>
-<div class="sourceCode" id="cb713"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb713-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb713-2" data-line-number="2">pbmc3k &lt;-<span class="st"> </span><span class="kw">runPCA</span>(pbmc3k, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb713-3" data-line-number="3">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a>
-<a class="sourceLine" id="cb713-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb713-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb713-6" data-line-number="6">pbmc3k &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb713-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb713-8" data-line-number="8"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb713-9" data-line-number="9">pbmc3k &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb718"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb718-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb718-2" data-line-number="2">pbmc3k &lt;-<span class="st"> </span><span class="kw">runPCA</span>(pbmc3k, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb718-3" data-line-number="3">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a>
+<a class="sourceLine" id="cb718-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb718-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb718-6" data-line-number="6">pbmc3k &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb718-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb718-8" data-line-number="8"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb718-9" data-line-number="9">pbmc3k &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
 </div>
 <div id="clustering-7" class="section level3">
 <h3><span class="header-section-number">25.2.6</span> Clustering</h3>
-<div class="sourceCode" id="cb714"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb714-1" data-line-number="1">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(pbmc3k, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb714-2" data-line-number="2">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb714-3" data-line-number="3">pbmc3k<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
+<div class="sourceCode" id="cb719"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb719-1" data-line-number="1">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(pbmc3k, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb719-2" data-line-number="2">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb719-3" data-line-number="3">pbmc3k<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
 </div>
 </div>
 <div id="results-3" class="section level2">
 <h2><span class="header-section-number">25.3</span> Results</h2>
 <div id="quality-control-statistics-3" class="section level3">
 <h3><span class="header-section-number">25.3.1</span> Quality control statistics</h3>
-<div class="sourceCode" id="cb715"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb715-1" data-line-number="1"><span class="kw">colData</span>(unfiltered) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(unfiltered), stats)</a>
-<a class="sourceLine" id="cb715-2" data-line-number="2">unfiltered<span class="op">$</span>discard &lt;-<span class="st"> </span>high.mito</a>
-<a class="sourceLine" id="cb715-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb715-4" data-line-number="4">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb715-5" data-line-number="5">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">y=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb715-6" data-line-number="6"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total count&quot;</span>),</a>
-<a class="sourceLine" id="cb715-7" data-line-number="7">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">y=</span><span class="st">&quot;detected&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb715-8" data-line-number="8"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Detected features&quot;</span>),</a>
-<a class="sourceLine" id="cb715-9" data-line-number="9">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">y=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>,</a>
-<a class="sourceLine" id="cb715-10" data-line-number="10">        <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Mito percent&quot;</span>),</a>
-<a class="sourceLine" id="cb715-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb715-12" data-line-number="12">)</a></code></pre></div>
+<div class="sourceCode" id="cb720"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb720-1" data-line-number="1"><span class="kw">colData</span>(unfiltered) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(unfiltered), stats)</a>
+<a class="sourceLine" id="cb720-2" data-line-number="2">unfiltered<span class="op">$</span>discard &lt;-<span class="st"> </span>high.mito</a>
+<a class="sourceLine" id="cb720-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb720-4" data-line-number="4">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb720-5" data-line-number="5">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">y=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb720-6" data-line-number="6"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total count&quot;</span>),</a>
+<a class="sourceLine" id="cb720-7" data-line-number="7">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">y=</span><span class="st">&quot;detected&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb720-8" data-line-number="8"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Detected features&quot;</span>),</a>
+<a class="sourceLine" id="cb720-9" data-line-number="9">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">y=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb720-10" data-line-number="10">        <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Mito percent&quot;</span>),</a>
+<a class="sourceLine" id="cb720-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb720-12" data-line-number="12">)</a></code></pre></div>
 <p><img src="P3_W04.tenx-filtered-pbmc3k_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<div class="sourceCode" id="cb716"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb716-1" data-line-number="1"><span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">y=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>,</a>
-<a class="sourceLine" id="cb716-2" data-line-number="2">    <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_log10</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb721"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb721-1" data-line-number="1"><span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">y=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb721-2" data-line-number="2">    <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_log10</span>()</a></code></pre></div>
 <p><img src="P3_W04.tenx-filtered-pbmc3k_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<div class="sourceCode" id="cb717"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb717-1" data-line-number="1"><span class="kw">summary</span>(high.mito)</a></code></pre></div>
+<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb722-1" data-line-number="1"><span class="kw">summary</span>(high.mito)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
 ## logical    2609      91</code></pre>
 </div>
 <div id="normalization-9" class="section level3">
 <h3><span class="header-section-number">25.3.2</span> Normalization</h3>
-<div class="sourceCode" id="cb719"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb719-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(pbmc3k))</a></code></pre></div>
+<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(pbmc3k))</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.234   0.748   0.926   1.000   1.157   6.604</code></pre>
 </div>
 <div id="variance-modelling-7" class="section level3">
 <h3><span class="header-section-number">25.3.3</span> Variance modelling</h3>
-<div class="sourceCode" id="cb721"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb721-1" data-line-number="1"><span class="kw">plot</span>(dec3k<span class="op">$</span>mean, dec3k<span class="op">$</span>total, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
-<a class="sourceLine" id="cb721-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
-<a class="sourceLine" id="cb721-3" data-line-number="3">curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(dec3k)</a>
-<a class="sourceLine" id="cb721-4" data-line-number="4"><span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" data-line-number="1"><span class="kw">plot</span>(dec3k<span class="op">$</span>mean, dec3k<span class="op">$</span>total, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb726-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
+<a class="sourceLine" id="cb726-3" data-line-number="3">curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(dec3k)</a>
+<a class="sourceLine" id="cb726-4" data-line-number="4"><span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a></code></pre></div>
 <p><img src="P3_W04.tenx-filtered-pbmc3k_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="clustering-8" class="section level3">
 <h3><span class="header-section-number">25.3.4</span> Clustering</h3>
-<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb722-1" data-line-number="1"><span class="kw">table</span>(pbmc3k<span class="op">$</span>cluster)</a></code></pre></div>
+<div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb727-1" data-line-number="1"><span class="kw">table</span>(pbmc3k<span class="op">$</span>cluster)</a></code></pre></div>
 <pre><code>## 
 ##   1   2   3   4   5   6   7   8   9  10 
 ## 487 154 603 514  31 150 179 333 147  11</code></pre>
-<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" data-line-number="1"><span class="kw">plotTSNE</span>(pbmc3k, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb729-1" data-line-number="1"><span class="kw">plotTSNE</span>(pbmc3k, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W04.tenx-filtered-pbmc3k_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 </div>
@@ -820,7 +821,7 @@ View session info
 <div class="aaron-content">
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS
+Running under: Ubuntu 14.04.5 LTS
 
 Matrix products: default
 BLAS:   /home/ramezqui/Rbuild/danbuild/R-3.6.1/lib/libRblas.so

@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-24" />
+<meta name="date" content="2019-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -377,7 +377,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="18.4" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#proceeding-to-downstream-analysis"><i class="fa fa-check"></i><b>18.4</b> Proceeding to downstream analysis</a></li>
 <li class="chapter" data-level="18.5" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#integration-with-gene-expression-data"><i class="fa fa-check"></i><b>18.5</b> Integration with gene expression data</a><ul>
 <li class="chapter" data-level="18.5.1" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-subclustering"><i class="fa fa-check"></i><b>18.5.1</b> By subclustering</a></li>
-<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-analysis"><i class="fa fa-check"></i><b>18.5.2</b> By combined analysis</a></li>
+<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-clustering"><i class="fa fa-check"></i><b>18.5.2</b> By combined clustering</a></li>
+<li class="chapter" data-level="18.5.3" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-differential-testing"><i class="fa fa-check"></i><b>18.5.3</b> By differential testing</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -719,97 +720,97 @@ consisting of human pancreas cells from various donors.</p>
 <h2><span class="header-section-number">30.2</span> Analysis code</h2>
 <div id="data-loading-8" class="section level3">
 <h3><span class="header-section-number">30.2.1</span> Data loading</h3>
-<div class="sourceCode" id="cb815"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb815-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb815-2" data-line-number="2">sce.seger &lt;-<span class="st"> </span><span class="kw">SegerstolpePancreasData</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb820"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb820-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb820-2" data-line-number="2">sce.seger &lt;-<span class="st"> </span><span class="kw">SegerstolpePancreasData</span>()</a></code></pre></div>
 </div>
 <div id="gene-annotation-6" class="section level3">
 <h3><span class="header-section-number">30.2.2</span> Gene annotation</h3>
-<div class="sourceCode" id="cb816"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb816-1" data-line-number="1"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb816-2" data-line-number="2">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
-<a class="sourceLine" id="cb816-3" data-line-number="3">symbols &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.seger)<span class="op">$</span>symbol</a>
-<a class="sourceLine" id="cb816-4" data-line-number="4">ens.id &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>symbols, <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb816-5" data-line-number="5">ens.id &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(ens.id), symbols, ens.id)</a>
-<a class="sourceLine" id="cb816-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb816-7" data-line-number="7"><span class="co"># Removing duplicated rows.</span></a>
-<a class="sourceLine" id="cb816-8" data-line-number="8">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(ens.id)</a>
-<a class="sourceLine" id="cb816-9" data-line-number="9">sce.seger &lt;-<span class="st"> </span>sce.seger[keep,]</a>
-<a class="sourceLine" id="cb816-10" data-line-number="10"><span class="kw">rownames</span>(sce.seger) &lt;-<span class="st"> </span>ens.id[keep]</a></code></pre></div>
+<div class="sourceCode" id="cb821"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb821-1" data-line-number="1"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb821-2" data-line-number="2">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
+<a class="sourceLine" id="cb821-3" data-line-number="3">symbols &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.seger)<span class="op">$</span>symbol</a>
+<a class="sourceLine" id="cb821-4" data-line-number="4">ens.id &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>symbols, <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb821-5" data-line-number="5">ens.id &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(ens.id), symbols, ens.id)</a>
+<a class="sourceLine" id="cb821-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb821-7" data-line-number="7"><span class="co"># Removing duplicated rows.</span></a>
+<a class="sourceLine" id="cb821-8" data-line-number="8">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(ens.id)</a>
+<a class="sourceLine" id="cb821-9" data-line-number="9">sce.seger &lt;-<span class="st"> </span>sce.seger[keep,]</a>
+<a class="sourceLine" id="cb821-10" data-line-number="10"><span class="kw">rownames</span>(sce.seger) &lt;-<span class="st"> </span>ens.id[keep]</a></code></pre></div>
 </div>
 <div id="sample-annotation" class="section level3">
 <h3><span class="header-section-number">30.2.3</span> Sample annotation</h3>
 <p>We simplify the names of some of the relevant column metadata fields for ease of access.
 Some editing of the cell type labels is necessary for consistency with other data sets.</p>
-<div class="sourceCode" id="cb817"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb817-1" data-line-number="1">emtab.meta &lt;-<span class="st"> </span><span class="kw">colData</span>(sce.seger)[,<span class="kw">c</span>(<span class="st">&quot;cell type&quot;</span>, </a>
-<a class="sourceLine" id="cb817-2" data-line-number="2">    <span class="st">&quot;individual&quot;</span>, <span class="st">&quot;single cell well quality&quot;</span>)]</a>
-<a class="sourceLine" id="cb817-3" data-line-number="3"><span class="kw">colnames</span>(emtab.meta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CellType&quot;</span>, <span class="st">&quot;Donor&quot;</span>, <span class="st">&quot;Quality&quot;</span>)</a>
-<a class="sourceLine" id="cb817-4" data-line-number="4"><span class="kw">colData</span>(sce.seger) &lt;-<span class="st"> </span>emtab.meta</a>
-<a class="sourceLine" id="cb817-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb817-6" data-line-number="6">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot; cell&quot;</span>, <span class="st">&quot;&quot;</span>, sce.seger<span class="op">$</span>CellType)</a>
-<a class="sourceLine" id="cb817-7" data-line-number="7">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">paste0</span>(</a>
-<a class="sourceLine" id="cb817-8" data-line-number="8">    <span class="kw">toupper</span>(<span class="kw">substr</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">1</span>, <span class="dv">1</span>)),</a>
-<a class="sourceLine" id="cb817-9" data-line-number="9">    <span class="kw">substring</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb822"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb822-1" data-line-number="1">emtab.meta &lt;-<span class="st"> </span><span class="kw">colData</span>(sce.seger)[,<span class="kw">c</span>(<span class="st">&quot;cell type&quot;</span>, </a>
+<a class="sourceLine" id="cb822-2" data-line-number="2">    <span class="st">&quot;individual&quot;</span>, <span class="st">&quot;single cell well quality&quot;</span>)]</a>
+<a class="sourceLine" id="cb822-3" data-line-number="3"><span class="kw">colnames</span>(emtab.meta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CellType&quot;</span>, <span class="st">&quot;Donor&quot;</span>, <span class="st">&quot;Quality&quot;</span>)</a>
+<a class="sourceLine" id="cb822-4" data-line-number="4"><span class="kw">colData</span>(sce.seger) &lt;-<span class="st"> </span>emtab.meta</a>
+<a class="sourceLine" id="cb822-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb822-6" data-line-number="6">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot; cell&quot;</span>, <span class="st">&quot;&quot;</span>, sce.seger<span class="op">$</span>CellType)</a>
+<a class="sourceLine" id="cb822-7" data-line-number="7">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb822-8" data-line-number="8">    <span class="kw">toupper</span>(<span class="kw">substr</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">1</span>, <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb822-9" data-line-number="9">    <span class="kw">substring</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">2</span>))</a></code></pre></div>
 </div>
 <div id="quality-control-11" class="section level3">
 <h3><span class="header-section-number">30.2.4</span> Quality control</h3>
-<div class="sourceCode" id="cb818"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb818-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>sce.seger</a></code></pre></div>
+<div class="sourceCode" id="cb823"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb823-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>sce.seger</a></code></pre></div>
 <p>We remove low quality cells that were marked by the authors.
 We then perform additional quality control, as some of the remaining
 still have very low counts and numbers of detected features.</p>
-<div class="sourceCode" id="cb819"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb819-1" data-line-number="1">low.qual &lt;-<span class="st"> </span>sce.seger<span class="op">$</span>Quality <span class="op">==</span><span class="st"> &quot;low quality cell&quot;</span></a>
-<a class="sourceLine" id="cb819-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb819-3" data-line-number="3"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb819-4" data-line-number="4">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.seger)</a>
-<a class="sourceLine" id="cb819-5" data-line-number="5">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb819-6" data-line-number="6">sce.seger &lt;-<span class="st"> </span>sce.seger[,<span class="op">!</span>(qc<span class="op">$</span>discard <span class="op">|</span><span class="st"> </span>low.qual)]</a></code></pre></div>
+<div class="sourceCode" id="cb824"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb824-1" data-line-number="1">low.qual &lt;-<span class="st"> </span>sce.seger<span class="op">$</span>Quality <span class="op">==</span><span class="st"> &quot;low quality cell&quot;</span></a>
+<a class="sourceLine" id="cb824-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb824-3" data-line-number="3"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb824-4" data-line-number="4">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.seger)</a>
+<a class="sourceLine" id="cb824-5" data-line-number="5">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb824-6" data-line-number="6">sce.seger &lt;-<span class="st"> </span>sce.seger[,<span class="op">!</span>(qc<span class="op">$</span>discard <span class="op">|</span><span class="st"> </span>low.qual)]</a></code></pre></div>
 </div>
 <div id="normalization-18" class="section level3">
 <h3><span class="header-section-number">30.2.5</span> Normalization</h3>
 <p>We don’t normalize the spike-ins as there are some cells with no spike-in counts.</p>
-<div class="sourceCode" id="cb820"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb820-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb820-2" data-line-number="2">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.seger)</a>
-<a class="sourceLine" id="cb820-3" data-line-number="3">sce.seger &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.seger, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb820-4" data-line-number="4">sce.seger &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.seger) </a></code></pre></div>
+<div class="sourceCode" id="cb825"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb825-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb825-2" data-line-number="2">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.seger)</a>
+<a class="sourceLine" id="cb825-3" data-line-number="3">sce.seger &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.seger, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb825-4" data-line-number="4">sce.seger &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.seger) </a></code></pre></div>
 </div>
 <div id="variance-modelling-16" class="section level3">
 <h3><span class="header-section-number">30.2.6</span> Variance modelling</h3>
 <p>We do not use cells with no spike-ins for variance modelling.
 Donor AZ also has very low spike-in counts and is subsequently ignored.</p>
-<div class="sourceCode" id="cb821"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb821-1" data-line-number="1">for.hvg &lt;-<span class="st"> </span>sce.seger[,<span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce.seger)) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb821-2" data-line-number="2">    <span class="op">&amp;</span><span class="st"> </span>sce.seger<span class="op">$</span>Donor<span class="op">!=</span><span class="st">&quot;AZ&quot;</span>]</a>
-<a class="sourceLine" id="cb821-3" data-line-number="3">dec.seger &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(for.hvg, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>for.hvg<span class="op">$</span>Donor)</a>
-<a class="sourceLine" id="cb821-4" data-line-number="4">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.seger, <span class="dt">n=</span><span class="dv">2000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb826"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb826-1" data-line-number="1">for.hvg &lt;-<span class="st"> </span>sce.seger[,<span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce.seger)) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb826-2" data-line-number="2">    <span class="op">&amp;</span><span class="st"> </span>sce.seger<span class="op">$</span>Donor<span class="op">!=</span><span class="st">&quot;AZ&quot;</span>]</a>
+<a class="sourceLine" id="cb826-3" data-line-number="3">dec.seger &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(for.hvg, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>for.hvg<span class="op">$</span>Donor)</a>
+<a class="sourceLine" id="cb826-4" data-line-number="4">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.seger, <span class="dt">n=</span><span class="dv">2000</span>)</a></code></pre></div>
 </div>
 <div id="dimensionality-reduction-12" class="section level3">
 <h3><span class="header-section-number">30.2.7</span> Dimensionality reduction</h3>
-<div class="sourceCode" id="cb822"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb822-1" data-line-number="1"><span class="kw">library</span>(BiocSingular)</a>
-<a class="sourceLine" id="cb822-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">101011001</span>)</a>
-<a class="sourceLine" id="cb822-3" data-line-number="3">sce.seger &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce.seger, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>)</a>
-<a class="sourceLine" id="cb822-4" data-line-number="4">sce.seger &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.seger, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb827"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb827-1" data-line-number="1"><span class="kw">library</span>(BiocSingular)</a>
+<a class="sourceLine" id="cb827-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">101011001</span>)</a>
+<a class="sourceLine" id="cb827-3" data-line-number="3">sce.seger &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce.seger, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>)</a>
+<a class="sourceLine" id="cb827-4" data-line-number="4">sce.seger &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.seger, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
 </div>
 <div id="clustering-17" class="section level3">
 <h3><span class="header-section-number">30.2.8</span> Clustering</h3>
-<div class="sourceCode" id="cb823"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb823-1" data-line-number="1">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.seger, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb823-2" data-line-number="2">sce.seger<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership)</a></code></pre></div>
+<div class="sourceCode" id="cb828"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb828-1" data-line-number="1">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.seger, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb828-2" data-line-number="2">sce.seger<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership)</a></code></pre></div>
 </div>
 </div>
 <div id="results-8" class="section level2">
 <h2><span class="header-section-number">30.3</span> Results</h2>
 <div id="quality-control-statistics-8" class="section level3">
 <h3><span class="header-section-number">30.3.1</span> Quality control statistics</h3>
-<div class="sourceCode" id="cb824"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb824-1" data-line-number="1"><span class="kw">colData</span>(unfiltered) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(unfiltered), stats)</a>
-<a class="sourceLine" id="cb824-2" data-line-number="2">unfiltered<span class="op">$</span>discard &lt;-<span class="st"> </span>qc<span class="op">$</span>discard</a>
-<a class="sourceLine" id="cb824-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb824-4" data-line-number="4">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb824-5" data-line-number="5">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;Donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb824-6" data-line-number="6"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total count&quot;</span>),</a>
-<a class="sourceLine" id="cb824-7" data-line-number="7">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;Donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;detected&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb824-8" data-line-number="8"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Detected features&quot;</span>),</a>
-<a class="sourceLine" id="cb824-9" data-line-number="9">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;Donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>,</a>
-<a class="sourceLine" id="cb824-10" data-line-number="10">        <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;ERCC percent&quot;</span>),</a>
-<a class="sourceLine" id="cb824-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb824-12" data-line-number="12">)</a></code></pre></div>
+<div class="sourceCode" id="cb829"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb829-1" data-line-number="1"><span class="kw">colData</span>(unfiltered) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(unfiltered), stats)</a>
+<a class="sourceLine" id="cb829-2" data-line-number="2">unfiltered<span class="op">$</span>discard &lt;-<span class="st"> </span>qc<span class="op">$</span>discard</a>
+<a class="sourceLine" id="cb829-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb829-4" data-line-number="4">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb829-5" data-line-number="5">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;Donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb829-6" data-line-number="6"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total count&quot;</span>),</a>
+<a class="sourceLine" id="cb829-7" data-line-number="7">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;Donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;detected&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb829-8" data-line-number="8"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Detected features&quot;</span>),</a>
+<a class="sourceLine" id="cb829-9" data-line-number="9">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;Donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb829-10" data-line-number="10">        <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;ERCC percent&quot;</span>),</a>
+<a class="sourceLine" id="cb829-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb829-12" data-line-number="12">)</a></code></pre></div>
 <p><img src="P3_W09.segerstolpe-pancreas_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<div class="sourceCode" id="cb825"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb825-1" data-line-number="1"><span class="kw">colSums</span>(<span class="kw">as.matrix</span>(qc))</a></code></pre></div>
+<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb830-1" data-line-number="1"><span class="kw">colSums</span>(<span class="kw">as.matrix</span>(qc))</a></code></pre></div>
 <pre><code>##              low_lib_size            low_n_features 
 ##                       197                       587 
 ## high_altexps_ERCC_percent                   discard 
@@ -817,36 +818,36 @@ Donor AZ also has very low spike-in counts and is subsequently ignored.</p>
 </div>
 <div id="normalization-19" class="section level3">
 <h3><span class="header-section-number">30.3.2</span> Normalization</h3>
-<div class="sourceCode" id="cb827"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb827-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.seger))</a></code></pre></div>
+<div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb832-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.seger))</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.005   0.392   0.710   1.000   1.321  11.342</code></pre>
-<div class="sourceCode" id="cb829"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb829-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.seger), <span class="kw">sizeFactors</span>(sce.seger), <span class="dt">pch=</span><span class="dv">16</span>,</a>
-<a class="sourceLine" id="cb829-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb834"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb834-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.seger), <span class="kw">sizeFactors</span>(sce.seger), <span class="dt">pch=</span><span class="dv">16</span>,</a>
+<a class="sourceLine" id="cb834-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W09.segerstolpe-pancreas_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="variance-modelling-17" class="section level3">
 <h3><span class="header-section-number">30.3.3</span> Variance modelling</h3>
-<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb830-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb830-2" data-line-number="2">blocked.stats &lt;-<span class="st"> </span>dec.seger<span class="op">$</span>per.block</a>
-<a class="sourceLine" id="cb830-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">colnames</span>(blocked.stats)) {</a>
-<a class="sourceLine" id="cb830-4" data-line-number="4">    current &lt;-<span class="st"> </span>blocked.stats[[i]]</a>
-<a class="sourceLine" id="cb830-5" data-line-number="5">    <span class="kw">plot</span>(current<span class="op">$</span>mean, current<span class="op">$</span>total, <span class="dt">main=</span>i, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
-<a class="sourceLine" id="cb830-6" data-line-number="6">        <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
-<a class="sourceLine" id="cb830-7" data-line-number="7">    curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(current)</a>
-<a class="sourceLine" id="cb830-8" data-line-number="8">    <span class="kw">points</span>(curfit<span class="op">$</span>mean, curfit<span class="op">$</span>var, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>)</a>
-<a class="sourceLine" id="cb830-9" data-line-number="9">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb830-10" data-line-number="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb835"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb835-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb835-2" data-line-number="2">blocked.stats &lt;-<span class="st"> </span>dec.seger<span class="op">$</span>per.block</a>
+<a class="sourceLine" id="cb835-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">colnames</span>(blocked.stats)) {</a>
+<a class="sourceLine" id="cb835-4" data-line-number="4">    current &lt;-<span class="st"> </span>blocked.stats[[i]]</a>
+<a class="sourceLine" id="cb835-5" data-line-number="5">    <span class="kw">plot</span>(current<span class="op">$</span>mean, current<span class="op">$</span>total, <span class="dt">main=</span>i, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb835-6" data-line-number="6">        <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
+<a class="sourceLine" id="cb835-7" data-line-number="7">    curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(current)</a>
+<a class="sourceLine" id="cb835-8" data-line-number="8">    <span class="kw">points</span>(curfit<span class="op">$</span>mean, curfit<span class="op">$</span>var, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>)</a>
+<a class="sourceLine" id="cb835-9" data-line-number="9">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb835-10" data-line-number="10">}</a></code></pre></div>
 <p><img src="P3_W09.segerstolpe-pancreas_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="dimensionality-reduction-13" class="section level3">
 <h3><span class="header-section-number">30.3.4</span> Dimensionality reduction</h3>
-<div class="sourceCode" id="cb831"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb831-1" data-line-number="1"><span class="kw">ncol</span>(<span class="kw">reducedDim</span>(sce.seger, <span class="st">&quot;PCA&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb836"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb836-1" data-line-number="1"><span class="kw">ncol</span>(<span class="kw">reducedDim</span>(sce.seger, <span class="st">&quot;PCA&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 25</code></pre>
 </div>
 <div id="clustering-18" class="section level3">
 <h3><span class="header-section-number">30.3.5</span> Clustering</h3>
 <p>We see a strong donor effect, which suggests that should have called <code>fastMNN()</code> at some point.</p>
-<div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb833-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>sce.seger<span class="op">$</span>cluster, <span class="dt">Donor=</span>sce.seger<span class="op">$</span>Donor)</a></code></pre></div>
+<div class="sourceCode" id="cb838"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb838-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>sce.seger<span class="op">$</span>cluster, <span class="dt">Donor=</span>sce.seger<span class="op">$</span>Donor)</a></code></pre></div>
 <pre><code>##        Donor
 ## Cluster  AZ HP1502401 HP1504101T2D HP1504901 HP1506401 HP1507101
 ##      1    4         5            3         0         6         8
@@ -892,7 +893,7 @@ Donor AZ also has very low spike-in counts and is subsequently ignored.</p>
 ##      19            0         0            0            0
 ##      20            3         1            0            0
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 4 rows ]</code></pre>
-<div class="sourceCode" id="cb835"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb835-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>sce.seger<span class="op">$</span>cluster, <span class="dt">Donor=</span>sce.seger<span class="op">$</span>CellType)</a></code></pre></div>
+<div class="sourceCode" id="cb840"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb840-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>sce.seger<span class="op">$</span>cluster, <span class="dt">Donor=</span>sce.seger<span class="op">$</span>CellType)</a></code></pre></div>
 <pre><code>##        Donor
 ## Cluster Acinar Alpha Beta Co-expression Delta Ductal Endothelial Epsilon
 ##      1       0     0    0             0     0    282           0       0
@@ -939,9 +940,9 @@ Donor AZ also has very low spike-in counts and is subsequently ignored.</p>
 ##      12                      0
 ##      13                      1
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 11 rows ]</code></pre>
-<div class="sourceCode" id="cb837"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb837-1" data-line-number="1"><span class="kw">plotTSNE</span>(sce.seger, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb842"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb842-1" data-line-number="1"><span class="kw">plotTSNE</span>(sce.seger, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W09.segerstolpe-pancreas_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<div class="sourceCode" id="cb838"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb838-1" data-line-number="1"><span class="kw">plotTSNE</span>(sce.seger, <span class="dt">colour_by=</span><span class="st">&quot;Donor&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb843"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb843-1" data-line-number="1"><span class="kw">plotTSNE</span>(sce.seger, <span class="dt">colour_by=</span><span class="st">&quot;Donor&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W09.segerstolpe-pancreas_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 </div>
 </div>
@@ -953,7 +954,7 @@ View session info
 <div class="aaron-content">
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS
+Running under: Ubuntu 14.04.5 LTS
 
 Matrix products: default
 BLAS:   /home/ramezqui/Rbuild/danbuild/R-3.6.1/lib/libRblas.so

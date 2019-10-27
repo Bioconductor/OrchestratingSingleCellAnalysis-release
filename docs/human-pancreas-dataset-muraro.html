@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-24" />
+<meta name="date" content="2019-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -377,7 +377,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="18.4" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#proceeding-to-downstream-analysis"><i class="fa fa-check"></i><b>18.4</b> Proceeding to downstream analysis</a></li>
 <li class="chapter" data-level="18.5" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#integration-with-gene-expression-data"><i class="fa fa-check"></i><b>18.5</b> Integration with gene expression data</a><ul>
 <li class="chapter" data-level="18.5.1" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-subclustering"><i class="fa fa-check"></i><b>18.5.1</b> By subclustering</a></li>
-<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-analysis"><i class="fa fa-check"></i><b>18.5.2</b> By combined analysis</a></li>
+<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-clustering"><i class="fa fa-check"></i><b>18.5.2</b> By combined clustering</a></li>
+<li class="chapter" data-level="18.5.3" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-differential-testing"><i class="fa fa-check"></i><b>18.5.3</b> By differential testing</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -719,83 +720,83 @@ consisting of human pancreas cells from various donors.</p>
 <h2><span class="header-section-number">28.2</span> Analysis code</h2>
 <div id="data-loading-6" class="section level3">
 <h3><span class="header-section-number">28.2.1</span> Data loading</h3>
-<div class="sourceCode" id="cb767"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb767-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb767-2" data-line-number="2">sce.muraro &lt;-<span class="st"> </span><span class="kw">MuraroPancreasData</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb772"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb772-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb772-2" data-line-number="2">sce.muraro &lt;-<span class="st"> </span><span class="kw">MuraroPancreasData</span>()</a></code></pre></div>
 </div>
 <div id="gene-annotation-4" class="section level3">
 <h3><span class="header-section-number">28.2.2</span> Gene annotation</h3>
 <p>Converting back to Ensembl identifiers.</p>
-<div class="sourceCode" id="cb768"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb768-1" data-line-number="1"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb768-2" data-line-number="2">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
-<a class="sourceLine" id="cb768-3" data-line-number="3">gene.symb &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;__chr.*$&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce.muraro))</a>
-<a class="sourceLine" id="cb768-4" data-line-number="4">gene.ids &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>gene.symb, </a>
-<a class="sourceLine" id="cb768-5" data-line-number="5">    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb768-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb768-7" data-line-number="7"><span class="co"># Removing duplicated genes or genes without Ensembl IDs.</span></a>
-<a class="sourceLine" id="cb768-8" data-line-number="8">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(gene.ids) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(gene.ids)</a>
-<a class="sourceLine" id="cb768-9" data-line-number="9">sce.muraro &lt;-<span class="st"> </span>sce.muraro[keep,]</a>
-<a class="sourceLine" id="cb768-10" data-line-number="10"><span class="kw">rownames</span>(sce.muraro) &lt;-<span class="st"> </span>gene.ids[keep]</a></code></pre></div>
+<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb773-1" data-line-number="1"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb773-2" data-line-number="2">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
+<a class="sourceLine" id="cb773-3" data-line-number="3">gene.symb &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;__chr.*$&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce.muraro))</a>
+<a class="sourceLine" id="cb773-4" data-line-number="4">gene.ids &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>gene.symb, </a>
+<a class="sourceLine" id="cb773-5" data-line-number="5">    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb773-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb773-7" data-line-number="7"><span class="co"># Removing duplicated genes or genes without Ensembl IDs.</span></a>
+<a class="sourceLine" id="cb773-8" data-line-number="8">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(gene.ids) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(gene.ids)</a>
+<a class="sourceLine" id="cb773-9" data-line-number="9">sce.muraro &lt;-<span class="st"> </span>sce.muraro[keep,]</a>
+<a class="sourceLine" id="cb773-10" data-line-number="10"><span class="kw">rownames</span>(sce.muraro) &lt;-<span class="st"> </span>gene.ids[keep]</a></code></pre></div>
 </div>
 <div id="quality-control-9" class="section level3">
 <h3><span class="header-section-number">28.2.3</span> Quality control</h3>
 <p>This dataset lacks mitochondrial genes so we will do without.</p>
-<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb769-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>sce.muraro</a></code></pre></div>
-<div class="sourceCode" id="cb770"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb770-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb770-2" data-line-number="2">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.muraro)</a>
-<a class="sourceLine" id="cb770-3" data-line-number="3">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb770-4" data-line-number="4">sce.muraro &lt;-<span class="st"> </span>sce.muraro[,<span class="op">!</span>qc<span class="op">$</span>discard]</a></code></pre></div>
+<div class="sourceCode" id="cb774"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb774-1" data-line-number="1">unfiltered &lt;-<span class="st"> </span>sce.muraro</a></code></pre></div>
+<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb775-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb775-2" data-line-number="2">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.muraro)</a>
+<a class="sourceLine" id="cb775-3" data-line-number="3">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb775-4" data-line-number="4">sce.muraro &lt;-<span class="st"> </span>sce.muraro[,<span class="op">!</span>qc<span class="op">$</span>discard]</a></code></pre></div>
 </div>
 <div id="normalization-14" class="section level3">
 <h3><span class="header-section-number">28.2.4</span> Normalization</h3>
-<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb771-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb771-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb771-3" data-line-number="3">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.muraro)</a>
-<a class="sourceLine" id="cb771-4" data-line-number="4">sce.muraro &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.muraro, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb771-5" data-line-number="5">sce.muraro &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.muraro)</a></code></pre></div>
+<div class="sourceCode" id="cb776"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb776-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb776-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb776-3" data-line-number="3">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.muraro)</a>
+<a class="sourceLine" id="cb776-4" data-line-number="4">sce.muraro &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.muraro, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb776-5" data-line-number="5">sce.muraro &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.muraro)</a></code></pre></div>
 </div>
 <div id="variance-modelling-12" class="section level3">
 <h3><span class="header-section-number">28.2.5</span> Variance modelling</h3>
 <p>We block on a combined plate and donor factor.</p>
-<div class="sourceCode" id="cb772"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb772-1" data-line-number="1">block &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce.muraro<span class="op">$</span>plate, <span class="st">&quot;_&quot;</span>, sce.muraro<span class="op">$</span>donor)</a>
-<a class="sourceLine" id="cb772-2" data-line-number="2">dec.muraro &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce.muraro, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>block)</a>
-<a class="sourceLine" id="cb772-3" data-line-number="3">top.muraro &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.muraro, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb777"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb777-1" data-line-number="1">block &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce.muraro<span class="op">$</span>plate, <span class="st">&quot;_&quot;</span>, sce.muraro<span class="op">$</span>donor)</a>
+<a class="sourceLine" id="cb777-2" data-line-number="2">dec.muraro &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce.muraro, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>block)</a>
+<a class="sourceLine" id="cb777-3" data-line-number="3">top.muraro &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.muraro, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
 </div>
 <div id="data-integration-2" class="section level3">
 <h3><span class="header-section-number">28.2.6</span> Data integration</h3>
-<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb773-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb773-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1001010</span>)</a>
-<a class="sourceLine" id="cb773-3" data-line-number="3">merged.muraro &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce.muraro, <span class="dt">subset.row=</span>top.muraro, </a>
-<a class="sourceLine" id="cb773-4" data-line-number="4">    <span class="dt">batch=</span>sce.muraro<span class="op">$</span>donor)</a></code></pre></div>
+<div class="sourceCode" id="cb778"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb778-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb778-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1001010</span>)</a>
+<a class="sourceLine" id="cb778-3" data-line-number="3">merged.muraro &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce.muraro, <span class="dt">subset.row=</span>top.muraro, </a>
+<a class="sourceLine" id="cb778-4" data-line-number="4">    <span class="dt">batch=</span>sce.muraro<span class="op">$</span>donor)</a></code></pre></div>
 </div>
 <div id="dimensionality-reduction-10" class="section level3">
 <h3><span class="header-section-number">28.2.7</span> Dimensionality reduction</h3>
-<div class="sourceCode" id="cb774"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb774-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100111</span>)</a>
-<a class="sourceLine" id="cb774-2" data-line-number="2">merged.muraro &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(merged.muraro, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb779"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb779-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100111</span>)</a>
+<a class="sourceLine" id="cb779-2" data-line-number="2">merged.muraro &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(merged.muraro, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a></code></pre></div>
 </div>
 <div id="clustering-13" class="section level3">
 <h3><span class="header-section-number">28.2.8</span> Clustering</h3>
-<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb775-1" data-line-number="1">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(merged.muraro, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb775-2" data-line-number="2">merged.muraro<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership)</a></code></pre></div>
+<div class="sourceCode" id="cb780"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb780-1" data-line-number="1">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(merged.muraro, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb780-2" data-line-number="2">merged.muraro<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership)</a></code></pre></div>
 </div>
 </div>
 <div id="results-6" class="section level2">
 <h2><span class="header-section-number">28.3</span> Results</h2>
 <div id="quality-control-statistics-6" class="section level3">
 <h3><span class="header-section-number">28.3.1</span> Quality control statistics</h3>
-<div class="sourceCode" id="cb776"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb776-1" data-line-number="1"><span class="kw">colData</span>(unfiltered) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(unfiltered), stats)</a>
-<a class="sourceLine" id="cb776-2" data-line-number="2">unfiltered<span class="op">$</span>discard &lt;-<span class="st"> </span>qc<span class="op">$</span>discard</a>
-<a class="sourceLine" id="cb776-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb776-4" data-line-number="4">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb776-5" data-line-number="5">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb776-6" data-line-number="6"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total count&quot;</span>),</a>
-<a class="sourceLine" id="cb776-7" data-line-number="7">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;detected&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb776-8" data-line-number="8"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Detected features&quot;</span>),</a>
-<a class="sourceLine" id="cb776-9" data-line-number="9">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>,</a>
-<a class="sourceLine" id="cb776-10" data-line-number="10">        <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;ERCC percent&quot;</span>),</a>
-<a class="sourceLine" id="cb776-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb776-12" data-line-number="12">)</a></code></pre></div>
+<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb781-1" data-line-number="1"><span class="kw">colData</span>(unfiltered) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(unfiltered), stats)</a>
+<a class="sourceLine" id="cb781-2" data-line-number="2">unfiltered<span class="op">$</span>discard &lt;-<span class="st"> </span>qc<span class="op">$</span>discard</a>
+<a class="sourceLine" id="cb781-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb781-4" data-line-number="4">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb781-5" data-line-number="5">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;sum&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb781-6" data-line-number="6"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total count&quot;</span>),</a>
+<a class="sourceLine" id="cb781-7" data-line-number="7">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;detected&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb781-8" data-line-number="8"><span class="st">        </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Detected features&quot;</span>),</a>
+<a class="sourceLine" id="cb781-9" data-line-number="9">    <span class="kw">plotColData</span>(unfiltered, <span class="dt">x=</span><span class="st">&quot;donor&quot;</span>, <span class="dt">y=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb781-10" data-line-number="10">        <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;ERCC percent&quot;</span>),</a>
+<a class="sourceLine" id="cb781-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb781-12" data-line-number="12">)</a></code></pre></div>
 <p><img src="P3_W07.muraro-pancreas_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<div class="sourceCode" id="cb777"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb777-1" data-line-number="1"><span class="kw">colSums</span>(<span class="kw">as.matrix</span>(qc))</a></code></pre></div>
+<div class="sourceCode" id="cb782"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb782-1" data-line-number="1"><span class="kw">colSums</span>(<span class="kw">as.matrix</span>(qc))</a></code></pre></div>
 <pre><code>##              low_lib_size            low_n_features 
 ##                       611                       669 
 ## high_altexps_ERCC_percent                   discard 
@@ -803,30 +804,30 @@ consisting of human pancreas cells from various donors.</p>
 </div>
 <div id="normalization-15" class="section level3">
 <h3><span class="header-section-number">28.3.2</span> Normalization</h3>
-<div class="sourceCode" id="cb779"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb779-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.muraro))</a></code></pre></div>
+<div class="sourceCode" id="cb784"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb784-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.muraro))</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.080   0.538   0.822   1.000   1.217  14.315</code></pre>
-<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb781-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.muraro), <span class="kw">sizeFactors</span>(sce.muraro), <span class="dt">pch=</span><span class="dv">16</span>,</a>
-<a class="sourceLine" id="cb781-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb786"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb786-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.muraro), <span class="kw">sizeFactors</span>(sce.muraro), <span class="dt">pch=</span><span class="dv">16</span>,</a>
+<a class="sourceLine" id="cb786-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W07.muraro-pancreas_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="variance-modelling-13" class="section level3">
 <h3><span class="header-section-number">28.3.3</span> Variance modelling</h3>
-<div class="sourceCode" id="cb782"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb782-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">4</span>))</a>
-<a class="sourceLine" id="cb782-2" data-line-number="2">blocked.stats &lt;-<span class="st"> </span>dec.muraro<span class="op">$</span>per.block</a>
-<a class="sourceLine" id="cb782-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">colnames</span>(blocked.stats)) {</a>
-<a class="sourceLine" id="cb782-4" data-line-number="4">    current &lt;-<span class="st"> </span>blocked.stats[[i]]</a>
-<a class="sourceLine" id="cb782-5" data-line-number="5">    <span class="kw">plot</span>(current<span class="op">$</span>mean, current<span class="op">$</span>total, <span class="dt">main=</span>i, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
-<a class="sourceLine" id="cb782-6" data-line-number="6">        <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
-<a class="sourceLine" id="cb782-7" data-line-number="7">    curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(current)</a>
-<a class="sourceLine" id="cb782-8" data-line-number="8">    <span class="kw">points</span>(curfit<span class="op">$</span>mean, curfit<span class="op">$</span>var, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>)</a>
-<a class="sourceLine" id="cb782-9" data-line-number="9">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb782-10" data-line-number="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb787-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">4</span>))</a>
+<a class="sourceLine" id="cb787-2" data-line-number="2">blocked.stats &lt;-<span class="st"> </span>dec.muraro<span class="op">$</span>per.block</a>
+<a class="sourceLine" id="cb787-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">colnames</span>(blocked.stats)) {</a>
+<a class="sourceLine" id="cb787-4" data-line-number="4">    current &lt;-<span class="st"> </span>blocked.stats[[i]]</a>
+<a class="sourceLine" id="cb787-5" data-line-number="5">    <span class="kw">plot</span>(current<span class="op">$</span>mean, current<span class="op">$</span>total, <span class="dt">main=</span>i, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb787-6" data-line-number="6">        <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
+<a class="sourceLine" id="cb787-7" data-line-number="7">    curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(current)</a>
+<a class="sourceLine" id="cb787-8" data-line-number="8">    <span class="kw">points</span>(curfit<span class="op">$</span>mean, curfit<span class="op">$</span>var, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>)</a>
+<a class="sourceLine" id="cb787-9" data-line-number="9">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb787-10" data-line-number="10">}</a></code></pre></div>
 <p><img src="P3_W07.muraro-pancreas_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="data-integration-3" class="section level3">
 <h3><span class="header-section-number">28.3.4</span> Data integration</h3>
-<div class="sourceCode" id="cb783"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb783-1" data-line-number="1"><span class="kw">metadata</span>(merged.muraro)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
+<div class="sourceCode" id="cb788"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb788-1" data-line-number="1"><span class="kw">metadata</span>(merged.muraro)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
 <pre><code>##           D28      D29      D30     D31
 ## [1,] 0.061236 0.024182 0.000000 0.00000
 ## [2,] 0.002639 0.003242 0.062255 0.00000
@@ -834,7 +835,7 @@ consisting of human pancreas cells from various donors.</p>
 </div>
 <div id="clustering-14" class="section level3">
 <h3><span class="header-section-number">28.3.5</span> Clustering</h3>
-<div class="sourceCode" id="cb785"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb785-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>merged.muraro<span class="op">$</span>cluster, <span class="dt">CellType=</span>sce.muraro<span class="op">$</span>label)</a></code></pre></div>
+<div class="sourceCode" id="cb790"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb790-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>merged.muraro<span class="op">$</span>cluster, <span class="dt">CellType=</span>sce.muraro<span class="op">$</span>label)</a></code></pre></div>
 <pre><code>##        CellType
 ## Cluster acinar alpha beta delta duct endothelial epsilon mesenchymal  pp
 ##      1     217     1    3     0    8           0       0           0   2
@@ -859,7 +860,7 @@ consisting of human pancreas cells from various donors.</p>
 ##      8        0
 ##      9        0
 ##      10       0</code></pre>
-<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb787-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>merged.muraro<span class="op">$</span>cluster, <span class="dt">Donor=</span>merged.muraro<span class="op">$</span>batch)</a></code></pre></div>
+<div class="sourceCode" id="cb792"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb792-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>merged.muraro<span class="op">$</span>cluster, <span class="dt">Donor=</span>merged.muraro<span class="op">$</span>batch)</a></code></pre></div>
 <pre><code>##        Donor
 ## Cluster D28 D29 D30 D31
 ##      1  108   6  57 113
@@ -872,9 +873,9 @@ consisting of human pancreas cells from various donors.</p>
 ##      8    1   6   7  38
 ##      9   11  70   6  38
 ##      10   5   2   5   9</code></pre>
-<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb789-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged.muraro, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb794"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb794-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged.muraro, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W07.muraro-pancreas_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<div class="sourceCode" id="cb790"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb790-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged.muraro, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb795"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb795-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged.muraro, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W07.muraro-pancreas_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 </div>
 </div>
@@ -886,7 +887,7 @@ View session info
 <div class="aaron-content">
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS
+Running under: Ubuntu 14.04.5 LTS
 
 Matrix products: default
 BLAS:   /home/ramezqui/Rbuild/danbuild/R-3.6.1/lib/libRblas.so

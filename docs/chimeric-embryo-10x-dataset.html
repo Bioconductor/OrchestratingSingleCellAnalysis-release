@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-24" />
+<meta name="date" content="2019-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -377,7 +377,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="18.4" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#proceeding-to-downstream-analysis"><i class="fa fa-check"></i><b>18.4</b> Proceeding to downstream analysis</a></li>
 <li class="chapter" data-level="18.5" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#integration-with-gene-expression-data"><i class="fa fa-check"></i><b>18.5</b> Integration with gene expression data</a><ul>
 <li class="chapter" data-level="18.5.1" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-subclustering"><i class="fa fa-check"></i><b>18.5.1</b> By subclustering</a></li>
-<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-analysis"><i class="fa fa-check"></i><b>18.5.2</b> By combined analysis</a></li>
+<li class="chapter" data-level="18.5.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-clustering"><i class="fa fa-check"></i><b>18.5.2</b> By combined clustering</a></li>
+<li class="chapter" data-level="18.5.3" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-differential-testing"><i class="fa fa-check"></i><b>18.5.3</b> By differential testing</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -720,9 +721,9 @@ where td-Tomato-positive embryonic stem cells (ESCs) were injected into a wild-t
 <h2><span class="header-section-number">32.2</span> Analysis code</h2>
 <div id="data-loading-9" class="section level3">
 <h3><span class="header-section-number">32.2.1</span> Data loading</h3>
-<div class="sourceCode" id="cb874"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb874-1" data-line-number="1"><span class="kw">library</span>(MouseGastrulationData)</a>
-<a class="sourceLine" id="cb874-2" data-line-number="2">sce.chimera &lt;-<span class="st"> </span><span class="kw">WTChimeraData</span>(<span class="dt">samples=</span><span class="dv">5</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb874-3" data-line-number="3">sce.chimera</a></code></pre></div>
+<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb879-1" data-line-number="1"><span class="kw">library</span>(MouseGastrulationData)</a>
+<a class="sourceLine" id="cb879-2" data-line-number="2">sce.chimera &lt;-<span class="st"> </span><span class="kw">WTChimeraData</span>(<span class="dt">samples=</span><span class="dv">5</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb879-3" data-line-number="3">sce.chimera</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 29453 20935 
 ## metadata(0):
@@ -738,77 +739,77 @@ where td-Tomato-positive embryonic stem cells (ESCs) were injected into a wild-t
 </div>
 <div id="feature-annotation" class="section level3">
 <h3><span class="header-section-number">32.2.2</span> Feature annotation</h3>
-<div class="sourceCode" id="cb876"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb876-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb876-2" data-line-number="2"><span class="kw">rownames</span>(sce.chimera) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
-<a class="sourceLine" id="cb876-3" data-line-number="3">    <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>SYMBOL)</a></code></pre></div>
+<div class="sourceCode" id="cb881"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb881-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb881-2" data-line-number="2"><span class="kw">rownames</span>(sce.chimera) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb881-3" data-line-number="3">    <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>SYMBOL)</a></code></pre></div>
 </div>
 <div id="quality-control-12" class="section level3">
 <h3><span class="header-section-number">32.2.3</span> Quality control</h3>
 <p>Quality control on the cells has already been performed by the authors, so we will not repeat it here.
 We additionally remove cells that are labelled as stripped nuclei or doublets.</p>
-<div class="sourceCode" id="cb877"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb877-1" data-line-number="1">drop &lt;-<span class="st"> </span>sce.chimera<span class="op">$</span>celltype.mapped <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;stripped&quot;</span>, <span class="st">&quot;Doublet&quot;</span>)</a>
-<a class="sourceLine" id="cb877-2" data-line-number="2">sce.chimera &lt;-<span class="st"> </span>sce.chimera[,<span class="op">!</span>drop]</a></code></pre></div>
+<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb882-1" data-line-number="1">drop &lt;-<span class="st"> </span>sce.chimera<span class="op">$</span>celltype.mapped <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;stripped&quot;</span>, <span class="st">&quot;Doublet&quot;</span>)</a>
+<a class="sourceLine" id="cb882-2" data-line-number="2">sce.chimera &lt;-<span class="st"> </span>sce.chimera[,<span class="op">!</span>drop]</a></code></pre></div>
 </div>
 <div id="normalization-20" class="section level3">
 <h3><span class="header-section-number">32.2.4</span> Normalization</h3>
 <p>We use the pre-computed size factors in <code>sce.chimera</code>.</p>
-<div class="sourceCode" id="cb878"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb878-1" data-line-number="1">sce.chimera &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.chimera)</a></code></pre></div>
+<div class="sourceCode" id="cb883"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb883-1" data-line-number="1">sce.chimera &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.chimera)</a></code></pre></div>
 </div>
 <div id="variance-modelling-18" class="section level3">
 <h3><span class="header-section-number">32.2.5</span> Variance modelling</h3>
 <p>We retain all genes with any positive biological component, to preserve as much signal as possible across a very heterogeneous dataset.</p>
-<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb879-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb879-2" data-line-number="2">dec.chimera &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(sce.chimera, <span class="dt">block=</span>sce.chimera<span class="op">$</span>sample)</a>
-<a class="sourceLine" id="cb879-3" data-line-number="3">chosen.hvgs &lt;-<span class="st"> </span>dec.chimera<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a></code></pre></div>
+<div class="sourceCode" id="cb884"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb884-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb884-2" data-line-number="2">dec.chimera &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(sce.chimera, <span class="dt">block=</span>sce.chimera<span class="op">$</span>sample)</a>
+<a class="sourceLine" id="cb884-3" data-line-number="3">chosen.hvgs &lt;-<span class="st"> </span>dec.chimera<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a></code></pre></div>
 </div>
 <div id="merging" class="section level3">
 <h3><span class="header-section-number">32.2.6</span> Merging</h3>
 <p>We use a hierarchical merge to first merge together replicates with the same genotype,
 and then merge samples across different genotypes.</p>
-<div class="sourceCode" id="cb880"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb880-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb880-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">01001001</span>)</a>
-<a class="sourceLine" id="cb880-3" data-line-number="3">merged &lt;-<span class="st"> </span><span class="kw">correctExperiments</span>(sce.chimera, </a>
-<a class="sourceLine" id="cb880-4" data-line-number="4">    <span class="dt">batch=</span>sce.chimera<span class="op">$</span>sample, </a>
-<a class="sourceLine" id="cb880-5" data-line-number="5">    <span class="dt">subset.row=</span>chosen.hvgs,</a>
-<a class="sourceLine" id="cb880-6" data-line-number="6">    <span class="dt">PARAM=</span><span class="kw">FastMnnParam</span>(</a>
-<a class="sourceLine" id="cb880-7" data-line-number="7">        <span class="dt">merge.order=</span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb880-8" data-line-number="8">            <span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="co"># WT (3 replicates)</span></a>
-<a class="sourceLine" id="cb880-9" data-line-number="9">            <span class="kw">list</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>)  <span class="co"># td-Tomato (3 replicates)</span></a>
-<a class="sourceLine" id="cb880-10" data-line-number="10">        )</a>
-<a class="sourceLine" id="cb880-11" data-line-number="11">    )</a>
-<a class="sourceLine" id="cb880-12" data-line-number="12">)</a></code></pre></div>
+<div class="sourceCode" id="cb885"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb885-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb885-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">01001001</span>)</a>
+<a class="sourceLine" id="cb885-3" data-line-number="3">merged &lt;-<span class="st"> </span><span class="kw">correctExperiments</span>(sce.chimera, </a>
+<a class="sourceLine" id="cb885-4" data-line-number="4">    <span class="dt">batch=</span>sce.chimera<span class="op">$</span>sample, </a>
+<a class="sourceLine" id="cb885-5" data-line-number="5">    <span class="dt">subset.row=</span>chosen.hvgs,</a>
+<a class="sourceLine" id="cb885-6" data-line-number="6">    <span class="dt">PARAM=</span><span class="kw">FastMnnParam</span>(</a>
+<a class="sourceLine" id="cb885-7" data-line-number="7">        <span class="dt">merge.order=</span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb885-8" data-line-number="8">            <span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="co"># WT (3 replicates)</span></a>
+<a class="sourceLine" id="cb885-9" data-line-number="9">            <span class="kw">list</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>)  <span class="co"># td-Tomato (3 replicates)</span></a>
+<a class="sourceLine" id="cb885-10" data-line-number="10">        )</a>
+<a class="sourceLine" id="cb885-11" data-line-number="11">    )</a>
+<a class="sourceLine" id="cb885-12" data-line-number="12">)</a></code></pre></div>
 </div>
 <div id="clustering-19" class="section level3">
 <h3><span class="header-section-number">32.2.7</span> Clustering</h3>
-<div class="sourceCode" id="cb881"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb881-1" data-line-number="1">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(merged, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb881-2" data-line-number="2">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)</a>
-<a class="sourceLine" id="cb881-3" data-line-number="3">merged<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clusters<span class="op">$</span>membership)</a></code></pre></div>
+<div class="sourceCode" id="cb886"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb886-1" data-line-number="1">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(merged, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb886-2" data-line-number="2">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)</a>
+<a class="sourceLine" id="cb886-3" data-line-number="3">merged<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clusters<span class="op">$</span>membership)</a></code></pre></div>
 </div>
 <div id="dimensionality-reduction-14" class="section level3">
 <h3><span class="header-section-number">32.2.8</span> Dimensionality reduction</h3>
 <p>We use an external algorithm to compute nearest neighbors for greater speed.</p>
-<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb882-1" data-line-number="1">merged &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb882-2" data-line-number="2">merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb887"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb887-1" data-line-number="1">merged &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb887-2" data-line-number="2">merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="results-9" class="section level2">
 <h2><span class="header-section-number">32.3</span> Results</h2>
 <div id="variance-modelling-19" class="section level3">
 <h3><span class="header-section-number">32.3.1</span> Variance modelling</h3>
-<div class="sourceCode" id="cb883"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb883-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb883-2" data-line-number="2">blocked.stats &lt;-<span class="st"> </span>dec.chimera<span class="op">$</span>per.block</a>
-<a class="sourceLine" id="cb883-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">colnames</span>(blocked.stats)) {</a>
-<a class="sourceLine" id="cb883-4" data-line-number="4">    current &lt;-<span class="st"> </span>blocked.stats[[i]]</a>
-<a class="sourceLine" id="cb883-5" data-line-number="5">    <span class="kw">plot</span>(current<span class="op">$</span>mean, current<span class="op">$</span>total, <span class="dt">main=</span>i, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
-<a class="sourceLine" id="cb883-6" data-line-number="6">        <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
-<a class="sourceLine" id="cb883-7" data-line-number="7">    curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(current)</a>
-<a class="sourceLine" id="cb883-8" data-line-number="8">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb883-9" data-line-number="9">}</a></code></pre></div>
+<div class="sourceCode" id="cb888"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb888-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb888-2" data-line-number="2">blocked.stats &lt;-<span class="st"> </span>dec.chimera<span class="op">$</span>per.block</a>
+<a class="sourceLine" id="cb888-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">colnames</span>(blocked.stats)) {</a>
+<a class="sourceLine" id="cb888-4" data-line-number="4">    current &lt;-<span class="st"> </span>blocked.stats[[i]]</a>
+<a class="sourceLine" id="cb888-5" data-line-number="5">    <span class="kw">plot</span>(current<span class="op">$</span>mean, current<span class="op">$</span>total, <span class="dt">main=</span>i, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">cex=</span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb888-6" data-line-number="6">        <span class="dt">xlab=</span><span class="st">&quot;Mean of log-expression&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Variance of log-expression&quot;</span>)</a>
+<a class="sourceLine" id="cb888-7" data-line-number="7">    curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(current)</a>
+<a class="sourceLine" id="cb888-8" data-line-number="8">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb888-9" data-line-number="9">}</a></code></pre></div>
 <p><img src="P3_W11.pijuan-embryo_files/figure-html/unnamed-chunk-2-1.png" width="672" /><img src="P3_W11.pijuan-embryo_files/figure-html/unnamed-chunk-2-2.png" width="672" /><img src="P3_W11.pijuan-embryo_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
 </div>
 <div id="batch-correction-1" class="section level3">
 <h3><span class="header-section-number">32.3.2</span> Batch correction</h3>
-<div class="sourceCode" id="cb884"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb884-1" data-line-number="1"><span class="kw">metadata</span>(merged)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
+<div class="sourceCode" id="cb889"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb889-1" data-line-number="1"><span class="kw">metadata</span>(merged)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
 <pre><code>##              5         6         7         8        9       10
 ## [1,] 0.000e+00 0.0204433 0.000e+00 0.0169567 0.000000 0.000000
 ## [2,] 0.000e+00 0.0007389 0.000e+00 0.0004409 0.000000 0.015474
@@ -818,7 +819,7 @@ and then merge samples across different genotypes.</p>
 </div>
 <div id="clustering-20" class="section level3">
 <h3><span class="header-section-number">32.3.3</span> Clustering</h3>
-<div class="sourceCode" id="cb886"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb886-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>merged<span class="op">$</span>cluster, <span class="dt">Sample=</span>merged<span class="op">$</span>sample)</a></code></pre></div>
+<div class="sourceCode" id="cb891"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb891-1" data-line-number="1"><span class="kw">table</span>(<span class="dt">Cluster=</span>merged<span class="op">$</span>cluster, <span class="dt">Sample=</span>merged<span class="op">$</span>sample)</a></code></pre></div>
 <pre><code>##        Sample
 ## Cluster   5   6   7   8   9  10
 ##      1  152  72  85  88 164 386
@@ -847,9 +848,9 @@ and then merge samples across different genotypes.</p>
 ##      24 170  47 282 173 426 542
 ##      25 109  23 117  55 271 285
 ##      26 122  72 298 572 296 776</code></pre>
-<div class="sourceCode" id="cb888"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb888-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">text_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">text_col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb893"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb893-1" data-line-number="1"><span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">text_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">text_col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W11.pijuan-embryo_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<div class="sourceCode" id="cb889"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb889-1" data-line-number="1"><span class="kw">plotUMAP</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb894"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb894-1" data-line-number="1"><span class="kw">plotUMAP</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <p><img src="P3_W11.pijuan-embryo_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
 </div>
 </div>
@@ -861,7 +862,7 @@ View session info
 <div class="aaron-content">
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS
+Running under: Ubuntu 14.04.5 LTS
 
 Matrix products: default
 BLAS:   /home/ramezqui/Rbuild/danbuild/R-3.6.1/lib/libRblas.so
