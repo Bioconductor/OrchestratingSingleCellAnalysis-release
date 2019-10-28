@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-27" />
+<meta name="date" content="2019-10-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -342,7 +342,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.4.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#composition-effects"><i class="fa fa-check"></i><b>14.4.3</b> Handling composition effects</a></li>
 </ul></li>
 <li class="chapter" data-level="14.5" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#de-da-duality"><i class="fa fa-check"></i><b>14.5</b> DE or DA? Two sides of the same coin</a></li>
-<li class="chapter" data-level="14.6" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#avoiding-problems-with-ambient-rna"><i class="fa fa-check"></i><b>14.6</b> Avoiding problems with ambient RNA</a><ul>
+<li class="chapter" data-level="14.6" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#ambient-problems"><i class="fa fa-check"></i><b>14.6</b> Avoiding problems with ambient RNA</a><ul>
 <li class="chapter" data-level="14.6.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#motivation-9"><i class="fa fa-check"></i><b>14.6.1</b> Motivation</a></li>
 <li class="chapter" data-level="14.6.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#discarding-ambient-degs"><i class="fa fa-check"></i><b>14.6.2</b> Discarding ambient DEGs</a></li>
 <li class="chapter" data-level="14.6.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#subtracting-ambient-counts"><i class="fa fa-check"></i><b>14.6.3</b> Subtracting ambient counts</a></li>
@@ -1020,7 +1020,7 @@ We use methods from <em><a href="https://CRAN.R-project.org/package=robustbase">
 <a class="sourceLine" id="cb92-6" data-line-number="6">multi.outlier &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(outlying, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>)</a>
 <a class="sourceLine" id="cb92-7" data-line-number="7"><span class="kw">summary</span>(multi.outlier)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
-## logical     180      12</code></pre>
+## logical     179      13</code></pre>
 <p>This and related approaches like PCA-based outlier detection and support vector machines can provide more power to distinguish low-quality cells from high-quality counterparts <span class="citation">(Ilicic et al. <a href="#ref-ilicic2016classification">2016</a>)</span> as they can exploit patterns across many QC metrics.
 However, this comes at some cost to interpretability, as the reason for removing a given cell may not always be obvious.</p>
 <p>For completeness, we note that outliers can also be identified from the gene expression profiles, rather than QC metrics.
@@ -1186,6 +1186,10 @@ Figure 6.6: Distribution of <span class="math inline">\(p\)</span>-values for th
 <p>Once we are satisfied with the performance of <code>emptyDrops()</code>, we subset our <code>SingleCellExperiment</code> object to retain only the detected cells.
 Discerning readers will notice the use of <code>which()</code>, which conveniently removes the <code>NA</code>s prior to the subsetting.</p>
 <div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a></code></pre></div>
+<p>It is worth pointing out that, at this point, we do not attempt to remove the ambient contamination from each library.
+Accurate quantification of the contamination rate in each cell is difficult as it generally requires some prior biological knowledge about genes that are expected to have mutually exclusive expression profiles <em>and</em> are highly abundant in the ambient solution <span class="citation">(Young and Behjati <a href="#ref-young2018soupx">2018</a>)</span>.
+Fortunately, ambient contamination usually has little effect on the downstream conclusions for routine analyses; cell type identities are usually easy enough to determine from the affected genes, notwithstanding a (mostly harmless) low background level of expression for marker genes that should be unique to a cell type.
+However, more susceptible analyses may require specific remedies like those discussed in Section <a href="multi-sample-comparisons.html#ambient-problems">14.6</a>.</p>
 </div>
 <div id="relationship-with-other-qc-metrics" class="section level3">
 <h3><span class="header-section-number">6.5.3</span> Relationship with other QC metrics</h3>
@@ -1418,6 +1422,9 @@ loaded via a namespace (and not attached):
 </div>
 <div id="ref-phipson2010permutation">
 <p>Phipson, B., and G. K. Smyth. 2010. “Permutation P-values should never be zero: calculating exact P-values when permutations are randomly drawn.” <em>Stat. Appl. Genet. Mol. Biol.</em> 9:Article 39.</p>
+</div>
+<div id="ref-young2018soupx">
+<p>Young, M. D., and S. Behjati. 2018. “SoupX Removes Ambient RNA Contamination from Droplet Based Single Cell RNA Sequencing Data.” <em>bioRxiv</em>.</p>
 </div>
 </div>
             </section>

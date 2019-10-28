@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-27" />
+<meta name="date" content="2019-10-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -342,7 +342,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.4.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#composition-effects"><i class="fa fa-check"></i><b>14.4.3</b> Handling composition effects</a></li>
 </ul></li>
 <li class="chapter" data-level="14.5" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#de-da-duality"><i class="fa fa-check"></i><b>14.5</b> DE or DA? Two sides of the same coin</a></li>
-<li class="chapter" data-level="14.6" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#avoiding-problems-with-ambient-rna"><i class="fa fa-check"></i><b>14.6</b> Avoiding problems with ambient RNA</a><ul>
+<li class="chapter" data-level="14.6" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#ambient-problems"><i class="fa fa-check"></i><b>14.6</b> Avoiding problems with ambient RNA</a><ul>
 <li class="chapter" data-level="14.6.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#motivation-9"><i class="fa fa-check"></i><b>14.6.1</b> Motivation</a></li>
 <li class="chapter" data-level="14.6.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#discarding-ambient-degs"><i class="fa fa-check"></i><b>14.6.2</b> Discarding ambient DEGs</a></li>
 <li class="chapter" data-level="14.6.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#subtracting-ambient-counts"><i class="fa fa-check"></i><b>14.6.3</b> Subtracting ambient counts</a></li>
@@ -1479,7 +1479,7 @@ For example, differences between conditions are more likely to manifest as DE fo
 For any comprehensive characterization of differences between populations, it is usually necessary to consider both analyses.
 Indeed, they complement each other almost by definition, e.g., clustering parameters that reduce DE will increase DA and vice versa.</p>
 </div>
-<div id="avoiding-problems-with-ambient-rna" class="section level2">
+<div id="ambient-problems" class="section level2">
 <h2><span class="header-section-number">14.6</span> Avoiding problems with ambient RNA</h2>
 <div id="motivation-9" class="section level3">
 <h3><span class="header-section-number">14.6.1</span> Motivation</h3>
@@ -1583,7 +1583,7 @@ We follow the approach used in <code>emptyDrops()</code> <span class="citation">
 ## Rp1      0  1  0  1
 ## Sox17   75 76 31 53
 ## Gm37323  0  0  0  0</code></pre>
-<p>Given prior knowledge of mutually exclusive gene expression profiles, we estimate the contribution of ambient RNA to each sample <span class="citation">(Young and Behjati <a href="#ref-young2018soupx">2018</a>)</span> and subtract it to remove the effects of ambient contamination.
+<p>Given prior knowledge of mutually exclusive gene expression profiles, we estimate the contribution of ambient RNA to each sample <span class="citation">(Young and Behjati <a href="#ref-young2018soupx">2018</a>)</span>.
 In our case, we assume (reasonably) that hemoglobins should not be expressed in neural crest cells and use this to estimate the contamination rate in each sample.</p>
 <div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" data-line-number="1">is.hbb &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^Hb[ab]-&quot;</span>, <span class="kw">rownames</span>(summed.neural))</a>
 <a class="sourceLine" id="cb488-2" data-line-number="2">neural.hb &lt;-<span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(summed.neural)[is.hbb,])</a>
@@ -1647,7 +1647,7 @@ For example, several hemoglobin genes retain strong DE even after subtraction of
 ## Hba-a2     0    0  313  330</code></pre>
 <p>Another tempting approach is to use interaction models to implicitly subtract the ambient effect during GLM fitting.
 The assumption would be that, for genuine DEGs, the log-fold change within cells is larger in magnitude than those in the ambient solution (where the effect would be diluted by contributions from cell types where the gene is not DE).
-However, this is not always the case - a DE analysis of the ambient counts indicates that the hemoglobin log-fold change is actually stronger in the neural crest cells compared to the ambient solution, which leads to a rather awkward conclusion.</p>
+However, this is not always the case; a DE analysis of the ambient counts indicates that the hemoglobin log-fold change is actually stronger in the neural crest cells compared to the ambient solution, which leads to the rather awkward conclusion that the WT neural crest cells are expressing hemoglobin beyond that explained by ambient contamination.</p>
 <div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" data-line-number="1"><span class="co"># Re-using keep.neural to simplify comparison.</span></a>
 <a class="sourceLine" id="cb498-2" data-line-number="2">y.ambient &lt;-<span class="st"> </span><span class="kw">DGEList</span>(ambient)</a>
 <a class="sourceLine" id="cb498-3" data-line-number="3">y.ambient &lt;-<span class="st"> </span>y.ambient[keep.neural,]</a>
