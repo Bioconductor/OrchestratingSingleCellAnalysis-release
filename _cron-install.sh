@@ -31,4 +31,5 @@ cd $REPO
 chmod 755 *.sh
 
 ## Make everything; trigger knit/build again if "empty reply from server" error is encountered
+make update
 make install

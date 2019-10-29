@@ -12,7 +12,7 @@ update:
 
 install:
 	@echo "Installing prerequisite packages..."
-	./_install.sh 2>&1 | tee logs/_OSCA-logs.out 
+	-./_install.sh 2>&1 | tee logs/_OSCA-logs.out 
 
 knit:
 	@echo "Knitting workflows..."
