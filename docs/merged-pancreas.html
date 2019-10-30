@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-28" />
+<meta name="date" content="2019-10-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -312,6 +312,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
 <li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+<li class="chapter" data-level="12.5" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#computing-gene-set-activities"><i class="fa fa-check"></i><b>12.5</b> Computing gene set activities</a></li>
 <li class="chapter" data-level="" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
@@ -727,47 +728,47 @@ This is a relatively simple scenario involving very similar protocols (CEL-seq a
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb845"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb845-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb845-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb845-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb845-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb845-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb845-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb845-7" data-line-number="7">sce.grun &lt;-<span class="st"> </span><span class="kw">GrunPancreasData</span>()</a>
-<a class="sourceLine" id="cb845-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb845-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb845-10" data-line-number="10"><span class="kw">library</span>(org.Hs.eg.db)</a>
-<a class="sourceLine" id="cb845-11" data-line-number="11">gene.ids &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Hs.eg.db, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.grun)<span class="op">$</span>symbol,</a>
-<a class="sourceLine" id="cb845-12" data-line-number="12">    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)</a>
-<a class="sourceLine" id="cb845-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb845-14" data-line-number="14">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(gene.ids) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(gene.ids)</a>
-<a class="sourceLine" id="cb845-15" data-line-number="15">sce.grun &lt;-<span class="st"> </span>sce.grun[keep,]</a>
-<a class="sourceLine" id="cb845-16" data-line-number="16"><span class="kw">rownames</span>(sce.grun) &lt;-<span class="st"> </span>gene.ids[keep]</a>
-<a class="sourceLine" id="cb845-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb845-18" data-line-number="18"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb845-19" data-line-number="19"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb845-20" data-line-number="20">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.grun)</a>
-<a class="sourceLine" id="cb845-21" data-line-number="21">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb845-22" data-line-number="22">sce.grun &lt;-<span class="st"> </span>sce.grun[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
-<a class="sourceLine" id="cb845-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb845-24" data-line-number="24"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb845-25" data-line-number="25"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb845-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">1000</span>) <span class="co"># for irlba. </span></a>
-<a class="sourceLine" id="cb845-27" data-line-number="27">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.grun)</a>
-<a class="sourceLine" id="cb845-28" data-line-number="28">sce.grun &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.grun, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb845-29" data-line-number="29">sce.grun &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.grun)</a>
-<a class="sourceLine" id="cb845-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb845-31" data-line-number="31"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb845-32" data-line-number="32">block &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce.grun<span class="op">$</span>sample, <span class="st">&quot;_&quot;</span>, sce.grun<span class="op">$</span>donor)</a>
-<a class="sourceLine" id="cb845-33" data-line-number="33">dec.grun &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce.grun, <span class="dt">spikes=</span><span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>block)</a>
-<a class="sourceLine" id="cb845-34" data-line-number="34">top.grun &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.grun, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb851"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb851-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb851-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb851-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb851-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb851-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb851-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb851-7" data-line-number="7">sce.grun &lt;-<span class="st"> </span><span class="kw">GrunPancreasData</span>()</a>
+<a class="sourceLine" id="cb851-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb851-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb851-10" data-line-number="10"><span class="kw">library</span>(org.Hs.eg.db)</a>
+<a class="sourceLine" id="cb851-11" data-line-number="11">gene.ids &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Hs.eg.db, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.grun)<span class="op">$</span>symbol,</a>
+<a class="sourceLine" id="cb851-12" data-line-number="12">    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)</a>
+<a class="sourceLine" id="cb851-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb851-14" data-line-number="14">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(gene.ids) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(gene.ids)</a>
+<a class="sourceLine" id="cb851-15" data-line-number="15">sce.grun &lt;-<span class="st"> </span>sce.grun[keep,]</a>
+<a class="sourceLine" id="cb851-16" data-line-number="16"><span class="kw">rownames</span>(sce.grun) &lt;-<span class="st"> </span>gene.ids[keep]</a>
+<a class="sourceLine" id="cb851-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb851-18" data-line-number="18"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb851-19" data-line-number="19"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb851-20" data-line-number="20">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.grun)</a>
+<a class="sourceLine" id="cb851-21" data-line-number="21">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb851-22" data-line-number="22">sce.grun &lt;-<span class="st"> </span>sce.grun[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
+<a class="sourceLine" id="cb851-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb851-24" data-line-number="24"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb851-25" data-line-number="25"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb851-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">1000</span>) <span class="co"># for irlba. </span></a>
+<a class="sourceLine" id="cb851-27" data-line-number="27">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.grun)</a>
+<a class="sourceLine" id="cb851-28" data-line-number="28">sce.grun &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.grun, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb851-29" data-line-number="29">sce.grun &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.grun)</a>
+<a class="sourceLine" id="cb851-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb851-31" data-line-number="31"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb851-32" data-line-number="32">block &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce.grun<span class="op">$</span>sample, <span class="st">&quot;_&quot;</span>, sce.grun<span class="op">$</span>donor)</a>
+<a class="sourceLine" id="cb851-33" data-line-number="33">dec.grun &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce.grun, <span class="dt">spikes=</span><span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>block)</a>
+<a class="sourceLine" id="cb851-34" data-line-number="34">top.grun &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.grun, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb846"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb846-1" data-line-number="1">sce.grun</a></code></pre></div>
+<div class="sourceCode" id="cb852"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb852-1" data-line-number="1">sce.grun</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
-## dim: 17692 1290 
+## dim: 17556 1290 
 ## metadata(0):
 ## assays(2): counts logcounts
-## rownames(17692): ENSG00000268895 ENSG00000121410 ...
+## rownames(17556): ENSG00000268895 ENSG00000121410 ...
 ##   ENSG00000074755 ENSG00000036549
 ## rowData names(2): symbol chr
 ## colnames(1290): D2ex_1 D2ex_2 ... D17TGFB_94 D17TGFB_95
@@ -779,45 +780,45 @@ View history
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb848"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb848-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb848-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb848-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb848-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb848-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb848-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb848-7" data-line-number="7">sce.muraro &lt;-<span class="st"> </span><span class="kw">MuraroPancreasData</span>()</a>
-<a class="sourceLine" id="cb848-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb848-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb848-10" data-line-number="10"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb848-11" data-line-number="11">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
-<a class="sourceLine" id="cb848-12" data-line-number="12">gene.symb &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;__chr.*$&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce.muraro))</a>
-<a class="sourceLine" id="cb848-13" data-line-number="13">gene.ids &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>gene.symb, </a>
-<a class="sourceLine" id="cb848-14" data-line-number="14">    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb848-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb848-16" data-line-number="16"><span class="co"># Removing duplicated genes or genes without Ensembl IDs.</span></a>
-<a class="sourceLine" id="cb848-17" data-line-number="17">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(gene.ids) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(gene.ids)</a>
-<a class="sourceLine" id="cb848-18" data-line-number="18">sce.muraro &lt;-<span class="st"> </span>sce.muraro[keep,]</a>
-<a class="sourceLine" id="cb848-19" data-line-number="19"><span class="kw">rownames</span>(sce.muraro) &lt;-<span class="st"> </span>gene.ids[keep]</a>
-<a class="sourceLine" id="cb848-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb848-21" data-line-number="21"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb848-22" data-line-number="22"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb848-23" data-line-number="23">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.muraro)</a>
-<a class="sourceLine" id="cb848-24" data-line-number="24">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb848-25" data-line-number="25">sce.muraro &lt;-<span class="st"> </span>sce.muraro[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
-<a class="sourceLine" id="cb848-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb848-27" data-line-number="27"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb848-28" data-line-number="28"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb848-29" data-line-number="29"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb848-30" data-line-number="30">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.muraro)</a>
-<a class="sourceLine" id="cb848-31" data-line-number="31">sce.muraro &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.muraro, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb848-32" data-line-number="32">sce.muraro &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.muraro)</a>
-<a class="sourceLine" id="cb848-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb848-34" data-line-number="34"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb848-35" data-line-number="35">block &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce.muraro<span class="op">$</span>plate, <span class="st">&quot;_&quot;</span>, sce.muraro<span class="op">$</span>donor)</a>
-<a class="sourceLine" id="cb848-36" data-line-number="36">dec.muraro &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce.muraro, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>block)</a>
-<a class="sourceLine" id="cb848-37" data-line-number="37">top.muraro &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.muraro, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb854"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb854-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb854-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb854-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb854-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb854-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb854-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb854-7" data-line-number="7">sce.muraro &lt;-<span class="st"> </span><span class="kw">MuraroPancreasData</span>()</a>
+<a class="sourceLine" id="cb854-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb854-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb854-10" data-line-number="10"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb854-11" data-line-number="11">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
+<a class="sourceLine" id="cb854-12" data-line-number="12">gene.symb &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;__chr.*$&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce.muraro))</a>
+<a class="sourceLine" id="cb854-13" data-line-number="13">gene.ids &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>gene.symb, </a>
+<a class="sourceLine" id="cb854-14" data-line-number="14">    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb854-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb854-16" data-line-number="16"><span class="co"># Removing duplicated genes or genes without Ensembl IDs.</span></a>
+<a class="sourceLine" id="cb854-17" data-line-number="17">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(gene.ids) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(gene.ids)</a>
+<a class="sourceLine" id="cb854-18" data-line-number="18">sce.muraro &lt;-<span class="st"> </span>sce.muraro[keep,]</a>
+<a class="sourceLine" id="cb854-19" data-line-number="19"><span class="kw">rownames</span>(sce.muraro) &lt;-<span class="st"> </span>gene.ids[keep]</a>
+<a class="sourceLine" id="cb854-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb854-21" data-line-number="21"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb854-22" data-line-number="22"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb854-23" data-line-number="23">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.muraro)</a>
+<a class="sourceLine" id="cb854-24" data-line-number="24">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb854-25" data-line-number="25">sce.muraro &lt;-<span class="st"> </span>sce.muraro[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
+<a class="sourceLine" id="cb854-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb854-27" data-line-number="27"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb854-28" data-line-number="28"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb854-29" data-line-number="29"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb854-30" data-line-number="30">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.muraro)</a>
+<a class="sourceLine" id="cb854-31" data-line-number="31">sce.muraro &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.muraro, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb854-32" data-line-number="32">sce.muraro &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.muraro)</a>
+<a class="sourceLine" id="cb854-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb854-34" data-line-number="34"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb854-35" data-line-number="35">block &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce.muraro<span class="op">$</span>plate, <span class="st">&quot;_&quot;</span>, sce.muraro<span class="op">$</span>donor)</a>
+<a class="sourceLine" id="cb854-36" data-line-number="36">dec.muraro &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce.muraro, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>block)</a>
+<a class="sourceLine" id="cb854-37" data-line-number="37">top.muraro &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.muraro, <span class="dt">prop=</span><span class="fl">0.1</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb849"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb849-1" data-line-number="1">sce.muraro</a></code></pre></div>
+<div class="sourceCode" id="cb855"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb855-1" data-line-number="1">sce.muraro</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 16940 2346 
 ## metadata(0):
@@ -833,31 +834,31 @@ View history
 <p>We subset both batches to their common universe of genes;
 adjust their scaling to equalize sequencing coverage (not really necessary in this case, as the coverage is already similar, but we will do so anyway for consistency);
 and select those genes with positive average biological components for further use.</p>
-<div class="sourceCode" id="cb851"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb851-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">rownames</span>(sce.grun), <span class="kw">rownames</span>(sce.muraro))</a>
-<a class="sourceLine" id="cb851-2" data-line-number="2">sce.grun2 &lt;-<span class="st"> </span>sce.grun[universe,]</a>
-<a class="sourceLine" id="cb851-3" data-line-number="3">dec.grun2 &lt;-<span class="st"> </span>dec.grun[universe,]</a>
-<a class="sourceLine" id="cb851-4" data-line-number="4">sce.muraro2 &lt;-<span class="st"> </span>sce.muraro[universe,]</a>
-<a class="sourceLine" id="cb851-5" data-line-number="5">dec.muraro2 &lt;-<span class="st"> </span>dec.muraro[universe,]</a>
-<a class="sourceLine" id="cb851-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb851-7" data-line-number="7"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb851-8" data-line-number="8">normed.pancreas &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(sce.grun2, sce.muraro2)</a>
-<a class="sourceLine" id="cb851-9" data-line-number="9">sce.grun2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb851-10" data-line-number="10">sce.muraro2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">2</span>]]</a>
-<a class="sourceLine" id="cb851-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb851-12" data-line-number="12"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb851-13" data-line-number="13">combined.pan &lt;-<span class="st"> </span><span class="kw">combineVar</span>(dec.grun2, dec.muraro2)</a>
-<a class="sourceLine" id="cb851-14" data-line-number="14">chosen.genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(combined.pan)[combined.pan<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb857"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb857-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">rownames</span>(sce.grun), <span class="kw">rownames</span>(sce.muraro))</a>
+<a class="sourceLine" id="cb857-2" data-line-number="2">sce.grun2 &lt;-<span class="st"> </span>sce.grun[universe,]</a>
+<a class="sourceLine" id="cb857-3" data-line-number="3">dec.grun2 &lt;-<span class="st"> </span>dec.grun[universe,]</a>
+<a class="sourceLine" id="cb857-4" data-line-number="4">sce.muraro2 &lt;-<span class="st"> </span>sce.muraro[universe,]</a>
+<a class="sourceLine" id="cb857-5" data-line-number="5">dec.muraro2 &lt;-<span class="st"> </span>dec.muraro[universe,]</a>
+<a class="sourceLine" id="cb857-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb857-7" data-line-number="7"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb857-8" data-line-number="8">normed.pancreas &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(sce.grun2, sce.muraro2)</a>
+<a class="sourceLine" id="cb857-9" data-line-number="9">sce.grun2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb857-10" data-line-number="10">sce.muraro2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">2</span>]]</a>
+<a class="sourceLine" id="cb857-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb857-12" data-line-number="12"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb857-13" data-line-number="13">combined.pan &lt;-<span class="st"> </span><span class="kw">combineVar</span>(dec.grun2, dec.muraro2)</a>
+<a class="sourceLine" id="cb857-14" data-line-number="14">chosen.genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(combined.pan)[combined.pan<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a></code></pre></div>
 <p>We observe that <code>rescaleBatches()</code> is unable to align cells from different batches in Figure <a href="merged-pancreas.html#fig:tsne-pancreas-rescaled">31.1</a>.
 This is attributable to differences in population composition between batches, with additional complications from non-linearities in the batch effect, e.g., when the magnitude or direction of the batch effect differs between cell types.</p>
-<div class="sourceCode" id="cb852"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb852-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb852-2" data-line-number="2">rescaled.pancreas &lt;-<span class="st"> </span><span class="kw">rescaleBatches</span>(sce.grun2, sce.muraro2)</a>
-<a class="sourceLine" id="cb852-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb852-4" data-line-number="4"><span class="kw">set.seed</span>(<span class="dv">100101</span>)</a>
-<a class="sourceLine" id="cb852-5" data-line-number="5">rescaled.pancreas &lt;-<span class="st"> </span><span class="kw">runPCA</span>(rescaled.pancreas, <span class="dt">subset_row=</span>chosen.genes,</a>
-<a class="sourceLine" id="cb852-6" data-line-number="6">    <span class="dt">exprs_values=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb852-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb852-8" data-line-number="8">rescaled.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(rescaled.pancreas, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb852-9" data-line-number="9"><span class="kw">plotTSNE</span>(rescaled.pancreas, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb858"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb858-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb858-2" data-line-number="2">rescaled.pancreas &lt;-<span class="st"> </span><span class="kw">rescaleBatches</span>(sce.grun2, sce.muraro2)</a>
+<a class="sourceLine" id="cb858-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb858-4" data-line-number="4"><span class="kw">set.seed</span>(<span class="dv">100101</span>)</a>
+<a class="sourceLine" id="cb858-5" data-line-number="5">rescaled.pancreas &lt;-<span class="st"> </span><span class="kw">runPCA</span>(rescaled.pancreas, <span class="dt">subset_row=</span>chosen.genes,</a>
+<a class="sourceLine" id="cb858-6" data-line-number="6">    <span class="dt">exprs_values=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb858-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb858-8" data-line-number="8">rescaled.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(rescaled.pancreas, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb858-9" data-line-number="9"><span class="kw">plotTSNE</span>(rescaled.pancreas, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pancreas-rescaled"></span>
 <img src="P3_W10.merged-pancreas_files/figure-html/tsne-pancreas-rescaled-1.png" alt="$t$-SNE plot of the two pancreas datasets after correction with `rescaleBatches()`. Each point represents a cell and is colored according to the batch of origin." width="672" />
 <p class="caption">
@@ -867,29 +868,29 @@ Figure 31.1: <span class="math inline">\(t\)</span>-SNE plot of the two pancreas
 <p>Here, we use <code>fastMNN()</code> to merge together the two human pancreas datasets described earlier.
 Clustering on the merged datasets yields fewer batch-specific clusters, which is recapitulated as greater intermingling between batches in Figure <a href="merged-pancreas.html#fig:tsne-pancreas-mnn">31.2</a>.
 This improvement over Figure <a href="merged-pancreas.html#fig:tsne-pancreas-rescaled">31.1</a> represents the ability of <code>fastMNN()</code> to adapt to more complex situations involving differences in population composition between batches.</p>
-<div class="sourceCode" id="cb853"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb853-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1011011</span>)</a>
-<a class="sourceLine" id="cb853-2" data-line-number="2">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce.grun2, sce.muraro2, <span class="dt">subset.row=</span>chosen.genes)</a>
-<a class="sourceLine" id="cb853-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb853-4" data-line-number="4">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.pancreas, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb853-5" data-line-number="5">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb853-6" data-line-number="6">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>mnn.pancreas<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb853-7" data-line-number="7">tab</a></code></pre></div>
+<div class="sourceCode" id="cb859"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb859-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1011011</span>)</a>
+<a class="sourceLine" id="cb859-2" data-line-number="2">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(sce.grun2, sce.muraro2, <span class="dt">subset.row=</span>chosen.genes)</a>
+<a class="sourceLine" id="cb859-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb859-4" data-line-number="4">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.pancreas, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb859-5" data-line-number="5">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb859-6" data-line-number="6">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>mnn.pancreas<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb859-7" data-line-number="7">tab</a></code></pre></div>
 <pre><code>##        Batch
 ## Cluster   1   2
-##      1  287 280
+##      1  284 280
 ##      2   55   0
-##      3  214 401
-##      4  336 255
-##      5  218 853
-##      6   61 197
+##      3  399 265
+##      4  207 847
+##      5  175 436
+##      6   64 197
 ##      7   25 108
-##      8   57  82
-##      9   22 127
+##      8   22 126
+##      9   44  44
 ##      10   0  18
 ##      11   8   4
 ##      12   7  21</code></pre>
-<div class="sourceCode" id="cb855"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb855-1" data-line-number="1">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.pancreas, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb855-2" data-line-number="2"><span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb861"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb861-1" data-line-number="1">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.pancreas, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb861-2" data-line-number="2"><span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pancreas-mnn"></span>
 <img src="P3_W10.merged-pancreas_files/figure-html/tsne-pancreas-mnn-1.png" alt="$t$-SNE plot of the two pancreas datasets after correction with `fastMNN()`. Each point represents a cell and is colored according to the batch of origin." width="672" />
 <p class="caption">
@@ -905,40 +906,40 @@ This is a more challenging task as it involves different technologies, mixtures 
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb856"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb856-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb856-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb856-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb856-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb856-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb856-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb856-7" data-line-number="7">sce.lawlor &lt;-<span class="st"> </span><span class="kw">LawlorPancreasData</span>()</a>
-<a class="sourceLine" id="cb856-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb856-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb856-10" data-line-number="10"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb856-11" data-line-number="11">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
-<a class="sourceLine" id="cb856-12" data-line-number="12">anno &lt;-<span class="st"> </span><span class="kw">select</span>(edb, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.lawlor), <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, </a>
-<a class="sourceLine" id="cb856-13" data-line-number="13">    <span class="dt">columns=</span><span class="kw">c</span>(<span class="st">&quot;SYMBOL&quot;</span>, <span class="st">&quot;SEQNAME&quot;</span>))</a>
-<a class="sourceLine" id="cb856-14" data-line-number="14"><span class="kw">rowData</span>(sce.lawlor) &lt;-<span class="st"> </span>anno[<span class="kw">match</span>(<span class="kw">rownames</span>(sce.lawlor), anno[,<span class="dv">1</span>]),<span class="op">-</span><span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb856-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb856-16" data-line-number="16"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb856-17" data-line-number="17"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb856-18" data-line-number="18">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.lawlor, </a>
-<a class="sourceLine" id="cb856-19" data-line-number="19">    <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(<span class="kw">rowData</span>(sce.lawlor)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb856-20" data-line-number="20">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb856-21" data-line-number="21">sce.lawlor &lt;-<span class="st"> </span>sce.lawlor[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
-<a class="sourceLine" id="cb856-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb856-23" data-line-number="23"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb856-24" data-line-number="24"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb856-25" data-line-number="25"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb856-26" data-line-number="26">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.lawlor)</a>
-<a class="sourceLine" id="cb856-27" data-line-number="27">sce.lawlor &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.lawlor, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb856-28" data-line-number="28">sce.lawlor &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.lawlor)</a>
-<a class="sourceLine" id="cb856-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb856-30" data-line-number="30"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb856-31" data-line-number="31">dec.lawlor &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(sce.lawlor, <span class="dt">block=</span>sce.lawlor<span class="op">$</span><span class="st">`</span><span class="dt">islet unos id</span><span class="st">`</span>)</a>
-<a class="sourceLine" id="cb856-32" data-line-number="32">chosen.genes &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.lawlor, <span class="dt">n=</span><span class="dv">2000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb862"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb862-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb862-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb862-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb862-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb862-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb862-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb862-7" data-line-number="7">sce.lawlor &lt;-<span class="st"> </span><span class="kw">LawlorPancreasData</span>()</a>
+<a class="sourceLine" id="cb862-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb862-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb862-10" data-line-number="10"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb862-11" data-line-number="11">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
+<a class="sourceLine" id="cb862-12" data-line-number="12">anno &lt;-<span class="st"> </span><span class="kw">select</span>(edb, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.lawlor), <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, </a>
+<a class="sourceLine" id="cb862-13" data-line-number="13">    <span class="dt">columns=</span><span class="kw">c</span>(<span class="st">&quot;SYMBOL&quot;</span>, <span class="st">&quot;SEQNAME&quot;</span>))</a>
+<a class="sourceLine" id="cb862-14" data-line-number="14"><span class="kw">rowData</span>(sce.lawlor) &lt;-<span class="st"> </span>anno[<span class="kw">match</span>(<span class="kw">rownames</span>(sce.lawlor), anno[,<span class="dv">1</span>]),<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb862-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb862-16" data-line-number="16"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb862-17" data-line-number="17"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb862-18" data-line-number="18">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.lawlor, </a>
+<a class="sourceLine" id="cb862-19" data-line-number="19">    <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(<span class="kw">rowData</span>(sce.lawlor)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
+<a class="sourceLine" id="cb862-20" data-line-number="20">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb862-21" data-line-number="21">sce.lawlor &lt;-<span class="st"> </span>sce.lawlor[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
+<a class="sourceLine" id="cb862-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb862-23" data-line-number="23"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb862-24" data-line-number="24"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb862-25" data-line-number="25"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb862-26" data-line-number="26">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.lawlor)</a>
+<a class="sourceLine" id="cb862-27" data-line-number="27">sce.lawlor &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.lawlor, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb862-28" data-line-number="28">sce.lawlor &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.lawlor)</a>
+<a class="sourceLine" id="cb862-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb862-30" data-line-number="30"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb862-31" data-line-number="31">dec.lawlor &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(sce.lawlor, <span class="dt">block=</span>sce.lawlor<span class="op">$</span><span class="st">`</span><span class="dt">islet unos id</span><span class="st">`</span>)</a>
+<a class="sourceLine" id="cb862-32" data-line-number="32">chosen.genes &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.lawlor, <span class="dt">n=</span><span class="dv">2000</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb857"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb857-1" data-line-number="1">sce.lawlor</a></code></pre></div>
+<div class="sourceCode" id="cb863"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb863-1" data-line-number="1">sce.lawlor</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 26616 615 
 ## metadata(0):
@@ -956,58 +957,58 @@ View history
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb859"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb859-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb859-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb859-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb859-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb859-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb859-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb859-7" data-line-number="7">sce.seger &lt;-<span class="st"> </span><span class="kw">SegerstolpePancreasData</span>()</a>
-<a class="sourceLine" id="cb859-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb859-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb859-10" data-line-number="10"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb859-11" data-line-number="11">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
-<a class="sourceLine" id="cb859-12" data-line-number="12">symbols &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.seger)<span class="op">$</span>symbol</a>
-<a class="sourceLine" id="cb859-13" data-line-number="13">ens.id &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>symbols, <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb859-14" data-line-number="14">ens.id &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(ens.id), symbols, ens.id)</a>
-<a class="sourceLine" id="cb859-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb859-16" data-line-number="16"><span class="co"># Removing duplicated rows.</span></a>
-<a class="sourceLine" id="cb859-17" data-line-number="17">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(ens.id)</a>
-<a class="sourceLine" id="cb859-18" data-line-number="18">sce.seger &lt;-<span class="st"> </span>sce.seger[keep,]</a>
-<a class="sourceLine" id="cb859-19" data-line-number="19"><span class="kw">rownames</span>(sce.seger) &lt;-<span class="st"> </span>ens.id[keep]</a>
-<a class="sourceLine" id="cb859-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb859-21" data-line-number="21"><span class="co">#--- sample-annotation ---#</span></a>
-<a class="sourceLine" id="cb859-22" data-line-number="22">emtab.meta &lt;-<span class="st"> </span><span class="kw">colData</span>(sce.seger)[,<span class="kw">c</span>(<span class="st">&quot;cell type&quot;</span>, </a>
-<a class="sourceLine" id="cb859-23" data-line-number="23">    <span class="st">&quot;individual&quot;</span>, <span class="st">&quot;single cell well quality&quot;</span>)]</a>
-<a class="sourceLine" id="cb859-24" data-line-number="24"><span class="kw">colnames</span>(emtab.meta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CellType&quot;</span>, <span class="st">&quot;Donor&quot;</span>, <span class="st">&quot;Quality&quot;</span>)</a>
-<a class="sourceLine" id="cb859-25" data-line-number="25"><span class="kw">colData</span>(sce.seger) &lt;-<span class="st"> </span>emtab.meta</a>
-<a class="sourceLine" id="cb859-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb859-27" data-line-number="27">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot; cell&quot;</span>, <span class="st">&quot;&quot;</span>, sce.seger<span class="op">$</span>CellType)</a>
-<a class="sourceLine" id="cb859-28" data-line-number="28">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">paste0</span>(</a>
-<a class="sourceLine" id="cb859-29" data-line-number="29">    <span class="kw">toupper</span>(<span class="kw">substr</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">1</span>, <span class="dv">1</span>)),</a>
-<a class="sourceLine" id="cb859-30" data-line-number="30">    <span class="kw">substring</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb859-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb859-32" data-line-number="32"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb859-33" data-line-number="33">low.qual &lt;-<span class="st"> </span>sce.seger<span class="op">$</span>Quality <span class="op">==</span><span class="st"> &quot;low quality cell&quot;</span></a>
-<a class="sourceLine" id="cb859-34" data-line-number="34"></a>
-<a class="sourceLine" id="cb859-35" data-line-number="35"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb859-36" data-line-number="36">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.seger)</a>
-<a class="sourceLine" id="cb859-37" data-line-number="37">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb859-38" data-line-number="38">sce.seger &lt;-<span class="st"> </span>sce.seger[,<span class="op">!</span>(qc<span class="op">$</span>discard <span class="op">|</span><span class="st"> </span>low.qual)]</a>
-<a class="sourceLine" id="cb859-39" data-line-number="39"></a>
-<a class="sourceLine" id="cb859-40" data-line-number="40"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb859-41" data-line-number="41"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb859-42" data-line-number="42">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.seger)</a>
-<a class="sourceLine" id="cb859-43" data-line-number="43">sce.seger &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.seger, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb859-44" data-line-number="44">sce.seger &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.seger) </a>
-<a class="sourceLine" id="cb859-45" data-line-number="45"></a>
-<a class="sourceLine" id="cb859-46" data-line-number="46"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb859-47" data-line-number="47">for.hvg &lt;-<span class="st"> </span>sce.seger[,<span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce.seger)) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb859-48" data-line-number="48">    <span class="op">&amp;</span><span class="st"> </span>sce.seger<span class="op">$</span>Donor<span class="op">!=</span><span class="st">&quot;AZ&quot;</span>]</a>
-<a class="sourceLine" id="cb859-49" data-line-number="49">dec.seger &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(for.hvg, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>for.hvg<span class="op">$</span>Donor)</a>
-<a class="sourceLine" id="cb859-50" data-line-number="50">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.seger, <span class="dt">n=</span><span class="dv">2000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb865"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb865-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb865-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb865-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb865-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb865-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb865-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb865-7" data-line-number="7">sce.seger &lt;-<span class="st"> </span><span class="kw">SegerstolpePancreasData</span>()</a>
+<a class="sourceLine" id="cb865-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb865-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb865-10" data-line-number="10"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb865-11" data-line-number="11">edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]</a>
+<a class="sourceLine" id="cb865-12" data-line-number="12">symbols &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.seger)<span class="op">$</span>symbol</a>
+<a class="sourceLine" id="cb865-13" data-line-number="13">ens.id &lt;-<span class="st"> </span><span class="kw">mapIds</span>(edb, <span class="dt">keys=</span>symbols, <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb865-14" data-line-number="14">ens.id &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(ens.id), symbols, ens.id)</a>
+<a class="sourceLine" id="cb865-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb865-16" data-line-number="16"><span class="co"># Removing duplicated rows.</span></a>
+<a class="sourceLine" id="cb865-17" data-line-number="17">keep &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">duplicated</span>(ens.id)</a>
+<a class="sourceLine" id="cb865-18" data-line-number="18">sce.seger &lt;-<span class="st"> </span>sce.seger[keep,]</a>
+<a class="sourceLine" id="cb865-19" data-line-number="19"><span class="kw">rownames</span>(sce.seger) &lt;-<span class="st"> </span>ens.id[keep]</a>
+<a class="sourceLine" id="cb865-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb865-21" data-line-number="21"><span class="co">#--- sample-annotation ---#</span></a>
+<a class="sourceLine" id="cb865-22" data-line-number="22">emtab.meta &lt;-<span class="st"> </span><span class="kw">colData</span>(sce.seger)[,<span class="kw">c</span>(<span class="st">&quot;cell type&quot;</span>, </a>
+<a class="sourceLine" id="cb865-23" data-line-number="23">    <span class="st">&quot;individual&quot;</span>, <span class="st">&quot;single cell well quality&quot;</span>)]</a>
+<a class="sourceLine" id="cb865-24" data-line-number="24"><span class="kw">colnames</span>(emtab.meta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CellType&quot;</span>, <span class="st">&quot;Donor&quot;</span>, <span class="st">&quot;Quality&quot;</span>)</a>
+<a class="sourceLine" id="cb865-25" data-line-number="25"><span class="kw">colData</span>(sce.seger) &lt;-<span class="st"> </span>emtab.meta</a>
+<a class="sourceLine" id="cb865-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb865-27" data-line-number="27">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot; cell&quot;</span>, <span class="st">&quot;&quot;</span>, sce.seger<span class="op">$</span>CellType)</a>
+<a class="sourceLine" id="cb865-28" data-line-number="28">sce.seger<span class="op">$</span>CellType &lt;-<span class="st"> </span><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb865-29" data-line-number="29">    <span class="kw">toupper</span>(<span class="kw">substr</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">1</span>, <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb865-30" data-line-number="30">    <span class="kw">substring</span>(sce.seger<span class="op">$</span>CellType, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb865-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb865-32" data-line-number="32"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb865-33" data-line-number="33">low.qual &lt;-<span class="st"> </span>sce.seger<span class="op">$</span>Quality <span class="op">==</span><span class="st"> &quot;low quality cell&quot;</span></a>
+<a class="sourceLine" id="cb865-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb865-35" data-line-number="35"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb865-36" data-line-number="36">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.seger)</a>
+<a class="sourceLine" id="cb865-37" data-line-number="37">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb865-38" data-line-number="38">sce.seger &lt;-<span class="st"> </span>sce.seger[,<span class="op">!</span>(qc<span class="op">$</span>discard <span class="op">|</span><span class="st"> </span>low.qual)]</a>
+<a class="sourceLine" id="cb865-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb865-40" data-line-number="40"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb865-41" data-line-number="41"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb865-42" data-line-number="42">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.seger)</a>
+<a class="sourceLine" id="cb865-43" data-line-number="43">sce.seger &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.seger, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb865-44" data-line-number="44">sce.seger &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.seger) </a>
+<a class="sourceLine" id="cb865-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb865-46" data-line-number="46"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb865-47" data-line-number="47">for.hvg &lt;-<span class="st"> </span>sce.seger[,<span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce.seger)) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb865-48" data-line-number="48">    <span class="op">&amp;</span><span class="st"> </span>sce.seger<span class="op">$</span>Donor<span class="op">!=</span><span class="st">&quot;AZ&quot;</span>]</a>
+<a class="sourceLine" id="cb865-49" data-line-number="49">dec.seger &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(for.hvg, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>for.hvg<span class="op">$</span>Donor)</a>
+<a class="sourceLine" id="cb865-50" data-line-number="50">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.seger, <span class="dt">n=</span><span class="dv">2000</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb860"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb860-1" data-line-number="1">sce.seger</a></code></pre></div>
+<div class="sourceCode" id="cb866"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb866-1" data-line-number="1">sce.seger</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 25454 2169 
 ## metadata(0):
@@ -1022,62 +1023,62 @@ View history
 ## spikeNames(0):
 ## altExpNames(1): ERCC</code></pre>
 <p>We perform the usual routine to obtain re-normalized values and a set of HVGs.</p>
-<div class="sourceCode" id="cb862"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb862-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">Reduce</span>(intersect, <span class="kw">list</span>(<span class="kw">rownames</span>(sce.grun), <span class="kw">rownames</span>(sce.muraro),</a>
-<a class="sourceLine" id="cb862-2" data-line-number="2">    <span class="kw">rownames</span>(sce.lawlor), <span class="kw">rownames</span>(sce.seger)))</a>
-<a class="sourceLine" id="cb862-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb862-4" data-line-number="4"><span class="co"># Could use a loop here... but I like typing.</span></a>
-<a class="sourceLine" id="cb862-5" data-line-number="5">sce.grun2 &lt;-<span class="st"> </span>sce.grun[universe,]</a>
-<a class="sourceLine" id="cb862-6" data-line-number="6">dec.grun2 &lt;-<span class="st"> </span>dec.grun[universe,]</a>
-<a class="sourceLine" id="cb862-7" data-line-number="7">sce.muraro2 &lt;-<span class="st"> </span>sce.muraro[universe,]</a>
-<a class="sourceLine" id="cb862-8" data-line-number="8">dec.muraro2 &lt;-<span class="st"> </span>dec.muraro[universe,]</a>
-<a class="sourceLine" id="cb862-9" data-line-number="9">sce.lawlor2 &lt;-<span class="st"> </span>sce.lawlor[universe,]</a>
-<a class="sourceLine" id="cb862-10" data-line-number="10">dec.lawlor2 &lt;-<span class="st"> </span>dec.lawlor[universe,]</a>
-<a class="sourceLine" id="cb862-11" data-line-number="11">sce.seger2 &lt;-<span class="st"> </span>sce.seger[universe,]</a>
-<a class="sourceLine" id="cb862-12" data-line-number="12">dec.seger2 &lt;-<span class="st"> </span>dec.seger[universe,]</a>
-<a class="sourceLine" id="cb862-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb862-14" data-line-number="14">normed.pancreas &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(sce.grun2, sce.muraro2, sce.lawlor2, sce.seger2)</a>
-<a class="sourceLine" id="cb862-15" data-line-number="15">sce.grun2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb862-16" data-line-number="16">sce.muraro2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">2</span>]]</a>
-<a class="sourceLine" id="cb862-17" data-line-number="17">sce.lawlor2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">3</span>]]</a>
-<a class="sourceLine" id="cb862-18" data-line-number="18">sce.seger2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">4</span>]]</a>
-<a class="sourceLine" id="cb862-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb862-20" data-line-number="20">combined.pan &lt;-<span class="st"> </span><span class="kw">combineVar</span>(dec.grun2, dec.muraro2, dec.lawlor2, dec.seger2)</a>
-<a class="sourceLine" id="cb862-21" data-line-number="21">chosen.genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(combined.pan)[combined.pan<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb868"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb868-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">Reduce</span>(intersect, <span class="kw">list</span>(<span class="kw">rownames</span>(sce.grun), <span class="kw">rownames</span>(sce.muraro),</a>
+<a class="sourceLine" id="cb868-2" data-line-number="2">    <span class="kw">rownames</span>(sce.lawlor), <span class="kw">rownames</span>(sce.seger)))</a>
+<a class="sourceLine" id="cb868-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb868-4" data-line-number="4"><span class="co"># Could use a loop here... but I like typing.</span></a>
+<a class="sourceLine" id="cb868-5" data-line-number="5">sce.grun2 &lt;-<span class="st"> </span>sce.grun[universe,]</a>
+<a class="sourceLine" id="cb868-6" data-line-number="6">dec.grun2 &lt;-<span class="st"> </span>dec.grun[universe,]</a>
+<a class="sourceLine" id="cb868-7" data-line-number="7">sce.muraro2 &lt;-<span class="st"> </span>sce.muraro[universe,]</a>
+<a class="sourceLine" id="cb868-8" data-line-number="8">dec.muraro2 &lt;-<span class="st"> </span>dec.muraro[universe,]</a>
+<a class="sourceLine" id="cb868-9" data-line-number="9">sce.lawlor2 &lt;-<span class="st"> </span>sce.lawlor[universe,]</a>
+<a class="sourceLine" id="cb868-10" data-line-number="10">dec.lawlor2 &lt;-<span class="st"> </span>dec.lawlor[universe,]</a>
+<a class="sourceLine" id="cb868-11" data-line-number="11">sce.seger2 &lt;-<span class="st"> </span>sce.seger[universe,]</a>
+<a class="sourceLine" id="cb868-12" data-line-number="12">dec.seger2 &lt;-<span class="st"> </span>dec.seger[universe,]</a>
+<a class="sourceLine" id="cb868-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb868-14" data-line-number="14">normed.pancreas &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(sce.grun2, sce.muraro2, sce.lawlor2, sce.seger2)</a>
+<a class="sourceLine" id="cb868-15" data-line-number="15">sce.grun2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb868-16" data-line-number="16">sce.muraro2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">2</span>]]</a>
+<a class="sourceLine" id="cb868-17" data-line-number="17">sce.lawlor2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">3</span>]]</a>
+<a class="sourceLine" id="cb868-18" data-line-number="18">sce.seger2 &lt;-<span class="st"> </span>normed.pancreas[[<span class="dv">4</span>]]</a>
+<a class="sourceLine" id="cb868-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb868-20" data-line-number="20">combined.pan &lt;-<span class="st"> </span><span class="kw">combineVar</span>(dec.grun2, dec.muraro2, dec.lawlor2, dec.seger2)</a>
+<a class="sourceLine" id="cb868-21" data-line-number="21">chosen.genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(combined.pan)[combined.pan<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</a></code></pre></div>
 <p>We observe that the merge is generally successful, with many clusters containing contributions from each batch (Figure <a href="merged-pancreas.html#fig:tsne-pancreas-mnn-many">31.3</a>).
 There are few clusters that are specific to the Segerstolpe dataset, and if we were naive, we might consider them to represent interesting subpopulations that are not present in the other datasets.</p>
-<div class="sourceCode" id="cb863"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb863-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1011110</span>)</a>
-<a class="sourceLine" id="cb863-2" data-line-number="2">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(<span class="dt">Grun=</span>sce.grun2, <span class="dt">Muraro=</span>sce.muraro2, </a>
-<a class="sourceLine" id="cb863-3" data-line-number="3">    <span class="dt">Lawlor=</span>sce.lawlor2, <span class="dt">Seger=</span>sce.seger2, <span class="dt">subset.row=</span>chosen.genes)</a>
-<a class="sourceLine" id="cb863-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb863-5" data-line-number="5"><span class="co"># Bumping up &#39;k&#39; to get broader clusters,</span></a>
-<a class="sourceLine" id="cb863-6" data-line-number="6"><span class="co"># &#39;smooth over&#39; any remaining batch effect.</span></a>
-<a class="sourceLine" id="cb863-7" data-line-number="7">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.pancreas, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">k=</span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb863-8" data-line-number="8">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb863-9" data-line-number="9">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>mnn.pancreas<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb863-10" data-line-number="10">tab</a></code></pre></div>
+<div class="sourceCode" id="cb869"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb869-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1011110</span>)</a>
+<a class="sourceLine" id="cb869-2" data-line-number="2">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(<span class="dt">Grun=</span>sce.grun2, <span class="dt">Muraro=</span>sce.muraro2, </a>
+<a class="sourceLine" id="cb869-3" data-line-number="3">    <span class="dt">Lawlor=</span>sce.lawlor2, <span class="dt">Seger=</span>sce.seger2, <span class="dt">subset.row=</span>chosen.genes)</a>
+<a class="sourceLine" id="cb869-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb869-5" data-line-number="5"><span class="co"># Bumping up &#39;k&#39; to get broader clusters,</span></a>
+<a class="sourceLine" id="cb869-6" data-line-number="6"><span class="co"># &#39;smooth over&#39; any remaining batch effect.</span></a>
+<a class="sourceLine" id="cb869-7" data-line-number="7">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.pancreas, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">k=</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb869-8" data-line-number="8">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb869-9" data-line-number="9">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>mnn.pancreas<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb869-10" data-line-number="10">tab</a></code></pre></div>
 <pre><code>##        Batch
 ## Cluster Grun Lawlor Muraro Seger
-##      1   189    256    475   216
-##      2   305     11    239   134
-##      3     0      0      0   315
-##      4   340     26    256   391
-##      5   240    243    852   362
-##      6    33     11     44    54
-##      7    62     20    198   112
-##      8    12      2     25     7
-##      9     0      0      0    52
-##      10    0      0      0   220
-##      11   23     19    128   195
-##      12   54      0      0     0
-##      13    0      0      0    38
-##      14   25     19    108    56
+##      1   183    257    476   212
+##      2     0      0      0   324
+##      3   290     12    240   132
+##      4   355     26    258   391
+##      5   245    242    853   369
+##      6    35     10     42    56
+##      7    62     20    197   112
+##      8    23     19    127   195
+##      9     0      0      0    46
+##      10   54      0      0     0
+##      11   25     19    108    56
+##      12    0      0      0    48
+##      13   11      2     24     7
+##      14    0      0      0   204
 ##      15    7      8     21    17</code></pre>
-<div class="sourceCode" id="cb865"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb865-1" data-line-number="1">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.pancreas, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb865-2" data-line-number="2">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb865-3" data-line-number="3">    <span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>, <span class="dt">text_by=</span><span class="kw">I</span>(clusters)),</a>
-<a class="sourceLine" id="cb865-4" data-line-number="4">    <span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="kw">I</span>(<span class="kw">factor</span>(clusters)), <span class="dt">text_by=</span><span class="kw">I</span>(clusters)),</a>
-<a class="sourceLine" id="cb865-5" data-line-number="5">    <span class="dt">ncol=</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb865-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb871"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb871-1" data-line-number="1">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.pancreas, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb871-2" data-line-number="2">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb871-3" data-line-number="3">    <span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>, <span class="dt">text_by=</span><span class="kw">I</span>(clusters)),</a>
+<a class="sourceLine" id="cb871-4" data-line-number="4">    <span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="kw">I</span>(<span class="kw">factor</span>(clusters)), <span class="dt">text_by=</span><span class="kw">I</span>(clusters)),</a>
+<a class="sourceLine" id="cb871-5" data-line-number="5">    <span class="dt">ncol=</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb871-6" data-line-number="6">)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pancreas-mnn-many"></span>
 <img src="P3_W10.merged-pancreas_files/figure-html/tsne-pancreas-mnn-many-1.png" alt="$t$-SNE plots of the four pancreas datasets after correction with `fastMNN()`. Each point represents a cell and is colored according to the batch of origin (left) or the assigned cluster (right). The cluster label is shown at the median location across all cells in the cluster." width="672" />
 <p class="caption">
@@ -1088,11 +1089,11 @@ Figure 31.3: <span class="math inline">\(t\)</span>-SNE plots of the four pancre
 The most obvious candidate is the donor of origin for each cell (Figure <a href="merged-pancreas.html#fig:tsne-pancreas-mnn-donor">31.4</a>), which correlates strongly to these Segerstolpe-only clusters.
 This is not surprising given the large differences between humans in the wild, but donor-level variation is not interesting for the purposes of cell type characterization.
 (That said, preservation of the within-dataset donor effects is the technically correct course of action here, as a batch correction method should try to avoid removing heterogeneity within each of its defined batches.)</p>
-<div class="sourceCode" id="cb866"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb866-1" data-line-number="1">donors &lt;-<span class="st"> </span><span class="kw">c</span>(sce.grun2<span class="op">$</span>donor, sce.muraro2<span class="op">$</span>donor,</a>
-<a class="sourceLine" id="cb866-2" data-line-number="2">    sce.lawlor2<span class="op">$</span><span class="st">`</span><span class="dt">islet unos id</span><span class="st">`</span>, sce.seger2<span class="op">$</span>Donor)</a>
-<a class="sourceLine" id="cb866-3" data-line-number="3">seger.donors &lt;-<span class="st"> </span>donors</a>
-<a class="sourceLine" id="cb866-4" data-line-number="4">seger.donors[mnn.pancreas<span class="op">$</span>batch<span class="op">!=</span><span class="st">&quot;Seger&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb866-5" data-line-number="5"><span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="kw">I</span>(seger.donors))</a></code></pre></div>
+<div class="sourceCode" id="cb872"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb872-1" data-line-number="1">donors &lt;-<span class="st"> </span><span class="kw">c</span>(sce.grun2<span class="op">$</span>donor, sce.muraro2<span class="op">$</span>donor,</a>
+<a class="sourceLine" id="cb872-2" data-line-number="2">    sce.lawlor2<span class="op">$</span><span class="st">`</span><span class="dt">islet unos id</span><span class="st">`</span>, sce.seger2<span class="op">$</span>Donor)</a>
+<a class="sourceLine" id="cb872-3" data-line-number="3">seger.donors &lt;-<span class="st"> </span>donors</a>
+<a class="sourceLine" id="cb872-4" data-line-number="4">seger.donors[mnn.pancreas<span class="op">$</span>batch<span class="op">!=</span><span class="st">&quot;Seger&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb872-5" data-line-number="5"><span class="kw">plotTSNE</span>(mnn.pancreas, <span class="dt">colour_by=</span><span class="kw">I</span>(seger.donors))</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pancreas-mnn-donor"></span>
 <img src="P3_W10.merged-pancreas_files/figure-html/tsne-pancreas-mnn-donor-1.png" alt="$t$-SNE plots of the four pancreas datasets after correction with `fastMNN()`. Each point represents a cell and is colored according to the donor of origin for the Segerstolpe dataset." width="672" />
 <p class="caption">
@@ -1105,15 +1106,15 @@ Figure 31.4: <span class="math inline">\(t\)</span>-SNE plots of the four pancre
 <p>Given these results, the most prudent course of action is to remove the donor effects within each dataset in addition to the batch effects across datasets.
 This involves a bit more work to properly specify the two levels of unwanted heterogeneity.
 To make it a bit easier, we use the <code>noCorrect()</code> utility to combine all batches into a single <code>SingleCellExperiment</code> object.</p>
-<div class="sourceCode" id="cb867"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb867-1" data-line-number="1">combined &lt;-<span class="st"> </span><span class="kw">noCorrect</span>(<span class="dt">Grun=</span>sce.grun2, <span class="dt">Muraro=</span>sce.muraro2, </a>
-<a class="sourceLine" id="cb867-2" data-line-number="2">    <span class="dt">Lawlor=</span>sce.lawlor2, <span class="dt">Seger=</span>sce.seger2)</a>
-<a class="sourceLine" id="cb867-3" data-line-number="3"><span class="kw">assayNames</span>(combined) &lt;-<span class="st"> &quot;logcounts&quot;</span></a>
-<a class="sourceLine" id="cb867-4" data-line-number="4">combined<span class="op">$</span>donor &lt;-<span class="st"> </span>donors</a></code></pre></div>
+<div class="sourceCode" id="cb873"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb873-1" data-line-number="1">combined &lt;-<span class="st"> </span><span class="kw">noCorrect</span>(<span class="dt">Grun=</span>sce.grun2, <span class="dt">Muraro=</span>sce.muraro2, </a>
+<a class="sourceLine" id="cb873-2" data-line-number="2">    <span class="dt">Lawlor=</span>sce.lawlor2, <span class="dt">Seger=</span>sce.seger2)</a>
+<a class="sourceLine" id="cb873-3" data-line-number="3"><span class="kw">assayNames</span>(combined) &lt;-<span class="st"> &quot;logcounts&quot;</span></a>
+<a class="sourceLine" id="cb873-4" data-line-number="4">combined<span class="op">$</span>donor &lt;-<span class="st"> </span>donors</a></code></pre></div>
 <p>For each donor, we determine the number of donors from the same dataset.
 This is used to weight the PCA step to ensure that each dataset contributes equally to the definition of the PC space, regardless of the number of donors in that dataset.
 (Similarly, the default behavior of <code>fastMNN()</code> ensures that each batch contributes equally to the PCA, regardless of the number of cells.)</p>
-<div class="sourceCode" id="cb868"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb868-1" data-line-number="1">donors.by.batches &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">split</span>(combined<span class="op">$</span>donor, combined<span class="op">$</span>batch), unique)</a>
-<a class="sourceLine" id="cb868-2" data-line-number="2">donors.by.batches</a></code></pre></div>
+<div class="sourceCode" id="cb874"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb874-1" data-line-number="1">donors.by.batches &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">split</span>(combined<span class="op">$</span>donor, combined<span class="op">$</span>batch), unique)</a>
+<a class="sourceLine" id="cb874-2" data-line-number="2">donors.by.batches</a></code></pre></div>
 <pre><code>## $Grun
 ## [1] &quot;D2&quot;  &quot;D3&quot;  &quot;D7&quot;  &quot;D10&quot; &quot;D17&quot;
 ## 
@@ -1128,9 +1129,9 @@ This is used to weight the PCA step to ensure that each dataset contributes equa
 ##  [1] &quot;HP1502401&quot;    &quot;HP1504101T2D&quot; &quot;AZ&quot;           &quot;HP1508501T2D&quot;
 ##  [5] &quot;HP1506401&quot;    &quot;HP1507101&quot;    &quot;HP1509101&quot;    &quot;HP1504901&quot;   
 ##  [9] &quot;HP1525301T2D&quot; &quot;HP1526901T2D&quot;</code></pre>
-<div class="sourceCode" id="cb870"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb870-1" data-line-number="1">ndonors &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">lengths</span>(donors.by.batches), <span class="kw">lengths</span>(donors.by.batches))</a>
-<a class="sourceLine" id="cb870-2" data-line-number="2"><span class="kw">names</span>(ndonors) &lt;-<span class="st"> </span><span class="kw">unlist</span>(donors.by.batches)</a>
-<a class="sourceLine" id="cb870-3" data-line-number="3">ndonors</a></code></pre></div>
+<div class="sourceCode" id="cb876"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb876-1" data-line-number="1">ndonors &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">lengths</span>(donors.by.batches), <span class="kw">lengths</span>(donors.by.batches))</a>
+<a class="sourceLine" id="cb876-2" data-line-number="2"><span class="kw">names</span>(ndonors) &lt;-<span class="st"> </span><span class="kw">unlist</span>(donors.by.batches)</a>
+<a class="sourceLine" id="cb876-3" data-line-number="3">ndonors</a></code></pre></div>
 <pre><code>##           D2           D3           D7          D10          D17 
 ##            5            5            5            5            5 
 ##      ACIW009      ACJV399      ACCG268     ACCR015A     ACEK420A 
@@ -1145,40 +1146,40 @@ This is used to weight the PCA step to ensure that each dataset contributes equa
 ##           10           10</code></pre>
 <p>We then call <code>fastMNN()</code> on the combined object, using the <code>batch=</code> argument to specify which cells belong to which donors.
 This will progressively merge cells from each donor until all cells are mapped onto a common coordinate space.</p>
-<div class="sourceCode" id="cb872"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb872-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1010100</span>)</a>
-<a class="sourceLine" id="cb872-2" data-line-number="2">multiout &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(combined, <span class="dt">batch=</span>donors, <span class="dt">subset.row=</span>chosen.genes,</a>
-<a class="sourceLine" id="cb872-3" data-line-number="3">    <span class="dt">weights=</span><span class="dv">1</span><span class="op">/</span>ndonors)</a>
-<a class="sourceLine" id="cb872-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb872-5" data-line-number="5"><span class="co"># Renaming things for easier communication later.</span></a>
-<a class="sourceLine" id="cb872-6" data-line-number="6">multiout<span class="op">$</span>dataset &lt;-<span class="st"> </span>combined<span class="op">$</span>batch</a>
-<a class="sourceLine" id="cb872-7" data-line-number="7">multiout<span class="op">$</span>donor &lt;-<span class="st"> </span>multiout<span class="op">$</span>batch</a>
-<a class="sourceLine" id="cb872-8" data-line-number="8">multiout<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="ot">NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb878"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb878-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1010100</span>)</a>
+<a class="sourceLine" id="cb878-2" data-line-number="2">multiout &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(combined, <span class="dt">batch=</span>donors, <span class="dt">subset.row=</span>chosen.genes,</a>
+<a class="sourceLine" id="cb878-3" data-line-number="3">    <span class="dt">weights=</span><span class="dv">1</span><span class="op">/</span>ndonors)</a>
+<a class="sourceLine" id="cb878-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb878-5" data-line-number="5"><span class="co"># Renaming things for easier communication later.</span></a>
+<a class="sourceLine" id="cb878-6" data-line-number="6">multiout<span class="op">$</span>dataset &lt;-<span class="st"> </span>combined<span class="op">$</span>batch</a>
+<a class="sourceLine" id="cb878-7" data-line-number="7">multiout<span class="op">$</span>donor &lt;-<span class="st"> </span>multiout<span class="op">$</span>batch</a>
+<a class="sourceLine" id="cb878-8" data-line-number="8">multiout<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="ot">NULL</span></a></code></pre></div>
 <p>With this approach, we see that the Segerstolpe-only clusters have disappeared (Figure <a href="merged-pancreas.html#fig:tsne-pancreas-mnn-donor-all">31.5</a>).
 Visually, there also seems to be much greater mixing between cells from different Segerstolpe donors.
 This suggests that we have removed most of the donor effect, which simplifies the interpretation of our clusters.</p>
-<div class="sourceCode" id="cb873"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb873-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb873-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(multiout, <span class="dt">use.dimred=</span><span class="dv">1</span>, <span class="dt">k=</span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb873-3" data-line-number="3">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb873-4" data-line-number="4">tab &lt;-<span class="st"> </span><span class="kw">table</span>(clusters, multiout<span class="op">$</span>dataset)</a>
-<a class="sourceLine" id="cb873-5" data-line-number="5">tab</a></code></pre></div>
+<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb879-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb879-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(multiout, <span class="dt">use.dimred=</span><span class="dv">1</span>, <span class="dt">k=</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb879-3" data-line-number="3">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb879-4" data-line-number="4">tab &lt;-<span class="st"> </span><span class="kw">table</span>(clusters, multiout<span class="op">$</span>dataset)</a>
+<a class="sourceLine" id="cb879-5" data-line-number="5">tab</a></code></pre></div>
 <pre><code>##         
 ## clusters Grun Lawlor Muraro Seger
-##       1   336     22    285   188
-##       2   206    260    480   314
-##       3   344     25    256   391
-##       4   219    241    849   889
+##       1   333     21    285   187
+##       2   208    261    482   317
+##       3   218    239    847   882
+##       4   349     25    256   391
 ##       5    11      2     24     8
-##       6    65     20    197   115
-##       7    26     18    108    56
-##       8    52      0      0     0
-##       9     7      9     21    17
-##       10   24     18    126   191</code></pre>
-<div class="sourceCode" id="cb875"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb875-1" data-line-number="1">multiout &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(multiout, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb875-2" data-line-number="2">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb875-3" data-line-number="3">    <span class="kw">plotTSNE</span>(multiout, <span class="dt">colour_by=</span><span class="st">&quot;dataset&quot;</span>, <span class="dt">text_by=</span><span class="kw">I</span>(clusters)),</a>
-<a class="sourceLine" id="cb875-4" data-line-number="4">    <span class="kw">plotTSNE</span>(multiout, <span class="dt">colour_by=</span><span class="kw">I</span>(seger.donors)),</a>
-<a class="sourceLine" id="cb875-5" data-line-number="5">    <span class="dt">ncol=</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb875-6" data-line-number="6">)</a></code></pre></div>
+##       6    64     20    195   114
+##       7    27     18    108    56
+##       8     7      9     21    17
+##       9    49      0      0     0
+##       10   24     20    128   197</code></pre>
+<div class="sourceCode" id="cb881"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb881-1" data-line-number="1">multiout &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(multiout, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb881-2" data-line-number="2">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb881-3" data-line-number="3">    <span class="kw">plotTSNE</span>(multiout, <span class="dt">colour_by=</span><span class="st">&quot;dataset&quot;</span>, <span class="dt">text_by=</span><span class="kw">I</span>(clusters)),</a>
+<a class="sourceLine" id="cb881-4" data-line-number="4">    <span class="kw">plotTSNE</span>(multiout, <span class="dt">colour_by=</span><span class="kw">I</span>(seger.donors)),</a>
+<a class="sourceLine" id="cb881-5" data-line-number="5">    <span class="dt">ncol=</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb881-6" data-line-number="6">)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pancreas-mnn-donor-all"></span>
 <img src="P3_W10.merged-pancreas_files/figure-html/tsne-pancreas-mnn-donor-all-1.png" alt="$t$-SNE plots of the four pancreas datasets after donor-level correction with `fastMNN()`. Each point represents a cell and is colored according to the batch of origin (left) or the donor of origin for the Segerstolpe-derived cells (right). The cluster label is shown at the median location across all cells in the cluster." width="960" />
 <p class="caption">
@@ -1187,37 +1188,37 @@ Figure 31.5: <span class="math inline">\(t\)</span>-SNE plots of the four pancre
 </div>
 <p>Our clusters compare well to the published annotations, indicating that we did not inadvertently discard important factors of variation during correction.
 (Though in this case, the cell types are so well defined, it would be quite a feat to fail to separate them!)</p>
-<div class="sourceCode" id="cb876"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb876-1" data-line-number="1">proposed &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">ncol</span>(sce.grun)), </a>
-<a class="sourceLine" id="cb876-2" data-line-number="2">    sce.muraro<span class="op">$</span>label,</a>
-<a class="sourceLine" id="cb876-3" data-line-number="3">    sce.lawlor<span class="op">$</span><span class="st">`</span><span class="dt">cell type</span><span class="st">`</span>,</a>
-<a class="sourceLine" id="cb876-4" data-line-number="4">    sce.seger<span class="op">$</span>CellType)</a>
-<a class="sourceLine" id="cb876-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb876-6" data-line-number="6">proposed &lt;-<span class="st"> </span><span class="kw">tolower</span>(proposed)</a>
-<a class="sourceLine" id="cb876-7" data-line-number="7">proposed[proposed<span class="op">==</span><span class="st">&quot;gamma/pp&quot;</span>] &lt;-<span class="st"> &quot;gamma&quot;</span></a>
-<a class="sourceLine" id="cb876-8" data-line-number="8">proposed[proposed<span class="op">==</span><span class="st">&quot;pp&quot;</span>] &lt;-<span class="st"> &quot;gamma&quot;</span></a>
-<a class="sourceLine" id="cb876-9" data-line-number="9">proposed[proposed<span class="op">==</span><span class="st">&quot;duct&quot;</span>] &lt;-<span class="st"> &quot;ductal&quot;</span></a>
-<a class="sourceLine" id="cb876-10" data-line-number="10">proposed[proposed<span class="op">==</span><span class="st">&quot;psc&quot;</span>] &lt;-<span class="st"> &quot;stellate&quot;</span></a>
-<a class="sourceLine" id="cb876-11" data-line-number="11"><span class="kw">table</span>(proposed, clusters)</a></code></pre></div>
+<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb882-1" data-line-number="1">proposed &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">ncol</span>(sce.grun)), </a>
+<a class="sourceLine" id="cb882-2" data-line-number="2">    sce.muraro<span class="op">$</span>label,</a>
+<a class="sourceLine" id="cb882-3" data-line-number="3">    sce.lawlor<span class="op">$</span><span class="st">`</span><span class="dt">cell type</span><span class="st">`</span>,</a>
+<a class="sourceLine" id="cb882-4" data-line-number="4">    sce.seger<span class="op">$</span>CellType)</a>
+<a class="sourceLine" id="cb882-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb882-6" data-line-number="6">proposed &lt;-<span class="st"> </span><span class="kw">tolower</span>(proposed)</a>
+<a class="sourceLine" id="cb882-7" data-line-number="7">proposed[proposed<span class="op">==</span><span class="st">&quot;gamma/pp&quot;</span>] &lt;-<span class="st"> &quot;gamma&quot;</span></a>
+<a class="sourceLine" id="cb882-8" data-line-number="8">proposed[proposed<span class="op">==</span><span class="st">&quot;pp&quot;</span>] &lt;-<span class="st"> &quot;gamma&quot;</span></a>
+<a class="sourceLine" id="cb882-9" data-line-number="9">proposed[proposed<span class="op">==</span><span class="st">&quot;duct&quot;</span>] &lt;-<span class="st"> &quot;ductal&quot;</span></a>
+<a class="sourceLine" id="cb882-10" data-line-number="10">proposed[proposed<span class="op">==</span><span class="st">&quot;psc&quot;</span>] &lt;-<span class="st"> &quot;stellate&quot;</span></a>
+<a class="sourceLine" id="cb882-11" data-line-number="11"><span class="kw">table</span>(proposed, clusters)</a></code></pre></div>
 <pre><code>##                         clusters
 ## proposed                    1    2    3    4    5    6    7    8    9   10
-##   acinar                  424    0    0    0    1    0    0    0    1    0
-##   alpha                     1   24    6 1874    1    1    0    0    1    0
-##   beta                      3  945    5    3    1    0    2    0    1    7
-##   co-expression             0   38    0    1    0    0    0    0    0    0
-##   delta                     0    3    2    1    0  317    0    0    1    0
-##   ductal                   10    4  614    1   13    0    5    0    0    1
-##   endothelial               0    0    0    0    0    0    1    0   35    0
-##   epsilon                   0    1    0    6    0    0    0    0    0    3
-##   gamma                     2    0    0    1    0    0    0    0    0  302
+##   acinar                  422    2    0    0    1    0    0    1    0    0
+##   alpha                     1   25 1871    6    1    1    0    1    0    2
+##   beta                      3  945    3    5    1    0    2    1    0    7
+##   co-expression             0   38    1    0    0    0    0    0    0    0
+##   delta                     0    5    1    2    0  315    0    1    0    0
+##   ductal                   10    4    1  614   13    0    5    0    0    1
+##   endothelial               0    0    0    0    0    0    1   35    0    0
+##   epsilon                   0    1    0    0    0    0    0    0    0    9
+##   gamma                     2    0    0    0    0    0    0    0    0  303
 ##   mast                      0    0    0    0    2    0    0    0    0    0
-##   mesenchymal               0    0    1    0    0    0   79    0    0    0
+##   mesenchymal               0    0    0    1    0    0   79    0    0    0
 ##   mhc class ii              0    0    0    0    5    0    0    0    0    0
-##   nana                      2    2    9   16    0    1    0    0    1    1
-##   none/other                0    1    3    5    1    0    0    0    4    0
-##   stellate                  0    0    0    0    0    0   72    0    1    0
+##   nana                      2    2   16    9    0    1    0    1    0    1
+##   none/other                0    1    4    3    1    0    0    4    0    1
+##   stellate                  0    0    0    0    0    0   72    1    0    0
 ##   unclassified              0    0    0    0    0    0    2    0    0    0
-##   unclassified endocrine    0    6    1    4    0    3    0    0    0    1
-##   unclear                   0    0    4    0    0    0    0    0    0    0</code></pre>
+##   unclassified endocrine    0    7    4    1    0    2    0    0    0    1
+##   unclear                   0    0    0    4    0    0    0    0    0    0</code></pre>
 </div>
 <div id="session-info-26" class="section level2 unnumbered">
 <h2>Session Info</h2>
@@ -1246,29 +1247,29 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] fossil_0.3.7                shapefiles_0.7             
- [3] foreign_0.8-72              maps_3.3.0                 
- [5] sp_1.3-1                    scater_1.13.27             
- [7] ggplot2_3.2.1               scran_1.13.32              
- [9] batchelor_1.1.18            SingleCellExperiment_1.7.11
-[11] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
-[13] BiocParallel_1.19.5         matrixStats_0.55.0         
-[15] Biobase_2.45.1              GenomicRanges_1.37.17      
-[17] GenomeInfoDb_1.21.2         IRanges_2.19.17            
-[19] S4Vectors_0.23.25           BiocGenerics_0.31.6        
-[21] Cairo_1.5-10                BiocStyle_2.13.2           
-[23] OSCAUtils_0.0.1            
+ [1] fossil_0.3.7                 shapefiles_0.7              
+ [3] foreign_0.8-72               maps_3.3.0                  
+ [5] sp_1.3-1                     scater_1.13.28              
+ [7] ggplot2_3.2.1                scran_1.13.32               
+ [9] batchelor_1.1.19             SingleCellExperiment_1.7.11 
+[11] SummarizedExperiment_1.15.10 DelayedArray_0.11.8         
+[13] BiocParallel_1.19.6          matrixStats_0.55.0          
+[15] Biobase_2.45.1               GenomicRanges_1.37.17       
+[17] GenomeInfoDb_1.21.2          IRanges_2.19.18             
+[19] S4Vectors_0.23.25            BiocGenerics_0.31.6         
+[21] Cairo_1.5-10                 BiocStyle_2.13.2            
+[23] OSCAUtils_0.0.1             
 
 loaded via a namespace (and not attached):
  [1] viridis_0.5.1            edgeR_3.27.14           
  [3] BiocSingular_1.1.7       viridisLite_0.3.0       
  [5] DelayedMatrixStats_1.7.2 assertthat_0.2.1        
  [7] statmod_1.4.32           highr_0.8               
- [9] BiocManager_1.30.8       dqrng_0.2.1             
-[11] GenomeInfoDbData_1.2.1   vipor_0.4.5             
+ [9] BiocManager_1.30.9       dqrng_0.2.1             
+[11] GenomeInfoDbData_1.2.2   vipor_0.4.5             
 [13] yaml_2.2.0               pillar_1.4.2            
 [15] lattice_0.20-38          glue_1.3.1              
-[17] limma_3.41.18            digest_0.6.22           
+[17] limma_3.41.20            digest_0.6.22           
 [19] XVector_0.25.0           colorspace_1.4-1        
 [21] cowplot_1.0.0            htmltools_0.4.0         
 [23] Matrix_1.2-17            pkgconfig_2.0.3         
@@ -1281,7 +1282,7 @@ loaded via a namespace (and not attached):
 [37] tools_3.6.1              stringr_1.4.0           
 [39] munsell_0.5.0            locfit_1.5-9.1          
 [41] irlba_2.3.3              compiler_3.6.1          
-[43] rsvd_1.0.2               rlang_0.4.0             
+[43] rsvd_1.0.2               rlang_0.4.1             
 [45] grid_3.6.1               RCurl_1.95-4.12         
 [47] BiocNeighbors_1.3.5      igraph_1.2.4.1          
 [49] labeling_0.3             bitops_1.0-6            

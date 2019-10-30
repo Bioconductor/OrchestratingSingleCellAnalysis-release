@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-28" />
+<meta name="date" content="2019-10-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -312,6 +312,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
 <li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+<li class="chapter" data-level="12.5" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#computing-gene-set-activities"><i class="fa fa-check"></i><b>12.5</b> Computing gene set activities</a></li>
 <li class="chapter" data-level="" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
@@ -733,47 +734,47 @@ The same can also be said for trend fitting when modelling the mean-variance rel
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb361-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb361-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb361-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb361-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb361-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb361-6" data-line-number="6"><span class="kw">library</span>(TENxPBMCData)</a>
-<a class="sourceLine" id="cb361-7" data-line-number="7">pbmc3k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a>
-<a class="sourceLine" id="cb361-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb361-9" data-line-number="9"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb361-10" data-line-number="10">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc3k)<span class="op">$</span>Symbol_TENx)</a>
-<a class="sourceLine" id="cb361-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb361-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb361-13" data-line-number="13">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(pbmc3k, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
-<a class="sourceLine" id="cb361-14" data-line-number="14">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb361-15" data-line-number="15">pbmc3k &lt;-<span class="st"> </span>pbmc3k[,<span class="op">!</span>high.mito]</a>
-<a class="sourceLine" id="cb361-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb361-17" data-line-number="17"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb361-18" data-line-number="18">pbmc3k &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(pbmc3k)</a>
-<a class="sourceLine" id="cb361-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb361-20" data-line-number="20"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb361-21" data-line-number="21"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb361-22" data-line-number="22">dec3k &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(pbmc3k)</a>
-<a class="sourceLine" id="cb361-23" data-line-number="23">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec3k, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb361-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb361-25" data-line-number="25"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb361-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb361-27" data-line-number="27">pbmc3k &lt;-<span class="st"> </span><span class="kw">runPCA</span>(pbmc3k, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb361-28" data-line-number="28">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a>
-<a class="sourceLine" id="cb361-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb361-30" data-line-number="30"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb361-31" data-line-number="31">pbmc3k &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb361-32" data-line-number="32"></a>
-<a class="sourceLine" id="cb361-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb361-34" data-line-number="34">pbmc3k &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb361-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb361-36" data-line-number="36"><span class="co">#--- clustering ---#</span></a>
-<a class="sourceLine" id="cb361-37" data-line-number="37">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(pbmc3k, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb361-38" data-line-number="38">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb361-39" data-line-number="39">pbmc3k<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb367-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb367-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb367-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb367-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb367-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb367-6" data-line-number="6"><span class="kw">library</span>(TENxPBMCData)</a>
+<a class="sourceLine" id="cb367-7" data-line-number="7">pbmc3k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc3k&#39;</span>)</a>
+<a class="sourceLine" id="cb367-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb367-9" data-line-number="9"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb367-10" data-line-number="10">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc3k)<span class="op">$</span>Symbol_TENx)</a>
+<a class="sourceLine" id="cb367-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb367-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb367-13" data-line-number="13">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(pbmc3k, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
+<a class="sourceLine" id="cb367-14" data-line-number="14">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb367-15" data-line-number="15">pbmc3k &lt;-<span class="st"> </span>pbmc3k[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb367-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb367-17" data-line-number="17"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb367-18" data-line-number="18">pbmc3k &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(pbmc3k)</a>
+<a class="sourceLine" id="cb367-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb367-20" data-line-number="20"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb367-21" data-line-number="21"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb367-22" data-line-number="22">dec3k &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(pbmc3k)</a>
+<a class="sourceLine" id="cb367-23" data-line-number="23">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec3k, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb367-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb367-25" data-line-number="25"><span class="co">#--- dimensionality-reduction ---#</span></a>
+<a class="sourceLine" id="cb367-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb367-27" data-line-number="27">pbmc3k &lt;-<span class="st"> </span><span class="kw">runPCA</span>(pbmc3k, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb367-28" data-line-number="28">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a>
+<a class="sourceLine" id="cb367-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb367-30" data-line-number="30"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb367-31" data-line-number="31">pbmc3k &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb367-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb367-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb367-34" data-line-number="34">pbmc3k &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(pbmc3k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb367-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb367-36" data-line-number="36"><span class="co">#--- clustering ---#</span></a>
+<a class="sourceLine" id="cb367-37" data-line-number="37">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(pbmc3k, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb367-38" data-line-number="38">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb367-39" data-line-number="39">pbmc3k<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" data-line-number="1">pbmc3k</a></code></pre></div>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb368-1" data-line-number="1">pbmc3k</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 32738 2609 
 ## metadata(0):
@@ -790,47 +791,47 @@ View history
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb364-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb364-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb364-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb364-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb364-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb364-6" data-line-number="6"><span class="kw">library</span>(TENxPBMCData)</a>
-<a class="sourceLine" id="cb364-7" data-line-number="7">pbmc4k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</a>
-<a class="sourceLine" id="cb364-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb364-9" data-line-number="9"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb364-10" data-line-number="10">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc4k)<span class="op">$</span>Symbol_TENx)</a>
-<a class="sourceLine" id="cb364-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb364-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb364-13" data-line-number="13">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(pbmc4k, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
-<a class="sourceLine" id="cb364-14" data-line-number="14">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb364-15" data-line-number="15">pbmc4k &lt;-<span class="st"> </span>pbmc4k[,<span class="op">!</span>high.mito]</a>
-<a class="sourceLine" id="cb364-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb364-17" data-line-number="17"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb364-18" data-line-number="18">pbmc4k &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(pbmc4k)</a>
-<a class="sourceLine" id="cb364-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb364-20" data-line-number="20"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb364-21" data-line-number="21"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb364-22" data-line-number="22">dec4k &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(pbmc4k)</a>
-<a class="sourceLine" id="cb364-23" data-line-number="23">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec4k, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb364-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb364-25" data-line-number="25"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb364-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb364-27" data-line-number="27">pbmc4k &lt;-<span class="st"> </span><span class="kw">runPCA</span>(pbmc4k, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb364-28" data-line-number="28">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a>
-<a class="sourceLine" id="cb364-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb364-30" data-line-number="30"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb364-31" data-line-number="31">pbmc4k &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(pbmc4k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb364-32" data-line-number="32"></a>
-<a class="sourceLine" id="cb364-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb364-34" data-line-number="34">pbmc4k &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(pbmc4k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb364-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb364-36" data-line-number="36"><span class="co">#--- clustering ---#</span></a>
-<a class="sourceLine" id="cb364-37" data-line-number="37">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(pbmc4k, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb364-38" data-line-number="38">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb364-39" data-line-number="39">pbmc4k<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb370-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb370-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb370-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb370-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb370-6" data-line-number="6"><span class="kw">library</span>(TENxPBMCData)</a>
+<a class="sourceLine" id="cb370-7" data-line-number="7">pbmc4k &lt;-<span class="st"> </span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</a>
+<a class="sourceLine" id="cb370-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb370-9" data-line-number="9"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb370-10" data-line-number="10">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;MT&quot;</span>, <span class="kw">rowData</span>(pbmc4k)<span class="op">$</span>Symbol_TENx)</a>
+<a class="sourceLine" id="cb370-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb370-12" data-line-number="12"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb370-13" data-line-number="13">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(pbmc4k, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
+<a class="sourceLine" id="cb370-14" data-line-number="14">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb370-15" data-line-number="15">pbmc4k &lt;-<span class="st"> </span>pbmc4k[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb370-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb370-17" data-line-number="17"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb370-18" data-line-number="18">pbmc4k &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(pbmc4k)</a>
+<a class="sourceLine" id="cb370-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb370-20" data-line-number="20"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb370-21" data-line-number="21"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb370-22" data-line-number="22">dec4k &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(pbmc4k)</a>
+<a class="sourceLine" id="cb370-23" data-line-number="23">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec4k, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb370-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb370-25" data-line-number="25"><span class="co">#--- dimensionality-reduction ---#</span></a>
+<a class="sourceLine" id="cb370-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb370-27" data-line-number="27">pbmc4k &lt;-<span class="st"> </span><span class="kw">runPCA</span>(pbmc4k, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">ncomponents=</span><span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb370-28" data-line-number="28">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a>
+<a class="sourceLine" id="cb370-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb370-30" data-line-number="30"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb370-31" data-line-number="31">pbmc4k &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(pbmc4k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb370-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb370-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb370-34" data-line-number="34">pbmc4k &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(pbmc4k, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb370-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb370-36" data-line-number="36"><span class="co">#--- clustering ---#</span></a>
+<a class="sourceLine" id="cb370-37" data-line-number="37">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(pbmc4k, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb370-38" data-line-number="38">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb370-39" data-line-number="39">pbmc4k<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb365-1" data-line-number="1">pbmc4k</a></code></pre></div>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" data-line-number="1">pbmc4k</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 33694 4182 
 ## metadata(0):
@@ -847,32 +848,32 @@ View history
 <ol style="list-style-type: decimal">
 <li><p>We subset all batches to the common “universe” of features.
 In this case, it is straightforward as both batches use Ensembl gene annotation.</p>
-<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb367-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">rownames</span>(pbmc3k), <span class="kw">rownames</span>(pbmc4k))</a>
-<a class="sourceLine" id="cb367-2" data-line-number="2"><span class="kw">length</span>(universe)</a></code></pre></div>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" data-line-number="1">universe &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">rownames</span>(pbmc3k), <span class="kw">rownames</span>(pbmc4k))</a>
+<a class="sourceLine" id="cb373-2" data-line-number="2"><span class="kw">length</span>(universe)</a></code></pre></div>
 <pre><code>## [1] 31232</code></pre>
-<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" data-line-number="1"><span class="co"># Subsetting the SingleCellExperiment object.</span></a>
-<a class="sourceLine" id="cb369-2" data-line-number="2">pbmc3k &lt;-<span class="st"> </span>pbmc3k[universe,]</a>
-<a class="sourceLine" id="cb369-3" data-line-number="3">pbmc4k &lt;-<span class="st"> </span>pbmc4k[universe,]</a>
-<a class="sourceLine" id="cb369-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb369-5" data-line-number="5"><span class="co"># Also subsetting the variance modelling results, for convenience.</span></a>
-<a class="sourceLine" id="cb369-6" data-line-number="6">dec3k &lt;-<span class="st"> </span>dec3k[universe,]</a>
-<a class="sourceLine" id="cb369-7" data-line-number="7">dec4k &lt;-<span class="st"> </span>dec4k[universe,]</a></code></pre></div></li>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" data-line-number="1"><span class="co"># Subsetting the SingleCellExperiment object.</span></a>
+<a class="sourceLine" id="cb375-2" data-line-number="2">pbmc3k &lt;-<span class="st"> </span>pbmc3k[universe,]</a>
+<a class="sourceLine" id="cb375-3" data-line-number="3">pbmc4k &lt;-<span class="st"> </span>pbmc4k[universe,]</a>
+<a class="sourceLine" id="cb375-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb375-5" data-line-number="5"><span class="co"># Also subsetting the variance modelling results, for convenience.</span></a>
+<a class="sourceLine" id="cb375-6" data-line-number="6">dec3k &lt;-<span class="st"> </span>dec3k[universe,]</a>
+<a class="sourceLine" id="cb375-7" data-line-number="7">dec4k &lt;-<span class="st"> </span>dec4k[universe,]</a></code></pre></div></li>
 <li><p>We rescale each batch to adjust for differences in sequencing depth between batches.
 The <code>multiBatchNorm()</code> function recomputes log-normalized expression values after adjusting the size factors for systematic differences in coverage between <code>SingleCellExperiment</code> objects.
 (Size factors only remove biases between cells <em>within</em> a single batch.)
 This improves the quality of the correction by removing one aspect of the technical differences between batches.</p>
-<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb370-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(pbmc3k, pbmc4k)</a>
-<a class="sourceLine" id="cb370-3" data-line-number="3">pbmc3k &lt;-<span class="st"> </span>rescaled[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb370-4" data-line-number="4">pbmc4k &lt;-<span class="st"> </span>rescaled[[<span class="dv">2</span>]]</a></code></pre></div></li>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb376-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb376-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">multiBatchNorm</span>(pbmc3k, pbmc4k)</a>
+<a class="sourceLine" id="cb376-3" data-line-number="3">pbmc3k &lt;-<span class="st"> </span>rescaled[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb376-4" data-line-number="4">pbmc4k &lt;-<span class="st"> </span>rescaled[[<span class="dv">2</span>]]</a></code></pre></div></li>
 <li><p>We perform feature selection by averaging the variance components across all batches with the <code>combineVar()</code> function.
 We compute the average as it is responsive to batch-specific HVGs while still preserving the within-batch ranking of genes.
 This allows us to use the same strategies described in Section <a href="feature-selection.html#hvg-selection">8.3</a> to select genes of interest.
 In contrast, approaches based on taking the intersection or union of HVGs across batches become increasingly conservative or liberal, respectively, with an increasing number of batches.</p>
-<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb371-2" data-line-number="2">combined.dec &lt;-<span class="st"> </span><span class="kw">combineVar</span>(dec3k, dec4k)</a>
-<a class="sourceLine" id="cb371-3" data-line-number="3">chosen.hvgs &lt;-<span class="st"> </span>combined.dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb371-4" data-line-number="4"><span class="kw">sum</span>(chosen.hvgs)</a></code></pre></div>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb377-2" data-line-number="2">combined.dec &lt;-<span class="st"> </span><span class="kw">combineVar</span>(dec3k, dec4k)</a>
+<a class="sourceLine" id="cb377-3" data-line-number="3">chosen.hvgs &lt;-<span class="st"> </span>combined.dec<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb377-4" data-line-number="4"><span class="kw">sum</span>(chosen.hvgs)</a></code></pre></div>
 <pre><code>## [1] 13431</code></pre>
 <p>When integrating datasets of variable composition, it is generally safer to err on the side of including more genes than are used in a single dataset analysis, to ensure that markers are retained for any dataset-specific subpopulations that might be present.
 For a top <span class="math inline">\(X\)</span> selection, this means using a larger <span class="math inline">\(X\)</span> (say, ~5000), or in this case, we simply take all genes above the trend.</p></li>
@@ -882,26 +883,26 @@ For a top <span class="math inline">\(X\)</span> selection, this means using a l
 <h2><span class="header-section-number">13.3</span> Diagnosing batch effects</h2>
 <p>Before we actually perform any correction, it is worth examining whether there is any batch effect in this dataset.
 We combine the two <code>SingleCellExperiment</code>s and perform a PCA on the log-expression values for all genes with positive (average) biological components.</p>
-<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" data-line-number="1"><span class="co"># Synchronizing the metadata for cbind()ing.</span></a>
-<a class="sourceLine" id="cb373-2" data-line-number="2"><span class="kw">rowData</span>(pbmc3k) &lt;-<span class="st"> </span><span class="kw">rowData</span>(pbmc4k)</a>
-<a class="sourceLine" id="cb373-3" data-line-number="3">pbmc3k<span class="op">$</span>batch &lt;-<span class="st"> &quot;3k&quot;</span></a>
-<a class="sourceLine" id="cb373-4" data-line-number="4">pbmc4k<span class="op">$</span>batch &lt;-<span class="st"> &quot;4k&quot;</span></a>
-<a class="sourceLine" id="cb373-5" data-line-number="5">uncorrected &lt;-<span class="st"> </span><span class="kw">cbind</span>(pbmc3k, pbmc4k)</a>
-<a class="sourceLine" id="cb373-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb373-7" data-line-number="7"><span class="co"># Using RandomParam() as it is more efficient for file-backed matrices.</span></a>
-<a class="sourceLine" id="cb373-8" data-line-number="8"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb373-9" data-line-number="9"><span class="kw">set.seed</span>(<span class="dv">0010101010</span>)</a>
-<a class="sourceLine" id="cb373-10" data-line-number="10">uncorrected &lt;-<span class="st"> </span><span class="kw">runPCA</span>(uncorrected, <span class="dt">subset_row=</span>chosen.hvgs,</a>
-<a class="sourceLine" id="cb373-11" data-line-number="11">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="co"># Synchronizing the metadata for cbind()ing.</span></a>
+<a class="sourceLine" id="cb379-2" data-line-number="2"><span class="kw">rowData</span>(pbmc3k) &lt;-<span class="st"> </span><span class="kw">rowData</span>(pbmc4k)</a>
+<a class="sourceLine" id="cb379-3" data-line-number="3">pbmc3k<span class="op">$</span>batch &lt;-<span class="st"> &quot;3k&quot;</span></a>
+<a class="sourceLine" id="cb379-4" data-line-number="4">pbmc4k<span class="op">$</span>batch &lt;-<span class="st"> &quot;4k&quot;</span></a>
+<a class="sourceLine" id="cb379-5" data-line-number="5">uncorrected &lt;-<span class="st"> </span><span class="kw">cbind</span>(pbmc3k, pbmc4k)</a>
+<a class="sourceLine" id="cb379-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb379-7" data-line-number="7"><span class="co"># Using RandomParam() as it is more efficient for file-backed matrices.</span></a>
+<a class="sourceLine" id="cb379-8" data-line-number="8"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb379-9" data-line-number="9"><span class="kw">set.seed</span>(<span class="dv">0010101010</span>)</a>
+<a class="sourceLine" id="cb379-10" data-line-number="10">uncorrected &lt;-<span class="st"> </span><span class="kw">runPCA</span>(uncorrected, <span class="dt">subset_row=</span>chosen.hvgs,</a>
+<a class="sourceLine" id="cb379-11" data-line-number="11">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>())</a></code></pre></div>
 <p>We use graph-based clustering on the components to obtain a summary of the population structure.
 As our two PBMC populations should be replicates, each cluster should ideally consist of cells from both batches.
 However, we instead see clusters that are comprised of cells from a single batch.
 This indicates that cells of the same type are artificially separated due to technical differences between batches.</p>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb374-2" data-line-number="2">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(uncorrected, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb374-3" data-line-number="3">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb374-4" data-line-number="4">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>uncorrected<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb374-5" data-line-number="5">tab</a></code></pre></div>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb380-2" data-line-number="2">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(uncorrected, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb380-3" data-line-number="3">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb380-4" data-line-number="4">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters, <span class="dt">Batch=</span>uncorrected<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb380-5" data-line-number="5">tab</a></code></pre></div>
 <pre><code>##        Batch
 ## Cluster   3k   4k
 ##      1     0  126
@@ -925,9 +926,9 @@ This indicates that cells of the same type are artificially separated due to tec
 ##      19    2   36</code></pre>
 <p>We can also visualize the corrected coordinates using a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="integrating-datasets.html#fig:tsne-pbmc-uncorrected">13.1</a>).
 The strong separation between cells from different batches is consistent with the clustering results.</p>
-<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb376-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1111001</span>)</a>
-<a class="sourceLine" id="cb376-2" data-line-number="2">uncorrected &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(uncorrected, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb376-3" data-line-number="3"><span class="kw">plotTSNE</span>(uncorrected, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1111001</span>)</a>
+<a class="sourceLine" id="cb382-2" data-line-number="2">uncorrected &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(uncorrected, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb382-3" data-line-number="3"><span class="kw">plotTSNE</span>(uncorrected, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-uncorrected"></span>
 <img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-uncorrected-1.png" alt="$t$-SNE plot of the PBMC datasets without any batch correction. Each point is a cell that is colored according to its batch of origin." width="672" />
 <p class="caption">
@@ -958,9 +959,9 @@ For each gene, the mean expression in each batch is scaled down until it is equa
 We deliberately choose to scale all expression values down as this mitigates differences in variance when batches lie at different positions on the mean-variance trend.
 (Specifically, the shrinkage effect of the pseudo-count is greater for smaller counts, suppressing any differences in variance across batches.)
 An additional feature of <code>rescaleBatches()</code> is that it will preserve sparsity in the input matrix for greater efficiency, whereas other methods like <code>removeBatchEffect()</code> will always return a dense matrix.</p>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb377-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">rescaleBatches</span>(pbmc3k, pbmc4k)</a>
-<a class="sourceLine" id="cb377-3" data-line-number="3">rescaled</a></code></pre></div>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb383-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb383-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">rescaleBatches</span>(pbmc3k, pbmc4k)</a>
+<a class="sourceLine" id="cb383-3" data-line-number="3">rescaled</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 31232 6791 
 ## metadata(0):
@@ -977,38 +978,37 @@ An additional feature of <code>rescaleBatches()</code> is that it will preserve 
 This conclusion is supported by the apparent mixing of cells from different batches in Figure <a href="integrating-datasets.html#fig:tsne-pbmc-rescaled">13.2</a>.
 However, at least one batch-specific cluster is still present, indicating that the correction is not entirely complete.
 This is attributable to violation of one of the aforementioned assumptions, even in this simple case involving replicated batches.</p>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1010101010</span>) <span class="co"># To ensure reproducibility of IRLBA.</span></a>
-<a class="sourceLine" id="cb379-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">runPCA</span>(rescaled, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">exprs_values=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb379-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb379-4" data-line-number="4">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(rescaled, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb379-5" data-line-number="5">clusters.resc &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb379-6" data-line-number="6">tab.resc &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters.resc, <span class="dt">Batch=</span>rescaled<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb379-7" data-line-number="7">tab.resc</a></code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1010101010</span>) <span class="co"># To ensure reproducibility of IRLBA.</span></a>
+<a class="sourceLine" id="cb385-2" data-line-number="2">rescaled &lt;-<span class="st"> </span><span class="kw">runPCA</span>(rescaled, <span class="dt">subset_row=</span>chosen.hvgs, <span class="dt">exprs_values=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb385-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb385-4" data-line-number="4">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(rescaled, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb385-5" data-line-number="5">clusters.resc &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb385-6" data-line-number="6">tab.resc &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters.resc, <span class="dt">Batch=</span>rescaled<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb385-7" data-line-number="7">tab.resc</a></code></pre></div>
 <pre><code>##        Batch
 ## Cluster   1   2
-##      1  272 523
-##      2  336 606
-##      3  126 266
-##      4  643 560
-##      5   19  47
-##      6   12   3
-##      7  313   0
-##      8    8  50
-##      9   19  58
-##      10  15  70
-##      11 131 154
-##      12  37 511
-##      13  10  83
-##      14 100 207
-##      15 137   8
-##      16  16  25
-##      17 397 964
+##      1   22  40
+##      2  339 606
+##      3  260 507
+##      4  186 147
+##      5   79 619
+##      6  557 505
+##      7   21  60
+##      8    9  54
+##      9   13  73
+##      10 135 264
+##      11  17  83
+##      12  25  35
+##      13 126 151
+##      14 128  10
+##      15   4   8
+##      16 212   0
+##      17 462 981
 ##      18   3  36
-##      19   4   8
-##      20  11   3</code></pre>
-<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" data-line-number="1">rescaled &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(rescaled, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb381-2" data-line-number="2">rescaled<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(rescaled<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb381-3" data-line-number="3"><span class="kw">plotTSNE</span>(rescaled, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+##      19  11   3</code></pre>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb387-1" data-line-number="1">rescaled &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(rescaled, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb387-2" data-line-number="2">rescaled<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(rescaled<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb387-3" data-line-number="3"><span class="kw">plotTSNE</span>(rescaled, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-rescaled"></span>
 <img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-rescaled-1.png" alt="$t$-SNE plot of the PBMC datasets after correction with `rescaleBatches()`. Each point represents a cell and is colored according to the batch of origin." width="672" />
 <p class="caption">
@@ -1041,12 +1041,12 @@ Nonetheless, the assumption is usually reasonable as a random vector is very lik
 We apply it to our two PBMC batches to remove the batch effect across the highly variable genes in <code>chosen.hvgs</code>.
 To reduce computational work and technical noise, all cells in all batches are projected into the low-dimensional space defined by the top <code>d</code> principal components.
 Identification of MNNs and calculation of correction vectors are then performed in this low-dimensional space.</p>
-<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" data-line-number="1"><span class="co"># Using randomized SVD here, as this is faster than </span></a>
-<a class="sourceLine" id="cb382-2" data-line-number="2"><span class="co"># irlba for file-backed matrices.</span></a>
-<a class="sourceLine" id="cb382-3" data-line-number="3"><span class="kw">set.seed</span>(<span class="dv">1000101001</span>)</a>
-<a class="sourceLine" id="cb382-4" data-line-number="4">mnn.out &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(pbmc3k, pbmc4k, <span class="dt">d=</span><span class="dv">50</span>, <span class="dt">k=</span><span class="dv">20</span>, <span class="dt">subset.row=</span>chosen.hvgs,</a>
-<a class="sourceLine" id="cb382-5" data-line-number="5">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>(<span class="dt">deferred=</span><span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb382-6" data-line-number="6">mnn.out</a></code></pre></div>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" data-line-number="1"><span class="co"># Using randomized SVD here, as this is faster than </span></a>
+<a class="sourceLine" id="cb388-2" data-line-number="2"><span class="co"># irlba for file-backed matrices.</span></a>
+<a class="sourceLine" id="cb388-3" data-line-number="3"><span class="kw">set.seed</span>(<span class="dv">1000101001</span>)</a>
+<a class="sourceLine" id="cb388-4" data-line-number="4">mnn.out &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(pbmc3k, pbmc4k, <span class="dt">d=</span><span class="dv">50</span>, <span class="dt">k=</span><span class="dv">20</span>, <span class="dt">subset.row=</span>chosen.hvgs,</a>
+<a class="sourceLine" id="cb388-5" data-line-number="5">    <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">RandomParam</span>(<span class="dt">deferred=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb388-6" data-line-number="6">mnn.out</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 13431 6791 
 ## metadata(1): merge.info
@@ -1062,27 +1062,27 @@ Identification of MNNs and calculation of correction vectors are then performed 
 <p>The function returns a <code>SingleCellExperiment</code> object containing corrected values for downstream analyses like clustering or visualization.
 Each column of <code>mnn.out</code> corresponds to a cell in one of the batches, while each row corresponds to an input gene in <code>chosen.hvgs</code>.
 The <code>batch</code> field in the column metadata contains a vector specifying the batch of origin of each cell.</p>
-<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" data-line-number="1"><span class="kw">head</span>(mnn.out<span class="op">$</span>batch) </a></code></pre></div>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" data-line-number="1"><span class="kw">head</span>(mnn.out<span class="op">$</span>batch) </a></code></pre></div>
 <pre><code>## [1] 1 1 1 1 1 1</code></pre>
 <p>The <code>corrected</code> matrix in the <code>reducedDims()</code> contains the low-dimensional corrected coordinates for all cells, which we will use in place of the PCs in our downstream analyses.</p>
-<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" data-line-number="1"><span class="kw">dim</span>(<span class="kw">reducedDim</span>(mnn.out, <span class="st">&quot;corrected&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="kw">dim</span>(<span class="kw">reducedDim</span>(mnn.out, <span class="st">&quot;corrected&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 6791   50</code></pre>
 <p>A <code>reconstructed</code> matrix in the <code>assays()</code> contains the corrected expression values for each gene in each cell, obtained by projecting the low-dimensional coordinates in <code>corrected</code> back into gene expression space.
 We do not recommend using this for anything other than visualization (Section <a href="integrating-datasets.html#using-corrected-values">13.7</a>).</p>
-<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" data-line-number="1"><span class="kw">assay</span>(mnn.out, <span class="st">&quot;reconstructed&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb394-1" data-line-number="1"><span class="kw">assay</span>(mnn.out, <span class="st">&quot;reconstructed&quot;</span>)</a></code></pre></div>
 <pre><code>## &lt;13431 x 6791&gt; matrix of class LowRankMatrix and type &quot;double&quot;:
 ##                       [,1]       [,2]       [,3] ...    [,6790]    [,6791]
-## ENSG00000239945  7.930e-06 -2.441e-06 -1.315e-05   . -1.718e-05 -1.858e-05
-## ENSG00000228463 -7.008e-04 -1.449e-04 -4.279e-04   . -5.879e-04 -2.850e-04
-## ENSG00000237094 -1.274e-06 -4.916e-05 -6.452e-05   .  2.846e-05 -5.865e-05
-## ENSG00000229905 -1.667e-05  1.790e-05 -1.863e-05   .  6.910e-06 -2.525e-05
-## ENSG00000237491 -3.011e-04 -6.546e-05 -6.715e-06   . -2.817e-04  1.063e-04
+## ENSG00000239945 -1.385e-05 -6.866e-06 -1.131e-05   . -2.129e-05 -9.349e-06
+## ENSG00000228463 -4.343e-04 -3.701e-04 -9.414e-05   . -2.815e-04 -5.882e-04
+## ENSG00000237094  1.302e-05 -1.090e-05 -7.883e-05   . -1.366e-05 -2.955e-05
+## ENSG00000229905 -2.556e-05 -6.705e-06 -1.308e-05   .  1.585e-06  2.742e-06
+## ENSG00000237491 -2.865e-04 -1.595e-04 -1.475e-04   . -3.141e-04  4.575e-06
 ##             ...          .          .          .   .          .          .
-## ENSG00000198840 -0.0320393 -0.0376281 -0.0461642   . -0.0384937 -0.0214182
-## ENSG00000212907 -0.0111033 -0.0064557 -0.0102247   . -0.0066906 -0.0010358
-## ENSG00000198886  0.0063527  0.0175062 -0.0268192   . -0.0099787 -0.0057674
-## ENSG00000198695 -0.0006267  0.0003748 -0.0005734   . -0.0005666 -0.0017767
-## ENSG00000198727  0.0220930  0.0177655 -0.0150216   . -0.0067168 -0.0004979</code></pre>
+## ENSG00000198840 -3.545e-02 -3.257e-02 -4.056e-02   .  -0.040660  -0.023573
+## ENSG00000212907 -7.576e-03 -2.734e-03 -1.441e-02   .  -0.007550  -0.004624
+## ENSG00000198886  9.180e-03  2.738e-02 -3.434e-02   .  -0.014219  -0.011706
+## ENSG00000198695  4.905e-05  5.360e-04 -8.154e-04   .  -0.001476  -0.001413
+## ENSG00000198727  1.042e-02  6.451e-03 -2.978e-02   .   0.002716   0.007446</code></pre>
 <p>The most relevant parameter for tuning <code>fastMNN()</code> is <code>k</code>, which specifies the number of nearest neighbours to consider when defining MNN pairs.
 This can be interpreted as the minimum anticipated frequency of any shared cell type or state in each batch.
 Increasing <code>k</code> will generally result in more aggressive merging as the algorithm is more generous in matching subpopulations across batches.
@@ -1094,37 +1094,39 @@ It can occasionally be desirable to increase <code>k</code> if one clearly sees 
 <p>We cluster on the low-dimensional corrected coordinates to obtain a partitioning of the cells that serves as a proxy for the population structure.
 If the batch effect is successfully corrected, clusters corresponding to shared cell types or states should contain cells from multiple batches.
 We see that all clusters contain contributions from each batch after correction, consistent with our expectation that the two batches are replicates of each other.</p>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb390-2" data-line-number="2">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.out, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb390-3" data-line-number="3">clusters.mnn &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb390-4" data-line-number="4">tab.mnn &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters.mnn, <span class="dt">Batch=</span>mnn.out<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb390-5" data-line-number="5">tab.mnn</a></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb396-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb396-2" data-line-number="2">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(mnn.out, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb396-3" data-line-number="3">clusters.mnn &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb396-4" data-line-number="4">tab.mnn &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>clusters.mnn, <span class="dt">Batch=</span>mnn.out<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb396-5" data-line-number="5">tab.mnn</a></code></pre></div>
 <pre><code>##        Batch
 ## Cluster    1    2
-##      1   339  605
-##      2   151  183
-##      3   283  520
-##      4   284  641
-##      5   589  544
-##      6    16   19
-##      7   194  146
-##      8    18   73
-##      9    16   55
-##      10   89  204
-##      11  146   92
-##      12  459 1014
-##      13    6   39
-##      14    4   36
-##      15    4    8
-##      16   11    3</code></pre>
+##      1   266  502
+##      2   327  588
+##      3   270  627
+##      4   613  577
+##      5   205  146
+##      6    13   10
+##      7    18   58
+##      8    12   55
+##      9    18   69
+##      10   10   18
+##      11  489 1040
+##      12  132  146
+##      13   18   36
+##      14  142   91
+##      15   58  172
+##      16    4    8
+##      17   11    3
+##      18    3   36</code></pre>
 <p>We can also visualize the corrected coordinates using a <span class="math inline">\(t\)</span>-SNE plot (Figure <a href="integrating-datasets.html#fig:tsne-pbmc-corrected">13.3</a>).
 The presence of visual clusters containing cells from both batches provides a comforting illusion that the correction was successful.</p>
-<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb392-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">0010101010</span>)</a>
-<a class="sourceLine" id="cb392-3" data-line-number="3">mnn.out &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.out, <span class="dt">use_dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb392-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb392-5" data-line-number="5">mnn.out<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(mnn.out<span class="op">$</span>batch)</a>
-<a class="sourceLine" id="cb392-6" data-line-number="6"><span class="kw">plotTSNE</span>(mnn.out, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb398-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb398-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">0010101010</span>)</a>
+<a class="sourceLine" id="cb398-3" data-line-number="3">mnn.out &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.out, <span class="dt">use_dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb398-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb398-5" data-line-number="5">mnn.out<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(mnn.out<span class="op">$</span>batch)</a>
+<a class="sourceLine" id="cb398-6" data-line-number="6"><span class="kw">plotTSNE</span>(mnn.out, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-corrected"></span>
 <img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-corrected-1.png" alt="$t$-SNE plot of the PBMC datasets after MNN correction. Each point is a cell that is colored according to its batch of origin." width="672" />
 <p class="caption">
@@ -1134,9 +1136,9 @@ Figure 13.3: <span class="math inline">\(t\)</span>-SNE plot of the PBMC dataset
 <p>For <code>fastMNN()</code>, one useful diagnostic is the proportion of variance within each batch that is lost during MNN correction.
 Specifically, this refers to the within-batch variance that is removed during orthogonalization with respect to the average correction vector at each merge step.
 This is returned via the <code>lost.var</code> field in the metadata of <code>mnn.out</code>, which contains a matrix of the variance lost in each batch (column) at each merge step (row).</p>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="kw">metadata</span>(mnn.out)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
-<pre><code>##         [,1]     [,2]
-## [1,] 0.00634 0.003253</code></pre>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" data-line-number="1"><span class="kw">metadata</span>(mnn.out)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</a></code></pre></div>
+<pre><code>##          [,1]   [,2]
+## [1,] 0.006515 0.0033</code></pre>
 <p>Large proportions of lost variance (&gt;10%) suggest that correction is removing genuine biological heterogeneity.
 This would occur due to violations of the assumption of orthogonality between the batch effect and the biological subspace <span class="citation">(Haghverdi et al. <a href="#ref-haghverdi2018batch">2018</a>)</span>.
 In this case, the proportion of lost variance is small, indicating that non-orthogonality is not a major concern.</p>
@@ -1152,56 +1154,59 @@ Specifically, it protects us against cases where the correction method simply ag
 This indicates that any within-batch structure was preserved after correction while acknowledging that greater resolution is possible with more cells.
 In practice, more discrepancies can be expected even when the correction is perfect, due to the existence of closely related clusters that were arbitrarily separated in the within-batch clustering.
 As a general rule, we can be satisfied with the correction if the vast majority of entries of the <code>table()</code>s below are zero, though this may depend on whether specific clusters of interest are gained or lost.</p>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" data-line-number="1"><span class="co"># For the first batch.</span></a>
-<a class="sourceLine" id="cb395-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">New=</span>clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>], <span class="dt">Old=</span>pbmc3k<span class="op">$</span>cluster)</a></code></pre></div>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb401-1" data-line-number="1"><span class="co"># For the first batch.</span></a>
+<a class="sourceLine" id="cb401-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">New=</span>clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>], <span class="dt">Old=</span>pbmc3k<span class="op">$</span>cluster)</a></code></pre></div>
 <pre><code>##     Old
 ## New    1   2   3   4   5   6   7   8   9  10
-##   1    0   0   0   6   0   1   0 332   0   0
-##   2    0 150   0   0   0   0   1   0   0   0
-##   3    0   4   0   8   0 146 125   0   0   0
-##   4  283   0   0   0   0   0   0   0   1   0
-##   5    0   0  70 472   0   1  46   0   0   0
-##   6    0   0   0  14   0   2   0   0   0   0
-##   7  193   0   0   0   0   0   0   0   1   0
-##   8    4   0   0   0  14   0   0   0   0   0
-##   9    0   0   0   0  16   0   0   0   0   0
-##   10   0   0  86   0   0   0   3   0   0   0
-##   11   1   0   0   0   0   0   0   0 145   0
-##   12   0   0 444  11   0   0   4   0   0   0
-##   13   6   0   0   0   0   0   0   0   0   0
-##   14   0   0   0   2   1   0   0   1   0   0
-##   15   0   0   3   1   0   0   0   0   0   0
-##   16   0   0   0   0   0   0   0   0   0  11</code></pre>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" data-line-number="1"><span class="co"># For the second batch.</span></a>
-<a class="sourceLine" id="cb397-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">New=</span>clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">2</span>], <span class="dt">Old=</span>pbmc4k<span class="op">$</span>cluster)</a></code></pre></div>
+##   1    0   5   0   2   0 144 115   0   0   0
+##   2    0   0   0   0   0   0   0 327   0   0
+##   3  269   0   0   0   0   0   0   0   1   0
+##   4    0   0  77 485   0   3  48   0   0   0
+##   5  200   0   0   0   0   0   0   0   5   0
+##   6    0   0   0  11   0   2   0   0   0   0
+##   7    0   0   0   0  18   0   0   0   0   0
+##   8   12   0   0   0   0   0   0   0   0   0
+##   9    5   0   0   0  13   0   0   0   0   0
+##   10   0   0   0   4   0   1   0   5   0   0
+##   11   0   0 466   9   0   0  14   0   0   0
+##   12   0 132   0   0   0   0   0   0   0   0
+##   13   0  17   0   0   0   0   1   0   0   0
+##   14   1   0   0   0   0   0   0   0 141   0
+##   15   0   0  57   0   0   0   1   0   0   0
+##   16   0   0   3   1   0   0   0   0   0   0
+##   17   0   0   0   0   0   0   0   0   0  11
+##   18   0   0   0   2   0   0   0   1   0   0</code></pre>
+<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb403-1" data-line-number="1"><span class="co"># For the second batch.</span></a>
+<a class="sourceLine" id="cb403-2" data-line-number="2"><span class="kw">table</span>(<span class="dt">New=</span>clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">2</span>], <span class="dt">Old=</span>pbmc4k<span class="op">$</span>cluster)</a></code></pre></div>
 <pre><code>##     Old
 ## New     1    2    3    4    5    6    7    8    9   10   11   12
-##   1     1    0    0  225    0    0    0  378    0    1    0    0
-##   2     0    0    0    0    0  183    0    0    0    0    0    0
-##   3   507    0    0    0    9    4    0    0    0    0    0    0
-##   4     0    0  625    0    1    0    0    0   15    0    0    0
-##   5    26    0    0    0  352    0  135    0    0   31    0    0
-##   6     1    0    0    1   16    0    0    0    0    1    0    0
-##   7     0    3  142    0    0    0    0    0    1    0    0    0
-##   8     0   71    2    0    0    0    0    0    0    0    0    0
-##   9     0   55    0    0    0    0    0    0    0    0    0    0
-##   10    0    0    0    0    0    0  163    0    0   41    0    0
-##   11    0    0    1    0    0    0    0    0    2    0   89    0
-##   12    1    0    0    0   12    0    1    0    0 1000    0    0
-##   13    0    0    1    0    0    0    0    0   38    0    0    0
-##   14    0    0    0    0    0    0    0    0    0    0    0   36
-##   15    0    0    0    0    0    0    0    0    0    8    0    0
-##   16    0    0    3    0    0    0    0    0    0    0    0    0</code></pre>
+##   1   494    0    0    0    3    4    1    0    0    0    0    0
+##   2     0    0    0  222    0    0    0  366    0    0    0    0
+##   3     0    0  623    0    1    0    0    0    3    0    0    0
+##   4    39    0    0    0  365    0  134    0    0   39    0    0
+##   5     0    4  141    0    0    0    0    0    1    0    0    0
+##   6     1    0    0    1    7    0    0    0    0    1    0    0
+##   7     0   58    0    0    0    0    0    0    0    0    0    0
+##   8     0    0    5    0    0    0    0    0   50    0    0    0
+##   9     0   67    2    0    0    0    0    0    0    0    0    0
+##   10    1    0    0    3    0    1    0   12    0    1    0    0
+##   11    1    0    0    0   14    0   12    0    0 1013    0    0
+##   12    0    0    0    0    0  146    0    0    0    0    0    0
+##   13    0    0    0    0    0   36    0    0    0    0    0    0
+##   14    0    0    0    0    0    0    0    0    2    0   89    0
+##   15    0    0    0    0    0    0  152    0    0   20    0    0
+##   16    0    0    0    0    0    0    0    0    0    8    0    0
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 2 rows ]</code></pre>
 <p>We can summarize the agreement between clusterings by computing the Rand index.
 This provides a simple metric that we can use to assess the preservation of variation by different correction methods.
 Larger Rand indices are more desirable, though this must be balanced against the ability of each method to actually remove the batch effect.</p>
-<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" data-line-number="1"><span class="kw">library</span>(fossil)</a>
-<a class="sourceLine" id="cb399-2" data-line-number="2"><span class="kw">rand.index</span>(<span class="kw">as.integer</span>(clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>]),</a>
-<a class="sourceLine" id="cb399-3" data-line-number="3">    <span class="kw">as.integer</span>(pbmc3k<span class="op">$</span>cluster))</a></code></pre></div>
-<pre><code>## [1] 0.9245</code></pre>
-<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb401-1" data-line-number="1"><span class="kw">rand.index</span>(<span class="kw">as.integer</span>(clusters.resc[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>]),</a>
-<a class="sourceLine" id="cb401-2" data-line-number="2">    <span class="kw">as.integer</span>(pbmc3k<span class="op">$</span>cluster))</a></code></pre></div>
-<pre><code>## [1] 0.9066</code></pre>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" data-line-number="1"><span class="kw">library</span>(fossil)</a>
+<a class="sourceLine" id="cb405-2" data-line-number="2"><span class="kw">rand.index</span>(<span class="kw">as.integer</span>(clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb405-3" data-line-number="3">    <span class="kw">as.integer</span>(pbmc3k<span class="op">$</span>cluster))</a></code></pre></div>
+<pre><code>## [1] 0.9243</code></pre>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb407-1" data-line-number="1"><span class="kw">rand.index</span>(<span class="kw">as.integer</span>(clusters.resc[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb407-2" data-line-number="2">    <span class="kw">as.integer</span>(pbmc3k<span class="op">$</span>cluster))</a></code></pre></div>
+<pre><code>## [1] 0.911</code></pre>
 </div>
 <div id="using-corrected-values" class="section level2">
 <h2><span class="header-section-number">13.7</span> Using the corrected values</h2>
@@ -1248,35 +1253,35 @@ However, these are probably minor given that the marker gene procedure is not pa
 This strategy is based on the expectation that any genuine DE between clusters should still be present in a within-batch comparison where batch effects are absent.
 It penalizes genes that exhibit inconsistent DE across batches, thus protecting against misleading conclusions when a population in one batch is aligned to a similar-but-not-identical population in another batch.
 We demonstrate this approach using a blocked <span class="math inline">\(t\)</span>-test to detect markers in the PBMC dataset, where the presence of the same pattern across clusters within each batch (Figure <a href="integrating-datasets.html#fig:pbmc-marker-blocked">13.4</a>) is reassuring.</p>
-<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb403-1" data-line-number="1">m.out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(uncorrected, clusters.mnn, <span class="dt">block=</span>uncorrected<span class="op">$</span>batch,</a>
-<a class="sourceLine" id="cb403-2" data-line-number="2">    <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">lfc=</span><span class="dv">1</span>, <span class="dt">row.data=</span><span class="kw">rowData</span>(uncorrected)[,<span class="dv">3</span>,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
-<a class="sourceLine" id="cb403-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb403-4" data-line-number="4"><span class="co"># A (probably activated?) T cell subtype of some sort:</span></a>
-<a class="sourceLine" id="cb403-5" data-line-number="5">demo &lt;-<span class="st"> </span>m.out[[<span class="st">&quot;10&quot;</span>]]</a>
-<a class="sourceLine" id="cb403-6" data-line-number="6"><span class="kw">as.data.frame</span>(demo[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>,<span class="kw">c</span>(<span class="st">&quot;Symbol&quot;</span>, <span class="st">&quot;Top&quot;</span>, <span class="st">&quot;p.value&quot;</span>, <span class="st">&quot;FDR&quot;</span>)]) </a></code></pre></div>
-<pre><code>##                 Symbol Top    p.value       FDR
-## ENSG00000177954  RPS27   1  1.311e-93 2.047e-89
-## ENSG00000071082  RPL31   1  1.519e-50 5.930e-47
-## ENSG00000144713  RPL32   1  2.164e-33 3.218e-30
-## ENSG00000168028   RPSA   1 5.255e-100 1.641e-95
-## ENSG00000227507    LTB   1  1.334e-34 2.451e-31
-## ENSG00000179144 GIMAP7   1  6.190e-03 1.000e+00
-## ENSG00000251562 MALAT1   1  3.570e-39 6.969e-36
-## ENSG00000167286   CD3D   1  4.969e-13 3.043e-10
-## ENSG00000111716   LDHB   1  4.884e-18 3.813e-15
-## ENSG00000173762    CD7   1  1.000e+00 1.000e+00
-## ENSG00000168685   IL7R   2  1.000e+00 1.000e+00
-## ENSG00000181163   NPM1   2  4.677e-34 7.688e-31
-## ENSG00000112306  RPS12   2  5.711e-31 7.135e-28
-## ENSG00000205542 TMSB4X   2  2.359e-05 8.771e-03
-## ENSG00000198851   CD3E   2  1.061e-05 4.249e-03
-## ENSG00000213741  RPS29   2  6.714e-90 6.989e-86
-## ENSG00000174444   RPL4   2  6.190e-03 1.000e+00
-## ENSG00000171858  RPS21   2  1.760e-61 1.374e-57
-## ENSG00000100316   RPL3   2  1.273e-52 5.679e-49
-## ENSG00000172116   CD8B   3  1.000e+00 1.000e+00</code></pre>
-<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" data-line-number="1"><span class="kw">plotExpression</span>(uncorrected, <span class="dt">x=</span><span class="kw">I</span>(<span class="kw">factor</span>(clusters.mnn)), </a>
-<a class="sourceLine" id="cb405-2" data-line-number="2">    <span class="dt">features=</span><span class="st">&quot;ENSG00000177954&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>colour_by)</a></code></pre></div>
+<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb409-1" data-line-number="1">m.out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(uncorrected, clusters.mnn, <span class="dt">block=</span>uncorrected<span class="op">$</span>batch,</a>
+<a class="sourceLine" id="cb409-2" data-line-number="2">    <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">lfc=</span><span class="dv">1</span>, <span class="dt">row.data=</span><span class="kw">rowData</span>(uncorrected)[,<span class="dv">3</span>,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
+<a class="sourceLine" id="cb409-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb409-4" data-line-number="4"><span class="co"># A (probably activated?) T cell subtype of some sort:</span></a>
+<a class="sourceLine" id="cb409-5" data-line-number="5">demo &lt;-<span class="st"> </span>m.out[[<span class="st">&quot;10&quot;</span>]]</a>
+<a class="sourceLine" id="cb409-6" data-line-number="6"><span class="kw">as.data.frame</span>(demo[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>,<span class="kw">c</span>(<span class="st">&quot;Symbol&quot;</span>, <span class="st">&quot;Top&quot;</span>, <span class="st">&quot;p.value&quot;</span>, <span class="st">&quot;FDR&quot;</span>)]) </a></code></pre></div>
+<pre><code>##                   Symbol Top   p.value       FDR
+## ENSG00000142676    RPL11   1 5.697e-20 5.931e-16
+## ENSG00000169442     CD52   1 2.677e-04 1.032e-01
+## ENSG00000177954    RPS27   1 1.003e-08 1.305e-05
+## ENSG00000019582     CD74   1 3.531e-25 1.103e-20
+## ENSG00000227507      LTB   1 7.808e-09 1.093e-05
+## ENSG00000204287  HLA-DRA   1 3.172e-20 4.953e-16
+## ENSG00000251562   MALAT1   1 6.068e-09 9.475e-06
+## ENSG00000008517     IL32   1 2.349e-01 1.000e+00
+## ENSG00000105369    CD79A   1 5.283e-05 2.292e-02
+## ENSG00000205542   TMSB4X   2 3.773e-06 2.143e-03
+## ENSG00000198242   RPL23A   2 3.937e-18 3.074e-14
+## ENSG00000105374     NKG7   2 1.000e+00 1.000e+00
+## ENSG00000168028     RPSA   3 2.215e-15 7.686e-12
+## ENSG00000163682     RPL9   3 8.545e-18 5.338e-14
+## ENSG00000223865 HLA-DPB1   3 1.022e-12 2.660e-09
+## ENSG00000167286     CD3D   3 1.000e+00 1.000e+00
+## ENSG00000166710      B2M   3 5.488e-05 2.348e-02
+## ENSG00000007312    CD79B   3 8.422e-04 3.023e-01
+## ENSG00000171223     JUNB   3 5.154e-09 8.586e-06
+## ENSG00000105640   RPL18A   3 1.743e-17 9.071e-14</code></pre>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" data-line-number="1"><span class="kw">plotExpression</span>(uncorrected, <span class="dt">x=</span><span class="kw">I</span>(<span class="kw">factor</span>(clusters.mnn)), </a>
+<a class="sourceLine" id="cb411-2" data-line-number="2">    <span class="dt">features=</span><span class="st">&quot;ENSG00000177954&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>colour_by)</a></code></pre></div>
 <div class="figure"><span id="fig:pbmc-marker-blocked"></span>
 <img src="P2_W09.data-integration_files/figure-html/pbmc-marker-blocked-1.png" alt="Distributions of RPSA uncorrected log-expression values within each cluster in each batch of the merged PBMC dataset." width="672" />
 <p class="caption">
@@ -1314,19 +1319,19 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] fossil_0.3.7                shapefiles_0.7             
- [3] foreign_0.8-72              maps_3.3.0                 
- [5] sp_1.3-1                    scater_1.13.27             
- [7] ggplot2_3.2.1               scran_1.13.32              
- [9] batchelor_1.1.18            SingleCellExperiment_1.7.11
-[11] SummarizedExperiment_1.15.9 Biobase_2.45.1             
-[13] GenomicRanges_1.37.17       GenomeInfoDb_1.21.2        
-[15] HDF5Array_1.13.11           rhdf5_2.29.6               
-[17] DelayedArray_0.11.8         BiocParallel_1.19.5        
-[19] IRanges_2.19.17             S4Vectors_0.23.25          
-[21] BiocGenerics_0.31.6         matrixStats_0.55.0         
-[23] Cairo_1.5-10                BiocStyle_2.13.2           
-[25] OSCAUtils_0.0.1            
+ [1] fossil_0.3.7                 shapefiles_0.7              
+ [3] foreign_0.8-72               maps_3.3.0                  
+ [5] sp_1.3-1                     scater_1.13.28              
+ [7] ggplot2_3.2.1                scran_1.13.32               
+ [9] batchelor_1.1.19             SingleCellExperiment_1.7.11 
+[11] SummarizedExperiment_1.15.10 Biobase_2.45.1              
+[13] GenomicRanges_1.37.17        GenomeInfoDb_1.21.2         
+[15] HDF5Array_1.13.11            rhdf5_2.29.7                
+[17] DelayedArray_0.11.8          BiocParallel_1.19.6         
+[19] IRanges_2.19.18              S4Vectors_0.23.25           
+[21] BiocGenerics_0.31.6          matrixStats_0.55.0          
+[23] Cairo_1.5-10                 BiocStyle_2.13.2            
+[25] OSCAUtils_0.0.1             
 
 loaded via a namespace (and not attached):
  [1] bitops_1.0-6             tools_3.6.1             
@@ -1339,11 +1344,11 @@ loaded via a namespace (and not attached):
 [15] scales_1.0.0             stringr_1.4.0           
 [17] digest_0.6.22            rmarkdown_1.16          
 [19] XVector_0.25.0           pkgconfig_2.0.3         
-[21] htmltools_0.4.0          limma_3.41.18           
-[23] highr_0.8                rlang_0.4.0             
+[21] htmltools_0.4.0          limma_3.41.20           
+[23] highr_0.8                rlang_0.4.1             
 [25] DelayedMatrixStats_1.7.2 dplyr_0.8.3             
 [27] RCurl_1.95-4.12          magrittr_1.5            
-[29] BiocSingular_1.1.7       GenomeInfoDbData_1.2.1  
+[29] BiocSingular_1.1.7       GenomeInfoDbData_1.2.2  
 [31] Matrix_1.2-17            Rcpp_1.0.2              
 [33] ggbeeswarm_0.6.0         munsell_0.5.0           
 [35] Rhdf5lib_1.7.6           viridis_0.5.1           
@@ -1355,7 +1360,7 @@ loaded via a namespace (and not attached):
 [47] beachmat_2.1.2           locfit_1.5-9.1          
 [49] knitr_1.25               pillar_1.4.2            
 [51] igraph_1.2.4.1           glue_1.3.1              
-[53] evaluate_0.14            BiocManager_1.30.8      
+[53] evaluate_0.14            BiocManager_1.30.9      
 [55] gtable_0.3.0             purrr_0.3.3             
 [57] assertthat_0.2.1         xfun_0.10               
 [59] rsvd_1.0.2               viridisLite_0.3.0       

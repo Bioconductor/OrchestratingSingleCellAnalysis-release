@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-28" />
+<meta name="date" content="2019-10-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -312,6 +312,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
 <li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+<li class="chapter" data-level="12.5" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#computing-gene-set-activities"><i class="fa fa-check"></i><b>12.5</b> Computing gene set activities</a></li>
 <li class="chapter" data-level="" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
@@ -735,56 +736,56 @@ For each sample, scRNA-seq data was generated using the 10X Genomics protocol <s
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb407-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb407-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb407-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb407-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb407-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb407-6" data-line-number="6"><span class="kw">library</span>(MouseGastrulationData)</a>
-<a class="sourceLine" id="cb407-7" data-line-number="7">sce.chimera &lt;-<span class="st"> </span><span class="kw">WTChimeraData</span>(<span class="dt">samples=</span><span class="dv">5</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb407-8" data-line-number="8">sce.chimera</a>
-<a class="sourceLine" id="cb407-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb407-10" data-line-number="10"><span class="co">#--- feature-annotation ---#</span></a>
-<a class="sourceLine" id="cb407-11" data-line-number="11"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb407-12" data-line-number="12"><span class="kw">rownames</span>(sce.chimera) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
-<a class="sourceLine" id="cb407-13" data-line-number="13">    <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb407-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb407-15" data-line-number="15"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb407-16" data-line-number="16">drop &lt;-<span class="st"> </span>sce.chimera<span class="op">$</span>celltype.mapped <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;stripped&quot;</span>, <span class="st">&quot;Doublet&quot;</span>)</a>
-<a class="sourceLine" id="cb407-17" data-line-number="17">sce.chimera &lt;-<span class="st"> </span>sce.chimera[,<span class="op">!</span>drop]</a>
-<a class="sourceLine" id="cb407-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb407-19" data-line-number="19"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb407-20" data-line-number="20">sce.chimera &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.chimera)</a>
-<a class="sourceLine" id="cb407-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb407-22" data-line-number="22"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb407-23" data-line-number="23"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb407-24" data-line-number="24">dec.chimera &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(sce.chimera, <span class="dt">block=</span>sce.chimera<span class="op">$</span>sample)</a>
-<a class="sourceLine" id="cb407-25" data-line-number="25">chosen.hvgs &lt;-<span class="st"> </span>dec.chimera<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb407-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb407-27" data-line-number="27"><span class="co">#--- merging ---#</span></a>
-<a class="sourceLine" id="cb407-28" data-line-number="28"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb407-29" data-line-number="29"><span class="kw">set.seed</span>(<span class="dv">01001001</span>)</a>
-<a class="sourceLine" id="cb407-30" data-line-number="30">merged &lt;-<span class="st"> </span><span class="kw">correctExperiments</span>(sce.chimera, </a>
-<a class="sourceLine" id="cb407-31" data-line-number="31">    <span class="dt">batch=</span>sce.chimera<span class="op">$</span>sample, </a>
-<a class="sourceLine" id="cb407-32" data-line-number="32">    <span class="dt">subset.row=</span>chosen.hvgs,</a>
-<a class="sourceLine" id="cb407-33" data-line-number="33">    <span class="dt">PARAM=</span><span class="kw">FastMnnParam</span>(</a>
-<a class="sourceLine" id="cb407-34" data-line-number="34">        <span class="dt">merge.order=</span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb407-35" data-line-number="35">            <span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="co"># WT (3 replicates)</span></a>
-<a class="sourceLine" id="cb407-36" data-line-number="36">            <span class="kw">list</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>)  <span class="co"># td-Tomato (3 replicates)</span></a>
-<a class="sourceLine" id="cb407-37" data-line-number="37">        )</a>
-<a class="sourceLine" id="cb407-38" data-line-number="38">    )</a>
-<a class="sourceLine" id="cb407-39" data-line-number="39">)</a>
-<a class="sourceLine" id="cb407-40" data-line-number="40"></a>
-<a class="sourceLine" id="cb407-41" data-line-number="41"><span class="co">#--- clustering ---#</span></a>
-<a class="sourceLine" id="cb407-42" data-line-number="42">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(merged, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
-<a class="sourceLine" id="cb407-43" data-line-number="43">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)</a>
-<a class="sourceLine" id="cb407-44" data-line-number="44">merged<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clusters<span class="op">$</span>membership)</a>
-<a class="sourceLine" id="cb407-45" data-line-number="45"></a>
-<a class="sourceLine" id="cb407-46" data-line-number="46"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb407-47" data-line-number="47">merged &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb407-48" data-line-number="48">merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb413-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb413-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb413-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb413-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb413-6" data-line-number="6"><span class="kw">library</span>(MouseGastrulationData)</a>
+<a class="sourceLine" id="cb413-7" data-line-number="7">sce.chimera &lt;-<span class="st"> </span><span class="kw">WTChimeraData</span>(<span class="dt">samples=</span><span class="dv">5</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb413-8" data-line-number="8">sce.chimera</a>
+<a class="sourceLine" id="cb413-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb413-10" data-line-number="10"><span class="co">#--- feature-annotation ---#</span></a>
+<a class="sourceLine" id="cb413-11" data-line-number="11"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb413-12" data-line-number="12"><span class="kw">rownames</span>(sce.chimera) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb413-13" data-line-number="13">    <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(sce.chimera)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb413-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb413-15" data-line-number="15"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb413-16" data-line-number="16">drop &lt;-<span class="st"> </span>sce.chimera<span class="op">$</span>celltype.mapped <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;stripped&quot;</span>, <span class="st">&quot;Doublet&quot;</span>)</a>
+<a class="sourceLine" id="cb413-17" data-line-number="17">sce.chimera &lt;-<span class="st"> </span>sce.chimera[,<span class="op">!</span>drop]</a>
+<a class="sourceLine" id="cb413-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb413-19" data-line-number="19"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb413-20" data-line-number="20">sce.chimera &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.chimera)</a>
+<a class="sourceLine" id="cb413-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb413-22" data-line-number="22"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb413-23" data-line-number="23"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb413-24" data-line-number="24">dec.chimera &lt;-<span class="st"> </span><span class="kw">modelGeneVar</span>(sce.chimera, <span class="dt">block=</span>sce.chimera<span class="op">$</span>sample)</a>
+<a class="sourceLine" id="cb413-25" data-line-number="25">chosen.hvgs &lt;-<span class="st"> </span>dec.chimera<span class="op">$</span>bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb413-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb413-27" data-line-number="27"><span class="co">#--- merging ---#</span></a>
+<a class="sourceLine" id="cb413-28" data-line-number="28"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb413-29" data-line-number="29"><span class="kw">set.seed</span>(<span class="dv">01001001</span>)</a>
+<a class="sourceLine" id="cb413-30" data-line-number="30">merged &lt;-<span class="st"> </span><span class="kw">correctExperiments</span>(sce.chimera, </a>
+<a class="sourceLine" id="cb413-31" data-line-number="31">    <span class="dt">batch=</span>sce.chimera<span class="op">$</span>sample, </a>
+<a class="sourceLine" id="cb413-32" data-line-number="32">    <span class="dt">subset.row=</span>chosen.hvgs,</a>
+<a class="sourceLine" id="cb413-33" data-line-number="33">    <span class="dt">PARAM=</span><span class="kw">FastMnnParam</span>(</a>
+<a class="sourceLine" id="cb413-34" data-line-number="34">        <span class="dt">merge.order=</span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb413-35" data-line-number="35">            <span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="co"># WT (3 replicates)</span></a>
+<a class="sourceLine" id="cb413-36" data-line-number="36">            <span class="kw">list</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>)  <span class="co"># td-Tomato (3 replicates)</span></a>
+<a class="sourceLine" id="cb413-37" data-line-number="37">        )</a>
+<a class="sourceLine" id="cb413-38" data-line-number="38">    )</a>
+<a class="sourceLine" id="cb413-39" data-line-number="39">)</a>
+<a class="sourceLine" id="cb413-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb413-41" data-line-number="41"><span class="co">#--- clustering ---#</span></a>
+<a class="sourceLine" id="cb413-42" data-line-number="42">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(merged, <span class="dt">use.dimred=</span><span class="st">&quot;corrected&quot;</span>)</a>
+<a class="sourceLine" id="cb413-43" data-line-number="43">clusters &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(g)</a>
+<a class="sourceLine" id="cb413-44" data-line-number="44">merged<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clusters<span class="op">$</span>membership)</a>
+<a class="sourceLine" id="cb413-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb413-46" data-line-number="46"><span class="co">#--- dimensionality-reduction ---#</span></a>
+<a class="sourceLine" id="cb413-47" data-line-number="47">merged &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb413-48" data-line-number="48">merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">external_neighbors=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1">merged</a></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" data-line-number="1">merged</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 14699 19426 
 ## metadata(1): merge.info
@@ -801,8 +802,8 @@ For brevity, we will not explicitly repeat them here,
 only noting that we have already merged cells from all samples into the same coordinate system (Chapter <a href="human-pancreas-dataset-grun.html#data-integration">27.2.6</a>)
 and clustered the merged dataset to obtain a common partitioning across all samples (Chapter <a href="clustering.html#clustering">10</a>).
 A brief inspection of the results indicates that clusters contain similar contributions from all batches with only modest differences associated with td-Tomato expression (Figure <a href="#fig:tsne-initial"><strong>??</strong></a>).</p>
-<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb410-2" data-line-number="2"><span class="kw">table</span>(merged<span class="op">$</span>cluster, merged<span class="op">$</span>tomato)</a></code></pre></div>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb416-2" data-line-number="2"><span class="kw">table</span>(merged<span class="op">$</span>cluster, merged<span class="op">$</span>tomato)</a></code></pre></div>
 <pre><code>##     
 ##      FALSE TRUE
 ##   1    546  401
@@ -831,7 +832,7 @@ A brief inspection of the results indicates that clusters contain similar contri
 ##   24   762  878
 ##   25   363  497
 ##   26  1420  716</code></pre>
-<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" data-line-number="1"><span class="kw">table</span>(merged<span class="op">$</span>cluster, merged<span class="op">$</span>pool)</a></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" data-line-number="1"><span class="kw">table</span>(merged<span class="op">$</span>cluster, merged<span class="op">$</span>pool)</a></code></pre></div>
 <pre><code>##     
 ##         3    4    5
 ##   1   224  173  550
@@ -860,19 +861,19 @@ A brief inspection of the results indicates that clusters contain similar contri
 ##   24  217  455  968
 ##   25  132  172  556
 ##   26  194  870 1072</code></pre>
-<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" data-line-number="1">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb414-2" data-line-number="2">    <span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;tomato&quot;</span>, <span class="dt">text_by=</span><span class="st">&quot;cluster&quot;</span>),</a>
-<a class="sourceLine" id="cb414-3" data-line-number="3">    <span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="kw">data.frame</span>(<span class="dt">pool=</span><span class="kw">factor</span>(merged<span class="op">$</span>pool))),</a>
-<a class="sourceLine" id="cb414-4" data-line-number="4">    <span class="dt">ncol=</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb414-5" data-line-number="5">)</a></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" data-line-number="1">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb420-2" data-line-number="2">    <span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="st">&quot;tomato&quot;</span>, <span class="dt">text_by=</span><span class="st">&quot;cluster&quot;</span>),</a>
+<a class="sourceLine" id="cb420-3" data-line-number="3">    <span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="kw">data.frame</span>(<span class="dt">pool=</span><span class="kw">factor</span>(merged<span class="op">$</span>pool))),</a>
+<a class="sourceLine" id="cb420-4" data-line-number="4">    <span class="dt">ncol=</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb420-5" data-line-number="5">)</a></code></pre></div>
 <p><img src="P2_W10.sample-comparisons_files/figure-html/tsne-initial-1.png" width="672" /></p>
 <p>Ordinarily, we would be obliged to perform marker detection to assign biological meaning to these clusters.
 For simplicity, we will skip this step by directly using the cell type labels provided by <span class="citation">Pijuan-Sala et al. (<a href="#ref-pijuansala2019single">2019</a>)</span>.
 These were obtained by mapping the cells in this dataset to a larger, pre-annotated “atlas” of mouse early embryonic development.
 While broadly consistent, many of our clusters map to multiple labels (Figure @ref(fig:heat-cluster-label}), which reflects the difficulties in unambiguously resolving cell types undergoing differentiation.</p>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" data-line-number="1">by.label &lt;-<span class="st"> </span><span class="kw">table</span>(merged<span class="op">$</span>cluster, merged<span class="op">$</span>celltype.mapped)</a>
-<a class="sourceLine" id="cb415-2" data-line-number="2">pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(<span class="kw">log2</span>(by.label<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>, <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb415-3" data-line-number="3">    <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">101</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb421-1" data-line-number="1">by.label &lt;-<span class="st"> </span><span class="kw">table</span>(merged<span class="op">$</span>cluster, merged<span class="op">$</span>celltype.mapped)</a>
+<a class="sourceLine" id="cb421-2" data-line-number="2">pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(<span class="kw">log2</span>(by.label<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>, <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb421-3" data-line-number="3">    <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-cluster-label"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/heat-cluster-label-1.png" alt="Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log~2~-count for each combination." width="672" />
 <p class="caption">
@@ -890,14 +891,14 @@ The actual DE testing is performed on “pseudo-bulk” expression profiles <spa
 generated by summing counts together for all cells with the same combination of label and sample.
 This leverages the resolution offered by single-cell technologies to define the labels,
 and combines it with the statistical rigor of existing methods for DE analyses involving a small number of samples.</p>
-<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" data-line-number="1"><span class="co"># Using &#39;label&#39; and &#39;sample&#39; as our two factors; each column of the output</span></a>
-<a class="sourceLine" id="cb416-2" data-line-number="2"><span class="co"># corresponds to one unique combination of these two factors.</span></a>
-<a class="sourceLine" id="cb416-3" data-line-number="3">summed &lt;-<span class="st"> </span><span class="kw">aggregateAcrossCells</span>(merged, </a>
-<a class="sourceLine" id="cb416-4" data-line-number="4">    <span class="dt">id=</span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb416-5" data-line-number="5">        <span class="dt">label=</span>merged<span class="op">$</span>celltype.mapped,</a>
-<a class="sourceLine" id="cb416-6" data-line-number="6">        <span class="dt">sample=</span>merged<span class="op">$</span>sample)</a>
-<a class="sourceLine" id="cb416-7" data-line-number="7">)</a>
-<a class="sourceLine" id="cb416-8" data-line-number="8">summed</a></code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1"><span class="co"># Using &#39;label&#39; and &#39;sample&#39; as our two factors; each column of the output</span></a>
+<a class="sourceLine" id="cb422-2" data-line-number="2"><span class="co"># corresponds to one unique combination of these two factors.</span></a>
+<a class="sourceLine" id="cb422-3" data-line-number="3">summed &lt;-<span class="st"> </span><span class="kw">aggregateAcrossCells</span>(merged, </a>
+<a class="sourceLine" id="cb422-4" data-line-number="4">    <span class="dt">id=</span><span class="kw">DataFrame</span>(</a>
+<a class="sourceLine" id="cb422-5" data-line-number="5">        <span class="dt">label=</span>merged<span class="op">$</span>celltype.mapped,</a>
+<a class="sourceLine" id="cb422-6" data-line-number="6">        <span class="dt">sample=</span>merged<span class="op">$</span>sample)</a>
+<a class="sourceLine" id="cb422-7" data-line-number="7">)</a>
+<a class="sourceLine" id="cb422-8" data-line-number="8">summed</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 14699 186 
 ## metadata(1): merge.info
@@ -934,13 +935,13 @@ In our case, we have biological variation with three paired replicates per condi
 <p>We do not use all labels for GLM fitting as the strong DE between labels makes it difficult to compute a sensible average abundance to model the mean-dispersion trend.
 Moreover, label-specific batch effects would not be easily handled with a single additive term in the design matrix for the batch.
 Instead, we arbitrarily pick one of the labels to use for this demonstration.</p>
-<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" data-line-number="1">label &lt;-<span class="st"> &quot;Mesenchyme&quot;</span></a>
-<a class="sourceLine" id="cb418-2" data-line-number="2">current &lt;-<span class="st"> </span>summed[,label<span class="op">==</span>summed<span class="op">$</span>celltype.mapped]</a>
-<a class="sourceLine" id="cb418-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb418-4" data-line-number="4"><span class="co"># Creating up a DGEList object for use in edgeR:</span></a>
-<a class="sourceLine" id="cb418-5" data-line-number="5"><span class="kw">library</span>(edgeR)</a>
-<a class="sourceLine" id="cb418-6" data-line-number="6">y &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">counts</span>(current), <span class="dt">samples=</span><span class="kw">colData</span>(current))</a>
-<a class="sourceLine" id="cb418-7" data-line-number="7">y</a></code></pre></div>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1">label &lt;-<span class="st"> &quot;Mesenchyme&quot;</span></a>
+<a class="sourceLine" id="cb424-2" data-line-number="2">current &lt;-<span class="st"> </span>summed[,label<span class="op">==</span>summed<span class="op">$</span>celltype.mapped]</a>
+<a class="sourceLine" id="cb424-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb424-4" data-line-number="4"><span class="co"># Creating up a DGEList object for use in edgeR:</span></a>
+<a class="sourceLine" id="cb424-5" data-line-number="5"><span class="kw">library</span>(edgeR)</a>
+<a class="sourceLine" id="cb424-6" data-line-number="6">y &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">counts</span>(current), <span class="dt">samples=</span><span class="kw">colData</span>(current))</a>
+<a class="sourceLine" id="cb424-7" data-line-number="7">y</a></code></pre></div>
 <pre><code>## An object of class &quot;DGEList&quot;
 ## $counts
 ##        Sample1 Sample2 Sample3 Sample4 Sample5 Sample6
@@ -980,24 +981,24 @@ Instead, we arbitrarily pick one of the labels to use for this demonstration.</p
 In our situation, this is equivalent to removing label-sample combinations that have very few or lowly-sequenced cells.
 The corresponding summed count vectors are likely to be highly variable and thus reduce power for DE detection.
 The exact definition of “very low” will vary, but in this case, we define it to be log-library sizes that are more than 3 median absolute deviations from the median.</p>
-<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" data-line-number="1">discarded &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(y<span class="op">$</span>samples<span class="op">$</span>lib.size, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</a>
-<a class="sourceLine" id="cb420-2" data-line-number="2">y &lt;-<span class="st"> </span>y[,<span class="op">!</span>discarded]</a>
-<a class="sourceLine" id="cb420-3" data-line-number="3"><span class="kw">summary</span>(discarded)</a></code></pre></div>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1">discarded &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(y<span class="op">$</span>samples<span class="op">$</span>lib.size, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</a>
+<a class="sourceLine" id="cb426-2" data-line-number="2">y &lt;-<span class="st"> </span>y[,<span class="op">!</span>discarded]</a>
+<a class="sourceLine" id="cb426-3" data-line-number="3"><span class="kw">summary</span>(discarded)</a></code></pre></div>
 <pre><code>##    Mode   FALSE 
 ## logical       6</code></pre>
 <p>Another typical step in bulk RNA-seq analyses is to remove genes that are lowly expressed.
 This reduces computational work, improves the accuracy of mean-variance trend modelling and decreases the severity of the multiple testing correction.
 Genes are discarded if they are not expressed above a log-CPM threshold in a minimum number of samples (determined from the size of the smallest treatment group in the experimental design).</p>
-<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1">keep &lt;-<span class="st"> </span><span class="kw">filterByExpr</span>(y, <span class="dt">group=</span>current<span class="op">$</span>tomato)</a>
-<a class="sourceLine" id="cb422-2" data-line-number="2">y &lt;-<span class="st"> </span>y[keep,]</a>
-<a class="sourceLine" id="cb422-3" data-line-number="3"><span class="kw">summary</span>(keep)</a></code></pre></div>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1">keep &lt;-<span class="st"> </span><span class="kw">filterByExpr</span>(y, <span class="dt">group=</span>current<span class="op">$</span>tomato)</a>
+<a class="sourceLine" id="cb428-2" data-line-number="2">y &lt;-<span class="st"> </span>y[keep,]</a>
+<a class="sourceLine" id="cb428-3" data-line-number="3"><span class="kw">summary</span>(keep)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
 ## logical    9011    5688</code></pre>
 <p>Finally, we correct for composition biases by computing normalization factors with the trimmed mean of M-values method <span class="citation">(Robinson and Oshlack <a href="#ref-robinson2010scaling">2010</a>)</span>.
 We do not need the bespoke single-cell methods described in Chapter <a href="normalization.html#normalization">7</a>, as the counts for our pseudo-bulk samples are large enough to apply bulk normalization methods.
 (Readers should be aware that <em><a href="https://bioconductor.org/packages/3.10/edgeR">edgeR</a></em> normalization factors are closely related but <em>not the same</em> as the size factors described elsewhere in this book.)</p>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y)</a>
-<a class="sourceLine" id="cb424-2" data-line-number="2">y<span class="op">$</span>samples</a></code></pre></div>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y)</a>
+<a class="sourceLine" id="cb430-2" data-line-number="2">y<span class="op">$</span>samples</a></code></pre></div>
 <pre><code>##         group lib.size norm.factors batch       cell          barcode
 ## Sample1     1  4607053       1.0683     5  cell_9769 AAACCTGAGACTGTAA
 ## Sample2     1  1064970       1.0487     6 cell_12212 AAGGCAGAGATGCGAC
@@ -1026,8 +1027,8 @@ We do not need the bespoke single-cell methods described in Chapter <a href="nor
 while retaining an additive term that represents the effect of injection.
 The latter is represented in our model as the log-fold change in gene expression in td-Tomato-positive cells over their negative counterparts within the same label.
 Our aim is to test whether this log-fold change is significantly different from zero.</p>
-<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y<span class="op">$</span>samples)</a>
-<a class="sourceLine" id="cb426-2" data-line-number="2">design</a></code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y<span class="op">$</span>samples)</a>
+<a class="sourceLine" id="cb432-2" data-line-number="2">design</a></code></pre></div>
 <pre><code>##         (Intercept) factor(pool)4 factor(pool)5 factor(tomato)TRUE
 ## Sample1           1             0             0                  1
 ## Sample2           1             0             0                  0
@@ -1046,11 +1047,11 @@ Our aim is to test whether this log-fold change is significantly different from 
 <p>We estimate the negative binomial (NB) dispersions with <code>estimateDisp()</code>.
 The role of the NB dispersion is to model the mean-variance trend (Figure <a href="multi-sample-comparisons.html#fig:bcvplot">14.2</a>),
 which is not easily accommodated by QL dispersions alone due to the quadratic nature of the NB mean-variance trend.</p>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y, design)</a>
-<a class="sourceLine" id="cb428-2" data-line-number="2"><span class="kw">summary</span>(y<span class="op">$</span>trended.dispersion)</a></code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y, design)</a>
+<a class="sourceLine" id="cb434-2" data-line-number="2"><span class="kw">summary</span>(y<span class="op">$</span>trended.dispersion)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##  0.0103  0.0167  0.0213  0.0202  0.0235  0.0266</code></pre>
-<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1"><span class="kw">plotBCV</span>(y)</a></code></pre></div>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" data-line-number="1"><span class="kw">plotBCV</span>(y)</a></code></pre></div>
 <div class="figure"><span id="fig:bcvplot"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/bcvplot-1.png" alt="Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively." width="672" />
 <p class="caption">
@@ -1061,14 +1062,14 @@ Figure 14.2: Biological coefficient of variation (BCV) for each gene as a functi
 This fits a GLM to the counts for each gene and estimates the QL dispersion from the GLM deviance.
 We set <code>robust=TRUE</code> to avoid distortions from highly variable clusters <span class="citation">(Phipson et al. <a href="#ref-phipson2016robust">2016</a>)</span>.
 The QL dispersion models the uncertainty and variability of the per-gene variance (Figure <a href="multi-sample-comparisons.html#fig:qlplot">14.3</a>) - which is not well handled by the NB dispersions, so the two dispersion types complement each other in the final analysis.</p>
-<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb431-1" data-line-number="1">fit &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb431-2" data-line-number="2"><span class="kw">summary</span>(fit<span class="op">$</span>var.prior)</a></code></pre></div>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb437-1" data-line-number="1">fit &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb437-2" data-line-number="2"><span class="kw">summary</span>(fit<span class="op">$</span>var.prior)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.318   0.714   0.854   0.804   0.913   1.067</code></pre>
-<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb433-1" data-line-number="1"><span class="kw">summary</span>(fit<span class="op">$</span>df.prior)</a></code></pre></div>
+<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb439-1" data-line-number="1"><span class="kw">summary</span>(fit<span class="op">$</span>df.prior)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   0.227  12.675  12.675  12.339  12.675  12.675</code></pre>
-<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb435-1" data-line-number="1"><span class="kw">plotQLDisp</span>(fit)</a></code></pre></div>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb441-1" data-line-number="1"><span class="kw">plotQLDisp</span>(fit)</a></code></pre></div>
 <div class="figure"><span id="fig:qlplot"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/qlplot-1.png" alt="QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red)." width="672" />
 <p class="caption">
@@ -1081,13 +1082,13 @@ Very few genes are significantly DE, indicating that injection has little effect
 (Note that this logic is somewhat circular,
 as a large transcriptional effect may have caused cells of this type to be re-assigned to a different label.
 We discuss this in more detail in Section <a href="multi-sample-comparisons.html#de-da-duality">14.5</a> below.)</p>
-<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb436-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res))</a></code></pre></div>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb442-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res))</a></code></pre></div>
 <pre><code>##        factor(tomato)TRUE
 ## Down                    8
 ## NotSig               5672
 ## Up                      8</code></pre>
-<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" data-line-number="1"><span class="kw">topTags</span>(res)</a></code></pre></div>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1"><span class="kw">topTags</span>(res)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##            logFC logCPM       F    PValue       FDR
 ## Phlda2   -4.3874  9.934 1638.59 1.812e-16 1.031e-12
@@ -1109,39 +1110,39 @@ This is mostly straightforward as we can write a loop that simply performs the D
 However, some additional care is required to automatically deal with labels that are not represented in both injected and background cells, for which a DE analysis between conditions is meaningless;
 or are not represented in a sufficient number of replicate samples to enable modelling of biological variability.
 This is represented by the extra checks related to <code>design</code> in the code chunk below.</p>
-<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" data-line-number="1">de.results &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb440-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">unique</span>(summed<span class="op">$</span>celltype.mapped)) {</a>
-<a class="sourceLine" id="cb440-3" data-line-number="3">    current &lt;-<span class="st"> </span>summed[,i<span class="op">==</span>summed<span class="op">$</span>celltype.mapped]</a>
-<a class="sourceLine" id="cb440-4" data-line-number="4">    y &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">counts</span>(current), <span class="dt">samples=</span><span class="kw">colData</span>(current))</a>
-<a class="sourceLine" id="cb440-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb440-6" data-line-number="6">    discarded &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(<span class="kw">colSums</span>(<span class="kw">counts</span>(current)), <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</a>
-<a class="sourceLine" id="cb440-7" data-line-number="7">    y &lt;-<span class="st"> </span>y[,<span class="op">!</span>discarded]</a>
-<a class="sourceLine" id="cb440-8" data-line-number="8">    y &lt;-<span class="st"> </span>y[<span class="kw">filterByExpr</span>(y, <span class="dt">group=</span>current<span class="op">$</span>tomato),]</a>
-<a class="sourceLine" id="cb440-9" data-line-number="9">    y &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y)</a>
-<a class="sourceLine" id="cb440-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb440-11" data-line-number="11">    design &lt;-<span class="st"> </span><span class="kw">try</span>(</a>
-<a class="sourceLine" id="cb440-12" data-line-number="12">        <span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y<span class="op">$</span>samples),</a>
-<a class="sourceLine" id="cb440-13" data-line-number="13">        <span class="dt">silent=</span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb440-14" data-line-number="14">    )</a>
-<a class="sourceLine" id="cb440-15" data-line-number="15">    <span class="cf">if</span> (<span class="kw">is</span>(design, <span class="st">&quot;try-error&quot;</span>) <span class="op">||</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb440-16" data-line-number="16"><span class="st">        </span><span class="kw">qr</span>(design)<span class="op">$</span>rank<span class="op">==</span><span class="kw">nrow</span>(design) <span class="op">||</span></a>
-<a class="sourceLine" id="cb440-17" data-line-number="17"><span class="st">        </span><span class="kw">qr</span>(design)<span class="op">$</span>rank <span class="op">&lt;</span><span class="st"> </span><span class="kw">ncol</span>(design)) </a>
-<a class="sourceLine" id="cb440-18" data-line-number="18">    {</a>
-<a class="sourceLine" id="cb440-19" data-line-number="19">        <span class="co"># Skipping labels without contrasts or without </span></a>
-<a class="sourceLine" id="cb440-20" data-line-number="20">        <span class="co"># enough residual d.f. to estimate the dispersion.</span></a>
-<a class="sourceLine" id="cb440-21" data-line-number="21">        <span class="cf">next</span></a>
-<a class="sourceLine" id="cb440-22" data-line-number="22">    }</a>
-<a class="sourceLine" id="cb440-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb440-24" data-line-number="24">    y &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y, design)</a>
-<a class="sourceLine" id="cb440-25" data-line-number="25">    fit &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y, design)</a>
-<a class="sourceLine" id="cb440-26" data-line-number="26">    res &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb440-27" data-line-number="27">    de.results[[i]] &lt;-<span class="st"> </span>res</a>
-<a class="sourceLine" id="cb440-28" data-line-number="28">}</a></code></pre></div>
+<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" data-line-number="1">de.results &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb446-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">unique</span>(summed<span class="op">$</span>celltype.mapped)) {</a>
+<a class="sourceLine" id="cb446-3" data-line-number="3">    current &lt;-<span class="st"> </span>summed[,i<span class="op">==</span>summed<span class="op">$</span>celltype.mapped]</a>
+<a class="sourceLine" id="cb446-4" data-line-number="4">    y &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">counts</span>(current), <span class="dt">samples=</span><span class="kw">colData</span>(current))</a>
+<a class="sourceLine" id="cb446-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb446-6" data-line-number="6">    discarded &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(<span class="kw">colSums</span>(<span class="kw">counts</span>(current)), <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</a>
+<a class="sourceLine" id="cb446-7" data-line-number="7">    y &lt;-<span class="st"> </span>y[,<span class="op">!</span>discarded]</a>
+<a class="sourceLine" id="cb446-8" data-line-number="8">    y &lt;-<span class="st"> </span>y[<span class="kw">filterByExpr</span>(y, <span class="dt">group=</span>current<span class="op">$</span>tomato),]</a>
+<a class="sourceLine" id="cb446-9" data-line-number="9">    y &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y)</a>
+<a class="sourceLine" id="cb446-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb446-11" data-line-number="11">    design &lt;-<span class="st"> </span><span class="kw">try</span>(</a>
+<a class="sourceLine" id="cb446-12" data-line-number="12">        <span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y<span class="op">$</span>samples),</a>
+<a class="sourceLine" id="cb446-13" data-line-number="13">        <span class="dt">silent=</span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb446-14" data-line-number="14">    )</a>
+<a class="sourceLine" id="cb446-15" data-line-number="15">    <span class="cf">if</span> (<span class="kw">is</span>(design, <span class="st">&quot;try-error&quot;</span>) <span class="op">||</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb446-16" data-line-number="16"><span class="st">        </span><span class="kw">qr</span>(design)<span class="op">$</span>rank<span class="op">==</span><span class="kw">nrow</span>(design) <span class="op">||</span></a>
+<a class="sourceLine" id="cb446-17" data-line-number="17"><span class="st">        </span><span class="kw">qr</span>(design)<span class="op">$</span>rank <span class="op">&lt;</span><span class="st"> </span><span class="kw">ncol</span>(design)) </a>
+<a class="sourceLine" id="cb446-18" data-line-number="18">    {</a>
+<a class="sourceLine" id="cb446-19" data-line-number="19">        <span class="co"># Skipping labels without contrasts or without </span></a>
+<a class="sourceLine" id="cb446-20" data-line-number="20">        <span class="co"># enough residual d.f. to estimate the dispersion.</span></a>
+<a class="sourceLine" id="cb446-21" data-line-number="21">        <span class="cf">next</span></a>
+<a class="sourceLine" id="cb446-22" data-line-number="22">    }</a>
+<a class="sourceLine" id="cb446-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb446-24" data-line-number="24">    y &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y, design)</a>
+<a class="sourceLine" id="cb446-25" data-line-number="25">    fit &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y, design)</a>
+<a class="sourceLine" id="cb446-26" data-line-number="26">    res &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb446-27" data-line-number="27">    de.results[[i]] &lt;-<span class="st"> </span>res</a>
+<a class="sourceLine" id="cb446-28" data-line-number="28">}</a></code></pre></div>
 <p>We examine the numbers of DEGs at a FDR of 5% for each label.
 In general, there seems to be very little differential expression that is introduced by injection.</p>
-<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb441-1" data-line-number="1">summaries &lt;-<span class="st"> </span><span class="kw">lapply</span>(de.results, <span class="dt">FUN=</span><span class="cf">function</span>(x) <span class="kw">summary</span>(<span class="kw">decideTests</span>(x))[,<span class="dv">1</span>])</a>
-<a class="sourceLine" id="cb441-2" data-line-number="2">sum.tab &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, summaries)</a>
-<a class="sourceLine" id="cb441-3" data-line-number="3">sum.tab</a></code></pre></div>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb447-1" data-line-number="1">summaries &lt;-<span class="st"> </span><span class="kw">lapply</span>(de.results, <span class="dt">FUN=</span><span class="cf">function</span>(x) <span class="kw">summary</span>(<span class="kw">decideTests</span>(x))[,<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb447-2" data-line-number="2">sum.tab &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, summaries)</a>
+<a class="sourceLine" id="cb447-3" data-line-number="3">sum.tab</a></code></pre></div>
 <pre><code>##                                Down NotSig Up
 ## Mesenchyme                        8   5672  8
 ## Endothelium                       3   3224  4
@@ -1175,10 +1176,10 @@ In general, there seems to be very little differential expression that is introd
 <p>A survey of the DEGs from all labels identifies <em>Xist</em> as being consistently downregulated in the injected cells.
 This is consistent with the fact that the injected cells are male while the background cells are derived from pools of male and female embryos (due to experimental difficulties with resolving sex at this stage).
 The consistent downregulation of <em>Phlda2</em> and <em>Cdkn1c</em> in the injected cells is also interesting, given that both are imprinted genes.</p>
-<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb443-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: easier consolidation.</span></a>
-<a class="sourceLine" id="cb443-2" data-line-number="2">degs &lt;-<span class="st"> </span><span class="kw">lapply</span>(de.results, <span class="dt">FUN=</span><span class="cf">function</span>(x) <span class="kw">rownames</span>(<span class="kw">topTags</span>(x, <span class="dt">p.value=</span><span class="fl">0.05</span>)))</a>
-<a class="sourceLine" id="cb443-3" data-line-number="3">common.degs &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">table</span>(<span class="kw">unlist</span>(degs)), <span class="dt">decreasing=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb443-4" data-line-number="4"><span class="kw">head</span>(common.degs, <span class="dv">20</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb449-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: easier consolidation.</span></a>
+<a class="sourceLine" id="cb449-2" data-line-number="2">degs &lt;-<span class="st"> </span><span class="kw">lapply</span>(de.results, <span class="dt">FUN=</span><span class="cf">function</span>(x) <span class="kw">rownames</span>(<span class="kw">topTags</span>(x, <span class="dt">p.value=</span><span class="fl">0.05</span>)))</a>
+<a class="sourceLine" id="cb449-3" data-line-number="3">common.degs &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">table</span>(<span class="kw">unlist</span>(degs)), <span class="dt">decreasing=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb449-4" data-line-number="4"><span class="kw">head</span>(common.degs, <span class="dv">20</span>)</a></code></pre></div>
 <pre><code>## 
 ##    Erdr1     Xist     Mid1   Cdkn1c   Phlda2 Kcnq1ot1   Akr1e1     Nnat 
 ##       25       24       22       20       20       18       12        8 
@@ -1189,7 +1190,7 @@ The consistent downregulation of <em>Phlda2</em> and <em>Cdkn1c</em> in the inje
 <p>We also list the labels that were skipped due to the absence of replicates or contrasts.
 If it is necessary to extract statistics in the absence of replicates, several strategies can be applied such as reducing the complexity of the model or using a predefined value for the NB dispersion.
 We refer readers to the <em><a href="https://bioconductor.org/packages/3.10/edgeR">edgeR</a></em> user’s guide for more details.</p>
-<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb445-1" data-line-number="1"><span class="kw">setdiff</span>(<span class="kw">unique</span>(summed<span class="op">$</span>celltype.mapped), <span class="kw">names</span>(summaries))</a></code></pre></div>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" data-line-number="1"><span class="kw">setdiff</span>(<span class="kw">unique</span>(summed<span class="op">$</span>celltype.mapped), <span class="kw">names</span>(summaries))</a></code></pre></div>
 <pre><code>## [1] &quot;ExE ectoderm&quot;        &quot;Caudal neurectoderm&quot; &quot;Parietal endoderm&quot;  
 ## [4] &quot;Notochord&quot;           &quot;Mixed mesoderm&quot;</code></pre>
 </div>
@@ -1204,9 +1205,9 @@ The DA analysis has a long history in flow cytometry <span class="citation">(Fin
 By performing it here, we effectively treat scRNA-seq as a “super-FACS” technology for defining relevant subpopulations using the entire transcriptome.</p>
 <p>We prepare for the DA analysis by quantifying the number of cells assigned to each label (or cluster).
 In this case, we are aiming to identify labels that change in abundance among the compartment of injected cells compared to the background.</p>
-<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb447-1" data-line-number="1">abundances &lt;-<span class="st"> </span><span class="kw">table</span>(merged<span class="op">$</span>celltype.mapped, merged<span class="op">$</span>sample) </a>
-<a class="sourceLine" id="cb447-2" data-line-number="2">abundances &lt;-<span class="st"> </span><span class="kw">unclass</span>(abundances) </a>
-<a class="sourceLine" id="cb447-3" data-line-number="3"><span class="kw">head</span>(abundances)</a></code></pre></div>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" data-line-number="1">abundances &lt;-<span class="st"> </span><span class="kw">table</span>(merged<span class="op">$</span>celltype.mapped, merged<span class="op">$</span>sample) </a>
+<a class="sourceLine" id="cb453-2" data-line-number="2">abundances &lt;-<span class="st"> </span><span class="kw">unclass</span>(abundances) </a>
+<a class="sourceLine" id="cb453-3" data-line-number="3"><span class="kw">head</span>(abundances)</a></code></pre></div>
 <pre><code>##                      
 ##                        5  6   7   8   9  10
 ##   Allantois           97 15 139 127 318 259
@@ -1222,10 +1223,10 @@ In this case, we are aiming to identify labels that change in abundance among th
 This allows us to take advantage of the NB GLM methods to model overdispersed count data in the presence of limited replication -
 except that the counts are not of reads per gene, but of cells per label <span class="citation">(A. T. L. Lun, Richard, and Marioni <a href="#ref-lun2017testing">2017</a>)</span>.
 The aim is to share information across labels to improve our estimates of the biological variability in cell abundance between replicates.</p>
-<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb449-1" data-line-number="1"><span class="co"># Attaching some column metadata.</span></a>
-<a class="sourceLine" id="cb449-2" data-line-number="2">extra.info &lt;-<span class="st"> </span><span class="kw">colData</span>(merged)[<span class="kw">match</span>(<span class="kw">colnames</span>(abundances), merged<span class="op">$</span>sample),]</a>
-<a class="sourceLine" id="cb449-3" data-line-number="3">y.ab &lt;-<span class="st"> </span><span class="kw">DGEList</span>(abundances, <span class="dt">samples=</span>extra.info)</a>
-<a class="sourceLine" id="cb449-4" data-line-number="4">y.ab</a></code></pre></div>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb455-1" data-line-number="1"><span class="co"># Attaching some column metadata.</span></a>
+<a class="sourceLine" id="cb455-2" data-line-number="2">extra.info &lt;-<span class="st"> </span><span class="kw">colData</span>(merged)[<span class="kw">match</span>(<span class="kw">colnames</span>(abundances), merged<span class="op">$</span>sample),]</a>
+<a class="sourceLine" id="cb455-3" data-line-number="3">y.ab &lt;-<span class="st"> </span><span class="kw">DGEList</span>(abundances, <span class="dt">samples=</span>extra.info)</a>
+<a class="sourceLine" id="cb455-4" data-line-number="4">y.ab</a></code></pre></div>
 <pre><code>## An object of class &quot;DGEList&quot;
 ## $counts
 ##                      
@@ -1262,9 +1263,9 @@ The aim is to share information across labels to improve our estimates of the bi
 <p>We filter out low-abundance labels as previously described.
 This avoids cluttering the result table with very rare subpopulations that contain only a handful of cells.
 For a DA analysis of cluster abundances, filtering is generally not required as most clusters will not be of low-abundance (otherwise there would not have been enough evidence to define the cluster in the first place).</p>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" data-line-number="1">keep &lt;-<span class="st"> </span><span class="kw">filterByExpr</span>(y.ab, <span class="dt">group=</span>y.ab<span class="op">$</span>samples<span class="op">$</span>tomato)</a>
-<a class="sourceLine" id="cb451-2" data-line-number="2">y.ab &lt;-<span class="st"> </span>y.ab[keep,]</a>
-<a class="sourceLine" id="cb451-3" data-line-number="3"><span class="kw">summary</span>(keep)</a></code></pre></div>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb457-1" data-line-number="1">keep &lt;-<span class="st"> </span><span class="kw">filterByExpr</span>(y.ab, <span class="dt">group=</span>y.ab<span class="op">$</span>samples<span class="op">$</span>tomato)</a>
+<a class="sourceLine" id="cb457-2" data-line-number="2">y.ab &lt;-<span class="st"> </span>y.ab[keep,]</a>
+<a class="sourceLine" id="cb457-3" data-line-number="3"><span class="kw">summary</span>(keep)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
 ## logical      10      24</code></pre>
 <p>Unlike DE analyses, we do not perform an additional normalization step with <code>calcNormFactors()</code>.
@@ -1273,14 +1274,14 @@ Any changes we detect between conditions will subsequently represent differences
 The motivation behind this decision is discussed in more detail in Section <a href="multi-sample-comparisons.html#composition-effects">14.4.3</a>.</p>
 <p>We formulate the design matrix with a blocking factor for the batch of origin for each sample and an additive term for the td-Tomato status (i.e., injection effect).
 Here, the log-fold change in our model refers to the change in cell abundance after injection, rather than the change in gene expression.</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" data-line-number="1">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y.ab<span class="op">$</span>samples)</a></code></pre></div>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" data-line-number="1">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y.ab<span class="op">$</span>samples)</a></code></pre></div>
 <p>We use the <code>estimateDisp()</code> function to estimate the NB dipersion for each cluster (Figure <a href="multi-sample-comparisons.html#fig:abplotbcv">14.4</a>).
 We turn off the trend as we do not have enough points for its stable estimation.</p>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" data-line-number="1">y.ab &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)</a>
-<a class="sourceLine" id="cb454-2" data-line-number="2"><span class="kw">summary</span>(y.ab<span class="op">$</span>common.dispersion)</a></code></pre></div>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb460-1" data-line-number="1">y.ab &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)</a>
+<a class="sourceLine" id="cb460-2" data-line-number="2"><span class="kw">summary</span>(y.ab<span class="op">$</span>common.dispersion)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##  0.0614  0.0614  0.0614  0.0614  0.0614  0.0614</code></pre>
-<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb456-1" data-line-number="1"><span class="kw">plotBCV</span>(y.ab, <span class="dt">cex=</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb462-1" data-line-number="1"><span class="kw">plotBCV</span>(y.ab, <span class="dt">cex=</span><span class="dv">1</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:abplotbcv"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/abplotbcv-1.png" alt="Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red." width="672" />
 <p class="caption">
@@ -1288,14 +1289,14 @@ Figure 14.4: Biological coefficient of variation (BCV) for each label with respe
 </p>
 </div>
 <p>We repeat this process with the QL dispersion, again disabling the trend (Figure <a href="multi-sample-comparisons.html#fig:abplotql">14.5</a>).</p>
-<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb457-1" data-line-number="1">fit.ab &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb457-2" data-line-number="2"><span class="kw">summary</span>(fit.ab<span class="op">$</span>var.prior)</a></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" data-line-number="1">fit.ab &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb463-2" data-line-number="2"><span class="kw">summary</span>(fit.ab<span class="op">$</span>var.prior)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##    1.25    1.25    1.25    1.25    1.25    1.25</code></pre>
-<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" data-line-number="1"><span class="kw">summary</span>(fit.ab<span class="op">$</span>df.prior)</a></code></pre></div>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1"><span class="kw">summary</span>(fit.ab<span class="op">$</span>df.prior)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##     Inf     Inf     Inf     Inf     Inf     Inf</code></pre>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" data-line-number="1"><span class="kw">plotQLDisp</span>(fit.ab, <span class="dt">cex=</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" data-line-number="1"><span class="kw">plotQLDisp</span>(fit.ab, <span class="dt">cex=</span><span class="dv">1</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:abplotql"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/abplotql-1.png" alt="QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue." width="672" />
 <p class="caption">
@@ -1306,13 +1307,13 @@ Figure 14.5: QL dispersion estimates for each label with respect to its average 
 We see that extra-embryonic ectoderm is strongly depleted in the injected cells.
 This is consistent with the expectation that cells injected into the blastocyst should not contribute to extra-embryonic tissue.
 The injected cells also contribute more to the mesenchyme, which may also be of interest.</p>
-<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb462-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ab, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb462-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res))</a></code></pre></div>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb468-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ab, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb468-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res))</a></code></pre></div>
 <pre><code>##        factor(tomato)TRUE
 ## Down                    1
 ## NotSig                 22
 ## Up                      1</code></pre>
-<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" data-line-number="1"><span class="kw">topTags</span>(res)</a></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" data-line-number="1"><span class="kw">topTags</span>(res)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##                                  logFC logCPM      F    PValue       FDR
 ## ExE ectoderm                   -6.5663  13.02 66.267 1.352e-10 3.245e-09
@@ -1342,16 +1343,16 @@ If composition biases are proving problematic for interpretation of DA results, 
 <h4><span class="header-section-number">14.4.3.2</span> Assuming most labels do not change</h4>
 <p>If it is possible to assume that most labels (i.e., cell types) do not change in abundance, we can use <code>calcNormFactors()</code> to compute normalization factors.
 This seems to be a fairly reasonable assumption for the WT chimeras where the injection is expected to have only a modest effect at most.</p>
-<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb466-1" data-line-number="1">y.ab2 &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y.ab)</a>
-<a class="sourceLine" id="cb466-2" data-line-number="2">y.ab2<span class="op">$</span>samples<span class="op">$</span>norm.factors</a></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb472-1" data-line-number="1">y.ab2 &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y.ab)</a>
+<a class="sourceLine" id="cb472-2" data-line-number="2">y.ab2<span class="op">$</span>samples<span class="op">$</span>norm.factors</a></code></pre></div>
 <pre><code>## [1] 1.0055 1.0833 1.1658 0.7614 1.0616 0.9743</code></pre>
 <p>We then proceed with the remainder of the <em><a href="https://bioconductor.org/packages/3.10/edgeR">edgeR</a></em> analysis, shown below in condensed format.
 Many of the positive log-fold changes are shifted towards zero, consistent with the removal of composition biases from the presence of extra-embryonic ectoderm in only background cells.
 In particular, the mesenchyme is no longer significantly DA after injection.</p>
-<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb468-1" data-line-number="1">y.ab2 &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab2, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)</a>
-<a class="sourceLine" id="cb468-2" data-line-number="2">fit.ab2 &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab2, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb468-3" data-line-number="3">res2 &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ab2, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb468-4" data-line-number="4"><span class="kw">topTags</span>(res2, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb474-1" data-line-number="1">y.ab2 &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab2, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)</a>
+<a class="sourceLine" id="cb474-2" data-line-number="2">fit.ab2 &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab2, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb474-3" data-line-number="3">res2 &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ab2, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb474-4" data-line-number="4"><span class="kw">topTags</span>(res2, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##                                  logFC logCPM      F    PValue       FDR
 ## ExE ectoderm                   -6.9215  13.17 70.364 5.738e-11 1.377e-09
@@ -1370,9 +1371,9 @@ In particular, the mesenchyme is no longer significantly DA after injection.</p>
 <p>Another approach is to repeat the analysis after removing DA clusters containing many cells.
 This provides a clearer picture of the changes in abundance among the remaining clusters.
 Here, we remove the extra-embryonic ectoderm and reset the total number of cells for all samples with <code>keep.lib.sizes=FALSE</code>.</p>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" data-line-number="1">offenders &lt;-<span class="st"> &quot;ExE ectoderm&quot;</span></a>
-<a class="sourceLine" id="cb470-2" data-line-number="2">y.ab3 &lt;-<span class="st"> </span>y.ab[<span class="kw">setdiff</span>(<span class="kw">rownames</span>(y.ab), offenders),, keep.lib.sizes=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb470-3" data-line-number="3">y.ab3<span class="op">$</span>samples   </a></code></pre></div>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb476-1" data-line-number="1">offenders &lt;-<span class="st"> &quot;ExE ectoderm&quot;</span></a>
+<a class="sourceLine" id="cb476-2" data-line-number="2">y.ab3 &lt;-<span class="st"> </span>y.ab[<span class="kw">setdiff</span>(<span class="kw">rownames</span>(y.ab), offenders),, keep.lib.sizes=<span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb476-3" data-line-number="3">y.ab3<span class="op">$</span>samples   </a></code></pre></div>
 <pre><code>##    group lib.size norm.factors batch       cell          barcode sample
 ## 5      1     2268            1     5  cell_9769 AAACCTGAGACTGTAA      5
 ## 6      1      993            1     6 cell_12180 AAACCTGCAGATGGCA      6
@@ -1394,10 +1395,10 @@ Here, we remove the extra-embryonic ectoderm and reset the total number of cells
 ## 8   cell_139075     0.004733       9
 ## 9   cell_116116     0.079415      15
 ## 10   cell_39343     0.040747       1</code></pre>
-<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb472-1" data-line-number="1">y.ab3 &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab3, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)</a>
-<a class="sourceLine" id="cb472-2" data-line-number="2">fit.ab3 &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab3, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb472-3" data-line-number="3">res3 &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ab3, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb472-4" data-line-number="4"><span class="kw">topTags</span>(res3, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" data-line-number="1">y.ab3 &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab3, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)</a>
+<a class="sourceLine" id="cb478-2" data-line-number="2">fit.ab3 &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab3, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb478-3" data-line-number="3">res3 &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ab3, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb478-4" data-line-number="4"><span class="kw">topTags</span>(res3, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##                                  logFC logCPM      F   PValue     FDR
 ## Mesenchyme                      1.1274  16.32 11.501 0.001438 0.03308
@@ -1420,13 +1421,13 @@ This avoids detecting changes in T cell subsets that are driven by compositional
 This can be roughly interpreted as the maximum log-fold change in the total number of cells caused by DA in other labels.
 (By comparison, fold-differences in the totals due to differences in capture efficiency or the size of the original cell population are not attributable to composition bias and should not be considered when choosing <span class="math inline">\(\tau\)</span>.)
 We then mitigate the effect of composition biases by testing each label for changes in abundance beyond <span class="math inline">\(\tau\)</span> <span class="citation">(McCarthy and Smyth <a href="#ref-mccarthy2009treat">2009</a>; A. T. L. Lun, Richard, and Marioni <a href="#ref-lun2017testing">2017</a>)</span>.</p>
-<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb474-1" data-line-number="1">res.lfc &lt;-<span class="st"> </span><span class="kw">glmTreat</span>(fit.ab, <span class="dt">coef=</span><span class="kw">ncol</span>(design), <span class="dt">lfc=</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb474-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.lfc))</a></code></pre></div>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" data-line-number="1">res.lfc &lt;-<span class="st"> </span><span class="kw">glmTreat</span>(fit.ab, <span class="dt">coef=</span><span class="kw">ncol</span>(design), <span class="dt">lfc=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb480-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.lfc))</a></code></pre></div>
 <pre><code>##        factor(tomato)TRUE
 ## Down                    1
 ## NotSig                 23
 ## Up                      0</code></pre>
-<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb476-1" data-line-number="1"><span class="kw">topTags</span>(res.lfc)</a></code></pre></div>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" data-line-number="1"><span class="kw">topTags</span>(res.lfc)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##                                  logFC unshrunk.logFC logCPM    PValue
 ## ExE ectoderm                   -6.5663        -7.0015  13.02 2.626e-09
@@ -1489,11 +1490,11 @@ This is problematic for DE analyses between conditions, as DEGs detected for a p
 <p>To illustrate, we consider the <em>Tal1</em>-knockout (KO) chimera data from <span class="citation">Pijuan-Sala et al. (<a href="#ref-pijuansala2019single">2019</a>)</span>.
 This is very similar to the WT chimera dataset we previously examined, only differing in that the <em>Tal1</em> gene was knocked out in the injected cells.
 <em>Tal1</em> is a transcription factor that has known roles in erythroid differentiation; the aim of the experiment was to determine if blocking of the erythroid lineage diverted cells to other developmental fates.</p>
-<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" data-line-number="1"><span class="kw">library</span>(MouseGastrulationData)</a>
-<a class="sourceLine" id="cb478-2" data-line-number="2">sce.tal1 &lt;-<span class="st"> </span><span class="kw">Tal1ChimeraData</span>()</a>
-<a class="sourceLine" id="cb478-3" data-line-number="3"><span class="kw">rownames</span>(sce.tal1) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
-<a class="sourceLine" id="cb478-4" data-line-number="4">    <span class="kw">rowData</span>(sce.tal1)<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(sce.tal1)<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb478-5" data-line-number="5">sce.tal1</a></code></pre></div>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" data-line-number="1"><span class="kw">library</span>(MouseGastrulationData)</a>
+<a class="sourceLine" id="cb484-2" data-line-number="2">sce.tal1 &lt;-<span class="st"> </span><span class="kw">Tal1ChimeraData</span>()</a>
+<a class="sourceLine" id="cb484-3" data-line-number="3"><span class="kw">rownames</span>(sce.tal1) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb484-4" data-line-number="4">    <span class="kw">rowData</span>(sce.tal1)<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(sce.tal1)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb484-5" data-line-number="5">sce.tal1</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 29453 56122 
 ## metadata(0):
@@ -1509,12 +1510,12 @@ This is very similar to the WT chimera dataset we previously examined, only diff
 We observe that the strongest DEGs are the hemoglobins, which are downregulated in the injected cells.
 This is rather surprising as cells undergoing neuronal development should not express hemoglobins in the first place.
 The most sober explanation is that the background samples contain more hemoglobin transcripts in the ambient solution due to leakage from erythrocytes (or their precursors) during sorting and dissociation.</p>
-<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" data-line-number="1">summed.tal1 &lt;-<span class="st"> </span><span class="kw">aggregateAcrossCells</span>(sce.tal1, </a>
-<a class="sourceLine" id="cb480-2" data-line-number="2">    <span class="dt">ids=</span><span class="kw">DataFrame</span>(<span class="dt">sample=</span>sce.tal1<span class="op">$</span>sample,</a>
-<a class="sourceLine" id="cb480-3" data-line-number="3">        <span class="dt">label=</span>sce.tal1<span class="op">$</span>celltype.mapped)</a>
-<a class="sourceLine" id="cb480-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb480-5" data-line-number="5">summed.neural &lt;-<span class="st"> </span>summed.tal1[,summed.tal1<span class="op">$</span>label<span class="op">==</span><span class="st">&quot;Neural crest&quot;</span>]</a>
-<a class="sourceLine" id="cb480-6" data-line-number="6">summed.neural</a></code></pre></div>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb486-1" data-line-number="1">summed.tal1 &lt;-<span class="st"> </span><span class="kw">aggregateAcrossCells</span>(sce.tal1, </a>
+<a class="sourceLine" id="cb486-2" data-line-number="2">    <span class="dt">ids=</span><span class="kw">DataFrame</span>(<span class="dt">sample=</span>sce.tal1<span class="op">$</span>sample,</a>
+<a class="sourceLine" id="cb486-3" data-line-number="3">        <span class="dt">label=</span>sce.tal1<span class="op">$</span>celltype.mapped)</a>
+<a class="sourceLine" id="cb486-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb486-5" data-line-number="5">summed.neural &lt;-<span class="st"> </span>summed.tal1[,summed.tal1<span class="op">$</span>label<span class="op">==</span><span class="st">&quot;Neural crest&quot;</span>]</a>
+<a class="sourceLine" id="cb486-6" data-line-number="6">summed.neural</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 29453 4 
 ## metadata(0):
@@ -1526,23 +1527,23 @@ The most sober explanation is that the background samples contain more hemoglobi
 ## reducedDimNames(1): pca.corrected
 ## spikeNames(0):
 ## altExpNames(0):</code></pre>
-<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" data-line-number="1"><span class="co"># Standard edgeR analysis, as described above.</span></a>
-<a class="sourceLine" id="cb482-2" data-line-number="2">y.neural &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">counts</span>(summed.neural), <span class="dt">samples=</span><span class="kw">colData</span>(summed.neural))</a>
-<a class="sourceLine" id="cb482-3" data-line-number="3">keep.neural &lt;-<span class="st"> </span><span class="kw">filterByExpr</span>(y.neural, <span class="dt">group=</span>y.neural<span class="op">$</span>samples<span class="op">$</span>tomato)</a>
-<a class="sourceLine" id="cb482-4" data-line-number="4">y.neural &lt;-<span class="st"> </span>y.neural[keep.neural,]</a>
-<a class="sourceLine" id="cb482-5" data-line-number="5">y.neural &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y.neural)</a>
-<a class="sourceLine" id="cb482-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb482-7" data-line-number="7">block &lt;-<span class="st"> </span>y.neural<span class="op">$</span>samples<span class="op">$</span>sample <span class="op">%%</span><span class="st"> </span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb482-8" data-line-number="8">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(block) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y.neural<span class="op">$</span>samples)</a>
-<a class="sourceLine" id="cb482-9" data-line-number="9">y.neural &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.neural, design)</a>
-<a class="sourceLine" id="cb482-10" data-line-number="10">fit.neural &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.neural, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb482-11" data-line-number="11">res.neural &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.neural, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb482-12" data-line-number="12"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.neural))</a></code></pre></div>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" data-line-number="1"><span class="co"># Standard edgeR analysis, as described above.</span></a>
+<a class="sourceLine" id="cb488-2" data-line-number="2">y.neural &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">counts</span>(summed.neural), <span class="dt">samples=</span><span class="kw">colData</span>(summed.neural))</a>
+<a class="sourceLine" id="cb488-3" data-line-number="3">keep.neural &lt;-<span class="st"> </span><span class="kw">filterByExpr</span>(y.neural, <span class="dt">group=</span>y.neural<span class="op">$</span>samples<span class="op">$</span>tomato)</a>
+<a class="sourceLine" id="cb488-4" data-line-number="4">y.neural &lt;-<span class="st"> </span>y.neural[keep.neural,]</a>
+<a class="sourceLine" id="cb488-5" data-line-number="5">y.neural &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y.neural)</a>
+<a class="sourceLine" id="cb488-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb488-7" data-line-number="7">block &lt;-<span class="st"> </span>y.neural<span class="op">$</span>samples<span class="op">$</span>sample <span class="op">%%</span><span class="st"> </span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb488-8" data-line-number="8">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(block) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y.neural<span class="op">$</span>samples)</a>
+<a class="sourceLine" id="cb488-9" data-line-number="9">y.neural &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.neural, design)</a>
+<a class="sourceLine" id="cb488-10" data-line-number="10">fit.neural &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.neural, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb488-11" data-line-number="11">res.neural &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.neural, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb488-12" data-line-number="12"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.neural))</a></code></pre></div>
 <pre><code>##        factor(tomato)TRUE
 ## Down                  351
 ## NotSig               9818
 ## Up                    481</code></pre>
-<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" data-line-number="1"><span class="kw">topTags</span>(res.neural, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" data-line-number="1"><span class="kw">topTags</span>(res.neural, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##           logFC logCPM       F     PValue        FDR
 ## Hba-a1  -8.5967  6.744  2756.6  0.000e+00  0.000e+00
@@ -1561,21 +1562,21 @@ The most sober explanation is that the background samples contain more hemoglobi
 <p>The presence of ambient contamination makes it difficult to interpret multi-condition DE analyses.
 To mitigate its effects, we need to obtain an estimate of the ambient “expression” profile by going back to the raw count matrix for each sample.
 We follow the approach used in <code>emptyDrops()</code> <span class="citation">(Lun et al. <a href="#ref-lun2018distinguishing">2019</a>)</span> and consider all barcodes with total counts below 100 to represent empty droplets.</p>
-<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb486-1" data-line-number="1">raw.tal1 &lt;-<span class="st"> </span><span class="kw">Tal1ChimeraData</span>(<span class="dt">type=</span><span class="st">&quot;raw&quot;</span>)</a>
-<a class="sourceLine" id="cb486-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb486-3" data-line-number="3"><span class="kw">library</span>(Matrix)</a>
-<a class="sourceLine" id="cb486-4" data-line-number="4">ambient &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="kw">length</span>(raw.tal1))</a>
-<a class="sourceLine" id="cb486-5" data-line-number="5"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(raw.tal1)) {</a>
-<a class="sourceLine" id="cb486-6" data-line-number="6">    curmat &lt;-<span class="st"> </span><span class="kw">counts</span>(raw.tal1[[i]])</a>
-<a class="sourceLine" id="cb486-7" data-line-number="7">    is.empty &lt;-<span class="st"> </span><span class="kw">colSums</span>(curmat) <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb486-8" data-line-number="8">    ambient[[i]] &lt;-<span class="st"> </span><span class="kw">rowSums</span>(curmat[,is.empty])</a>
-<a class="sourceLine" id="cb486-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb486-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb486-11" data-line-number="11">ambient &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, ambient)</a>
-<a class="sourceLine" id="cb486-12" data-line-number="12"><span class="kw">colnames</span>(ambient) &lt;-<span class="st"> </span><span class="kw">names</span>(raw.tal1) </a>
-<a class="sourceLine" id="cb486-13" data-line-number="13"><span class="kw">rownames</span>(ambient) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
-<a class="sourceLine" id="cb486-14" data-line-number="14">    <span class="kw">rowData</span>(raw.tal1[[<span class="dv">1</span>]])<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(raw.tal1[[<span class="dv">1</span>]])<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb486-15" data-line-number="15"><span class="kw">head</span>(ambient)</a></code></pre></div>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" data-line-number="1">raw.tal1 &lt;-<span class="st"> </span><span class="kw">Tal1ChimeraData</span>(<span class="dt">type=</span><span class="st">&quot;raw&quot;</span>)</a>
+<a class="sourceLine" id="cb492-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb492-3" data-line-number="3"><span class="kw">library</span>(Matrix)</a>
+<a class="sourceLine" id="cb492-4" data-line-number="4">ambient &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="kw">length</span>(raw.tal1))</a>
+<a class="sourceLine" id="cb492-5" data-line-number="5"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(raw.tal1)) {</a>
+<a class="sourceLine" id="cb492-6" data-line-number="6">    curmat &lt;-<span class="st"> </span><span class="kw">counts</span>(raw.tal1[[i]])</a>
+<a class="sourceLine" id="cb492-7" data-line-number="7">    is.empty &lt;-<span class="st"> </span><span class="kw">colSums</span>(curmat) <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb492-8" data-line-number="8">    ambient[[i]] &lt;-<span class="st"> </span><span class="kw">rowSums</span>(curmat[,is.empty])</a>
+<a class="sourceLine" id="cb492-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb492-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb492-11" data-line-number="11">ambient &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, ambient)</a>
+<a class="sourceLine" id="cb492-12" data-line-number="12"><span class="kw">colnames</span>(ambient) &lt;-<span class="st"> </span><span class="kw">names</span>(raw.tal1) </a>
+<a class="sourceLine" id="cb492-13" data-line-number="13"><span class="kw">rownames</span>(ambient) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb492-14" data-line-number="14">    <span class="kw">rowData</span>(raw.tal1[[<span class="dv">1</span>]])<span class="op">$</span>ENSEMBL, <span class="kw">rowData</span>(raw.tal1[[<span class="dv">1</span>]])<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb492-15" data-line-number="15"><span class="kw">head</span>(ambient)</a></code></pre></div>
 <pre><code>##          1  2  3  4
 ## Xkr4     1  0  0  0
 ## Gm1992   0  0  0  0
@@ -1585,11 +1586,11 @@ We follow the approach used in <code>emptyDrops()</code> <span class="citation">
 ## Gm37323  0  0  0  0</code></pre>
 <p>Given prior knowledge of mutually exclusive gene expression profiles, we estimate the contribution of ambient RNA to each sample <span class="citation">(Young and Behjati <a href="#ref-young2018soupx">2018</a>)</span>.
 In our case, we assume (reasonably) that hemoglobins should not be expressed in neural crest cells and use this to estimate the contamination rate in each sample.</p>
-<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" data-line-number="1">is.hbb &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^Hb[ab]-&quot;</span>, <span class="kw">rownames</span>(summed.neural))</a>
-<a class="sourceLine" id="cb488-2" data-line-number="2">neural.hb &lt;-<span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(summed.neural)[is.hbb,])</a>
-<a class="sourceLine" id="cb488-3" data-line-number="3">ambient.hb &lt;-<span class="st"> </span><span class="kw">colSums</span>(ambient[is.hbb,])</a>
-<a class="sourceLine" id="cb488-4" data-line-number="4">con.rate &lt;-<span class="st"> </span>neural.hb<span class="op">/</span>ambient.hb</a>
-<a class="sourceLine" id="cb488-5" data-line-number="5"><span class="kw">data.frame</span>(<span class="dt">neural=</span>neural.hb, <span class="dt">ambient=</span>ambient.hb, <span class="dt">rate=</span>con.rate)</a></code></pre></div>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb494-1" data-line-number="1">is.hbb &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^Hb[ab]-&quot;</span>, <span class="kw">rownames</span>(summed.neural))</a>
+<a class="sourceLine" id="cb494-2" data-line-number="2">neural.hb &lt;-<span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(summed.neural)[is.hbb,])</a>
+<a class="sourceLine" id="cb494-3" data-line-number="3">ambient.hb &lt;-<span class="st"> </span><span class="kw">colSums</span>(ambient[is.hbb,])</a>
+<a class="sourceLine" id="cb494-4" data-line-number="4">con.rate &lt;-<span class="st"> </span>neural.hb<span class="op">/</span>ambient.hb</a>
+<a class="sourceLine" id="cb494-5" data-line-number="5"><span class="kw">data.frame</span>(<span class="dt">neural=</span>neural.hb, <span class="dt">ambient=</span>ambient.hb, <span class="dt">rate=</span>con.rate)</a></code></pre></div>
 <pre><code>##   neural ambient     rate
 ## 1     47   13153 0.003573
 ## 2     60   12933 0.004639
@@ -1598,20 +1599,20 @@ In our case, we assume (reasonably) that hemoglobins should not be expressed in 
 <p>We scale the ambient counts by this rate to determine the proportion of ambient contribution to each gene.
 Genes in which over 10% of the counts are ambient-derived are discarded from our analysis.
 This yields a slightly smaller list of DEGs without the hemoglobins - by definition, but encouraging nonetheless as it suggests that any other (less obvious) effects of ambient contamination have also been removed.</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" data-line-number="1">scaled.ambient &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">t</span>(ambient) <span class="op">*</span><span class="st"> </span>con.rate)</a>
-<a class="sourceLine" id="cb490-2" data-line-number="2">ratio &lt;-<span class="st"> </span><span class="kw">rowMeans</span>(scaled.ambient) <span class="op">/</span><span class="st"> </span><span class="kw">rowMeans</span>(<span class="kw">counts</span>(summed.neural))</a>
-<a class="sourceLine" id="cb490-3" data-line-number="3">non.ambient &lt;-<span class="st"> </span>ratio <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.1</span> </a>
-<a class="sourceLine" id="cb490-4" data-line-number="4"><span class="kw">summary</span>(non.ambient)</a></code></pre></div>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" data-line-number="1">scaled.ambient &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">t</span>(ambient) <span class="op">*</span><span class="st"> </span>con.rate)</a>
+<a class="sourceLine" id="cb496-2" data-line-number="2">ratio &lt;-<span class="st"> </span><span class="kw">rowMeans</span>(scaled.ambient) <span class="op">/</span><span class="st"> </span><span class="kw">rowMeans</span>(<span class="kw">counts</span>(summed.neural))</a>
+<a class="sourceLine" id="cb496-3" data-line-number="3">non.ambient &lt;-<span class="st"> </span>ratio <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.1</span> </a>
+<a class="sourceLine" id="cb496-4" data-line-number="4"><span class="kw">summary</span>(non.ambient)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE    NA&#39;s 
 ## logical    4290   14869   10294</code></pre>
-<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" data-line-number="1">okay.genes &lt;-<span class="st"> </span><span class="kw">names</span>(non.ambient)[<span class="kw">which</span>(non.ambient)]</a>
-<a class="sourceLine" id="cb492-2" data-line-number="2">res.neural2 &lt;-<span class="st"> </span>res.neural[<span class="kw">rownames</span>(res.neural) <span class="op">%in%</span><span class="st"> </span>okay.genes,]</a>
-<a class="sourceLine" id="cb492-3" data-line-number="3"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.neural2))</a></code></pre></div>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" data-line-number="1">okay.genes &lt;-<span class="st"> </span><span class="kw">names</span>(non.ambient)[<span class="kw">which</span>(non.ambient)]</a>
+<a class="sourceLine" id="cb498-2" data-line-number="2">res.neural2 &lt;-<span class="st"> </span>res.neural[<span class="kw">rownames</span>(res.neural) <span class="op">%in%</span><span class="st"> </span>okay.genes,]</a>
+<a class="sourceLine" id="cb498-3" data-line-number="3"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.neural2))</a></code></pre></div>
 <pre><code>##        factor(tomato)TRUE
 ## Down                  315
 ## NotSig               9574
 ## Up                    452</code></pre>
-<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb494-1" data-line-number="1"><span class="kw">topTags</span>(res.neural2)</a></code></pre></div>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" data-line-number="1"><span class="kw">topTags</span>(res.neural2)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##                 logFC logCPM      F     PValue        FDR
 ## Xist          -7.5557  8.212 6657.3  0.000e+00  0.000e+00
@@ -1632,10 +1633,10 @@ This may seem like the most obvious approach for removing ambient contamination.
 Unfortunately, subtracted counts have unpredictable statistical properties due the distortion of the mean-variance relationship.
 Minor relative fluctuations at very large counts become large fold-changes after subtraction, manifesting as spurious DE in genes where a substantial proportion of counts is derived from the ambient solution.
 For example, several hemoglobin genes retain strong DE even after subtraction of the scaled ambient profile.</p>
-<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" data-line-number="1">subtracted &lt;-<span class="st"> </span><span class="kw">counts</span>(summed.neural) <span class="op">-</span><span class="st"> </span>scaled.ambient</a>
-<a class="sourceLine" id="cb496-2" data-line-number="2">subtracted &lt;-<span class="st"> </span><span class="kw">round</span>(subtracted)</a>
-<a class="sourceLine" id="cb496-3" data-line-number="3">subtracted[subtracted <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb496-4" data-line-number="4">subtracted[is.hbb,]</a></code></pre></div>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb502-1" data-line-number="1">subtracted &lt;-<span class="st"> </span><span class="kw">counts</span>(summed.neural) <span class="op">-</span><span class="st"> </span>scaled.ambient</a>
+<a class="sourceLine" id="cb502-2" data-line-number="2">subtracted &lt;-<span class="st"> </span><span class="kw">round</span>(subtracted)</a>
+<a class="sourceLine" id="cb502-3" data-line-number="3">subtracted[subtracted <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb502-4" data-line-number="4">subtracted[is.hbb,]</a></code></pre></div>
 <pre><code>##         [,1] [,2] [,3] [,4]
 ## Hbb-bt     0    0    7   18
 ## Hbb-bs     1    2   31   42
@@ -1648,19 +1649,19 @@ For example, several hemoglobin genes retain strong DE even after subtraction of
 <p>Another tempting approach is to use interaction models to implicitly subtract the ambient effect during GLM fitting.
 The assumption would be that, for genuine DEGs, the log-fold change within cells is larger in magnitude than those in the ambient solution (where the effect would be diluted by contributions from cell types where the gene is not DE).
 However, this is not always the case; a DE analysis of the ambient counts indicates that the hemoglobin log-fold change is actually stronger in the neural crest cells compared to the ambient solution, which leads to the rather awkward conclusion that the WT neural crest cells are expressing hemoglobin beyond that explained by ambient contamination.</p>
-<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" data-line-number="1"><span class="co"># Re-using keep.neural to simplify comparison.</span></a>
-<a class="sourceLine" id="cb498-2" data-line-number="2">y.ambient &lt;-<span class="st"> </span><span class="kw">DGEList</span>(ambient)</a>
-<a class="sourceLine" id="cb498-3" data-line-number="3">y.ambient &lt;-<span class="st"> </span>y.ambient[keep.neural,]</a>
-<a class="sourceLine" id="cb498-4" data-line-number="4">y.ambient &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y.ambient)</a>
-<a class="sourceLine" id="cb498-5" data-line-number="5">y.ambient &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ambient, design)</a>
-<a class="sourceLine" id="cb498-6" data-line-number="6">fit.ambient &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ambient, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb498-7" data-line-number="7">res.ambient &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ambient, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
-<a class="sourceLine" id="cb498-8" data-line-number="8"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.ambient))</a></code></pre></div>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb504-1" data-line-number="1"><span class="co"># Re-using keep.neural to simplify comparison.</span></a>
+<a class="sourceLine" id="cb504-2" data-line-number="2">y.ambient &lt;-<span class="st"> </span><span class="kw">DGEList</span>(ambient)</a>
+<a class="sourceLine" id="cb504-3" data-line-number="3">y.ambient &lt;-<span class="st"> </span>y.ambient[keep.neural,]</a>
+<a class="sourceLine" id="cb504-4" data-line-number="4">y.ambient &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y.ambient)</a>
+<a class="sourceLine" id="cb504-5" data-line-number="5">y.ambient &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ambient, design)</a>
+<a class="sourceLine" id="cb504-6" data-line-number="6">fit.ambient &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ambient, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb504-7" data-line-number="7">res.ambient &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.ambient, <span class="dt">coef=</span><span class="kw">ncol</span>(design))</a>
+<a class="sourceLine" id="cb504-8" data-line-number="8"><span class="kw">summary</span>(<span class="kw">decideTests</span>(res.ambient))</a></code></pre></div>
 <pre><code>##        factor(tomato)TRUE
 ## Down                 1581
 ## NotSig               7742
 ## Up                   1327</code></pre>
-<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" data-line-number="1"><span class="kw">topTags</span>(res.ambient, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb506-1" data-line-number="1"><span class="kw">topTags</span>(res.ambient, <span class="dt">n=</span><span class="dv">10</span>)</a></code></pre></div>
 <pre><code>## Coefficient:  factor(tomato)TRUE 
 ##          logFC logCPM     F    PValue       FDR
 ## Hbb-y   -5.244 12.797 16646 2.281e-28 2.430e-24
@@ -1758,13 +1759,13 @@ attached base packages:
 
 other attached packages:
  [1] Matrix_1.2-17                 MouseGastrulationData_0.99.12
- [3] edgeR_3.27.14                 limma_3.41.18                
- [5] scater_1.13.27                ggplot2_3.2.1                
+ [3] edgeR_3.27.14                 limma_3.41.20                
+ [5] scater_1.13.28                ggplot2_3.2.1                
  [7] BiocSingular_1.1.7            SingleCellExperiment_1.7.11  
- [9] SummarizedExperiment_1.15.9   DelayedArray_0.11.8          
-[11] BiocParallel_1.19.5           matrixStats_0.55.0           
+ [9] SummarizedExperiment_1.15.10  DelayedArray_0.11.8          
+[11] BiocParallel_1.19.6           matrixStats_0.55.0           
 [13] Biobase_2.45.1                GenomicRanges_1.37.17        
-[15] GenomeInfoDb_1.21.2           IRanges_2.19.17              
+[15] GenomeInfoDb_1.21.2           IRanges_2.19.18              
 [17] S4Vectors_0.23.25             BiocGenerics_0.31.6          
 [19] Cairo_1.5-10                  BiocStyle_2.13.2             
 [21] OSCAUtils_0.0.1              
@@ -1786,31 +1787,32 @@ loaded via a namespace (and not attached):
 [27] XVector_0.25.0                pkgconfig_2.0.3              
 [29] htmltools_0.4.0               fastmap_1.0.1                
 [31] dbplyr_1.4.2                  highr_0.8                    
-[33] rlang_0.4.0                   RSQLite_2.1.2                
+[33] rlang_0.4.1                   RSQLite_2.1.2                
 [35] shiny_1.4.0                   DelayedMatrixStats_1.7.2     
 [37] dplyr_0.8.3                   RCurl_1.95-4.12              
-[39] magrittr_1.5                  GenomeInfoDbData_1.2.1       
+[39] magrittr_1.5                  GenomeInfoDbData_1.2.2       
 [41] Rcpp_1.0.2                    ggbeeswarm_0.6.0             
 [43] munsell_0.5.0                 viridis_0.5.1                
 [45] stringi_1.4.3                 yaml_2.2.0                   
 [47] zlibbioc_1.31.0               BiocFileCache_1.9.1          
-[49] AnnotationHub_2.17.10         grid_3.6.1                   
+[49] AnnotationHub_2.17.13         grid_3.6.1                   
 [51] blob_1.2.0                    promises_1.1.0               
 [53] ExperimentHub_1.11.6          crayon_1.3.4                 
 [55] lattice_0.20-38               cowplot_1.0.0                
 [57] splines_3.6.1                 locfit_1.5-9.1               
 [59] zeallot_0.1.0                 knitr_1.25                   
 [61] pillar_1.4.2                  glue_1.3.1                   
-[63] evaluate_0.14                 BiocManager_1.30.8           
-[65] httpuv_1.5.2                  vctrs_0.2.0                  
-[67] gtable_0.3.0                  purrr_0.3.3                  
-[69] assertthat_0.2.1              xfun_0.10                    
-[71] mime_0.7                      rsvd_1.0.2                   
-[73] xtable_1.8-4                  later_1.0.0                  
-[75] viridisLite_0.3.0             tibble_2.1.3                 
-[77] pheatmap_1.0.12               AnnotationDbi_1.47.1         
-[79] beeswarm_0.2.3                memoise_1.1.0                
-[81] statmod_1.4.32                interactiveDisplayBase_1.23.0</code></pre>
+[63] BiocVersion_3.10.1            evaluate_0.14                
+[65] BiocManager_1.30.9            httpuv_1.5.2                 
+[67] vctrs_0.2.0                   gtable_0.3.0                 
+[69] purrr_0.3.3                   assertthat_0.2.1             
+[71] xfun_0.10                     mime_0.7                     
+[73] rsvd_1.0.2                    xtable_1.8-4                 
+[75] later_1.0.0                   viridisLite_0.3.0            
+[77] tibble_2.1.3                  pheatmap_1.0.12              
+[79] AnnotationDbi_1.47.1          beeswarm_0.2.3               
+[81] memoise_1.1.0                 statmod_1.4.32               
+[83] interactiveDisplayBase_1.23.0</code></pre>
 </div>
 
 </div>

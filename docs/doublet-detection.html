@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-28" />
+<meta name="date" content="2019-10-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -312,6 +312,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
 <li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+<li class="chapter" data-level="12.5" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#computing-gene-set-activities"><i class="fa fa-check"></i><b>12.5</b> Computing gene set activities</a></li>
 <li class="chapter" data-level="" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
@@ -732,53 +733,53 @@ We will demonstrate the use of these methods on 10X Genomics data from a droplet
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb503-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb503-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb503-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb503-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb503-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb503-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb503-7" data-line-number="7">sce.mam &lt;-<span class="st"> </span><span class="kw">BachMammaryData</span>(<span class="dt">samples=</span><span class="st">&quot;G_1&quot;</span>)</a>
-<a class="sourceLine" id="cb503-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb503-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb503-10" data-line-number="10"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb503-11" data-line-number="11"><span class="kw">rownames</span>(sce.mam) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
-<a class="sourceLine" id="cb503-12" data-line-number="12">    <span class="kw">rowData</span>(sce.mam)<span class="op">$</span>Ensembl, <span class="kw">rowData</span>(sce.mam)<span class="op">$</span>Symbol)</a>
-<a class="sourceLine" id="cb503-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb503-14" data-line-number="14"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb503-15" data-line-number="15">ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]</a>
-<a class="sourceLine" id="cb503-16" data-line-number="16"><span class="kw">rowData</span>(sce.mam)<span class="op">$</span>SEQNAME &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.mam)<span class="op">$</span>Ensembl,</a>
-<a class="sourceLine" id="cb503-17" data-line-number="17">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)</a>
-<a class="sourceLine" id="cb503-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb503-19" data-line-number="19"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb503-20" data-line-number="20">is.mito &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.mam)<span class="op">$</span>SEQNAME <span class="op">==</span><span class="st"> &quot;MT&quot;</span></a>
-<a class="sourceLine" id="cb503-21" data-line-number="21">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.mam, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(is.mito)))</a>
-<a class="sourceLine" id="cb503-22" data-line-number="22">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>)</a>
-<a class="sourceLine" id="cb503-23" data-line-number="23">sce.mam &lt;-<span class="st"> </span>sce.mam[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
-<a class="sourceLine" id="cb503-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb503-25" data-line-number="25"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb503-26" data-line-number="26"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb503-27" data-line-number="27"><span class="kw">set.seed</span>(<span class="dv">101000110</span>)</a>
-<a class="sourceLine" id="cb503-28" data-line-number="28">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.mam)</a>
-<a class="sourceLine" id="cb503-29" data-line-number="29">sce.mam &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.mam, <span class="dt">clusters=</span>clusters)</a>
-<a class="sourceLine" id="cb503-30" data-line-number="30">sce.mam &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.mam)</a>
-<a class="sourceLine" id="cb503-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb503-32" data-line-number="32"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb503-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">00010101</span>)</a>
-<a class="sourceLine" id="cb503-34" data-line-number="34">dec.mam &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(sce.mam)</a>
-<a class="sourceLine" id="cb503-35" data-line-number="35">top.mam &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.mam, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb503-36" data-line-number="36"></a>
-<a class="sourceLine" id="cb503-37" data-line-number="37"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb503-38" data-line-number="38"><span class="kw">library</span>(BiocSingular)</a>
-<a class="sourceLine" id="cb503-39" data-line-number="39"><span class="kw">set.seed</span>(<span class="dv">101010011</span>)</a>
-<a class="sourceLine" id="cb503-40" data-line-number="40">sce.mam &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce.mam, <span class="dt">technical=</span>dec.mam, <span class="dt">subset.row=</span>top.mam)</a>
-<a class="sourceLine" id="cb503-41" data-line-number="41">sce.mam &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.mam, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb503-42" data-line-number="42"></a>
-<a class="sourceLine" id="cb503-43" data-line-number="43"><span class="co">#--- clustering ---#</span></a>
-<a class="sourceLine" id="cb503-44" data-line-number="44">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.mam, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">k=</span><span class="dv">25</span>)</a>
-<a class="sourceLine" id="cb503-45" data-line-number="45">sce.mam<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership)</a></code></pre></div>
+<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb509-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb509-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb509-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb509-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb509-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb509-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb509-7" data-line-number="7">sce.mam &lt;-<span class="st"> </span><span class="kw">BachMammaryData</span>(<span class="dt">samples=</span><span class="st">&quot;G_1&quot;</span>)</a>
+<a class="sourceLine" id="cb509-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb509-9" data-line-number="9"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb509-10" data-line-number="10"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb509-11" data-line-number="11"><span class="kw">rownames</span>(sce.mam) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb509-12" data-line-number="12">    <span class="kw">rowData</span>(sce.mam)<span class="op">$</span>Ensembl, <span class="kw">rowData</span>(sce.mam)<span class="op">$</span>Symbol)</a>
+<a class="sourceLine" id="cb509-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb509-14" data-line-number="14"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb509-15" data-line-number="15">ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]</a>
+<a class="sourceLine" id="cb509-16" data-line-number="16"><span class="kw">rowData</span>(sce.mam)<span class="op">$</span>SEQNAME &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.mam)<span class="op">$</span>Ensembl,</a>
+<a class="sourceLine" id="cb509-17" data-line-number="17">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)</a>
+<a class="sourceLine" id="cb509-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb509-19" data-line-number="19"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb509-20" data-line-number="20">is.mito &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.mam)<span class="op">$</span>SEQNAME <span class="op">==</span><span class="st"> &quot;MT&quot;</span></a>
+<a class="sourceLine" id="cb509-21" data-line-number="21">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.mam, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(is.mito)))</a>
+<a class="sourceLine" id="cb509-22" data-line-number="22">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>)</a>
+<a class="sourceLine" id="cb509-23" data-line-number="23">sce.mam &lt;-<span class="st"> </span>sce.mam[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
+<a class="sourceLine" id="cb509-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb509-25" data-line-number="25"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb509-26" data-line-number="26"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb509-27" data-line-number="27"><span class="kw">set.seed</span>(<span class="dv">101000110</span>)</a>
+<a class="sourceLine" id="cb509-28" data-line-number="28">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.mam)</a>
+<a class="sourceLine" id="cb509-29" data-line-number="29">sce.mam &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.mam, <span class="dt">clusters=</span>clusters)</a>
+<a class="sourceLine" id="cb509-30" data-line-number="30">sce.mam &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.mam)</a>
+<a class="sourceLine" id="cb509-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb509-32" data-line-number="32"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb509-33" data-line-number="33"><span class="kw">set.seed</span>(<span class="dv">00010101</span>)</a>
+<a class="sourceLine" id="cb509-34" data-line-number="34">dec.mam &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(sce.mam)</a>
+<a class="sourceLine" id="cb509-35" data-line-number="35">top.mam &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.mam, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb509-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb509-37" data-line-number="37"><span class="co">#--- dimensionality-reduction ---#</span></a>
+<a class="sourceLine" id="cb509-38" data-line-number="38"><span class="kw">library</span>(BiocSingular)</a>
+<a class="sourceLine" id="cb509-39" data-line-number="39"><span class="kw">set.seed</span>(<span class="dv">101010011</span>)</a>
+<a class="sourceLine" id="cb509-40" data-line-number="40">sce.mam &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce.mam, <span class="dt">technical=</span>dec.mam, <span class="dt">subset.row=</span>top.mam)</a>
+<a class="sourceLine" id="cb509-41" data-line-number="41">sce.mam &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.mam, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb509-42" data-line-number="42"></a>
+<a class="sourceLine" id="cb509-43" data-line-number="43"><span class="co">#--- clustering ---#</span></a>
+<a class="sourceLine" id="cb509-44" data-line-number="44">snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.mam, <span class="dt">use.dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">k=</span><span class="dv">25</span>)</a>
+<a class="sourceLine" id="cb509-45" data-line-number="45">sce.mam<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(snn.gr)<span class="op">$</span>membership)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb504-1" data-line-number="1">sce.mam</a></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb510-1" data-line-number="1">sce.mam</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 27998 2772 
 ## metadata(0):
@@ -808,9 +809,9 @@ Library size ratios much greater than unity are inconsistent with a doublet iden
 <p>For each query cluster, the best pair of sources is identified based solely on the lowest <code>N</code>.
 (This means that any <code>lib.size*</code> above unity is not definitive evidence against a doublet identity for a query cluster, as there may be a pair of sources with slightly higher <code>N</code> but both <code>lib.size*</code> values below unity.)
 If more detail is necessary, the <code>all.pairs</code> field contains statistics on all possible source pairs for a given query cluster.</p>
-<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb506-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb506-2" data-line-number="2">dbl.out &lt;-<span class="st"> </span><span class="kw">doubletCluster</span>(sce.mam, sce.mam<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb506-3" data-line-number="3">dbl.out</a></code></pre></div>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb512-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb512-2" data-line-number="2">dbl.out &lt;-<span class="st"> </span><span class="kw">doubletCluster</span>(sce.mam, sce.mam<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb512-3" data-line-number="3">dbl.out</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 9 columns
 ##        source1     source2         N        best              p.value
 ##    &lt;character&gt; &lt;character&gt; &lt;integer&gt; &lt;character&gt;            &lt;numeric&gt;
@@ -850,20 +851,20 @@ If more detail is necessary, the <code>all.pairs</code> field contains statistic
 ## 3    6:5:530:...,5:2:593:...,5:4:700:...,...</code></pre>
 <p>Clusters are then ranked by <code>N</code> in the output of <code>doubletClusters()</code>, allowing us to prioritize high-risk clusters that require careful investigation.
 If a more concrete threshold is necessary, we can identify clusters that have unusually low <code>N</code> using an outlier-based approach.</p>
-<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb508-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb508-2" data-line-number="2">chosen.doublet &lt;-<span class="st"> </span><span class="kw">rownames</span>(dbl.out)[<span class="kw">isOutlier</span>(dbl.out<span class="op">$</span>N, </a>
-<a class="sourceLine" id="cb508-3" data-line-number="3">    <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">log=</span><span class="ot">TRUE</span>)]</a>
-<a class="sourceLine" id="cb508-4" data-line-number="4">chosen.doublet</a></code></pre></div>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb514-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb514-2" data-line-number="2">chosen.doublet &lt;-<span class="st"> </span><span class="kw">rownames</span>(dbl.out)[<span class="kw">isOutlier</span>(dbl.out<span class="op">$</span>N, </a>
+<a class="sourceLine" id="cb514-3" data-line-number="3">    <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>, <span class="dt">log=</span><span class="ot">TRUE</span>)]</a>
+<a class="sourceLine" id="cb514-4" data-line-number="4">chosen.doublet</a></code></pre></div>
 <pre><code>## [1] &quot;6&quot;</code></pre>
 <p>Examination of the output of <code>doubletCluster()</code> indicates that cluster 6 has the fewest unique genes and library sizes that are comparable to or greater than its sources.
 We see that every gene detected in this cluster is also expressed in either of the two proposed source clusters (Figure <a href="doublet-detection.html#fig:heatclust">15.1</a>).</p>
-<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb510-1" data-line-number="1">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.mam, sce.mam<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb510-2" data-line-number="2">dbl.markers &lt;-<span class="st"> </span>markers[[chosen.doublet]]</a>
-<a class="sourceLine" id="cb510-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb510-4" data-line-number="4"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb510-5" data-line-number="5">chosen &lt;-<span class="st"> </span><span class="kw">rownames</span>(dbl.markers)[dbl.markers<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>]</a>
-<a class="sourceLine" id="cb510-6" data-line-number="6"><span class="kw">plotHeatmap</span>(sce.mam, <span class="dt">order_columns_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">features=</span>chosen, </a>
-<a class="sourceLine" id="cb510-7" data-line-number="7">    <span class="dt">center=</span><span class="ot">TRUE</span>, <span class="dt">symmetric=</span><span class="ot">TRUE</span>, <span class="dt">zlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb516-1" data-line-number="1">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce.mam, sce.mam<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb516-2" data-line-number="2">dbl.markers &lt;-<span class="st"> </span>markers[[chosen.doublet]]</a>
+<a class="sourceLine" id="cb516-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb516-4" data-line-number="4"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb516-5" data-line-number="5">chosen &lt;-<span class="st"> </span><span class="kw">rownames</span>(dbl.markers)[dbl.markers<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb516-6" data-line-number="6"><span class="kw">plotHeatmap</span>(sce.mam, <span class="dt">order_columns_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">features=</span>chosen, </a>
+<a class="sourceLine" id="cb516-7" data-line-number="7">    <span class="dt">center=</span><span class="ot">TRUE</span>, <span class="dt">symmetric=</span><span class="ot">TRUE</span>, <span class="dt">zlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heatclust"></span>
 <img src="P2_W11.doublet-detection_files/figure-html/heatclust-1.png" alt="Heatmap of mean-centred and normalized log-expression values for the top set of markers for cluster 6 in the mammary gland dataset. Column colours represent the cluster to which each cell is assigned, as indicated by the legend." width="672" />
 <p class="caption">
@@ -872,8 +873,8 @@ Figure 15.1: Heatmap of mean-centred and normalized log-expression values for th
 </div>
 <p>Closer examination of some known markers suggests that the offending cluster consists of doublets of basal cells (<em>Acta2</em>) and alveolar cells (<em>Csn2</em>) (Figure <a href="doublet-detection.html#fig:markerexprs">15.2</a>).
 Indeed, no cell type is known to strongly express both of these genes at the same time, which supports the hypothesis that this cluster consists solely of doublets rather than being an entirely novel cell type.</p>
-<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb511-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.mam, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;Acta2&quot;</span>, <span class="st">&quot;Csn2&quot;</span>), </a>
-<a class="sourceLine" id="cb511-2" data-line-number="2">    <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb517-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.mam, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;Acta2&quot;</span>, <span class="st">&quot;Csn2&quot;</span>), </a>
+<a class="sourceLine" id="cb517-2" data-line-number="2">    <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:markerexprs"></span>
 <img src="P2_W11.doublet-detection_files/figure-html/markerexprs-1.png" alt="Distribution of log-normalized expression values for _Acta2_ and _Csn2_ in each cluster. Each point represents a cell." width="960" />
 <p class="caption">
@@ -902,19 +903,19 @@ The use of random selection accounts for the relative abundances of different su
 and the calculation of a ratio avoids high scores for non-doublet cells in highly abundant subpopulations.</p>
 <p>We see the function in action below.
 To speed up the density calculations, <code>doubletCells()</code> will perform a PCA on the log-expression matrix, and we perform some (optional) parametrization to ensure that the computed PCs are consistent with that from our previous analysis on this dataset.</p>
-<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb512-1" data-line-number="1"><span class="kw">library</span>(BiocSingular)</a>
-<a class="sourceLine" id="cb512-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb512-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb512-4" data-line-number="4"><span class="co"># Setting up the parameters for consistency with denoisePCA();</span></a>
-<a class="sourceLine" id="cb512-5" data-line-number="5"><span class="co"># this can be changed depending on your feature selection scheme.</span></a>
-<a class="sourceLine" id="cb512-6" data-line-number="6">dbl.dens &lt;-<span class="st"> </span><span class="kw">doubletCells</span>(sce.mam, <span class="dt">subset.row=</span>top.mam, </a>
-<a class="sourceLine" id="cb512-7" data-line-number="7">    <span class="dt">d=</span><span class="kw">ncol</span>(<span class="kw">reducedDim</span>(sce.mam)))</a>
-<a class="sourceLine" id="cb512-8" data-line-number="8"><span class="kw">summary</span>(dbl.dens)</a></code></pre></div>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb518-1" data-line-number="1"><span class="kw">library</span>(BiocSingular)</a>
+<a class="sourceLine" id="cb518-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb518-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb518-4" data-line-number="4"><span class="co"># Setting up the parameters for consistency with denoisePCA();</span></a>
+<a class="sourceLine" id="cb518-5" data-line-number="5"><span class="co"># this can be changed depending on your feature selection scheme.</span></a>
+<a class="sourceLine" id="cb518-6" data-line-number="6">dbl.dens &lt;-<span class="st"> </span><span class="kw">doubletCells</span>(sce.mam, <span class="dt">subset.row=</span>top.mam, </a>
+<a class="sourceLine" id="cb518-7" data-line-number="7">    <span class="dt">d=</span><span class="kw">ncol</span>(<span class="kw">reducedDim</span>(sce.mam)))</a>
+<a class="sourceLine" id="cb518-8" data-line-number="8"><span class="kw">summary</span>(dbl.dens)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##       0       8      21     395      49   39573</code></pre>
 <p>The highest doublet scores are concentrated in a single cluster of cells in the centre of Figure <a href="doublet-detection.html#fig:denstsne">15.3</a>.</p>
-<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb514-1" data-line-number="1">sce.mam<span class="op">$</span>DoubletScore &lt;-<span class="st"> </span><span class="kw">log10</span>(dbl.dens<span class="op">+</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb514-2" data-line-number="2"><span class="kw">plotTSNE</span>(sce.mam, <span class="dt">colour_by=</span><span class="st">&quot;DoubletScore&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb520-1" data-line-number="1">sce.mam<span class="op">$</span>DoubletScore &lt;-<span class="st"> </span><span class="kw">log10</span>(dbl.dens<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb520-2" data-line-number="2"><span class="kw">plotTSNE</span>(sce.mam, <span class="dt">colour_by=</span><span class="st">&quot;DoubletScore&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:denstsne"></span>
 <img src="P2_W11.doublet-detection_files/figure-html/denstsne-1.png" alt="t-SNE plot of the mammary gland data set. Each point is a cell coloured according to its doublet density." width="672" />
 <p class="caption">
@@ -922,7 +923,7 @@ Figure 15.3: t-SNE plot of the mammary gland data set. Each point is a cell colo
 </p>
 </div>
 <p>From the clustering information, we see that the affected cells belong to the same cluster that was identified using <code>doubletCluster()</code> (Figure <a href="doublet-detection.html#fig:densclust">15.4</a>), which is reassuring.</p>
-<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb515-1" data-line-number="1"><span class="kw">plotColData</span>(sce.mam, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">y=</span><span class="st">&quot;DoubletScore&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb521-1" data-line-number="1"><span class="kw">plotColData</span>(sce.mam, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">y=</span><span class="st">&quot;DoubletScore&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:densclust"></span>
 <img src="P2_W11.doublet-detection_files/figure-html/densclust-1.png" alt="Distribution of doublet scores for each cluster in the mammary gland data set. Each point is a cell." width="672" />
 <p class="caption">
@@ -990,25 +991,25 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] BiocSingular_1.1.7          scater_1.13.27             
- [3] ggplot2_3.2.1               scran_1.13.32              
- [5] SingleCellExperiment_1.7.11 SummarizedExperiment_1.15.9
- [7] DelayedArray_0.11.8         BiocParallel_1.19.5        
- [9] matrixStats_0.55.0          Biobase_2.45.1             
-[11] GenomicRanges_1.37.17       GenomeInfoDb_1.21.2        
-[13] IRanges_2.19.17             S4Vectors_0.23.25          
-[15] BiocGenerics_0.31.6         Cairo_1.5-10               
-[17] BiocStyle_2.13.2            OSCAUtils_0.0.1            
+ [1] BiocSingular_1.1.7           scater_1.13.28              
+ [3] ggplot2_3.2.1                scran_1.13.32               
+ [5] SingleCellExperiment_1.7.11  SummarizedExperiment_1.15.10
+ [7] DelayedArray_0.11.8          BiocParallel_1.19.6         
+ [9] matrixStats_0.55.0           Biobase_2.45.1              
+[11] GenomicRanges_1.37.17        GenomeInfoDb_1.21.2         
+[13] IRanges_2.19.18              S4Vectors_0.23.25           
+[15] BiocGenerics_0.31.6          Cairo_1.5-10                
+[17] BiocStyle_2.13.2             OSCAUtils_0.0.1             
 
 loaded via a namespace (and not attached):
  [1] viridis_0.5.1            edgeR_3.27.14           
  [3] viridisLite_0.3.0        DelayedMatrixStats_1.7.2
  [5] assertthat_0.2.1         statmod_1.4.32          
- [7] highr_0.8                BiocManager_1.30.8      
- [9] dqrng_0.2.1              GenomeInfoDbData_1.2.1  
+ [7] highr_0.8                BiocManager_1.30.9      
+ [9] dqrng_0.2.1              GenomeInfoDbData_1.2.2  
 [11] vipor_0.4.5              yaml_2.2.0              
 [13] pillar_1.4.2             lattice_0.20-38         
-[15] glue_1.3.1               limma_3.41.18           
+[15] glue_1.3.1               limma_3.41.20           
 [17] digest_0.6.22            RColorBrewer_1.1-2      
 [19] XVector_0.25.0           colorspace_1.4-1        
 [21] cowplot_1.0.0            htmltools_0.4.0         
@@ -1022,7 +1023,7 @@ loaded via a namespace (and not attached):
 [37] tools_3.6.1              stringr_1.4.0           
 [39] munsell_0.5.0            locfit_1.5-9.1          
 [41] irlba_2.3.3              compiler_3.6.1          
-[43] rsvd_1.0.2               rlang_0.4.0             
+[43] rsvd_1.0.2               rlang_0.4.1             
 [45] grid_3.6.1               RCurl_1.95-4.12         
 [47] BiocNeighbors_1.3.5      igraph_1.2.4.1          
 [49] labeling_0.3             bitops_1.0-6            

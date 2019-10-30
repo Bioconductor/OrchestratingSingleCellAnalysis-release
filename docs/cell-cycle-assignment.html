@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-28" />
+<meta name="date" content="2019-10-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -312,6 +312,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
 <li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+<li class="chapter" data-level="12.5" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#computing-gene-set-activities"><i class="fa fa-check"></i><b>12.5</b> Computing gene set activities</a></li>
 <li class="chapter" data-level="" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
@@ -721,66 +722,66 @@ We demonstrate using the 416B dataset, which is known to contain actively cyclin
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb517-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb517-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb517-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb517-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb517-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb517-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb517-7" data-line-number="7">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
-<a class="sourceLine" id="cb517-8" data-line-number="8">sce<span class="fl">.416</span>b<span class="op">$</span>block &lt;-<span class="st"> </span><span class="kw">factor</span>(sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
-<a class="sourceLine" id="cb517-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb517-10" data-line-number="10"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb517-11" data-line-number="11"><span class="kw">library</span>(AnnotationHub)</a>
-<a class="sourceLine" id="cb517-12" data-line-number="12">ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]</a>
-<a class="sourceLine" id="cb517-13" data-line-number="13"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb517-14" data-line-number="14"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
-<a class="sourceLine" id="cb517-15" data-line-number="15">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
-<a class="sourceLine" id="cb517-16" data-line-number="16"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
-<a class="sourceLine" id="cb517-17" data-line-number="17">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)</a>
-<a class="sourceLine" id="cb517-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb517-19" data-line-number="19"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb517-20" data-line-number="20"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
-<a class="sourceLine" id="cb517-21" data-line-number="21">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb517-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb517-23" data-line-number="23"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb517-24" data-line-number="24">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)</a>
-<a class="sourceLine" id="cb517-25" data-line-number="25">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
-<a class="sourceLine" id="cb517-26" data-line-number="26">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="kw">c</span>(<span class="st">&quot;subsets_Mt_percent&quot;</span>,</a>
-<a class="sourceLine" id="cb517-27" data-line-number="27">    <span class="st">&quot;altexps_ERCC_percent&quot;</span>), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
-<a class="sourceLine" id="cb517-28" data-line-number="28">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
-<a class="sourceLine" id="cb517-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb517-30" data-line-number="30"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb517-31" data-line-number="31"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb517-32" data-line-number="32">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb517-33" data-line-number="33">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb517-34" data-line-number="34"></a>
-<a class="sourceLine" id="cb517-35" data-line-number="35"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb517-36" data-line-number="36">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
-<a class="sourceLine" id="cb517-37" data-line-number="37">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec<span class="fl">.416</span>b, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb517-38" data-line-number="38"></a>
-<a class="sourceLine" id="cb517-39" data-line-number="39"><span class="co">#--- batch-correction ---#</span></a>
-<a class="sourceLine" id="cb517-40" data-line-number="40"><span class="kw">library</span>(limma)</a>
-<a class="sourceLine" id="cb517-41" data-line-number="41"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
-<a class="sourceLine" id="cb517-42" data-line-number="42">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
-<a class="sourceLine" id="cb517-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb517-44" data-line-number="44"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb517-45" data-line-number="45">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce<span class="fl">.416</span>b, <span class="dt">ncomponents=</span><span class="dv">10</span>, <span class="dt">subset_row=</span>chosen.hvgs,</a>
-<a class="sourceLine" id="cb517-46" data-line-number="46">    <span class="dt">exprs_values=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">ExactParam</span>())</a>
-<a class="sourceLine" id="cb517-47" data-line-number="47"></a>
-<a class="sourceLine" id="cb517-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
-<a class="sourceLine" id="cb517-49" data-line-number="49">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb517-50" data-line-number="50"></a>
-<a class="sourceLine" id="cb517-51" data-line-number="51"><span class="co">#--- clustering ---#</span></a>
-<a class="sourceLine" id="cb517-52" data-line-number="52">my.dist &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
-<a class="sourceLine" id="cb517-53" data-line-number="53">my.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(my.dist, <span class="dt">method=</span><span class="st">&quot;ward.D2&quot;</span>)</a>
-<a class="sourceLine" id="cb517-54" data-line-number="54"></a>
-<a class="sourceLine" id="cb517-55" data-line-number="55"><span class="kw">library</span>(dynamicTreeCut)</a>
-<a class="sourceLine" id="cb517-56" data-line-number="56">my.clusters &lt;-<span class="st"> </span><span class="kw">unname</span>(<span class="kw">cutreeDynamic</span>(my.tree, <span class="dt">distM=</span><span class="kw">as.matrix</span>(my.dist),</a>
-<a class="sourceLine" id="cb517-57" data-line-number="57">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">verbose=</span><span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb517-58" data-line-number="58">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(my.clusters)</a></code></pre></div>
+<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb523-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb523-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb523-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb523-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb523-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb523-6" data-line-number="6"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb523-7" data-line-number="7">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">LunSpikeInData</span>(<span class="dt">which=</span><span class="st">&quot;416b&quot;</span>) </a>
+<a class="sourceLine" id="cb523-8" data-line-number="8">sce<span class="fl">.416</span>b<span class="op">$</span>block &lt;-<span class="st"> </span><span class="kw">factor</span>(sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb523-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb523-10" data-line-number="10"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb523-11" data-line-number="11"><span class="kw">library</span>(AnnotationHub)</a>
+<a class="sourceLine" id="cb523-12" data-line-number="12">ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]</a>
+<a class="sourceLine" id="cb523-13" data-line-number="13"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb523-14" data-line-number="14"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb523-15" data-line-number="15">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SYMBOL&quot;</span>)</a>
+<a class="sourceLine" id="cb523-16" data-line-number="16"><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),</a>
+<a class="sourceLine" id="cb523-17" data-line-number="17">    <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)</a>
+<a class="sourceLine" id="cb523-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb523-19" data-line-number="19"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb523-20" data-line-number="20"><span class="kw">rownames</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, </a>
+<a class="sourceLine" id="cb523-21" data-line-number="21">    <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb523-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb523-23" data-line-number="23"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb523-24" data-line-number="24">mito &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SEQNAME<span class="op">==</span><span class="st">&quot;MT&quot;</span>)</a>
+<a class="sourceLine" id="cb523-25" data-line-number="25">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mt=</span>mito))</a>
+<a class="sourceLine" id="cb523-26" data-line-number="26">qc &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(stats, <span class="dt">percent_subsets=</span><span class="kw">c</span>(<span class="st">&quot;subsets_Mt_percent&quot;</span>,</a>
+<a class="sourceLine" id="cb523-27" data-line-number="27">    <span class="st">&quot;altexps_ERCC_percent&quot;</span>), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb523-28" data-line-number="28">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[,<span class="op">!</span>qc<span class="op">$</span>discard]</a>
+<a class="sourceLine" id="cb523-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb523-30" data-line-number="30"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb523-31" data-line-number="31"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb523-32" data-line-number="32">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb523-33" data-line-number="33">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb523-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb523-35" data-line-number="35"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb523-36" data-line-number="36">dec<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;ERCC&quot;</span>, <span class="dt">block=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb523-37" data-line-number="37">chosen.hvgs &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec<span class="fl">.416</span>b, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb523-38" data-line-number="38"></a>
+<a class="sourceLine" id="cb523-39" data-line-number="39"><span class="co">#--- batch-correction ---#</span></a>
+<a class="sourceLine" id="cb523-40" data-line-number="40"><span class="kw">library</span>(limma)</a>
+<a class="sourceLine" id="cb523-41" data-line-number="41"><span class="kw">assay</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;corrected&quot;</span>) &lt;-<span class="st"> </span><span class="kw">removeBatchEffect</span>(<span class="kw">logcounts</span>(sce<span class="fl">.416</span>b), </a>
+<a class="sourceLine" id="cb523-42" data-line-number="42">    <span class="dt">design=</span><span class="kw">model.matrix</span>(<span class="op">~</span>sce<span class="fl">.416</span>b<span class="op">$</span>phenotype), <span class="dt">batch=</span>sce<span class="fl">.416</span>b<span class="op">$</span>block)</a>
+<a class="sourceLine" id="cb523-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb523-44" data-line-number="44"><span class="co">#--- dimensionality-reduction ---#</span></a>
+<a class="sourceLine" id="cb523-45" data-line-number="45">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce<span class="fl">.416</span>b, <span class="dt">ncomponents=</span><span class="dv">10</span>, <span class="dt">subset_row=</span>chosen.hvgs,</a>
+<a class="sourceLine" id="cb523-46" data-line-number="46">    <span class="dt">exprs_values=</span><span class="st">&quot;corrected&quot;</span>, <span class="dt">BSPARAM=</span>BiocSingular<span class="op">::</span><span class="kw">ExactParam</span>())</a>
+<a class="sourceLine" id="cb523-47" data-line-number="47"></a>
+<a class="sourceLine" id="cb523-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">1010</span>)</a>
+<a class="sourceLine" id="cb523-49" data-line-number="49">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce<span class="fl">.416</span>b, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>, <span class="dt">perplexity=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb523-50" data-line-number="50"></a>
+<a class="sourceLine" id="cb523-51" data-line-number="51"><span class="co">#--- clustering ---#</span></a>
+<a class="sourceLine" id="cb523-52" data-line-number="52">my.dist &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;PCA&quot;</span>))</a>
+<a class="sourceLine" id="cb523-53" data-line-number="53">my.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(my.dist, <span class="dt">method=</span><span class="st">&quot;ward.D2&quot;</span>)</a>
+<a class="sourceLine" id="cb523-54" data-line-number="54"></a>
+<a class="sourceLine" id="cb523-55" data-line-number="55"><span class="kw">library</span>(dynamicTreeCut)</a>
+<a class="sourceLine" id="cb523-56" data-line-number="56">my.clusters &lt;-<span class="st"> </span><span class="kw">unname</span>(<span class="kw">cutreeDynamic</span>(my.tree, <span class="dt">distM=</span><span class="kw">as.matrix</span>(my.dist),</a>
+<a class="sourceLine" id="cb523-57" data-line-number="57">    <span class="dt">minClusterSize=</span><span class="dv">10</span>, <span class="dt">verbose=</span><span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb523-58" data-line-number="58">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(my.clusters)</a></code></pre></div>
 </div>
-<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb518-1" data-line-number="1">sce<span class="fl">.416</span>b</a></code></pre></div>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb524-1" data-line-number="1">sce<span class="fl">.416</span>b</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 46604 185 
 ## metadata(0):
@@ -803,14 +804,14 @@ View history
 Cyclin D is expressed throughout but peaks at G1; cyclin E is expressed highest in the G1/S transition; cyclin A is expressed across S and G2; and cyclin B is expressed highest in late G2 and mitosis.
 Inspection of the relative expression of cyclins across the population can often be sufficient to determine the relative cell cycle activity in each cluster (Figure <a href="cell-cycle-assignment.html#fig:heat-cyclin">16.1</a>).
 For example, cluster 1 is likely to be in G1 while the other clusters are scattered across the later phases.</p>
-<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb520-1" data-line-number="1">cyclin.genes &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^Ccn[abde][0-9]$&quot;</span>, <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
-<a class="sourceLine" id="cb520-2" data-line-number="2">cyclin.genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)[cyclin.genes]</a>
-<a class="sourceLine" id="cb520-3" data-line-number="3">cyclin.genes</a></code></pre></div>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb526-1" data-line-number="1">cyclin.genes &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^Ccn[abde][0-9]$&quot;</span>, <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>SYMBOL)</a>
+<a class="sourceLine" id="cb526-2" data-line-number="2">cyclin.genes &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b)[cyclin.genes]</a>
+<a class="sourceLine" id="cb526-3" data-line-number="3">cyclin.genes</a></code></pre></div>
 <pre><code>##  [1] &quot;Ccnb3&quot; &quot;Ccna2&quot; &quot;Ccna1&quot; &quot;Ccne2&quot; &quot;Ccnd2&quot; &quot;Ccne1&quot; &quot;Ccnd1&quot; &quot;Ccnb2&quot;
 ##  [9] &quot;Ccnb1&quot; &quot;Ccnd3&quot;</code></pre>
-<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb522-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb522-2" data-line-number="2"><span class="kw">plotHeatmap</span>(sce<span class="fl">.416</span>b, <span class="dt">order_columns_by=</span><span class="st">&quot;cluster&quot;</span>, </a>
-<a class="sourceLine" id="cb522-3" data-line-number="3">    <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>, <span class="dt">features=</span><span class="kw">sort</span>(cyclin.genes))</a></code></pre></div>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb528-1" data-line-number="1"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb528-2" data-line-number="2"><span class="kw">plotHeatmap</span>(sce<span class="fl">.416</span>b, <span class="dt">order_columns_by=</span><span class="st">&quot;cluster&quot;</span>, </a>
+<a class="sourceLine" id="cb528-3" data-line-number="3">    <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>, <span class="dt">features=</span><span class="kw">sort</span>(cyclin.genes))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-cyclin"></span>
 <img src="P2_W12.cell-cycle_files/figure-html/heat-cyclin-1.png" alt="Heatmap of the log-normalized expression values of the cyclin genes in the 416B dataset." width="672" />
 <p class="caption">
@@ -822,13 +823,13 @@ This separation is not typically seen in more heterogeneous datasets where the c
 Fortunately, it is not strictly necessary to know the exact phase of each cell or cluster to answer most cycle-related questions.
 For example, we can use standard DE methods (Chapter <a href="#marker-detection"><strong>??</strong></a>) to look for upregulation of each cyclin, which would imply that a subpopulation contains more cells in the corresponding cell cycle phase.
 The same logic applies to comparisons between treatment conditions, as described in Chapter <a href="multi-sample-comparisons.html#multi-sample-comparisons">14</a>.</p>
-<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb523-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb523-2" data-line-number="2">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, <span class="dt">subset.row=</span>cyclin.genes, </a>
-<a class="sourceLine" id="cb523-3" data-line-number="3">    <span class="dt">group=</span>sce<span class="fl">.416</span>b<span class="op">$</span>cluster, <span class="dt">test.type=</span><span class="st">&quot;wilcox&quot;</span>, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
-<a class="sourceLine" id="cb523-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb523-5" data-line-number="5"><span class="co"># We can infer that cluster 4 has more cells in G2/M than the other clusters,</span></a>
-<a class="sourceLine" id="cb523-6" data-line-number="6"><span class="co"># based on higher expression of the cyclin B&#39;s.</span></a>
-<a class="sourceLine" id="cb523-7" data-line-number="7">markers[[<span class="dv">4</span>]]</a></code></pre></div>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb529-2" data-line-number="2">markers &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, <span class="dt">subset.row=</span>cyclin.genes, </a>
+<a class="sourceLine" id="cb529-3" data-line-number="3">    <span class="dt">group=</span>sce<span class="fl">.416</span>b<span class="op">$</span>cluster, <span class="dt">test.type=</span><span class="st">&quot;wilcox&quot;</span>, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>)</a>
+<a class="sourceLine" id="cb529-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb529-5" data-line-number="5"><span class="co"># We can infer that cluster 4 has more cells in G2/M than the other clusters,</span></a>
+<a class="sourceLine" id="cb529-6" data-line-number="6"><span class="co"># based on higher expression of the cyclin B&#39;s.</span></a>
+<a class="sourceLine" id="cb529-7" data-line-number="7">markers[[<span class="dv">4</span>]]</a></code></pre></div>
 <pre><code>## DataFrame with 10 rows and 6 columns
 ##             Top              p.value                  FDR
 ##       &lt;integer&gt;            &lt;numeric&gt;            &lt;numeric&gt;
@@ -863,9 +864,9 @@ This strategy is strongly dependent on having good sequencing coverage of the cy
 <h2><span class="header-section-number">16.3</span> Using reference profiles</h2>
 <p>Cell cycle assignment can be considered a specialized case of cell annotation, which suggests that the strategies described in Chapter <a href="cell-type-annotation.html#cell-type-annotation">12</a> can be applied here.
 For example, given a reference dataset containing mouse ESCs with known cell cycle phases <span class="citation">(Buettner et al. <a href="#ref-buettner2015computational">2015</a>)</span>, we could use <em><a href="https://bioconductor.org/packages/3.10/SingleR">SingleR</a></em> to determine the phase of each cell in a test dataset.</p>
-<div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb525-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
-<a class="sourceLine" id="cb525-2" data-line-number="2">sce.ref &lt;-<span class="st"> </span><span class="kw">BuettnerESCData</span>()</a>
-<a class="sourceLine" id="cb525-3" data-line-number="3">sce.ref</a></code></pre></div>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" data-line-number="1"><span class="kw">library</span>(scRNAseq)</a>
+<a class="sourceLine" id="cb531-2" data-line-number="2">sce.ref &lt;-<span class="st"> </span><span class="kw">BuettnerESCData</span>()</a>
+<a class="sourceLine" id="cb531-3" data-line-number="3">sce.ref</a></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 38293 288 
 ## metadata(0):
@@ -882,31 +883,31 @@ For example, given a reference dataset containing mouse ESCs with known cell cyc
 ## altExpNames(1): ERCC</code></pre>
 <p>We use the reference dataset to identify phase-specific markers from genes with annotated roles in cell cycle.
 The use of prior annotation aims to avoid detecting markers for other biological processes that happen to be correlated with the cell cycle in the reference dataset, which would reduce classification performance if those processes are absent or uncorrelated in the test dataset.</p>
-<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" data-line-number="1"><span class="co"># Find genes that are present in both datasets and are cell cycle-related.</span></a>
-<a class="sourceLine" id="cb527-2" data-line-number="2"><span class="kw">library</span>(org.Mm.eg.db)</a>
-<a class="sourceLine" id="cb527-3" data-line-number="3">cycle.anno &lt;-<span class="st"> </span><span class="kw">select</span>(org.Mm.eg.db, <span class="dt">keytype=</span><span class="st">&quot;GOALL&quot;</span>, <span class="dt">keys=</span><span class="st">&quot;GO:0007049&quot;</span>, </a>
-<a class="sourceLine" id="cb527-4" data-line-number="4">    <span class="dt">columns=</span><span class="st">&quot;ENSEMBL&quot;</span>)[,<span class="st">&quot;ENSEMBL&quot;</span>]</a>
-<a class="sourceLine" id="cb527-5" data-line-number="5">candidates &lt;-<span class="st"> </span><span class="kw">Reduce</span>(intersect, </a>
-<a class="sourceLine" id="cb527-6" data-line-number="6">    <span class="kw">list</span>(<span class="kw">rownames</span>(sce.ref), <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, cycle.anno))</a>
-<a class="sourceLine" id="cb527-7" data-line-number="7"><span class="kw">str</span>(candidates)</a></code></pre></div>
-<pre><code>##  chr [1:1596] &quot;ENSMUSG00000000001&quot; &quot;ENSMUSG00000000028&quot; ...</code></pre>
-<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" data-line-number="1"><span class="co"># Identifying markers between cell cycle phases.</span></a>
-<a class="sourceLine" id="cb529-2" data-line-number="2">sce.ref &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.ref)</a>
-<a class="sourceLine" id="cb529-3" data-line-number="3">phase.stats &lt;-<span class="st"> </span><span class="kw">pairwiseWilcox</span>(<span class="kw">logcounts</span>(sce.ref), sce.ref<span class="op">$</span>phase, </a>
-<a class="sourceLine" id="cb529-4" data-line-number="4">    <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">subset.row=</span>candidates)</a>
-<a class="sourceLine" id="cb529-5" data-line-number="5">cycle.markers &lt;-<span class="st"> </span><span class="kw">getTopMarkers</span>(phase.stats[[<span class="dv">1</span>]], phase.stats[[<span class="dv">2</span>]])</a></code></pre></div>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" data-line-number="1"><span class="co"># Find genes that are present in both datasets and are cell cycle-related.</span></a>
+<a class="sourceLine" id="cb533-2" data-line-number="2"><span class="kw">library</span>(org.Mm.eg.db)</a>
+<a class="sourceLine" id="cb533-3" data-line-number="3">cycle.anno &lt;-<span class="st"> </span><span class="kw">select</span>(org.Mm.eg.db, <span class="dt">keytype=</span><span class="st">&quot;GOALL&quot;</span>, <span class="dt">keys=</span><span class="st">&quot;GO:0007049&quot;</span>, </a>
+<a class="sourceLine" id="cb533-4" data-line-number="4">    <span class="dt">columns=</span><span class="st">&quot;ENSEMBL&quot;</span>)[,<span class="st">&quot;ENSEMBL&quot;</span>]</a>
+<a class="sourceLine" id="cb533-5" data-line-number="5">candidates &lt;-<span class="st"> </span><span class="kw">Reduce</span>(intersect, </a>
+<a class="sourceLine" id="cb533-6" data-line-number="6">    <span class="kw">list</span>(<span class="kw">rownames</span>(sce.ref), <span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL, cycle.anno))</a>
+<a class="sourceLine" id="cb533-7" data-line-number="7"><span class="kw">str</span>(candidates)</a></code></pre></div>
+<pre><code>##  chr [1:1606] &quot;ENSMUSG00000000001&quot; &quot;ENSMUSG00000000028&quot; ...</code></pre>
+<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb535-1" data-line-number="1"><span class="co"># Identifying markers between cell cycle phases.</span></a>
+<a class="sourceLine" id="cb535-2" data-line-number="2">sce.ref &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.ref)</a>
+<a class="sourceLine" id="cb535-3" data-line-number="3">phase.stats &lt;-<span class="st"> </span><span class="kw">pairwiseWilcox</span>(<span class="kw">logcounts</span>(sce.ref), sce.ref<span class="op">$</span>phase, </a>
+<a class="sourceLine" id="cb535-4" data-line-number="4">    <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">subset.row=</span>candidates)</a>
+<a class="sourceLine" id="cb535-5" data-line-number="5">cycle.markers &lt;-<span class="st"> </span><span class="kw">getTopMarkers</span>(phase.stats[[<span class="dv">1</span>]], phase.stats[[<span class="dv">2</span>]])</a></code></pre></div>
 <p>We use the identified markers to assign labels to the 416B data with the <code>SingleR()</code> function.
 Cluster 1 mostly consists of G1 cells while the other clusters have more cells in the other phases, which is broadly consistent with our conclusions from the cyclin-based analysis.
 Unlike the cyclin-based analysis, this approach yields “absolute” assignments of cell cycle phase that do not need to be interpreted relative to other cells in the same dataset.</p>
-<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb530-1" data-line-number="1"><span class="co"># Switching row names back to Ensembl to match the reference.</span></a>
-<a class="sourceLine" id="cb530-2" data-line-number="2">test.data &lt;-<span class="st"> </span><span class="kw">logcounts</span>(sce<span class="fl">.416</span>b)</a>
-<a class="sourceLine" id="cb530-3" data-line-number="3"><span class="kw">rownames</span>(test.data) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL</a>
-<a class="sourceLine" id="cb530-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb530-5" data-line-number="5"><span class="kw">library</span>(SingleR)</a>
-<a class="sourceLine" id="cb530-6" data-line-number="6">assignments &lt;-<span class="st"> </span><span class="kw">SingleR</span>(test.data, <span class="dt">ref=</span>sce.ref,</a>
-<a class="sourceLine" id="cb530-7" data-line-number="7">    <span class="dt">label=</span>sce.ref<span class="op">$</span>phase, <span class="dt">genes=</span>cycle.markers)</a>
-<a class="sourceLine" id="cb530-8" data-line-number="8">tab &lt;-<span class="st"> </span><span class="kw">table</span>(assignments<span class="op">$</span>labels, sce<span class="fl">.416</span>b<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb530-9" data-line-number="9">tab</a></code></pre></div>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb536-1" data-line-number="1"><span class="co"># Switching row names back to Ensembl to match the reference.</span></a>
+<a class="sourceLine" id="cb536-2" data-line-number="2">test.data &lt;-<span class="st"> </span><span class="kw">logcounts</span>(sce<span class="fl">.416</span>b)</a>
+<a class="sourceLine" id="cb536-3" data-line-number="3"><span class="kw">rownames</span>(test.data) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL</a>
+<a class="sourceLine" id="cb536-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb536-5" data-line-number="5"><span class="kw">library</span>(SingleR)</a>
+<a class="sourceLine" id="cb536-6" data-line-number="6">assignments &lt;-<span class="st"> </span><span class="kw">SingleR</span>(test.data, <span class="dt">ref=</span>sce.ref,</a>
+<a class="sourceLine" id="cb536-7" data-line-number="7">    <span class="dt">label=</span>sce.ref<span class="op">$</span>phase, <span class="dt">genes=</span>cycle.markers)</a>
+<a class="sourceLine" id="cb536-8" data-line-number="8">tab &lt;-<span class="st"> </span><span class="kw">table</span>(assignments<span class="op">$</span>labels, sce<span class="fl">.416</span>b<span class="op">$</span>cluster)</a>
+<a class="sourceLine" id="cb536-9" data-line-number="9">tab</a></code></pre></div>
 <pre><code>##      
 ##        1  2  3  4
 ##   G1  71  7 19  1
@@ -915,10 +916,10 @@ Unlike the cyclin-based analysis, this approach yields “absolute” assignment
 <p>The key assumption here is that the cell cycle is orthogonal to cell type and other aspects of cell behavior.
 This justifies the use of a reference involving cell types that are quite different from the cells in the test dataset, provided that the cell cycle transcriptional program is conserved across datasets <span class="citation">(Bertoli, Skotheim, and Bruin <a href="#ref-bertoli2013control">2013</a>; Conboy et al. <a href="#ref-conboy2007cell">2007</a>)</span>.
 However, it is not difficult to find routine violations of this assumption - for example, <em>Lef1</em> is detected as one of the top markers to distinguish between G1 from G2/M in the reference but has no detectable expression in the 416B dataset (Figure <a href="cell-cycle-assignment.html#fig:dist-lef1">16.2</a>).</p>
-<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb532-1" data-line-number="1">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
-<a class="sourceLine" id="cb532-2" data-line-number="2">    <span class="kw">plotExpression</span>(sce.ref, <span class="dt">features=</span><span class="st">&quot;ENSMUSG00000027985&quot;</span>, <span class="dt">x=</span><span class="st">&quot;phase&quot;</span>),</a>
-<a class="sourceLine" id="cb532-3" data-line-number="3">    <span class="kw">plotExpression</span>(sce<span class="fl">.416</span>b, <span class="dt">features=</span><span class="st">&quot;Lef1&quot;</span>, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>),</a>
-<a class="sourceLine" id="cb532-4" data-line-number="4">    <span class="dt">ncol=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb538-1" data-line-number="1">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(</a>
+<a class="sourceLine" id="cb538-2" data-line-number="2">    <span class="kw">plotExpression</span>(sce.ref, <span class="dt">features=</span><span class="st">&quot;ENSMUSG00000027985&quot;</span>, <span class="dt">x=</span><span class="st">&quot;phase&quot;</span>),</a>
+<a class="sourceLine" id="cb538-3" data-line-number="3">    <span class="kw">plotExpression</span>(sce<span class="fl">.416</span>b, <span class="dt">features=</span><span class="st">&quot;Lef1&quot;</span>, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>),</a>
+<a class="sourceLine" id="cb538-4" data-line-number="4">    <span class="dt">ncol=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:dist-lef1"></span>
 <img src="P2_W12.cell-cycle_files/figure-html/dist-lef1-1.png" alt="Distribution of log-normalized expression values for _Lef1_ in the reference dataset (left) and in the 416B dataset (right)." width="672" />
 <p class="caption">
@@ -928,8 +929,8 @@ Figure 16.2: Distribution of log-normalized expression values for <em>Lef1</em> 
 <p>Thus, a healthy dose of skepticism is required when interpreting these assignments.
 Our hope is that any systematic assignment error is consistent across clusters and conditions such that they cancel out in comparisons of phase frequencies, which is the more interesting analysis anyway.
 Indeed, while the availability of absolute phase calls may be more appealing, it may not make much practical difference to the conclusions if the frequencies are ultimately interpreted in a relative sense (e.g., using a chi-squared test).</p>
-<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" data-line-number="1"><span class="co"># Test for differences in phase distributions between clusters 1 and 2.</span></a>
-<a class="sourceLine" id="cb533-2" data-line-number="2"><span class="kw">chisq.test</span>(tab[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" data-line-number="1"><span class="co"># Test for differences in phase distributions between clusters 1 and 2.</span></a>
+<a class="sourceLine" id="cb539-2" data-line-number="2"><span class="kw">chisq.test</span>(tab[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</a></code></pre></div>
 <pre><code>## 
 ##  Pearson&#39;s Chi-squared test
 ## 
@@ -943,18 +944,18 @@ Using a reference dataset, we first compute the sign of the difference in expres
 Pairs with changes in the sign across cell cycle phases are chosen as markers.
 Cells in a test dataset can then be classified into the appropriate phase, based on whether the observed sign for each marker pair is consistent with one phase or another.
 This approach is implemented in the <code>cyclone()</code> function from the <em><a href="https://bioconductor.org/packages/3.10/scran">scran</a></em> package, which also contains pre-trained set of marker pairs for mouse and human data.</p>
-<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb535-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb535-2" data-line-number="2"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb535-3" data-line-number="3">mm.pairs &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">system.file</span>(<span class="st">&quot;exdata&quot;</span>, <span class="st">&quot;mouse_cycle_markers.rds&quot;</span>, </a>
-<a class="sourceLine" id="cb535-4" data-line-number="4">    <span class="dt">package=</span><span class="st">&quot;scran&quot;</span>))</a>
-<a class="sourceLine" id="cb535-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb535-6" data-line-number="6"><span class="co"># Using Ensembl IDs to match up with the annotation in &#39;mm.pairs&#39;.</span></a>
-<a class="sourceLine" id="cb535-7" data-line-number="7">assignments &lt;-<span class="st"> </span><span class="kw">cyclone</span>(sce<span class="fl">.416</span>b, mm.pairs, <span class="dt">gene.names=</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL)</a></code></pre></div>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb541-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb541-2" data-line-number="2"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb541-3" data-line-number="3">mm.pairs &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">system.file</span>(<span class="st">&quot;exdata&quot;</span>, <span class="st">&quot;mouse_cycle_markers.rds&quot;</span>, </a>
+<a class="sourceLine" id="cb541-4" data-line-number="4">    <span class="dt">package=</span><span class="st">&quot;scran&quot;</span>))</a>
+<a class="sourceLine" id="cb541-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb541-6" data-line-number="6"><span class="co"># Using Ensembl IDs to match up with the annotation in &#39;mm.pairs&#39;.</span></a>
+<a class="sourceLine" id="cb541-7" data-line-number="7">assignments &lt;-<span class="st"> </span><span class="kw">cyclone</span>(sce<span class="fl">.416</span>b, mm.pairs, <span class="dt">gene.names=</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL)</a></code></pre></div>
 <p>The phase assignment result for each cell in the 416B dataset is shown in Figure <a href="cell-cycle-assignment.html#fig:phaseplot416b">16.3</a>.
 For each cell, a higher score for a phase corresponds to a higher probability that the cell is in that phase.
 We focus on the G1 and G2/M scores as these are the most informative for classification.</p>
-<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb536-1" data-line-number="1"><span class="kw">plot</span>(assignments<span class="op">$</span>score<span class="op">$</span>G1, assignments<span class="op">$</span>score<span class="op">$</span>G2M,</a>
-<a class="sourceLine" id="cb536-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;G1 score&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;G2/M score&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb542-1" data-line-number="1"><span class="kw">plot</span>(assignments<span class="op">$</span>score<span class="op">$</span>G1, assignments<span class="op">$</span>score<span class="op">$</span>G2M,</a>
+<a class="sourceLine" id="cb542-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;G1 score&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;G2/M score&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:phaseplot416b"></span>
 <img src="P2_W12.cell-cycle_files/figure-html/phaseplot416b-1.png" alt="Cell cycle phase scores from applying the pair-based classifier on the 416B dataset. Each point represents a cell, plotted according to its scores for G1 and G2/M phases." width="672" />
 <p class="caption">
@@ -965,7 +966,7 @@ Figure 16.3: Cell cycle phase scores from applying the pair-based classifier on 
 in G2/M phase if the G2/M score is above 0.5 and greater than the G1 score;
 and in S phase if neither score is above 0.5.
 We see that the results are quite similar to those from <code>SingleR()</code>, which is reassuring.</p>
-<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb537-1" data-line-number="1"><span class="kw">table</span>(assignments<span class="op">$</span>phases, sce<span class="fl">.416</span>b<span class="op">$</span>cluster)</a></code></pre></div>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb543-1" data-line-number="1"><span class="kw">table</span>(assignments<span class="op">$</span>phases, sce<span class="fl">.416</span>b<span class="op">$</span>cluster)</a></code></pre></div>
 <pre><code>##      
 ##        1  2  3  4
 ##   G1  74  8 20  0
@@ -980,14 +981,14 @@ From a practical perspective, <code>cyclone()</code> takes much longer but does 
 The aim was to remove uninteresting variation due to cell cycle, thus improving resolution of other biological processes of interest.
 We could implement this by performing cell cycle phase assignment as described above, treating each phase as a separate batch and applying any of the batch correction strategies described in Chapter <a href="human-pancreas-dataset-grun.html#data-integration">27.2.6</a>.
 The most common approach is to use a linear model to simply regress out the phase effect, e.g., via <code>regressBatches()</code>.</p>
-<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
-<a class="sourceLine" id="cb539-2" data-line-number="2">sce.nocycle &lt;-<span class="st"> </span><span class="kw">regressBatches</span>(sce<span class="fl">.416</span>b, <span class="dt">batch=</span>assignments<span class="op">$</span>phases)</a>
-<a class="sourceLine" id="cb539-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb539-4" data-line-number="4"><span class="co"># Similar use in related functions that support blocking:</span></a>
-<a class="sourceLine" id="cb539-5" data-line-number="5">dec.nocycle &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;ERCC&quot;</span>, </a>
-<a class="sourceLine" id="cb539-6" data-line-number="6">    <span class="dt">block=</span>assignments<span class="op">$</span>phases)</a>
-<a class="sourceLine" id="cb539-7" data-line-number="7">marker.nocycle &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, sce<span class="fl">.416</span>b<span class="op">$</span>cluster, </a>
-<a class="sourceLine" id="cb539-8" data-line-number="8">    <span class="dt">block=</span>assignments<span class="op">$</span>phases)</a></code></pre></div>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb545-1" data-line-number="1"><span class="kw">library</span>(batchelor)</a>
+<a class="sourceLine" id="cb545-2" data-line-number="2">sce.nocycle &lt;-<span class="st"> </span><span class="kw">regressBatches</span>(sce<span class="fl">.416</span>b, <span class="dt">batch=</span>assignments<span class="op">$</span>phases)</a>
+<a class="sourceLine" id="cb545-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb545-4" data-line-number="4"><span class="co"># Similar use in related functions that support blocking:</span></a>
+<a class="sourceLine" id="cb545-5" data-line-number="5">dec.nocycle &lt;-<span class="st"> </span><span class="kw">modelGeneVarWithSpikes</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;ERCC&quot;</span>, </a>
+<a class="sourceLine" id="cb545-6" data-line-number="6">    <span class="dt">block=</span>assignments<span class="op">$</span>phases)</a>
+<a class="sourceLine" id="cb545-7" data-line-number="7">marker.nocycle &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce<span class="fl">.416</span>b, sce<span class="fl">.416</span>b<span class="op">$</span>cluster, </a>
+<a class="sourceLine" id="cb545-8" data-line-number="8">    <span class="dt">block=</span>assignments<span class="op">$</span>phases)</a></code></pre></div>
 <p>That said, we do not consider adjusting for cell cycle to be a necessary step in routine scRNA-seq analyses.
 In most applications, the cell cycle is a minor factor of variation, secondary to differences between cell types.
 Any attempt at removal would also need to assume that the cell cycle effect is orthogonal to other biological processes.
@@ -996,14 +997,14 @@ We suggest only performing cell cycle adjustment on an as-needed basis in popula
 <p>Alternatively, users may consider just excluding cell cycle-related genes from downstream analysis.
 This should remove most of the cell cycle effect without making strong assumptions about orthogonality.
 Of course, this will not remove the effect of the cell cycle in genes with no annotated role in the cell cycle, but in such cases, there is ambiguity over whether that effect is truly due to the cell cycle or from some other (interesting) biological process that happens to be correlated with the cell cycle.</p>
-<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb540-1" data-line-number="1"><span class="kw">library</span>(org.Mm.eg.db)</a>
-<a class="sourceLine" id="cb540-2" data-line-number="2">cc.genes &lt;-<span class="st"> </span><span class="kw">select</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="st">&quot;GO:0007049&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GOALL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)</a>
-<a class="sourceLine" id="cb540-3" data-line-number="3">sce<span class="fl">.416</span>b.uncycle &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[<span class="op">!</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL <span class="op">%in%</span><span class="st"> </span>cc.genes<span class="op">$</span>ENSEMBL,]</a>
-<a class="sourceLine" id="cb540-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb540-5" data-line-number="5"><span class="co"># Proceed with the rest of the analysis. Note that in this case, oncogene</span></a>
-<a class="sourceLine" id="cb540-6" data-line-number="6"><span class="co"># induction is quite strongly associated with the cell cycle but is considered</span></a>
-<a class="sourceLine" id="cb540-7" data-line-number="7"><span class="co"># to be a separate effect, so removal of the cell cycle-related genes does not</span></a>
-<a class="sourceLine" id="cb540-8" data-line-number="8"><span class="co"># change the clustering much.</span></a></code></pre></div>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb546-1" data-line-number="1"><span class="kw">library</span>(org.Mm.eg.db)</a>
+<a class="sourceLine" id="cb546-2" data-line-number="2">cc.genes &lt;-<span class="st"> </span><span class="kw">select</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="st">&quot;GO:0007049&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GOALL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)</a>
+<a class="sourceLine" id="cb546-3" data-line-number="3">sce<span class="fl">.416</span>b.uncycle &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b[<span class="op">!</span><span class="kw">rowData</span>(sce<span class="fl">.416</span>b)<span class="op">$</span>ENSEMBL <span class="op">%in%</span><span class="st"> </span>cc.genes<span class="op">$</span>ENSEMBL,]</a>
+<a class="sourceLine" id="cb546-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb546-5" data-line-number="5"><span class="co"># Proceed with the rest of the analysis. Note that in this case, oncogene</span></a>
+<a class="sourceLine" id="cb546-6" data-line-number="6"><span class="co"># induction is quite strongly associated with the cell cycle but is considered</span></a>
+<a class="sourceLine" id="cb546-7" data-line-number="7"><span class="co"># to be a separate effect, so removal of the cell cycle-related genes does not</span></a>
+<a class="sourceLine" id="cb546-8" data-line-number="8"><span class="co"># change the clustering much.</span></a></code></pre></div>
 </div>
 <div id="session-info-11" class="section level2 unnumbered">
 <h2>Session Info</h2>
@@ -1032,20 +1033,20 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] batchelor_1.1.18            fossil_0.3.7               
- [3] shapefiles_0.7              foreign_0.8-72             
- [5] maps_3.3.0                  sp_1.3-1                   
- [7] SingleR_0.99.14             org.Mm.eg.db_3.8.2         
- [9] AnnotationDbi_1.47.1        scRNAseq_1.99.8            
-[11] scran_1.13.32               scater_1.13.27             
-[13] ggplot2_3.2.1               SingleCellExperiment_1.7.11
-[15] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
-[17] BiocParallel_1.19.5         matrixStats_0.55.0         
-[19] Biobase_2.45.1              GenomicRanges_1.37.17      
-[21] GenomeInfoDb_1.21.2         IRanges_2.19.17            
-[23] S4Vectors_0.23.25           BiocGenerics_0.31.6        
-[25] Cairo_1.5-10                BiocStyle_2.13.2           
-[27] OSCAUtils_0.0.1            
+ [1] batchelor_1.1.19             fossil_0.3.7                
+ [3] shapefiles_0.7               foreign_0.8-72              
+ [5] maps_3.3.0                   sp_1.3-1                    
+ [7] SingleR_0.99.15              org.Mm.eg.db_3.10.0         
+ [9] AnnotationDbi_1.47.1         scRNAseq_1.99.8             
+[11] scran_1.13.32                scater_1.13.28              
+[13] ggplot2_3.2.1                SingleCellExperiment_1.7.11 
+[15] SummarizedExperiment_1.15.10 DelayedArray_0.11.8         
+[17] BiocParallel_1.19.6          matrixStats_0.55.0          
+[19] Biobase_2.45.1               GenomicRanges_1.37.17       
+[21] GenomeInfoDb_1.21.2          IRanges_2.19.18             
+[23] S4Vectors_0.23.25            BiocGenerics_0.31.6         
+[25] Cairo_1.5-10                 BiocStyle_2.13.2            
+[27] OSCAUtils_0.0.1             
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
@@ -1053,44 +1054,45 @@ loaded via a namespace (and not attached):
  [5] bit64_0.9-7                   interactiveDisplayBase_1.23.0
  [7] knitr_1.25                    zeallot_0.1.0                
  [9] dbplyr_1.4.2                  pheatmap_1.0.12              
-[11] shiny_1.4.0                   BiocManager_1.30.8           
+[11] shiny_1.4.0                   BiocManager_1.30.9           
 [13] compiler_3.6.1                httr_1.4.1                   
 [15] dqrng_0.2.1                   backports_1.1.5              
 [17] assertthat_0.2.1              Matrix_1.2-17                
 [19] fastmap_1.0.1                 lazyeval_0.2.2               
-[21] limma_3.41.18                 later_1.0.0                  
+[21] limma_3.41.20                 later_1.0.0                  
 [23] BiocSingular_1.1.7            htmltools_0.4.0              
 [25] tools_3.6.1                   rsvd_1.0.2                   
 [27] igraph_1.2.4.1                gtable_0.3.0                 
-[29] glue_1.3.1                    GenomeInfoDbData_1.2.1       
+[29] glue_1.3.1                    GenomeInfoDbData_1.2.2       
 [31] dplyr_0.8.3                   rappdirs_0.3.1               
 [33] Rcpp_1.0.2                    vctrs_0.2.0                  
 [35] ExperimentHub_1.11.6          DelayedMatrixStats_1.7.2     
 [37] xfun_0.10                     stringr_1.4.0                
 [39] mime_0.7                      irlba_2.3.3                  
-[41] statmod_1.4.32                AnnotationHub_2.17.10        
+[41] statmod_1.4.32                AnnotationHub_2.17.13        
 [43] edgeR_3.27.14                 zlibbioc_1.31.0              
 [45] scales_1.0.0                  promises_1.1.0               
 [47] RColorBrewer_1.1-2            yaml_2.2.0                   
 [49] curl_4.2                      memoise_1.1.0                
 [51] gridExtra_2.3                 stringi_1.4.3                
-[53] RSQLite_2.1.2                 highr_0.8                    
-[55] rlang_0.4.0                   pkgconfig_2.0.3              
-[57] bitops_1.0-6                  evaluate_0.14                
-[59] lattice_0.20-38               purrr_0.3.3                  
-[61] labeling_0.3                  cowplot_1.0.0                
-[63] bit_1.1-14                    tidyselect_0.2.5             
-[65] magrittr_1.5                  bookdown_0.14                
-[67] R6_2.4.0                      DBI_1.0.0                    
-[69] pillar_1.4.2                  withr_2.1.2                  
-[71] RCurl_1.95-4.12               tibble_2.1.3                 
-[73] crayon_1.3.4                  BiocFileCache_1.9.1          
-[75] rmarkdown_1.16                viridis_0.5.1                
-[77] locfit_1.5-9.1                grid_3.6.1                   
-[79] blob_1.2.0                    digest_0.6.22                
-[81] xtable_1.8-4                  httpuv_1.5.2                 
-[83] munsell_0.5.0                 beeswarm_0.2.3               
-[85] viridisLite_0.3.0             vipor_0.4.5                  </code></pre>
+[53] RSQLite_2.1.2                 BiocVersion_3.10.1           
+[55] highr_0.8                     rlang_0.4.1                  
+[57] pkgconfig_2.0.3               bitops_1.0-6                 
+[59] evaluate_0.14                 lattice_0.20-38              
+[61] purrr_0.3.3                   labeling_0.3                 
+[63] cowplot_1.0.0                 bit_1.1-14                   
+[65] tidyselect_0.2.5              magrittr_1.5                 
+[67] bookdown_0.14                 R6_2.4.0                     
+[69] DBI_1.0.0                     pillar_1.4.2                 
+[71] withr_2.1.2                   RCurl_1.95-4.12              
+[73] tibble_2.1.3                  crayon_1.3.4                 
+[75] BiocFileCache_1.9.1           rmarkdown_1.16               
+[77] viridis_0.5.1                 locfit_1.5-9.1               
+[79] grid_3.6.1                    blob_1.2.0                   
+[81] digest_0.6.22                 xtable_1.8-4                 
+[83] httpuv_1.5.2                  munsell_0.5.0                
+[85] beeswarm_0.2.3                viridisLite_0.3.0            
+[87] vipor_0.4.5                  </code></pre>
 </div>
 
 </div>

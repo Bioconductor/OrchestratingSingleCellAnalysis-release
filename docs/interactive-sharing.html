@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2019-10-28" />
+<meta name="date" content="2019-10-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -312,6 +312,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cell-labels-from-gene-sets"><i class="fa fa-check"></i><b>12.3</b> Assigning cell labels from gene sets</a></li>
 <li class="chapter" data-level="12.4" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#assigning-cluster-labels-from-markers"><i class="fa fa-check"></i><b>12.4</b> Assigning cluster labels from markers</a></li>
+<li class="chapter" data-level="12.5" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#computing-gene-set-activities"><i class="fa fa-check"></i><b>12.5</b> Computing gene set activities</a></li>
 <li class="chapter" data-level="" data-path="cell-type-annotation.html"><a href="cell-type-annotation.html#session-info-7"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="integrating-datasets.html"><a href="integrating-datasets.html"><i class="fa fa-check"></i><b>13</b> Integrating Datasets</a><ul>
@@ -727,71 +728,71 @@ To this end, <code>iSEE</code> provides a flexible framework immediately compati
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb585-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb585-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb585-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb585-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb585-6" data-line-number="6"><span class="kw">library</span>(BiocFileCache)</a>
-<a class="sourceLine" id="cb585-7" data-line-number="7">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb585-8" data-line-number="8">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
-<a class="sourceLine" id="cb585-9" data-line-number="9">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
-<a class="sourceLine" id="cb585-10" data-line-number="10"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
-<a class="sourceLine" id="cb585-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb585-12" data-line-number="12"><span class="kw">library</span>(DropletUtils)</a>
-<a class="sourceLine" id="cb585-13" data-line-number="13">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
-<a class="sourceLine" id="cb585-14" data-line-number="14">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb585-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb585-16" data-line-number="16"><span class="co">#--- gene-annotation ---#</span></a>
-<a class="sourceLine" id="cb585-17" data-line-number="17"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb585-18" data-line-number="18"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
-<a class="sourceLine" id="cb585-19" data-line-number="19">    <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
-<a class="sourceLine" id="cb585-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb585-21" data-line-number="21"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
-<a class="sourceLine" id="cb585-22" data-line-number="22">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
-<a class="sourceLine" id="cb585-23" data-line-number="23">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
-<a class="sourceLine" id="cb585-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb585-25" data-line-number="25"><span class="co">#--- cell-detection ---#</span></a>
-<a class="sourceLine" id="cb585-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb585-27" data-line-number="27">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
-<a class="sourceLine" id="cb585-28" data-line-number="28">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
-<a class="sourceLine" id="cb585-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb585-30" data-line-number="30"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb585-31" data-line-number="31">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.pbmc, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
-<a class="sourceLine" id="cb585-32" data-line-number="32">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb585-33" data-line-number="33">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
-<a class="sourceLine" id="cb585-34" data-line-number="34"></a>
-<a class="sourceLine" id="cb585-35" data-line-number="35"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb585-36" data-line-number="36"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb585-37" data-line-number="37"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb585-38" data-line-number="38">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb585-39" data-line-number="39">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">cluster=</span>clusters)</a>
-<a class="sourceLine" id="cb585-40" data-line-number="40">sce.pbmc &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb585-41" data-line-number="41"></a>
-<a class="sourceLine" id="cb585-42" data-line-number="42"><span class="co">#--- variance-modelling ---#</span></a>
-<a class="sourceLine" id="cb585-43" data-line-number="43"><span class="kw">set.seed</span>(<span class="dv">1001</span>)</a>
-<a class="sourceLine" id="cb585-44" data-line-number="44">dec.pbmc &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb585-45" data-line-number="45">top.pbmc &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.pbmc, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb585-46" data-line-number="46"></a>
-<a class="sourceLine" id="cb585-47" data-line-number="47"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb585-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb585-49" data-line-number="49">sce.pbmc &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce.pbmc, <span class="dt">subset.row=</span>top.pbmc, <span class="dt">technical=</span>dec.pbmc)</a>
-<a class="sourceLine" id="cb585-50" data-line-number="50"></a>
-<a class="sourceLine" id="cb585-51" data-line-number="51"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb585-52" data-line-number="52">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
-<a class="sourceLine" id="cb585-53" data-line-number="53"></a>
-<a class="sourceLine" id="cb585-54" data-line-number="54"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb585-55" data-line-number="55">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
+<a class="sourceLine" id="cb591-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
+<a class="sourceLine" id="cb591-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb591-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb591-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
+<a class="sourceLine" id="cb591-6" data-line-number="6"><span class="kw">library</span>(BiocFileCache)</a>
+<a class="sourceLine" id="cb591-7" data-line-number="7">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="st">&quot;raw_data&quot;</span>, <span class="dt">ask =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb591-8" data-line-number="8">raw.path &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(<span class="st">&quot;http://cf.10xgenomics.com/samples&quot;</span>,</a>
+<a class="sourceLine" id="cb591-9" data-line-number="9">    <span class="st">&quot;cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz&quot;</span>))</a>
+<a class="sourceLine" id="cb591-10" data-line-number="10"><span class="kw">untar</span>(raw.path, <span class="dt">exdir=</span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k&quot;</span>))</a>
+<a class="sourceLine" id="cb591-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb591-12" data-line-number="12"><span class="kw">library</span>(DropletUtils)</a>
+<a class="sourceLine" id="cb591-13" data-line-number="13">fname &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pbmc4k/raw_gene_bc_matrices/GRCh38&quot;</span>)</a>
+<a class="sourceLine" id="cb591-14" data-line-number="14">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(fname, <span class="dt">col.names=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb591-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb591-16" data-line-number="16"><span class="co">#--- gene-annotation ---#</span></a>
+<a class="sourceLine" id="cb591-17" data-line-number="17"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb591-18" data-line-number="18"><span class="kw">rownames</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">uniquifyFeatureNames</span>(</a>
+<a class="sourceLine" id="cb591-19" data-line-number="19">    <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
+<a class="sourceLine" id="cb591-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb591-21" data-line-number="21"><span class="kw">library</span>(EnsDb.Hsapiens.v86)</a>
+<a class="sourceLine" id="cb591-22" data-line-number="22">location &lt;-<span class="st"> </span><span class="kw">mapIds</span>(EnsDb.Hsapiens.v86, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, </a>
+<a class="sourceLine" id="cb591-23" data-line-number="23">    <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>)</a>
+<a class="sourceLine" id="cb591-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb591-25" data-line-number="25"><span class="co">#--- cell-detection ---#</span></a>
+<a class="sourceLine" id="cb591-26" data-line-number="26"><span class="kw">set.seed</span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb591-27" data-line-number="27">e.out &lt;-<span class="st"> </span><span class="kw">emptyDrops</span>(<span class="kw">counts</span>(sce.pbmc))</a>
+<a class="sourceLine" id="cb591-28" data-line-number="28">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="kw">which</span>(e.out<span class="op">$</span>FDR <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.001</span>)]</a>
+<a class="sourceLine" id="cb591-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb591-30" data-line-number="30"><span class="co">#--- quality-control ---#</span></a>
+<a class="sourceLine" id="cb591-31" data-line-number="31">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.pbmc, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span><span class="kw">which</span>(location<span class="op">==</span><span class="st">&quot;MT&quot;</span>)))</a>
+<a class="sourceLine" id="cb591-32" data-line-number="32">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
+<a class="sourceLine" id="cb591-33" data-line-number="33">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>high.mito]</a>
+<a class="sourceLine" id="cb591-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb591-35" data-line-number="35"><span class="co">#--- normalization ---#</span></a>
+<a class="sourceLine" id="cb591-36" data-line-number="36"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb591-37" data-line-number="37"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb591-38" data-line-number="38">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb591-39" data-line-number="39">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">cluster=</span>clusters)</a>
+<a class="sourceLine" id="cb591-40" data-line-number="40">sce.pbmc &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb591-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb591-42" data-line-number="42"><span class="co">#--- variance-modelling ---#</span></a>
+<a class="sourceLine" id="cb591-43" data-line-number="43"><span class="kw">set.seed</span>(<span class="dv">1001</span>)</a>
+<a class="sourceLine" id="cb591-44" data-line-number="44">dec.pbmc &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(sce.pbmc)</a>
+<a class="sourceLine" id="cb591-45" data-line-number="45">top.pbmc &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.pbmc, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb591-46" data-line-number="46"></a>
+<a class="sourceLine" id="cb591-47" data-line-number="47"><span class="co">#--- dimensionality-reduction ---#</span></a>
+<a class="sourceLine" id="cb591-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb591-49" data-line-number="49">sce.pbmc &lt;-<span class="st"> </span><span class="kw">denoisePCA</span>(sce.pbmc, <span class="dt">subset.row=</span>top.pbmc, <span class="dt">technical=</span>dec.pbmc)</a>
+<a class="sourceLine" id="cb591-50" data-line-number="50"></a>
+<a class="sourceLine" id="cb591-51" data-line-number="51"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
+<a class="sourceLine" id="cb591-52" data-line-number="52">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
+<a class="sourceLine" id="cb591-53" data-line-number="53"></a>
+<a class="sourceLine" id="cb591-54" data-line-number="54"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
+<a class="sourceLine" id="cb591-55" data-line-number="55">sce.pbmc &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.pbmc, <span class="dt">use_dimred=</span><span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
 </div>
 <p>Then, we load the <code>iSEE</code> and <code>shiny</code> packages for use in the rest of this chapter.</p>
-<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb586-1" data-line-number="1"><span class="kw">library</span>(iSEE)</a>
-<a class="sourceLine" id="cb586-2" data-line-number="2"><span class="kw">library</span>(shiny)</a></code></pre></div>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb592-1" data-line-number="1"><span class="kw">library</span>(iSEE)</a>
+<a class="sourceLine" id="cb592-2" data-line-number="2"><span class="kw">library</span>(shiny)</a></code></pre></div>
 <p>An instance of an interactive <code>iSEE</code> application can be launched with any data set that is stored in an object of the <code>SummarizedExperiment</code> class (or any class that extends it; e.g., <code>SingleCellExperiment</code>, <code>DESeqDataSet</code>, <code>MethylSet</code>).
 In its simplest form, this is done simply by calling <code>iSEE(sce)</code> with the <code>sce</code> data object as the sole argument, as illustrated here with the <code>sce.pbmc</code> data set.</p>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" data-line-number="1"><span class="kw">iSEE</span>(sce.pbmc)</a></code></pre></div>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" data-line-number="1"><span class="kw">iSEE</span>(sce.pbmc)</a></code></pre></div>
 <p>The default interface contains up to eight standard panels, each featuring a particular aspect of the data set. The names of standard panels are available in the <code>panelTypes</code> variable.
 The shorter panel codes are useful for the configuration of tours, described in the section <a href="interactive-sharing.html#dissemination">Dissemination of analysis results</a>.</p>
-<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb588-1" data-line-number="1">panelTypes</a></code></pre></div>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb594-1" data-line-number="1">panelTypes</a></code></pre></div>
 <pre><code>##                redDimPlot               colDataPlot 
 ##  &quot;Reduced dimension plot&quot;        &quot;Column data plot&quot; 
 ##             featAssayPlot              rowStatTable 
@@ -810,7 +811,7 @@ This feature is particularly useful to disseminate new data sets with accompanyi
 <p>It is also possible to deploy “empty” instances of <code>iSEE</code> apps, where any <code>SummarizedExperiment</code> object stored in an RDS file may be uploaded to the running application.
 Once the file is uploaded, the application will import the <code>sce</code> object and initialize the GUI panels with the contents of the object for interactive exploration.
 This type of <code>iSEE</code> applications is launched without specifying the <code>sce</code> argument, as shown below.</p>
-<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb590-1" data-line-number="1"><span class="kw">iSEE</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb596-1" data-line-number="1"><span class="kw">iSEE</span>()</a></code></pre></div>
 </div>
 <div id="isee-examples" class="section level2">
 <h2><span class="header-section-number">19.3</span> Examples of usages for iSEE apps</h2>
@@ -830,44 +831,44 @@ Alternatively, it could also indicate the presence of multiple cell types or sta
 <p>In the example below, we demonstrate that an <code>iSEE</code> app can be preconfigured to immediately display the views described above, after compute the apropriate per-cell quality control metrics.</p>
 <p>In addition, we also preconfigure the app to automatically highlight in the <em>Reduced dimension plot</em> panel any point selection made in the <em>Column data plot</em> panel.
 For instance, select the cells with either large or small library sizes, to inspect their distribution in reduced dimensions.</p>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" data-line-number="1"><span class="co"># Compute per-cell QC metrics</span></a>
-<a class="sourceLine" id="cb591-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb591-3" data-line-number="3">sce.pbmc &lt;-<span class="st"> </span><span class="kw">addPerCellQC</span>(sce.pbmc, <span class="dt">exprs_values=</span><span class="st">&quot;counts&quot;</span>)</a>
-<a class="sourceLine" id="cb591-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb591-5" data-line-number="5"><span class="co"># Compute the log10-transformed library size</span></a>
-<a class="sourceLine" id="cb591-6" data-line-number="6"><span class="kw">colData</span>(sce.pbmc)[[<span class="st">&quot;log10_total_counts&quot;</span>]] &lt;-<span class="st"> </span><span class="kw">log10</span>(sce.pbmc<span class="op">$</span>total)</a>
-<a class="sourceLine" id="cb591-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb591-8" data-line-number="8"><span class="co"># Compute the rank of each cell by decreasing library size</span></a>
-<a class="sourceLine" id="cb591-9" data-line-number="9"><span class="kw">colData</span>(sce.pbmc)[[<span class="st">&quot;total_counts_rank&quot;</span>]] &lt;-<span class="st"> </span><span class="kw">rank</span>(<span class="op">-</span>sce.pbmc<span class="op">$</span>total)</a>
-<a class="sourceLine" id="cb591-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb591-11" data-line-number="11"><span class="co"># Configure a &quot;Column data plot&quot; panel</span></a>
-<a class="sourceLine" id="cb591-12" data-line-number="12">colDataArgs &lt;-<span class="st"> </span><span class="kw">colDataPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb591-13" data-line-number="13">colDataArgs<span class="op">$</span>YAxis &lt;-<span class="st"> &quot;log10_total_counts&quot;</span></a>
-<a class="sourceLine" id="cb591-14" data-line-number="14">colDataArgs<span class="op">$</span>XAxis &lt;-<span class="st"> &quot;Column data&quot;</span></a>
-<a class="sourceLine" id="cb591-15" data-line-number="15">colDataArgs<span class="op">$</span>XAxisColData &lt;-<span class="st"> &quot;total_counts_rank&quot;</span></a>
-<a class="sourceLine" id="cb591-16" data-line-number="16">colDataArgs<span class="op">$</span>DataBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb591-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb591-18" data-line-number="18"><span class="co"># Configure a &quot;Reduced dimension plot &quot; panel</span></a>
-<a class="sourceLine" id="cb591-19" data-line-number="19">redDimArgs &lt;-<span class="st"> </span><span class="kw">redDimPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb591-20" data-line-number="20">redDimArgs<span class="op">$</span>DataBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb591-21" data-line-number="21">redDimArgs<span class="op">$</span>Type &lt;-<span class="st"> &quot;TSNE&quot;</span></a>
-<a class="sourceLine" id="cb591-22" data-line-number="22">redDimArgs<span class="op">$</span>VisualBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb591-23" data-line-number="23">redDimArgs<span class="op">$</span>ColorBy &lt;-<span class="st"> &quot;Column data&quot;</span></a>
-<a class="sourceLine" id="cb591-24" data-line-number="24">redDimArgs<span class="op">$</span>ColorByColData &lt;-<span class="st"> &quot;log10_total_counts&quot;</span></a>
-<a class="sourceLine" id="cb591-25" data-line-number="25">redDimArgs<span class="op">$</span>SelectBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb591-26" data-line-number="26">redDimArgs<span class="op">$</span>SelectByPlot &lt;-<span class="st"> &quot;Column data plot 1&quot;</span></a>
-<a class="sourceLine" id="cb591-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb591-28" data-line-number="28"><span class="co"># Configure the set of panels initially visible</span></a>
-<a class="sourceLine" id="cb591-29" data-line-number="29">initialPanels &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb591-30" data-line-number="30">    <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Column data plot 1&quot;</span>, <span class="st">&quot;Reduced dimension plot 1&quot;</span>),</a>
-<a class="sourceLine" id="cb591-31" data-line-number="31">    <span class="dt">Width =</span> <span class="kw">c</span>(6L, 6L)</a>
-<a class="sourceLine" id="cb591-32" data-line-number="32">)</a>
-<a class="sourceLine" id="cb591-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb591-34" data-line-number="34"><span class="co"># Prepare the app</span></a>
-<a class="sourceLine" id="cb591-35" data-line-number="35">app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">colDataArgs =</span> colDataArgs, <span class="dt">redDimArgs =</span> redDimArgs,</a>
-<a class="sourceLine" id="cb591-36" data-line-number="36">    <span class="dt">initialPanels =</span> initialPanels)</a></code></pre></div>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" data-line-number="1"><span class="co"># Compute per-cell QC metrics</span></a>
+<a class="sourceLine" id="cb597-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
+<a class="sourceLine" id="cb597-3" data-line-number="3">sce.pbmc &lt;-<span class="st"> </span><span class="kw">addPerCellQC</span>(sce.pbmc, <span class="dt">exprs_values=</span><span class="st">&quot;counts&quot;</span>)</a>
+<a class="sourceLine" id="cb597-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb597-5" data-line-number="5"><span class="co"># Compute the log10-transformed library size</span></a>
+<a class="sourceLine" id="cb597-6" data-line-number="6"><span class="kw">colData</span>(sce.pbmc)[[<span class="st">&quot;log10_total_counts&quot;</span>]] &lt;-<span class="st"> </span><span class="kw">log10</span>(sce.pbmc<span class="op">$</span>total)</a>
+<a class="sourceLine" id="cb597-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb597-8" data-line-number="8"><span class="co"># Compute the rank of each cell by decreasing library size</span></a>
+<a class="sourceLine" id="cb597-9" data-line-number="9"><span class="kw">colData</span>(sce.pbmc)[[<span class="st">&quot;total_counts_rank&quot;</span>]] &lt;-<span class="st"> </span><span class="kw">rank</span>(<span class="op">-</span>sce.pbmc<span class="op">$</span>total)</a>
+<a class="sourceLine" id="cb597-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb597-11" data-line-number="11"><span class="co"># Configure a &quot;Column data plot&quot; panel</span></a>
+<a class="sourceLine" id="cb597-12" data-line-number="12">colDataArgs &lt;-<span class="st"> </span><span class="kw">colDataPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb597-13" data-line-number="13">colDataArgs<span class="op">$</span>YAxis &lt;-<span class="st"> &quot;log10_total_counts&quot;</span></a>
+<a class="sourceLine" id="cb597-14" data-line-number="14">colDataArgs<span class="op">$</span>XAxis &lt;-<span class="st"> &quot;Column data&quot;</span></a>
+<a class="sourceLine" id="cb597-15" data-line-number="15">colDataArgs<span class="op">$</span>XAxisColData &lt;-<span class="st"> &quot;total_counts_rank&quot;</span></a>
+<a class="sourceLine" id="cb597-16" data-line-number="16">colDataArgs<span class="op">$</span>DataBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb597-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb597-18" data-line-number="18"><span class="co"># Configure a &quot;Reduced dimension plot &quot; panel</span></a>
+<a class="sourceLine" id="cb597-19" data-line-number="19">redDimArgs &lt;-<span class="st"> </span><span class="kw">redDimPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb597-20" data-line-number="20">redDimArgs<span class="op">$</span>DataBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb597-21" data-line-number="21">redDimArgs<span class="op">$</span>Type &lt;-<span class="st"> &quot;TSNE&quot;</span></a>
+<a class="sourceLine" id="cb597-22" data-line-number="22">redDimArgs<span class="op">$</span>VisualBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb597-23" data-line-number="23">redDimArgs<span class="op">$</span>ColorBy &lt;-<span class="st"> &quot;Column data&quot;</span></a>
+<a class="sourceLine" id="cb597-24" data-line-number="24">redDimArgs<span class="op">$</span>ColorByColData &lt;-<span class="st"> &quot;log10_total_counts&quot;</span></a>
+<a class="sourceLine" id="cb597-25" data-line-number="25">redDimArgs<span class="op">$</span>SelectBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb597-26" data-line-number="26">redDimArgs<span class="op">$</span>SelectByPlot &lt;-<span class="st"> &quot;Column data plot 1&quot;</span></a>
+<a class="sourceLine" id="cb597-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb597-28" data-line-number="28"><span class="co"># Configure the set of panels initially visible</span></a>
+<a class="sourceLine" id="cb597-29" data-line-number="29">initialPanels &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
+<a class="sourceLine" id="cb597-30" data-line-number="30">    <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Column data plot 1&quot;</span>, <span class="st">&quot;Reduced dimension plot 1&quot;</span>),</a>
+<a class="sourceLine" id="cb597-31" data-line-number="31">    <span class="dt">Width =</span> <span class="kw">c</span>(6L, 6L)</a>
+<a class="sourceLine" id="cb597-32" data-line-number="32">)</a>
+<a class="sourceLine" id="cb597-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb597-34" data-line-number="34"><span class="co"># Prepare the app</span></a>
+<a class="sourceLine" id="cb597-35" data-line-number="35">app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">colDataArgs =</span> colDataArgs, <span class="dt">redDimArgs =</span> redDimArgs,</a>
+<a class="sourceLine" id="cb597-36" data-line-number="36">    <span class="dt">initialPanels =</span> initialPanels)</a></code></pre></div>
 <p>The preconfigured Shiny app can then be launched as show below.</p>
-<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb592-1" data-line-number="1"><span class="kw">runApp</span>(app)</a></code></pre></div>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb598-1" data-line-number="1"><span class="kw">runApp</span>(app)</a></code></pre></div>
 <p>Note that preconfigured apps remain fully interactive, meaning that users can interactively control the settings and layout of the panels.
 For instance, users may select cells in one panel and choose to highlight the selected cells in the other using the “Selection parameters” collapsible box, in an effort to determine an adequate threshold on the library size to filter cells to retain for downstream analyses.</p>
 <p>Users may also change the information displayed in any panel.
@@ -884,26 +885,26 @@ In this example, we show how <code>iSEE</code> can be used to interactively exam
 The clusters are identified as densely connected subgraphs within a k-nearest-neighbors graph of cells based on their expression profiles.
 Positive markers are identified as genes with a significantly higher mean expression in each cluster using pairwise Welch t-tests.
 Finally, the log-transformed false discovery rate (FDR) of each marker for each cluster is stored in the <code>rowData</code> component of the <code>sce</code> object, which will then be accessible in the <code>iSEE</code> application.</p>
-<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb593-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb593-3" data-line-number="3"><span class="co"># Compute cell clusters</span></a>
-<a class="sourceLine" id="cb593-4" data-line-number="4">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb593-5" data-line-number="5">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb593-6" data-line-number="6">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a>
-<a class="sourceLine" id="cb593-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb593-8" data-line-number="8"><span class="co"># Identify positive markers for each cluster</span></a>
-<a class="sourceLine" id="cb593-9" data-line-number="9">markers.pbmc.up &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(</a>
-<a class="sourceLine" id="cb593-10" data-line-number="10">  sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">log.p=</span><span class="ot">TRUE</span>, <span class="dt">sorted=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb593-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb593-12" data-line-number="12"> <span class="co"># Collate the log-transformed FDR for each marker in a single table</span></a>
-<a class="sourceLine" id="cb593-13" data-line-number="13">x &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb593-14" data-line-number="14">  <span class="dt">row.names =</span> <span class="kw">rownames</span>(sce.pbmc),</a>
-<a class="sourceLine" id="cb593-15" data-line-number="15">  <span class="kw">lapply</span>(<span class="dt">X =</span> markers.pbmc.up, <span class="dt">FUN =</span> <span class="st">&quot;[[&quot;</span>, <span class="dt">i=</span><span class="st">&quot;log.FDR&quot;</span>)</a>
-<a class="sourceLine" id="cb593-16" data-line-number="16">  )</a>
-<a class="sourceLine" id="cb593-17" data-line-number="17"><span class="kw">colnames</span>(x) &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">seq_len</span>(<span class="kw">ncol</span>(x)))</a>
-<a class="sourceLine" id="cb593-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb593-19" data-line-number="19"><span class="co"># Store the table of results as row metadata</span></a>
-<a class="sourceLine" id="cb593-20" data-line-number="20"><span class="kw">rowData</span>(sce.pbmc)[[(<span class="kw">paste0</span>(<span class="st">&quot;log.FDR&quot;</span>, <span class="st">&quot;.markers.up&quot;</span>))]] &lt;-<span class="st"> </span>x</a></code></pre></div>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" data-line-number="1"><span class="kw">library</span>(scran)</a>
+<a class="sourceLine" id="cb599-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb599-3" data-line-number="3"><span class="co"># Compute cell clusters</span></a>
+<a class="sourceLine" id="cb599-4" data-line-number="4">g &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.pbmc, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
+<a class="sourceLine" id="cb599-5" data-line-number="5">clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g)<span class="op">$</span>membership</a>
+<a class="sourceLine" id="cb599-6" data-line-number="6">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a>
+<a class="sourceLine" id="cb599-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb599-8" data-line-number="8"><span class="co"># Identify positive markers for each cluster</span></a>
+<a class="sourceLine" id="cb599-9" data-line-number="9">markers.pbmc.up &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(</a>
+<a class="sourceLine" id="cb599-10" data-line-number="10">  sce.pbmc, sce.pbmc<span class="op">$</span>cluster, <span class="dt">direction=</span><span class="st">&quot;up&quot;</span>, <span class="dt">log.p=</span><span class="ot">TRUE</span>, <span class="dt">sorted=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb599-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb599-12" data-line-number="12"> <span class="co"># Collate the log-transformed FDR for each marker in a single table</span></a>
+<a class="sourceLine" id="cb599-13" data-line-number="13">x &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
+<a class="sourceLine" id="cb599-14" data-line-number="14">  <span class="dt">row.names =</span> <span class="kw">rownames</span>(sce.pbmc),</a>
+<a class="sourceLine" id="cb599-15" data-line-number="15">  <span class="kw">lapply</span>(<span class="dt">X =</span> markers.pbmc.up, <span class="dt">FUN =</span> <span class="st">&quot;[[&quot;</span>, <span class="dt">i=</span><span class="st">&quot;log.FDR&quot;</span>)</a>
+<a class="sourceLine" id="cb599-16" data-line-number="16">  )</a>
+<a class="sourceLine" id="cb599-17" data-line-number="17"><span class="kw">colnames</span>(x) &lt;-<span class="st"> </span><span class="kw">as.character</span>(<span class="kw">seq_len</span>(<span class="kw">ncol</span>(x)))</a>
+<a class="sourceLine" id="cb599-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb599-19" data-line-number="19"><span class="co"># Store the table of results as row metadata</span></a>
+<a class="sourceLine" id="cb599-20" data-line-number="20"><span class="kw">rowData</span>(sce.pbmc)[[(<span class="kw">paste0</span>(<span class="st">&quot;log.FDR&quot;</span>, <span class="st">&quot;.markers.up&quot;</span>))]] &lt;-<span class="st"> </span>x</a></code></pre></div>
 <p>The next code chunk preconfigures an app that shows:
 - A table of feature statistics (including the log-transformed FDR of cluster markers computed above),
 - A plot showing the distribution of expression values for a chosen gene in each cluster,
@@ -912,32 +913,32 @@ Finally, the log-transformed false discovery rate (FDR) of each marker for each 
 This functionality is particularly convenient once the table is sorted by decreasing significance of the markers for a cluster of interest.</p>
 <p>For instance, once the application is launched, users can sort the table by ascending value of “log.FDR.markers.up:1” (where “:1” indicates cluster “1”).
 Then, users may select the first row in the “Row statistics table 1” and watch the second and third panel automatically update to display the most significant marker gene on the y-axis (“Feature assay plot 1” panel), and as a color scale overlaid on the data points (“Reduced dimension plot 1” panel).</p>
-<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb594-1" data-line-number="1"><span class="co"># Configure a &quot;Row statistics table&quot; panel (</span><span class="al">NOTE</span><span class="co">: we leave all parameters to default)</span></a>
-<a class="sourceLine" id="cb594-2" data-line-number="2">rowStatArgs &lt;-<span class="st"> </span><span class="kw">rowStatTableDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb594-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb594-4" data-line-number="4"><span class="co"># Configure a &quot;Feature assay plot&quot; panel</span></a>
-<a class="sourceLine" id="cb594-5" data-line-number="5">featAssayArgs &lt;-<span class="st"> </span><span class="kw">featAssayPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb594-6" data-line-number="6">featAssayArgs<span class="op">$</span>YAxisRowTable &lt;-<span class="st"> &quot;Row statistics table 1&quot;</span></a>
-<a class="sourceLine" id="cb594-7" data-line-number="7">featAssayArgs<span class="op">$</span>XAxis &lt;-<span class="st"> &quot;Column data&quot;</span></a>
-<a class="sourceLine" id="cb594-8" data-line-number="8">featAssayArgs<span class="op">$</span>XAxisColData &lt;-<span class="st"> &quot;cluster&quot;</span></a>
-<a class="sourceLine" id="cb594-9" data-line-number="9">featAssayArgs<span class="op">$</span>DataBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb594-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb594-11" data-line-number="11"><span class="co"># Configure a &quot;Reduced dimension plot&quot; panel</span></a>
-<a class="sourceLine" id="cb594-12" data-line-number="12">redDimArgs &lt;-<span class="st"> </span><span class="kw">redDimPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb594-13" data-line-number="13">redDimArgs<span class="op">$</span>Type &lt;-<span class="st"> &quot;UMAP&quot;</span></a>
-<a class="sourceLine" id="cb594-14" data-line-number="14">redDimArgs<span class="op">$</span>ColorBy &lt;-<span class="st"> &quot;Feature name&quot;</span></a>
-<a class="sourceLine" id="cb594-15" data-line-number="15">redDimArgs<span class="op">$</span>ColorByRowTable &lt;-<span class="st"> &quot;Row statistics table 1&quot;</span></a>
-<a class="sourceLine" id="cb594-16" data-line-number="16">redDimArgs<span class="op">$</span>VisualBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb594-17" data-line-number="17">initialPanels &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb594-18" data-line-number="18">    <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Row statistics table 1&quot;</span>, <span class="st">&quot;Feature assay plot 1&quot;</span>, <span class="st">&quot;Reduced dimension plot 1&quot;</span>),</a>
-<a class="sourceLine" id="cb594-19" data-line-number="19">    <span class="dt">Width =</span> <span class="kw">c</span>(4L, 4L, 4L)</a>
-<a class="sourceLine" id="cb594-20" data-line-number="20">)</a>
-<a class="sourceLine" id="cb594-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb594-22" data-line-number="22"><span class="co"># Prepare the app</span></a>
-<a class="sourceLine" id="cb594-23" data-line-number="23">app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">rowStatArgs =</span> rowStatArgs, <span class="dt">featAssayArgs =</span> featAssayArgs,</a>
-<a class="sourceLine" id="cb594-24" data-line-number="24">  <span class="dt">redDimArgs =</span> redDimArgs, <span class="dt">initialPanels =</span> initialPanels)</a></code></pre></div>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb600-1" data-line-number="1"><span class="co"># Configure a &quot;Row statistics table&quot; panel (</span><span class="al">NOTE</span><span class="co">: we leave all parameters to default)</span></a>
+<a class="sourceLine" id="cb600-2" data-line-number="2">rowStatArgs &lt;-<span class="st"> </span><span class="kw">rowStatTableDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb600-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb600-4" data-line-number="4"><span class="co"># Configure a &quot;Feature assay plot&quot; panel</span></a>
+<a class="sourceLine" id="cb600-5" data-line-number="5">featAssayArgs &lt;-<span class="st"> </span><span class="kw">featAssayPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb600-6" data-line-number="6">featAssayArgs<span class="op">$</span>YAxisRowTable &lt;-<span class="st"> &quot;Row statistics table 1&quot;</span></a>
+<a class="sourceLine" id="cb600-7" data-line-number="7">featAssayArgs<span class="op">$</span>XAxis &lt;-<span class="st"> &quot;Column data&quot;</span></a>
+<a class="sourceLine" id="cb600-8" data-line-number="8">featAssayArgs<span class="op">$</span>XAxisColData &lt;-<span class="st"> &quot;cluster&quot;</span></a>
+<a class="sourceLine" id="cb600-9" data-line-number="9">featAssayArgs<span class="op">$</span>DataBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb600-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb600-11" data-line-number="11"><span class="co"># Configure a &quot;Reduced dimension plot&quot; panel</span></a>
+<a class="sourceLine" id="cb600-12" data-line-number="12">redDimArgs &lt;-<span class="st"> </span><span class="kw">redDimPlotDefaults</span>(sce.pbmc, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb600-13" data-line-number="13">redDimArgs<span class="op">$</span>Type &lt;-<span class="st"> &quot;UMAP&quot;</span></a>
+<a class="sourceLine" id="cb600-14" data-line-number="14">redDimArgs<span class="op">$</span>ColorBy &lt;-<span class="st"> &quot;Feature name&quot;</span></a>
+<a class="sourceLine" id="cb600-15" data-line-number="15">redDimArgs<span class="op">$</span>ColorByRowTable &lt;-<span class="st"> &quot;Row statistics table 1&quot;</span></a>
+<a class="sourceLine" id="cb600-16" data-line-number="16">redDimArgs<span class="op">$</span>VisualBoxOpen &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb600-17" data-line-number="17">initialPanels &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
+<a class="sourceLine" id="cb600-18" data-line-number="18">    <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Row statistics table 1&quot;</span>, <span class="st">&quot;Feature assay plot 1&quot;</span>, <span class="st">&quot;Reduced dimension plot 1&quot;</span>),</a>
+<a class="sourceLine" id="cb600-19" data-line-number="19">    <span class="dt">Width =</span> <span class="kw">c</span>(4L, 4L, 4L)</a>
+<a class="sourceLine" id="cb600-20" data-line-number="20">)</a>
+<a class="sourceLine" id="cb600-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb600-22" data-line-number="22"><span class="co"># Prepare the app</span></a>
+<a class="sourceLine" id="cb600-23" data-line-number="23">app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">rowStatArgs =</span> rowStatArgs, <span class="dt">featAssayArgs =</span> featAssayArgs,</a>
+<a class="sourceLine" id="cb600-24" data-line-number="24">  <span class="dt">redDimArgs =</span> redDimArgs, <span class="dt">initialPanels =</span> initialPanels)</a></code></pre></div>
 <p>The preconfigured Shiny app can then be launched as show below.</p>
-<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" data-line-number="1"><span class="kw">runApp</span>(app)</a></code></pre></div>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" data-line-number="1"><span class="kw">runApp</span>(app)</a></code></pre></div>
 <p>In addition to selecting the top genes by significance, it is also possible to search the table for arbitrary gene names and select any known marker gene.
 Practically, investigating the expression levels of known marker genes is a common approach to assigning cell type labels to inferred clusters.</p>
 </div>
@@ -960,26 +961,26 @@ At any time, the viewer is still free to leave the interactive tour and explore 
 All that is needed to add a tour to an <code>iSEE</code> instance is a data frame with two columns named “element” and “intro”; the first column declares the UI element to highlight in each step of the tour, and the second one contains the text to display at that step.
 This data frame must then be provided to the <code>iSEE()</code> function via the <code>tour</code> argument.</p>
 <p>In the code chunk below, we demonstrate the implementation of a simple tour taking through the two panels that compose a GUI, and interactively train users to use the collapsible boxes.</p>
-<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb596-1" data-line-number="1">tour &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
-<a class="sourceLine" id="cb596-2" data-line-number="2">    <span class="dt">element =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb596-3" data-line-number="3">        <span class="st">&quot;#Welcome&quot;</span>,</a>
-<a class="sourceLine" id="cb596-4" data-line-number="4">        <span class="st">&quot;#redDimPlot1&quot;</span>,</a>
-<a class="sourceLine" id="cb596-5" data-line-number="5">        <span class="st">&quot;#colDataPlot1&quot;</span>,</a>
-<a class="sourceLine" id="cb596-6" data-line-number="6">        <span class="st">&quot;#colDataPlot1_DataBoxOpen&quot;</span>,</a>
-<a class="sourceLine" id="cb596-7" data-line-number="7">        <span class="st">&quot;#Conclusion&quot;</span>),</a>
-<a class="sourceLine" id="cb596-8" data-line-number="8">    <span class="dt">intro =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb596-9" data-line-number="9">        <span class="st">&quot;Welcome to this tour!&quot;</span>,</a>
-<a class="sourceLine" id="cb596-10" data-line-number="10">        <span class="st">&quot;This is a &lt;i&gt;Reduced dimension plot.&lt;/i&gt;&quot;</span>,</a>
-<a class="sourceLine" id="cb596-11" data-line-number="11">        <span class="st">&quot;And this is a &lt;i&gt;Column data plot.&lt;/i&gt;&quot;</span>,</a>
-<a class="sourceLine" id="cb596-12" data-line-number="12">        <span class="st">&quot;&lt;b&gt;Action:&lt;/b&gt; Click on this collapsible box to open and close it.&quot;</span>,</a>
-<a class="sourceLine" id="cb596-13" data-line-number="13">        <span class="st">&quot;Thank you for taking this tour!&quot;</span>),</a>
-<a class="sourceLine" id="cb596-14" data-line-number="14">    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb596-15" data-line-number="15">initialPanels &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb596-16" data-line-number="16">    <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Reduced dimension plot 1&quot;</span>, <span class="st">&quot;Column data plot 1&quot;</span>),</a>
-<a class="sourceLine" id="cb596-17" data-line-number="17">    <span class="dt">Width =</span> <span class="kw">c</span>(6L, 6L)</a>
-<a class="sourceLine" id="cb596-18" data-line-number="18">)</a></code></pre></div>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb602-1" data-line-number="1">tour &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb602-2" data-line-number="2">    <span class="dt">element =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb602-3" data-line-number="3">        <span class="st">&quot;#Welcome&quot;</span>,</a>
+<a class="sourceLine" id="cb602-4" data-line-number="4">        <span class="st">&quot;#redDimPlot1&quot;</span>,</a>
+<a class="sourceLine" id="cb602-5" data-line-number="5">        <span class="st">&quot;#colDataPlot1&quot;</span>,</a>
+<a class="sourceLine" id="cb602-6" data-line-number="6">        <span class="st">&quot;#colDataPlot1_DataBoxOpen&quot;</span>,</a>
+<a class="sourceLine" id="cb602-7" data-line-number="7">        <span class="st">&quot;#Conclusion&quot;</span>),</a>
+<a class="sourceLine" id="cb602-8" data-line-number="8">    <span class="dt">intro =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb602-9" data-line-number="9">        <span class="st">&quot;Welcome to this tour!&quot;</span>,</a>
+<a class="sourceLine" id="cb602-10" data-line-number="10">        <span class="st">&quot;This is a &lt;i&gt;Reduced dimension plot.&lt;/i&gt;&quot;</span>,</a>
+<a class="sourceLine" id="cb602-11" data-line-number="11">        <span class="st">&quot;And this is a &lt;i&gt;Column data plot.&lt;/i&gt;&quot;</span>,</a>
+<a class="sourceLine" id="cb602-12" data-line-number="12">        <span class="st">&quot;&lt;b&gt;Action:&lt;/b&gt; Click on this collapsible box to open and close it.&quot;</span>,</a>
+<a class="sourceLine" id="cb602-13" data-line-number="13">        <span class="st">&quot;Thank you for taking this tour!&quot;</span>),</a>
+<a class="sourceLine" id="cb602-14" data-line-number="14">    <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb602-15" data-line-number="15">initialPanels &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
+<a class="sourceLine" id="cb602-16" data-line-number="16">    <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Reduced dimension plot 1&quot;</span>, <span class="st">&quot;Column data plot 1&quot;</span>),</a>
+<a class="sourceLine" id="cb602-17" data-line-number="17">    <span class="dt">Width =</span> <span class="kw">c</span>(6L, 6L)</a>
+<a class="sourceLine" id="cb602-18" data-line-number="18">)</a></code></pre></div>
 <p>The preconfigured Shiny app can then be loaded with the tour and launched as show below.</p>
-<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" data-line-number="1"><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">initialPanels =</span> initialPanels, <span class="dt">tour =</span> tour)</a></code></pre></div>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb603-1" data-line-number="1"><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">initialPanels =</span> initialPanels, <span class="dt">tour =</span> tour)</a></code></pre></div>
 <p>Examples of advanced tours showcasing a selection of published data sets can be found at <a href="https://github.com/LTLA/iSEE2018" class="uri">https://github.com/LTLA/iSEE2018</a>.</p>
 </div>
 </div>
@@ -1031,16 +1032,16 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] scran_1.13.32               scater_1.13.27             
- [3] ggplot2_3.2.1               shiny_1.4.0                
- [5] iSEE_1.5.11                 SingleCellExperiment_1.7.11
- [7] SummarizedExperiment_1.15.9 DelayedArray_0.11.8        
- [9] BiocParallel_1.19.5         matrixStats_0.55.0         
-[11] Biobase_2.45.1              GenomicRanges_1.37.17      
-[13] GenomeInfoDb_1.21.2         IRanges_2.19.17            
-[15] S4Vectors_0.23.25           BiocGenerics_0.31.6        
-[17] Cairo_1.5-10                BiocStyle_2.13.2           
-[19] OSCAUtils_0.0.1            
+ [1] scran_1.13.32                scater_1.13.28              
+ [3] ggplot2_3.2.1                shiny_1.4.0                 
+ [5] iSEE_1.5.13                  SingleCellExperiment_1.7.11 
+ [7] SummarizedExperiment_1.15.10 DelayedArray_0.11.8         
+ [9] BiocParallel_1.19.6          matrixStats_0.55.0          
+[11] Biobase_2.45.1               GenomicRanges_1.37.17       
+[13] GenomeInfoDb_1.21.2          IRanges_2.19.18             
+[15] S4Vectors_0.23.25            BiocGenerics_0.31.6         
+[17] Cairo_1.5-10                 BiocStyle_2.13.2            
+[19] OSCAUtils_0.0.1             
 
 loaded via a namespace (and not attached):
  [1] nlme_3.1-141             bitops_1.0-6            
@@ -1048,7 +1049,7 @@ loaded via a namespace (and not attached):
  [5] backports_1.1.5          irlba_2.3.3             
  [7] R6_2.4.0                 DT_0.9                  
  [9] vipor_0.4.5              DBI_1.0.0               
-[11] lazyeval_0.2.2           mgcv_1.8-29             
+[11] lazyeval_0.2.2           mgcv_1.8-30             
 [13] colorspace_1.4-1         withr_2.1.2             
 [15] gridExtra_2.3            tidyselect_0.2.5        
 [17] bit_1.1-14               compiler_3.6.1          
@@ -1058,12 +1059,12 @@ loaded via a namespace (and not attached):
 [25] digest_0.6.22            rmarkdown_1.16          
 [27] rentrez_1.2.2            XVector_0.25.0          
 [29] pkgconfig_2.0.3          htmltools_0.4.0         
-[31] limma_3.41.18            fastmap_1.0.1           
-[33] htmlwidgets_1.5.1        rlang_0.4.0             
+[31] limma_3.41.20            fastmap_1.0.1           
+[33] htmlwidgets_1.5.1        rlang_0.4.1             
 [35] RSQLite_2.1.2            DelayedMatrixStats_1.7.2
 [37] jsonlite_1.6             dplyr_0.8.3             
 [39] BiocSingular_1.1.7       RCurl_1.95-4.12         
-[41] magrittr_1.5             GenomeInfoDbData_1.2.1  
+[41] magrittr_1.5             GenomeInfoDbData_1.2.2  
 [43] Matrix_1.2-17            ggbeeswarm_0.6.0        
 [45] Rcpp_1.0.2               munsell_0.5.0           
 [47] viridis_0.5.1            edgeR_3.27.14           
@@ -1079,7 +1080,7 @@ loaded via a namespace (and not attached):
 [67] pillar_1.4.2             igraph_1.2.4.1          
 [69] reshape2_1.4.3           XML_3.98-1.20           
 [71] glue_1.3.1               evaluate_0.14           
-[73] BiocManager_1.30.8       vctrs_0.2.0             
+[73] BiocManager_1.30.9       vctrs_0.2.0             
 [75] httpuv_1.5.2             gtable_0.3.0            
 [77] purrr_0.3.3              assertthat_0.2.1        
 [79] xfun_0.10                rsvd_1.0.2              
