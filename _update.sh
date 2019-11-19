@@ -50,6 +50,7 @@ doublet-detection.Rmd
 cell-cycle.Rmd
 trajectory.Rmd
 protein-abundance.Rmd
+repertoire-seq.Rmd
 interactive.Rmd
 big-data.Rmd
 interoperability.Rmd
@@ -77,6 +78,7 @@ zeisel-brain.Rmd
 tenx-unfiltered-pbmc4k.Rmd
 tenx-filtered-pbmc3k.Rmd
 tenx-filtered-pbmc4k.Rmd
+tenx-repertoire-pbmc8k.Rmd
 grun-pancreas.Rmd
 muraro-pancreas.Rmd
 lawlor-pancreas.Rmd
