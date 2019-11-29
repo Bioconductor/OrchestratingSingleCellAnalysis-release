@@ -76,8 +76,7 @@ allfiles=(
 lun-416b.Rmd
 zeisel-brain.Rmd
 tenx-unfiltered-pbmc4k.Rmd
-tenx-filtered-pbmc3k.Rmd
-tenx-filtered-pbmc4k.Rmd
+tenx-filtered-pbmc3k-4k-8k.Rmd
 tenx-repertoire-pbmc8k.Rmd
 grun-pancreas.Rmd
 muraro-pancreas.Rmd
