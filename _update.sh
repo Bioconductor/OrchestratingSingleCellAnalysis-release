@@ -62,6 +62,7 @@ for i in "${!allfiles[@]}"; do
 done
 
 # Copying the workflows as well.
+rm -rf workflows
 cp -r ${base}/analysis/workflows .
 
 cp ${base}/ref.bib .
