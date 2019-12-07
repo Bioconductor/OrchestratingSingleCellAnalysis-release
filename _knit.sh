@@ -11,5 +11,5 @@ set -ev
 
 for I in $(ls workflows | grep ".Rmd$"); do
     echo "Rendering $I .."
-    R --no-save --quiet -e "rmarkdown::render('workflows/${I}.Rmd')"
+    R --no-save --quiet -e "rmarkdown::render('workflows/${I}')"
 done
