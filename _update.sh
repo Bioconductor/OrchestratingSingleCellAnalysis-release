@@ -15,7 +15,6 @@ git submodule update --remote
 # Clone the logs storage repo
 git clone git@github.com:robertamezquita/OSCAlogs.git
 
-
 ###################################################
 # Intro files:
 cp ${base}/intro/index.Rmd index.Rmd
@@ -61,10 +60,6 @@ for i in "${!allfiles[@]}"; do
     cp ${base}/analysis/${allfiles[$i]} $newfile
 done
 
-# Copying the workflows as well.
-rm -rf workflows
-cp -r ${base}/analysis/workflows .
-
 cp ${base}/ref.bib .
 
 ###################################################
@@ -91,7 +86,7 @@ hca-bone-marrow.Rmd
 
 for i in "${!allfiles[@]}"; do 
     newfile=$(printf "P3_W%02d.%s" "$(($i+1))" "${allfiles[$i]}")
-    cp ${base}/analysis/workflows/${allfiles[$i]} $newfile
+    cp ${base}/workflows/${allfiles[$i]} $newfile
 done
 
 ###################################################

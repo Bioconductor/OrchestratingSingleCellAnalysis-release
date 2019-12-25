@@ -9,7 +9,7 @@
 
 set -ev
 
-for I in $(ls workflows | grep ".Rmd$"); do
+for I in $(ls | grep "P3_.*.Rmd$"); do
     echo "Rendering $I .."
     R --no-save --quiet -e "rmarkdown::render('workflows/${I}')"
 done
