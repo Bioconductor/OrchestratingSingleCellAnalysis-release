@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -858,7 +858,7 @@ The strong separation between cells from different batches is consistent with th
 <a class="sourceLine" id="cb409-2" data-line-number="2">uncorrected &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(uncorrected, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)</a>
 <a class="sourceLine" id="cb409-3" data-line-number="3"><span class="kw">plotTSNE</span>(uncorrected, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-uncorrected"></span>
-<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-uncorrected-1.svg" alt="$t$-SNE plot of the PBMC datasets without any batch correction. Each point is a cell that is colored according to its batch of origin." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-uncorrected-1.png" alt="$t$-SNE plot of the PBMC datasets without any batch correction. Each point is a cell that is colored according to its batch of origin." width="672" />
 <p class="caption">
 Figure 13.1: <span class="math inline">\(t\)</span>-SNE plot of the PBMC datasets without any batch correction. Each point is a cell that is colored according to its batch of origin.
 </p>
@@ -937,7 +937,7 @@ This is attributable to violation of one of the aforementioned assumptions, even
 <a class="sourceLine" id="cb414-2" data-line-number="2">rescaled<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(rescaled<span class="op">$</span>batch)</a>
 <a class="sourceLine" id="cb414-3" data-line-number="3"><span class="kw">plotTSNE</span>(rescaled, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-rescaled"></span>
-<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-rescaled-1.svg" alt="$t$-SNE plot of the PBMC datasets after correction with `rescaleBatches()`. Each point represents a cell and is colored according to the batch of origin." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-rescaled-1.png" alt="$t$-SNE plot of the PBMC datasets after correction with `rescaleBatches()`. Each point represents a cell and is colored according to the batch of origin." width="672" />
 <p class="caption">
 Figure 13.2: <span class="math inline">\(t\)</span>-SNE plot of the PBMC datasets after correction with <code>rescaleBatches()</code>. Each point represents a cell and is colored according to the batch of origin.
 </p>
@@ -1052,7 +1052,7 @@ The presence of visual clusters containing cells from both batches provides a co
 <a class="sourceLine" id="cb425-5" data-line-number="5">mnn.out<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">factor</span>(mnn.out<span class="op">$</span>batch)</a>
 <a class="sourceLine" id="cb425-6" data-line-number="6"><span class="kw">plotTSNE</span>(mnn.out, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-corrected"></span>
-<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-corrected-1.svg" alt="$t$-SNE plot of the PBMC datasets after MNN correction. Each point is a cell that is colored according to its batch of origin." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-corrected-1.png" alt="$t$-SNE plot of the PBMC datasets after MNN correction. Each point is a cell that is colored according to its batch of origin." width="672" />
 <p class="caption">
 Figure 13.3: <span class="math inline">\(t\)</span>-SNE plot of the PBMC datasets after MNN correction. Each point is a cell that is colored according to its batch of origin.
 </p>
@@ -1097,7 +1097,7 @@ As a general rule, we can be satisfied with the correction if the vast majority 
 <a class="sourceLine" id="cb428-15" data-line-number="15"></a>
 <a class="sourceLine" id="cb428-16" data-line-number="16">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(heat3k[[<span class="dv">4</span>]], heat4k[[<span class="dv">4</span>]])</a></code></pre></div>
 <div class="figure"><span id="fig:heat-after-mnn"></span>
-<img src="P2_W09.data-integration_files/figure-html/heat-after-mnn-1.svg" alt="Comparison between the within-batch clusters and the across-batch clusters obtained after MNN correction. One heatmap is generated for each of the PBMC 3K and 4K datasets, where each entry is colored according to the number of cells with each pair of labels (before and after correction)." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/heat-after-mnn-1.png" alt="Comparison between the within-batch clusters and the across-batch clusters obtained after MNN correction. One heatmap is generated for each of the PBMC 3K and 4K datasets, where each entry is colored according to the number of cells with each pair of labels (before and after correction)." width="672" />
 <p class="caption">
 Figure 13.4: Comparison between the within-batch clusters and the across-batch clusters obtained after MNN correction. One heatmap is generated for each of the PBMC 3K and 4K datasets, where each entry is colored according to the number of cells with each pair of labels (before and after correction).
 </p>
@@ -1117,7 +1117,7 @@ We would generally expect low off-diagonal probabilities for most pairs of clust
 <a class="sourceLine" id="cb429-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb429-11" data-line-number="11">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(heat3k[[<span class="dv">4</span>]], heat4k[[<span class="dv">4</span>]])</a></code></pre></div>
 <div class="figure"><span id="fig:coassign-after-mnn"></span>
-<img src="P2_W09.data-integration_files/figure-html/coassign-after-mnn-1.svg" alt="Coassignment probabilites for the within-batch clusters, based on coassignment of cells in the across-batch clusters obtained after MNN correction. One heatmap is generated for each of the PBMC 3K and 4K datasets, where each entry is colored according to the coassignment probability between each pair of within-batch clusters." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/coassign-after-mnn-1.png" alt="Coassignment probabilites for the within-batch clusters, based on coassignment of cells in the across-batch clusters obtained after MNN correction. One heatmap is generated for each of the PBMC 3K and 4K datasets, where each entry is colored according to the coassignment probability between each pair of within-batch clusters." width="672" />
 <p class="caption">
 Figure 13.5: Coassignment probabilites for the within-batch clusters, based on coassignment of cells in the across-batch clusters obtained after MNN correction. One heatmap is generated for each of the PBMC 3K and 4K datasets, where each entry is colored according to the coassignment probability between each pair of within-batch clusters.
 </p>
@@ -1168,7 +1168,7 @@ We note that some within-batch clusters have merged, most likely due to the lack
 <a class="sourceLine" id="cb437-5" data-line-number="5">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb437-6" data-line-number="6">)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-pbmc-corrected-markers"></span>
-<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-corrected-markers-1.svg" alt="$t$-SNE plots of the merged PBMC datasets, where the merge was performed using only marker genes identified within each batch. Each point represents a cell that is colored by the assigned cluster from the within-batch analysis for the 3K (left) and 4K dataset (right)." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/tsne-pbmc-corrected-markers-1.png" alt="$t$-SNE plots of the merged PBMC datasets, where the merge was performed using only marker genes identified within each batch. Each point represents a cell that is colored by the assigned cluster from the within-batch analysis for the 3K (left) and 4K dataset (right)." width="672" />
 <p class="caption">
 Figure 13.6: <span class="math inline">\(t\)</span>-SNE plots of the merged PBMC datasets, where the merge was performed using only marker genes identified within each batch. Each point represents a cell that is colored by the assigned cluster from the within-batch analysis for the 3K (left) and 4K dataset (right).
 </p>
@@ -1251,7 +1251,7 @@ If integration is performed across multiple conditions, it is even more importan
 <div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" data-line-number="1"><span class="kw">plotExpression</span>(uncorrected, <span class="dt">x=</span><span class="kw">I</span>(<span class="kw">factor</span>(clusters.mnn)), </a>
 <a class="sourceLine" id="cb440-2" data-line-number="2">    <span class="dt">features=</span><span class="st">&quot;ENSG00000177954&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>colour_by)</a></code></pre></div>
 <div class="figure"><span id="fig:pbmc-marker-blocked"></span>
-<img src="P2_W09.data-integration_files/figure-html/pbmc-marker-blocked-1.svg" alt="Distributions of RPSA uncorrected log-expression values within each cluster in each batch of the merged PBMC dataset." width="672" />
+<img src="P2_W09.data-integration_files/figure-html/pbmc-marker-blocked-1.png" alt="Distributions of RPSA uncorrected log-expression values within each cluster in each batch of the merged PBMC dataset." width="672" />
 <p class="caption">
 Figure 13.7: Distributions of RPSA uncorrected log-expression values within each cluster in each batch of the merged PBMC dataset.
 </p>
@@ -1290,8 +1290,8 @@ other attached packages:
 [13] Biobase_2.47.2              GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        
 [16] HDF5Array_1.15.2            rhdf5_2.31.1                DelayedArray_0.13.2        
 [19] BiocParallel_1.21.2         IRanges_2.21.2              S4Vectors_0.25.8           
-[22] BiocGenerics_0.33.0         matrixStats_0.55.0          BiocStyle_2.15.3           
-[25] OSCAUtils_0.0.1            
+[22] BiocGenerics_0.33.0         matrixStats_0.55.0          Cairo_1.5-10               
+[25] BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] bitops_1.0-6             RColorBrewer_1.1-2       tools_4.0.0             

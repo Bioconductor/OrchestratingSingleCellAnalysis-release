@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -809,7 +809,7 @@ This allows us to conveniently visualize the distribution of clusters in a <span
 <a class="sourceLine" id="cb239-2" data-line-number="2">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</a>
 <a class="sourceLine" id="cb239-3" data-line-number="3"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-clust-graph"></span>
-<img src="P2_W06.clustering_files/figure-html/tsne-clust-graph-1.svg" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from graph-based clustering." width="672" />
+<img src="P2_W06.clustering_files/figure-html/tsne-clust-graph-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from graph-based clustering." width="672" />
 <p class="caption">
 Figure 10.1: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from graph-based clustering.
 </p>
@@ -837,7 +837,7 @@ This yields a dimensionality reduction result that is closely related to <span c
 <a class="sourceLine" id="cb244-2" data-line-number="2"><span class="kw">reducedDim</span>(sce.pbmc, <span class="st">&quot;force&quot;</span>) &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">layout_with_fr</span>(g)</a>
 <a class="sourceLine" id="cb244-3" data-line-number="3"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">dimred=</span><span class="st">&quot;force&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:pbmc-force"></span>
-<img src="P2_W06.clustering_files/figure-html/pbmc-force-1.svg" alt="Force-directed layout for the shared nearest-neighbour graph of the PBMC dataset. Each point represents a cell and is coloured according to its assigned cluster identity." width="672" />
+<img src="P2_W06.clustering_files/figure-html/pbmc-force-1.png" alt="Force-directed layout for the shared nearest-neighbour graph of the PBMC dataset. Each point represents a cell and is coloured according to its assigned cluster identity." width="672" />
 <p class="caption">
 Figure 10.2: Force-directed layout for the shared nearest-neighbour graph of the PBMC dataset. Each point represents a cell and is coloured according to its assigned cluster identity.
 </p>
@@ -877,7 +877,7 @@ For example, Figure <a href="clustering.html#fig:walktrap-v-others">10.3</a> sug
 <a class="sourceLine" id="cb247-14" data-line-number="14"></a>
 <a class="sourceLine" id="cb247-15" data-line-number="15">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(ivw[[<span class="dv">4</span>]], fvw[[<span class="dv">4</span>]])</a></code></pre></div>
 <div class="figure"><span id="fig:walktrap-v-others"></span>
-<img src="P2_W06.clustering_files/figure-html/walktrap-v-others-1.svg" alt="Number of cells assigned to combinations of cluster labels with different community detection algorithms in the PBMC dataset. Each entry of each heatmap represents a pair of labels, coloured proportionally to the log-number of cells with those labels." width="672" />
+<img src="P2_W06.clustering_files/figure-html/walktrap-v-others-1.png" alt="Number of cells assigned to combinations of cluster labels with different community detection algorithms in the PBMC dataset. Each entry of each heatmap represents a pair of labels, coloured proportionally to the log-number of cells with those labels." width="672" />
 <p class="caption">
 Figure 10.3: Number of cells assigned to combinations of cluster labels with different community detection algorithms in the PBMC dataset. Each entry of each heatmap represents a pair of labels, coloured proportionally to the log-number of cells with those labels.
 </p>
@@ -917,7 +917,7 @@ Indeed, concentration of the weight on the diagonal of (Figure <a href="clusteri
 <a class="sourceLine" id="cb254-2" data-line-number="2"><span class="kw">pheatmap</span>(<span class="kw">log2</span>(ratio<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>, <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>,</a>
 <a class="sourceLine" id="cb254-3" data-line-number="3">    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">100</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:cluster-mod"></span>
-<img src="P2_W06.clustering_files/figure-html/cluster-mod-1.svg" alt="Heatmap of the log~2~-ratio of the total weight between nodes in the same cluster or in different clusters, relative to the total weight expected under a null model of random links." width="672" />
+<img src="P2_W06.clustering_files/figure-html/cluster-mod-1.png" alt="Heatmap of the log~2~-ratio of the total weight between nodes in the same cluster or in different clusters, relative to the total weight expected under a null model of random links." width="672" />
 <p class="caption">
 Figure 10.4: Heatmap of the log<sub>2</sub>-ratio of the total weight between nodes in the same cluster or in different clusters, relative to the total weight expected under a null model of random links.
 </p>
@@ -935,7 +935,7 @@ This is analogous to the “graph abstraction” approach described by <span cla
 <a class="sourceLine" id="cb255-6" data-line-number="6"><span class="kw">plot</span>(cluster.gr, <span class="dt">edge.width=</span>igraph<span class="op">::</span><span class="kw">E</span>(cluster.gr)<span class="op">$</span>weight<span class="op">*</span><span class="dv">5</span>,</a>
 <a class="sourceLine" id="cb255-7" data-line-number="7">    <span class="dt">layout=</span>igraph<span class="op">::</span>layout_with_lgl)</a></code></pre></div>
 <div class="figure"><span id="fig:cluster-graph"></span>
-<img src="P2_W06.clustering_files/figure-html/cluster-graph-1.svg" alt="Force-based layout showing the relationships between clusters based on the log-ratio of observed to expected total weights between nodes in different clusters. The thickness of the edge between a pair of clusters is proportional to the corresponding log-ratio." width="672" />
+<img src="P2_W06.clustering_files/figure-html/cluster-graph-1.png" alt="Force-based layout showing the relationships between clusters based on the log-ratio of observed to expected total weights between nodes in different clusters. The thickness of the edge between a pair of clusters is proportional to the corresponding log-ratio." width="672" />
 <p class="caption">
 Figure 10.5: Force-based layout showing the relationships between clusters based on the log-ratio of observed to expected total weights between nodes in different clusters. The thickness of the edge between a pair of clusters is proportional to the corresponding log-ratio.
 </p>
@@ -983,7 +983,7 @@ In general, the <span class="math inline">\(k\)</span>-means clusters correspond
 <div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb258-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans<span class="op">$</span>cluster)</a>
 <a class="sourceLine" id="cb258-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce.pbmc, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-clust-kmeans"></span>
-<img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-1.svg" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering." width="672" />
+<img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering." width="672" />
 <p class="caption">
 Figure 10.6: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from <span class="math inline">\(k\)</span>-means clustering.
 </p>
@@ -1002,7 +1002,7 @@ Instead, we choose the most parsimonious <span class="math inline">\(k\)</span> 
 <div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" data-line-number="1"><span class="kw">plot</span>(gaps<span class="op">$</span>Tab[,<span class="st">&quot;gap&quot;</span>], <span class="dt">xlab=</span><span class="st">&quot;Number of clusters&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Gap statistic&quot;</span>)</a>
 <a class="sourceLine" id="cb261-2" data-line-number="2"><span class="kw">abline</span>(<span class="dt">v=</span>best.k, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:kmeans-gap"></span>
-<img src="P2_W06.clustering_files/figure-html/kmeans-gap-1.svg" alt="Gap statistic with respect to increasing number of $k$-means clusters in the 10X PBMC dataset. The red line represents the chosen $k$." width="672" />
+<img src="P2_W06.clustering_files/figure-html/kmeans-gap-1.png" alt="Gap statistic with respect to increasing number of $k$-means clusters in the 10X PBMC dataset. The red line represents the chosen $k$." width="672" />
 <p class="caption">
 Figure 10.7: Gap statistic with respect to increasing number of <span class="math inline">\(k\)</span>-means clusters in the 10X PBMC dataset. The red line represents the chosen <span class="math inline">\(k\)</span>.
 </p>
@@ -1020,7 +1020,7 @@ For example, we might be interested in the change in expression from one “side
 <div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" data-line-number="1">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.kmeans2<span class="op">$</span>cluster)</a>
 <a class="sourceLine" id="cb264-2" data-line-number="2"><span class="kw">plotTSNE</span>(sce.pbmc, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">text_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-clust-kmeans-best"></span>
-<img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-best-1.svg" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering with $k=20$." width="672" />
+<img src="P2_W06.clustering_files/figure-html/tsne-clust-kmeans-best-1.png" alt="$t$-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from $k$-means clustering with $k=20$." width="672" />
 <p class="caption">
 Figure 10.8: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from <span class="math inline">\(k\)</span>-means clustering with <span class="math inline">\(k=20\)</span>.
 </p>
@@ -1063,7 +1063,7 @@ This directly lends itself to visualization as a tree after hierarchical cluster
 <div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" data-line-number="1">cent.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(clust.kmeans2<span class="op">$</span>centers), <span class="st">&quot;ward.D2&quot;</span>)</a>
 <a class="sourceLine" id="cb267-2" data-line-number="2"><span class="kw">plot</span>(cent.tree)</a></code></pre></div>
 <div class="figure"><span id="fig:kmeans-tree"></span>
-<img src="P2_W06.clustering_files/figure-html/kmeans-tree-1.svg" alt="Hierarchy of $k$-means cluster centroids, using Ward's minimum variance method." width="672" />
+<img src="P2_W06.clustering_files/figure-html/kmeans-tree-1.png" alt="Hierarchy of $k$-means cluster centroids, using Ward's minimum variance method." width="672" />
 <p class="caption">
 Figure 10.9: Hierarchy of <span class="math inline">\(k\)</span>-means cluster centroids, using Ward’s minimum variance method.
 </p>
@@ -1180,7 +1180,7 @@ While both Ward’s method and complete linkage (<code>hclust()</code>’s defau
 <a class="sourceLine" id="cb271-17" data-line-number="17"></a>
 <a class="sourceLine" id="cb271-18" data-line-number="18"><span class="kw">plot</span>(dend)</a></code></pre></div>
 <div class="figure"><span id="fig:dend-416b"></span>
-<img src="P2_W06.clustering_files/figure-html/dend-416b-1.svg" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its oncogene induction status (red is induced, blue is control) and plate of origin (light or dark)." width="672" />
+<img src="P2_W06.clustering_files/figure-html/dend-416b-1.png" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its oncogene induction status (red is induced, blue is control) and plate of origin (light or dark)." width="672" />
 <p class="caption">
 Figure 10.10: Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its oncogene induction status (red is induced, blue is control) and plate of origin (light or dark).
 </p>
@@ -1203,7 +1203,7 @@ We generally prefer to use the <em><a href="https://CRAN.R-project.org/package=d
 <div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" data-line-number="1"><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span>clust<span class="fl">.416</span>b[<span class="kw">order.dendrogram</span>(dend)]</a>
 <a class="sourceLine" id="cb276-2" data-line-number="2"><span class="kw">plot</span>(dend)</a></code></pre></div>
 <div class="figure"><span id="fig:dend-cluster"></span>
-<img src="P2_W06.clustering_files/figure-html/dend-cluster-1.svg" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its assigned cluster identity from a dynamic tree cut." width="672" />
+<img src="P2_W06.clustering_files/figure-html/dend-cluster-1.png" alt="Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its assigned cluster identity from a dynamic tree cut." width="672" />
 <p class="caption">
 Figure 10.11: Hierarchy of cells in the 416B data set after hierarchical clustering, where each leaf node is a cell that is coloured according to its assigned cluster identity from a dynamic tree cut.
 </p>
@@ -1214,7 +1214,7 @@ We attribute this to a distortion introduced by <span class="math inline">\(t\)<
 <div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" data-line-number="1">sce<span class="fl">.416</span>b<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust<span class="fl">.416</span>b)</a>
 <a class="sourceLine" id="cb277-2" data-line-number="2"><span class="kw">plotReducedDim</span>(sce<span class="fl">.416</span>b, <span class="st">&quot;TSNE&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:tsne-416b"></span>
-<img src="P2_W06.clustering_files/figure-html/tsne-416b-1.svg" alt="$t$-SNE plot of the 416B dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from hierarchical clustering." width="672" />
+<img src="P2_W06.clustering_files/figure-html/tsne-416b-1.png" alt="$t$-SNE plot of the 416B dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from hierarchical clustering." width="672" />
 <p class="caption">
 Figure 10.12: <span class="math inline">\(t\)</span>-SNE plot of the 416B dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from hierarchical clustering.
 </p>
@@ -1233,7 +1233,7 @@ Smaller widths can arise from the presence of internal subclusters, which inflat
 <div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" data-line-number="1">sil &lt;-<span class="st"> </span><span class="kw">silhouette</span>(clust<span class="fl">.416</span>b, <span class="dt">dist =</span> dist<span class="fl">.416</span>b)</a>
 <a class="sourceLine" id="cb278-2" data-line-number="2"><span class="kw">plot</span>(sil)</a></code></pre></div>
 <div class="figure"><span id="fig:silhouette416b"></span>
-<img src="P2_W06.clustering_files/figure-html/silhouette416b-1.svg" alt="Silhouette widths for cells in each cluster in the 416B dataset. Each bar represents a cell, grouped by the cluster to which it is assigned." width="672" />
+<img src="P2_W06.clustering_files/figure-html/silhouette416b-1.png" alt="Silhouette widths for cells in each cluster in the 416B dataset. Each bar represents a cell, grouped by the cluster to which it is assigned." width="672" />
 <p class="caption">
 Figure 10.13: Silhouette widths for cells in each cluster in the 416B dataset. Each bar represents a cell, grouped by the cluster to which it is assigned.
 </p>
@@ -1276,7 +1276,7 @@ Ideally, we would hope for high coassignment probabilites on the diagonal (i.e.,
 <div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb283-1" data-line-number="1"><span class="kw">pheatmap</span>(coassign, <span class="dt">cluster_row=</span><span class="ot">FALSE</span>, <span class="dt">cluster_col=</span><span class="ot">FALSE</span>,</a>
 <a class="sourceLine" id="cb283-2" data-line-number="2">    <span class="dt">color=</span><span class="kw">rev</span>(viridis<span class="op">::</span><span class="kw">magma</span>(<span class="dv">100</span>)))</a></code></pre></div>
 <div class="figure"><span id="fig:bootstrap-matrix"></span>
-<img src="P2_W06.clustering_files/figure-html/bootstrap-matrix-1.svg" alt="Heatmap of coassignment probabilities from bootstrapping of graph-based clustering in the PBMC dataset. Each row and column represents an original cluster and each entry is colored according to the value of the coassignment probability between that pair of clusters." width="672" />
+<img src="P2_W06.clustering_files/figure-html/bootstrap-matrix-1.png" alt="Heatmap of coassignment probabilities from bootstrapping of graph-based clustering in the PBMC dataset. Each row and column represents an original cluster and each entry is colored according to the value of the coassignment probability between that pair of clusters." width="672" />
 <p class="caption">
 Figure 10.14: Heatmap of coassignment probabilities from bootstrapping of graph-based clustering in the PBMC dataset. Each row and column represents an original cluster and each entry is colored according to the value of the coassignment probability between that pair of clusters.
 </p>
@@ -1297,7 +1297,7 @@ We demonstrate with a cluster of putative memory T cells from the PBMC dataset, 
 <a class="sourceLine" id="cb284-3" data-line-number="3"><span class="kw">plotExpression</span>(sce.pbmc, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;CD3E&quot;</span>, <span class="st">&quot;CCR7&quot;</span>, <span class="st">&quot;CD69&quot;</span>, <span class="st">&quot;CD44&quot;</span>),</a>
 <a class="sourceLine" id="cb284-4" data-line-number="4">    <span class="dt">x=</span><span class="kw">I</span>(<span class="kw">factor</span>(clust.full)), <span class="dt">colour_by=</span><span class="kw">I</span>(<span class="kw">factor</span>(clust.full)))</a></code></pre></div>
 <div class="figure"><span id="fig:ccr7-dist-memory"></span>
-<img src="P2_W06.clustering_files/figure-html/ccr7-dist-memory-1.svg" alt="Distribution of log-normalized expression values for several T cell markers within each cluster in the 10X PBMC dataset. Each cluster is color-coded for convenience." width="672" />
+<img src="P2_W06.clustering_files/figure-html/ccr7-dist-memory-1.png" alt="Distribution of log-normalized expression values for several T cell markers within each cluster in the 10X PBMC dataset. Each cluster is color-coded for convenience." width="672" />
 <p class="caption">
 Figure 10.15: Distribution of log-normalized expression values for several T cell markers within each cluster in the 10X PBMC dataset. Each cluster is color-coded for convenience.
 </p>
@@ -1315,7 +1315,7 @@ Admittedly, the expression of <em>CD4</em> is so low that the change is rather m
 <a class="sourceLine" id="cb286-3" data-line-number="3"><span class="kw">plotExpression</span>(sce.memory, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;CD8A&quot;</span>, <span class="st">&quot;CD4&quot;</span>),</a>
 <a class="sourceLine" id="cb286-4" data-line-number="4">    <span class="dt">x=</span><span class="kw">I</span>(<span class="kw">factor</span>(clust.memory)))</a></code></pre></div>
 <div class="figure"><span id="fig:cd48-memory-expression"></span>
-<img src="P2_W06.clustering_files/figure-html/cd48-memory-expression-1.svg" alt="Distribution of _CD4_ and _CD8A_ log-normalized expression values within each cluster in the memory T cell subset of the 10X PBMC dataset." width="672" />
+<img src="P2_W06.clustering_files/figure-html/cd48-memory-expression-1.png" alt="Distribution of _CD4_ and _CD8A_ log-normalized expression values within each cluster in the memory T cell subset of the 10X PBMC dataset." width="672" />
 <p class="caption">
 Figure 10.16: Distribution of <em>CD4</em> and <em>CD8A</em> log-normalized expression values within each cluster in the memory T cell subset of the 10X PBMC dataset.
 </p>
@@ -1381,7 +1381,7 @@ other attached packages:
 [10] DelayedArray_0.13.2         BiocParallel_1.21.2         matrixStats_0.55.0         
 [13] Biobase_2.47.2              GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        
 [16] IRanges_2.21.2              S4Vectors_0.25.8            BiocGenerics_0.33.0        
-[19] BiocStyle_2.15.3            OSCAUtils_0.0.1            
+[19] Cairo_1.5-10                BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] viridis_0.5.1            edgeR_3.29.0             BiocSingular_1.3.1      

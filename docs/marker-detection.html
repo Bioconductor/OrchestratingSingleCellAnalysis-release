@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -807,7 +807,7 @@ Some inspection of the most upregulated genes suggest that cluster 9 contains pl
 <a class="sourceLine" id="cb301-4" data-line-number="4"><span class="kw">library</span>(pheatmap)</a>
 <a class="sourceLine" id="cb301-5" data-line-number="5"><span class="kw">pheatmap</span>(logFCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">length.out=</span><span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-basic-pbmc"></span>
-<img src="P2_W07.marker-detection_files/figure-html/heat-basic-pbmc-1.svg" alt="Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/heat-basic-pbmc-1.png" alt="Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
 <p class="caption">
 Figure 11.1: Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range.
 </p>
@@ -871,7 +871,7 @@ We perform this by setting <code>lfc=</code> in our <code>findMarkers()</code> c
 <a class="sourceLine" id="cb306-4" data-line-number="4"><span class="kw">library</span>(pheatmap)</a>
 <a class="sourceLine" id="cb306-5" data-line-number="5"><span class="kw">pheatmap</span>(logFCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">length.out=</span><span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-focused-pbmc"></span>
-<img src="P2_W07.marker-detection_files/figure-html/heat-focused-pbmc-1.svg" alt="Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/heat-focused-pbmc-1.png" alt="Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range." width="672" />
 <p class="caption">
 Figure 11.2: Heatmap of log-fold changes for cluster 9 over all other clusters. Colours are capped at -5 and 5 to preserve dynamic range.
 </p>
@@ -988,7 +988,7 @@ We would typically expect AUCs of 0.7-0.8 for a strongly upregulated candidate m
 <a class="sourceLine" id="cb315-5" data-line-number="5"><span class="kw">pheatmap</span>(AUCs, <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out=</span><span class="dv">21</span>),</a>
 <a class="sourceLine" id="cb315-6" data-line-number="6">    <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">21</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-wmw-pbmc"></span>
-<img src="P2_W07.marker-detection_files/figure-html/heat-wmw-pbmc-1.svg" alt="Heatmap of AUCs for cluster 9 compared to all other clusters." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/heat-wmw-pbmc-1.png" alt="Heatmap of AUCs for cluster 9 compared to all other clusters." width="672" />
 <p class="caption">
 Figure 11.3: Heatmap of AUCs for cluster 9 compared to all other clusters.
 </p>
@@ -1073,7 +1073,7 @@ View history
 <a class="sourceLine" id="cb317-38" data-line-number="38">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb317-39" data-line-number="39">)</a></code></pre></div>
 <div class="figure"><span id="fig:comparative-markers-tw"></span>
-<img src="P2_W07.marker-detection_files/figure-html/comparative-markers-tw-1.svg" alt="Distribution of expression values for alpha or gamma cell-specific markers in the GSE86469 human pancreas dataset. Each panel focuses on the genes that were uniquely ranked in the top 20 candidate markers by either the t-test or WMW test." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/comparative-markers-tw-1.png" alt="Distribution of expression values for alpha or gamma cell-specific markers in the GSE86469 human pancreas dataset. Each panel focuses on the genes that were uniquely ranked in the top 20 candidate markers by either the t-test or WMW test." width="672" />
 <p class="caption">
 Figure 11.4: Distribution of expression values for alpha or gamma cell-specific markers in the GSE86469 human pancreas dataset. Each panel focuses on the genes that were uniquely ranked in the top 20 candidate markers by either the t-test or WMW test.
 </p>
@@ -1109,7 +1109,7 @@ We focus on genes that are upregulated in each cluster compared to the others by
 <a class="sourceLine" id="cb322-2" data-line-number="2">top.genes &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">rownames</span>(interesting.binom))</a>
 <a class="sourceLine" id="cb322-3" data-line-number="3"><span class="kw">plotExpression</span>(sce.pbmc, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">features=</span>top.genes)</a></code></pre></div>
 <div class="figure"><span id="fig:viol-de-binom"></span>
-<img src="P2_W07.marker-detection_files/figure-html/viol-de-binom-1.svg" alt="Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/viol-de-binom-1.png" alt="Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell." width="672" />
 <p class="caption">
 Figure 11.5: Distribution of log-normalized expression values for the top 10 DE genes involving cluster 9 with the binomial test, stratified by cluster assignment and coloured by the plate of origin for each cell.
 </p>
@@ -1118,7 +1118,7 @@ Figure 11.5: Distribution of log-normalized expression values for the top 10 DE 
 For example, <em>GCG</em> is a known marker for pancreatic alpha cells but is expressed in almost every other cell of the <span class="citation">Lawlor et al. (<a href="#ref-lawlor2017singlecell">2017</a>)</span> pancreas data (Figure <a href="marker-detection.html#fig:viol-gcg-lawlor">11.6</a>) and would not be highly ranked by the binomial test.</p>
 <div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb323-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.lawlor, <span class="dt">x=</span><span class="st">&quot;cell type&quot;</span>, <span class="dt">features=</span><span class="st">&quot;ENSG00000115263&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:viol-gcg-lawlor"></span>
-<img src="P2_W07.marker-detection_files/figure-html/viol-gcg-lawlor-1.svg" alt="Distribution of log-normalized expression values for _GCG_ across different pancreatic cell types in the Lawlor pancreas data." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/viol-gcg-lawlor-1.png" alt="Distribution of log-normalized expression values for _GCG_ across different pancreatic cell types in the Lawlor pancreas data." width="672" />
 <p class="caption">
 Figure 11.6: Distribution of log-normalized expression values for <em>GCG</em> across different pancreatic cell types in the Lawlor pancreas data.
 </p>
@@ -1415,7 +1415,7 @@ Testing for DE genes between clusters will inevitably yield some significant res
 <a class="sourceLine" id="cb344-5" data-line-number="5">out &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(y, clusters)</a>
 <a class="sourceLine" id="cb344-6" data-line-number="6"><span class="kw">hist</span>(out[[<span class="dv">1</span>]]<span class="op">$</span>p.value, <span class="dt">col=</span><span class="st">&quot;grey80&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;p-value&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:pval-dist"></span>
-<img src="P2_W07.marker-detection_files/figure-html/pval-dist-1.svg" alt="Distribution of $p$-values from a DE analysis between two clusters in a simulation with no true subpopulation structure." width="672" />
+<img src="P2_W07.marker-detection_files/figure-html/pval-dist-1.png" alt="Distribution of $p$-values from a DE analysis between two clusters in a simulation with no true subpopulation structure." width="672" />
 <p class="caption">
 Figure 11.7: Distribution of <span class="math inline">\(p\)</span>-values from a DE analysis between two clusters in a simulation with no true subpopulation structure.
 </p>
@@ -1483,7 +1483,8 @@ other attached packages:
  [7] SummarizedExperiment_1.17.1 DelayedArray_0.13.2         BiocParallel_1.21.2        
 [10] matrixStats_0.55.0          Biobase_2.47.2              GenomicRanges_1.39.1       
 [13] GenomeInfoDb_1.23.1         IRanges_2.21.2              S4Vectors_0.25.8           
-[16] BiocGenerics_0.33.0         BiocStyle_2.15.3            OSCAUtils_0.0.1            
+[16] BiocGenerics_0.33.0         Cairo_1.5-10                BiocStyle_2.15.3           
+[19] OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] viridis_0.5.1            edgeR_3.29.0             BiocSingular_1.3.1      

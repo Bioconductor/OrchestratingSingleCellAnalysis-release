@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -822,7 +822,7 @@ A brief inspection of the results indicates that clusters contain similar contri
 <a class="sourceLine" id="cb449-3" data-line-number="3">    <span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="kw">data.frame</span>(<span class="dt">pool=</span><span class="kw">factor</span>(merged<span class="op">$</span>pool))),</a>
 <a class="sourceLine" id="cb449-4" data-line-number="4">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb449-5" data-line-number="5">)</a></code></pre></div>
-<p><img src="P2_W10.sample-comparisons_files/figure-html/tsne-initial-1.svg" width="672" /></p>
+<p><img src="P2_W10.sample-comparisons_files/figure-html/tsne-initial-1.png" width="672" /></p>
 <p>Ordinarily, we would be obliged to perform marker detection to assign biological meaning to these clusters.
 For simplicity, we will skip this step by directly using the cell type labels provided by <span class="citation">Pijuan-Sala et al. (<a href="#ref-pijuansala2019single">2019</a>)</span>.
 These were obtained by mapping the cells in this dataset to a larger, pre-annotated “atlas” of mouse early embryonic development.
@@ -831,7 +831,7 @@ While broadly consistent, many of our clusters map to multiple labels (Figure @r
 <a class="sourceLine" id="cb450-2" data-line-number="2">pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(<span class="kw">log2</span>(by.label<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>, <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>,</a>
 <a class="sourceLine" id="cb450-3" data-line-number="3">    <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heat-cluster-label"></span>
-<img src="P2_W10.sample-comparisons_files/figure-html/heat-cluster-label-1.svg" alt="Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log~2~-count for each combination." width="672" />
+<img src="P2_W10.sample-comparisons_files/figure-html/heat-cluster-label-1.png" alt="Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log~2~-count for each combination." width="672" />
 <p class="caption">
 Figure 14.1: Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log<sub>2</sub>-count for each combination.
 </p>
@@ -995,7 +995,7 @@ which is not easily accommodated by QL dispersions alone due to the quadratic na
 ##  0.0103  0.0167  0.0213  0.0202  0.0235  0.0266</code></pre>
 <div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1"><span class="kw">plotBCV</span>(y)</a></code></pre></div>
 <div class="figure"><span id="fig:bcvplot"></span>
-<img src="P2_W10.sample-comparisons_files/figure-html/bcvplot-1.svg" alt="Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively." width="672" />
+<img src="P2_W10.sample-comparisons_files/figure-html/bcvplot-1.png" alt="Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively." width="672" />
 <p class="caption">
 Figure 14.2: Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively.
 </p>
@@ -1013,7 +1013,7 @@ The QL dispersion models the uncertainty and variability of the per-gene varianc
 ##   0.227  12.675  12.675  12.339  12.675  12.675</code></pre>
 <div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" data-line-number="1"><span class="kw">plotQLDisp</span>(fit)</a></code></pre></div>
 <div class="figure"><span id="fig:qlplot"></span>
-<img src="P2_W10.sample-comparisons_files/figure-html/qlplot-1.svg" alt="QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red)." width="672" />
+<img src="P2_W10.sample-comparisons_files/figure-html/qlplot-1.png" alt="QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red)." width="672" />
 <p class="caption">
 Figure 14.3: QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red).
 </p>
@@ -1216,7 +1216,7 @@ We turn off the trend as we do not have enough points for its stable estimation.
 ##  0.0614  0.0614  0.0614  0.0614  0.0614  0.0614</code></pre>
 <div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" data-line-number="1"><span class="kw">plotBCV</span>(y.ab, <span class="dt">cex=</span><span class="dv">1</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:abplotbcv"></span>
-<img src="P2_W10.sample-comparisons_files/figure-html/abplotbcv-1.svg" alt="Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red." width="672" />
+<img src="P2_W10.sample-comparisons_files/figure-html/abplotbcv-1.png" alt="Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red." width="672" />
 <p class="caption">
 Figure 14.4: Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red.
 </p>
@@ -1231,7 +1231,7 @@ Figure 14.4: Biological coefficient of variation (BCV) for each label with respe
 ##     Inf     Inf     Inf     Inf     Inf     Inf</code></pre>
 <div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" data-line-number="1"><span class="kw">plotQLDisp</span>(fit.ab, <span class="dt">cex=</span><span class="dv">1</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:abplotql"></span>
-<img src="P2_W10.sample-comparisons_files/figure-html/abplotql-1.svg" alt="QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue." width="672" />
+<img src="P2_W10.sample-comparisons_files/figure-html/abplotql-1.png" alt="QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue." width="672" />
 <p class="caption">
 Figure 14.5: QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue.
 </p>
@@ -1704,11 +1704,11 @@ other attached packages:
 [10] DelayedArray_0.13.2         BiocParallel_1.21.2         matrixStats_0.55.0         
 [13] Biobase_2.47.2              GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        
 [16] IRanges_2.21.2              S4Vectors_0.25.8            BiocGenerics_0.33.0        
-[19] BiocStyle_2.15.3            OSCAUtils_0.0.1            
+[19] Cairo_1.5-10                BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] bitops_1.0-6                  bit64_0.9-7                   httr_1.4.1                   
- [4] RColorBrewer_1.1-2            tools_4.0.0                   backports_1.1.5              
+ [4] RColorBrewer_1.1-2            backports_1.1.5               tools_4.0.0                  
  [7] R6_2.4.1                      irlba_2.3.3                   vipor_0.4.5                  
 [10] DBI_1.1.0                     lazyeval_0.2.2                colorspace_1.4-1             
 [13] withr_2.1.2                   tidyselect_0.2.5              gridExtra_2.3                

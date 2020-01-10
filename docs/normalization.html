@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -743,7 +743,7 @@ This definition ensures that the normalized expression values are on the same sc
 This is typical of the variability in coverage in scRNA-seq data.</p>
 <div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" data-line-number="1"><span class="kw">hist</span>(<span class="kw">log10</span>(lib.sf.zeisel), <span class="dt">xlab=</span><span class="st">&quot;Log10[Size factor]&quot;</span>, <span class="dt">col=</span><span class="st">&#39;grey80&#39;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:histlib"></span>
-<img src="P2_W03.normalization_files/figure-html/histlib-1.svg" alt="Distribution of size factors derived from the library size in the Zeisel brain dataset." width="672" />
+<img src="P2_W03.normalization_files/figure-html/histlib-1.png" alt="Distribution of size factors derived from the library size in the Zeisel brain dataset." width="672" />
 <p class="caption">
 Figure 7.1: Distribution of size factors derived from the library size in the Zeisel brain dataset.
 </p>
@@ -794,7 +794,7 @@ Use of the deconvolution size factors adjusts for these biases to improve normal
 <a class="sourceLine" id="cb130-3" data-line-number="3">    <span class="dt">col=</span><span class="kw">as.integer</span>(<span class="kw">factor</span>(sce.zeisel<span class="op">$</span>level1class)))</a>
 <a class="sourceLine" id="cb130-4" data-line-number="4"><span class="kw">abline</span>(<span class="dt">a=</span><span class="dv">0</span>, <span class="dt">b=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:deconv-zeisel"></span>
-<img src="P2_W03.normalization_files/figure-html/deconv-zeisel-1.svg" alt="Deconvolution size factor for each cell in the Zeisel brain dataset, compared to the equivalent size factor derived from the library size. The red line corresponds to identity between the two size factors." width="672" />
+<img src="P2_W03.normalization_files/figure-html/deconv-zeisel-1.png" alt="Deconvolution size factor for each cell in the Zeisel brain dataset, compared to the equivalent size factor derived from the library size. The red line corresponds to identity between the two size factors." width="672" />
 <p class="caption">
 Figure 7.2: Deconvolution size factor for each cell in the Zeisel brain dataset, compared to the equivalent size factor derived from the library size. The red line corresponds to identity between the two size factors.
 </p>
@@ -854,7 +854,7 @@ This is consistent with an increase in biosynthetic activity and total RNA conte
 <a class="sourceLine" id="cb135-9" data-line-number="9"><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Stimulus) <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_log10</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb135-10" data-line-number="10"><span class="st">    </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_abline</span>(<span class="dt">intercept=</span><span class="dv">0</span>, <span class="dt">slope=</span><span class="dv">1</span>, <span class="dt">color=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:norm-spike-t"></span>
-<img src="P2_W03.normalization_files/figure-html/norm-spike-t-1.svg" alt="Size factors from spike-in normalization, plotted against the library size factors for all cells in the T cell dataset. Each plot represents a different ligand treatment and each point is a cell coloured according by time from stimulation." width="768" />
+<img src="P2_W03.normalization_files/figure-html/norm-spike-t-1.png" alt="Size factors from spike-in normalization, plotted against the library size factors for all cells in the T cell dataset. Each plot represents a different ligand treatment and each point is a cell coloured according by time from stimulation." width="768" />
 <p class="caption">
 Figure 7.3: Size factors from spike-in normalization, plotted against the library size factors for all cells in the T cell dataset. Each plot represents a different ligand treatment and each point is a cell coloured according by time from stimulation.
 </p>
@@ -879,7 +879,7 @@ This can manifest as shifts in the magnitude and direction of DE between conditi
 <a class="sourceLine" id="cb136-14" data-line-number="14">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb136-15" data-line-number="15">)</a></code></pre></div>
 <div class="figure"><span id="fig:norm-effect-malat"></span>
-<img src="P2_W03.normalization_files/figure-html/norm-effect-malat-1.svg" alt="Distribution of log-normalized expression values for _Malat1_ after normalization with the deconvolution size factors (left) or spike-in size factors (right). Cells are stratified by the ligand affinity and colored by the time after stimulation." width="672" />
+<img src="P2_W03.normalization_files/figure-html/norm-effect-malat-1.png" alt="Distribution of log-normalized expression values for _Malat1_ after normalization with the deconvolution size factors (left) or spike-in size factors (right). Cells are stratified by the ligand affinity and colored by the time after stimulation." width="672" />
 <p class="caption">
 Figure 7.4: Distribution of log-normalized expression values for <em>Malat1</em> after normalization with the deconvolution size factors (left) or spike-in size factors (right). Cells are stratified by the ligand affinity and colored by the time after stimulation.
 </p>
@@ -949,7 +949,7 @@ This typically manifests as trajectories correlated strongly with library size e
 <a class="sourceLine" id="cb139-16" data-line-number="16">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb139-17" data-line-number="17">)</a></code></pre></div>
 <div class="figure"><span id="fig:cellbench-lognorm-fail"></span>
-<img src="P2_W03.normalization_files/figure-html/cellbench-lognorm-fail-1.svg" alt="PCA plot of all pool-and-split libraries in the SORT-seq CellBench data, computed from the log-normalized expression values with library size-derived size factors. Each point represents a library and is colored by the mixing ratio used to construct it (left) or by the size factor (right)." width="672" />
+<img src="P2_W03.normalization_files/figure-html/cellbench-lognorm-fail-1.png" alt="PCA plot of all pool-and-split libraries in the SORT-seq CellBench data, computed from the log-normalized expression values with library size-derived size factors. Each point represents a library and is colored by the mixing ratio used to construct it (left) or by the size factor (right)." width="672" />
 <p class="caption">
 Figure 7.5: PCA plot of all pool-and-split libraries in the SORT-seq CellBench data, computed from the log-normalized expression values with library size-derived size factors. Each point represents a library and is colored by the mixing ratio used to construct it (left) or by the size factor (right).
 </p>
@@ -968,7 +968,7 @@ The log-transformation is still necessary but no longer introduces a shift in th
 <a class="sourceLine" id="cb140-6" data-line-number="6">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb140-7" data-line-number="7">)</a></code></pre></div>
 <div class="figure"><span id="fig:cellbench-lognorm-downsample"></span>
-<img src="P2_W03.normalization_files/figure-html/cellbench-lognorm-downsample-1.svg" alt="PCA plot of pool-and-split libraries in the SORT-seq CellBench data, computed from the log-transformed counts after downsampling in proportion to the library size factors. Each point represents a library and is colored by the mixing ratio used to construct it (left) or by the size factor (right)." width="672" />
+<img src="P2_W03.normalization_files/figure-html/cellbench-lognorm-downsample-1.png" alt="PCA plot of pool-and-split libraries in the SORT-seq CellBench data, computed from the log-transformed counts after downsampling in proportion to the library size factors. Each point represents a library and is colored by the mixing ratio used to construct it (left) or by the size factor (right)." width="672" />
 <p class="caption">
 Figure 7.6: PCA plot of pool-and-split libraries in the SORT-seq CellBench data, computed from the log-transformed counts after downsampling in proportion to the library size factors. Each point represents a library and is colored by the mixing ratio used to construct it (left) or by the size factor (right).
 </p>
@@ -1013,8 +1013,8 @@ other attached packages:
  [7] SingleCellExperiment_1.9.1  SummarizedExperiment_1.17.1 DelayedArray_0.13.2        
 [10] BiocParallel_1.21.2         matrixStats_0.55.0          Biobase_2.47.2             
 [13] GenomicRanges_1.39.1        GenomeInfoDb_1.23.1         IRanges_2.21.2             
-[16] S4Vectors_0.25.8            BiocGenerics_0.33.0         BiocStyle_2.15.3           
-[19] OSCAUtils_0.0.1            
+[16] S4Vectors_0.25.8            BiocGenerics_0.33.0         Cairo_1.5-10               
+[19] BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1              XVector_0.27.0               

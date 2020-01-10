@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -794,7 +794,7 @@ Ideally, each cell should exhibit a high score in one label relative to all of t
 This is largely the case for monocytes and B cells, whereas we see more ambiguity between CD4<sup>+</sup> and CD8<sup>+</sup> T cells (and to a lesser extent, NK cells).</p>
 <div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" data-line-number="1"><span class="kw">plotScoreHeatmap</span>(pred)</a></code></pre></div>
 <div class="figure"><span id="fig:singler-heat-pbmc"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/singler-heat-pbmc-1.svg" alt="Heatmap of the assignment score for each cell (column) and label (row). Scores are shown before any fine-tuning and are normalized to [0, 1] within each cell." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/singler-heat-pbmc-1.png" alt="Heatmap of the assignment score for each cell (column) and label (row). Scores are shown before any fine-tuning and are normalized to [0, 1] within each cell." width="672" />
 <p class="caption">
 Figure 12.1: Heatmap of the assignment score for each cell (column) and label (row). Scores are shown before any fine-tuning and are normalized to [0, 1] within each cell.
 </p>
@@ -808,7 +808,7 @@ If necessary, more control over the pruning can be achieved by supplying custom 
 <pre><code>## [1] 81</code></pre>
 <div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb354-1" data-line-number="1"><span class="kw">plotScoreDistribution</span>(pred)</a></code></pre></div>
 <div class="figure"><span id="fig:singler-dist-pbmc"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/singler-dist-pbmc-1.svg" alt="Distribution of the per-cell $\Delta_{med}$ for each label. Each panel corresponds to one label and stratifies the population into cells that were assigned to that label and not pruned; cells that were assigned to that label and pruned out; and cells that were not assigned to that label." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/singler-dist-pbmc-1.png" alt="Distribution of the per-cell $\Delta_{med}$ for each label. Each panel corresponds to one label and stratifies the population into cells that were assigned to that label and not pruned; cells that were assigned to that label and pruned out; and cells that were not assigned to that label." width="672" />
 <p class="caption">
 Figure 12.2: Distribution of the per-cell <span class="math inline">\(\Delta_{med}\)</span> for each label. Each panel corresponds to one label and stratifies the population into cells that were assigned to that label and not pruned; cells that were assigned to that label and pruned out; and cells that were not assigned to that label.
 </p>
@@ -824,7 +824,7 @@ We attribute this to the presence of other factors of heterogeneity within the T
 <a class="sourceLine" id="cb355-4" data-line-number="4"><span class="kw">library</span>(pheatmap)</a>
 <a class="sourceLine" id="cb355-5" data-line-number="5"><span class="kw">pheatmap</span>(<span class="kw">log2</span>(tab<span class="op">+</span><span class="dv">10</span>), <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:singler-cluster"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/singler-cluster-1.svg" alt="Heatmap of the distribution of cells across labels and clusters in the 10X PBMC dataset. Color scale is reported in the log~10~-number of cells for each cluster-label combination." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/singler-cluster-1.png" alt="Heatmap of the distribution of cells across labels and clusters in the 10X PBMC dataset. Color scale is reported in the log~10~-number of cells for each cluster-label combination." width="672" />
 <p class="caption">
 Figure 12.3: Heatmap of the distribution of cells across labels and clusters in the 10X PBMC dataset. Color scale is reported in the log<sub>10</sub>-number of cells for each cluster-label combination.
 </p>
@@ -967,7 +967,7 @@ We see strong consistency between the two sets of labels (Figure <a href="cell-t
 <a class="sourceLine" id="cb364-2" data-line-number="2"><span class="kw">library</span>(pheatmap)</a>
 <a class="sourceLine" id="cb364-3" data-line-number="3"><span class="kw">pheatmap</span>(<span class="kw">log2</span>(tab<span class="op">+</span><span class="dv">10</span>), <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">101</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:singler-comp-pancreas"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/singler-comp-pancreas-1.svg" alt="Heatmap of the confusion matrix between the predicted labels (rows) and the independently defined labels (columns) in the Segerstolpe dataset. The color is proportinal to the log-transformed number of cells with a given combination of labels from each set." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/singler-comp-pancreas-1.png" alt="Heatmap of the confusion matrix between the predicted labels (rows) and the independently defined labels (columns) in the Segerstolpe dataset. The color is proportinal to the log-transformed number of cells with a given combination of labels from each set." width="672" />
 <p class="caption">
 Figure 12.4: Heatmap of the confusion matrix between the predicted labels (rows) and the independently defined labels (columns) in the Segerstolpe dataset. The color is proportinal to the log-transformed number of cells with a given combination of labels from each set.
 </p>
@@ -1119,7 +1119,7 @@ The example below identifies small outlier <span class="math inline">\(\Delta_{A
 <a class="sourceLine" id="cb376-2" data-line-number="2"><span class="kw">boxplot</span>(<span class="kw">split</span>(deltas, new.labels), <span class="dt">las=</span><span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb376-3" data-line-number="3"><span class="kw">points</span>(<span class="kw">attr</span>(discard, <span class="st">&quot;thresholds&quot;</span>)[<span class="dv">1</span>,], <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">4</span>, <span class="dt">cex=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:aucell-boxplots"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/aucell-boxplots-1.svg" alt="Distribution of differences between the maximum and median AUCs for each cell, stratified by the assigned label. The red cross indicates the threshold below which outliers are pruned." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/aucell-boxplots-1.png" alt="Distribution of differences between the maximum and median AUCs for each cell, stratified by the assigned label. The red cross indicates the threshold below which outliers are pruned." width="672" />
 <p class="caption">
 Figure 12.5: Distribution of differences between the maximum and median AUCs for each cell, stratified by the assigned label. The red cross indicates the threshold below which outliers are pruned.
 </p>
@@ -1163,7 +1163,7 @@ For example, applying all of the MSigDB signatures on the Muraro dataset is rath
 <a class="sourceLine" id="cb378-20" data-line-number="20"></a>
 <a class="sourceLine" id="cb378-21" data-line-number="21">gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(fullheat[[<span class="dv">4</span>]], subheat[[<span class="dv">4</span>]])</a></code></pre></div>
 <div class="figure"><span id="fig:aucell-muraro-heat"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/aucell-muraro-heat-1.svg" alt="Heatmaps of the log-number of cells with each combination of known labels (columns) and assigned MSigDB signatures (rows) in the Muraro data set. The signature assigned to each cell was defined as that with the highest AUC across all (top) or all pancreas-related signatures (bottom)." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/aucell-muraro-heat-1.png" alt="Heatmaps of the log-number of cells with each combination of known labels (columns) and assigned MSigDB signatures (rows) in the Muraro data set. The signature assigned to each cell was defined as that with the highest AUC across all (top) or all pancreas-related signatures (bottom)." width="672" />
 <p class="caption">
 Figure 12.6: Heatmaps of the log-number of cells with each combination of known labels (columns) and assigned MSigDB signatures (rows) in the Muraro data set. The signature assigned to each cell was defined as that with the highest AUC across all (top) or all pancreas-related signatures (bottom).
 </p>
@@ -1276,7 +1276,7 @@ Given that this is a mammary gland experiment, we might guess that cluster 2 con
 Indeed, a closer examination of the marker list indicates that this cluster upregulates milk proteins <em>Csn2</em> and <em>Csn3</em> (Figure <a href="#fig:violin-milk"><strong>??</strong></a>).</p>
 <div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.mam, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;Csn2&quot;</span>, <span class="st">&quot;Csn3&quot;</span>), </a>
 <a class="sourceLine" id="cb385-2" data-line-number="2">    <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
-<p><img src="P2_W08.cell-annotation_files/figure-html/violin-milk-1.svg" width="672" /></p>
+<p><img src="P2_W08.cell-annotation_files/figure-html/violin-milk-1.png" width="672" /></p>
 <p>Further inspection of interesting GO terms is achieved by extracting the relevant genes.
 This is usually desirable to confirm that the interpretation of the annotated biological process is appropriate.
 Many terms have overlapping gene sets, so a term may only be highly ranked because it shares genes with a more relevant term that represents the active pathway.</p>
@@ -1332,7 +1332,7 @@ This is less sensitive to the behavior of other genes in that cell (aside from c
 For example, we observe that cluster 2 has the highest average expression for the triacylglycerol biosynthesis GO term (Figure <a href="cell-type-annotation.html#fig:lipid-synth-violin">12.7</a>), consistent with the proposed identity of those cells.</p>
 <div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="kw">plotColData</span>(sce.mam, <span class="dt">y=</span><span class="kw">I</span>(aggregated[<span class="st">&quot;GO:0019432&quot;</span>,]), <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:lipid-synth-violin"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/lipid-synth-violin-1.svg" alt="Distribution of average log-normalized expression for genes involved in triacylglycerol biosynthesis, for all cells in each cluster of the mammary gland dataset." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/lipid-synth-violin-1.png" alt="Distribution of average log-normalized expression for genes involved in triacylglycerol biosynthesis, for all cells in each cluster of the mammary gland dataset." width="672" />
 <p class="caption">
 Figure 12.7: Distribution of average log-normalized expression for genes involved in triacylglycerol biosynthesis, for all cells in each cluster of the mammary gland dataset.
 </p>
@@ -1344,7 +1344,7 @@ This is not uncommon for gene sets that contain both positive and negative regul
 <div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="co"># Choose the top-ranking gene in GO:0019432.</span></a>
 <a class="sourceLine" id="cb393-2" data-line-number="2"><span class="kw">plotExpression</span>(sce.mam, <span class="st">&quot;Thrsp&quot;</span>, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:thrsp-violin"></span>
-<img src="P2_W08.cell-annotation_files/figure-html/thrsp-violin-1.svg" alt="Distribution of log-normalized expression values for _Thrsp_ across all cells in each cluster of the mammary gland dataset." width="672" />
+<img src="P2_W08.cell-annotation_files/figure-html/thrsp-violin-1.png" alt="Distribution of log-normalized expression values for _Thrsp_ across all cells in each cluster of the mammary gland dataset." width="672" />
 <p class="caption">
 Figure 12.8: Distribution of log-normalized expression values for <em>Thrsp</em> across all cells in each cluster of the mammary gland dataset.
 </p>
@@ -1388,7 +1388,7 @@ other attached packages:
 [25] DelayedArray_0.13.2         BiocParallel_1.21.2         matrixStats_0.55.0         
 [28] Biobase_2.47.2              GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        
 [31] IRanges_2.21.2              S4Vectors_0.25.8            BiocGenerics_0.33.0        
-[34] BiocStyle_2.15.3            OSCAUtils_0.0.1            
+[34] Cairo_1.5-10                BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1              XVector_0.27.0               

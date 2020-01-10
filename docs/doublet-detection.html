@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -810,7 +810,7 @@ We see that every gene detected in this cluster is also expressed in either of t
 <a class="sourceLine" id="cb545-6" data-line-number="6"><span class="kw">plotHeatmap</span>(sce.mam, <span class="dt">order_columns_by=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">features=</span>chosen, </a>
 <a class="sourceLine" id="cb545-7" data-line-number="7">    <span class="dt">center=</span><span class="ot">TRUE</span>, <span class="dt">symmetric=</span><span class="ot">TRUE</span>, <span class="dt">zlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:heatclust"></span>
-<img src="P2_W11.doublet-detection_files/figure-html/heatclust-1.svg" alt="Heatmap of mean-centred and normalized log-expression values for the top set of markers for cluster 6 in the mammary gland dataset. Column colours represent the cluster to which each cell is assigned, as indicated by the legend." width="672" />
+<img src="P2_W11.doublet-detection_files/figure-html/heatclust-1.png" alt="Heatmap of mean-centred and normalized log-expression values for the top set of markers for cluster 6 in the mammary gland dataset. Column colours represent the cluster to which each cell is assigned, as indicated by the legend." width="672" />
 <p class="caption">
 Figure 15.1: Heatmap of mean-centred and normalized log-expression values for the top set of markers for cluster 6 in the mammary gland dataset. Column colours represent the cluster to which each cell is assigned, as indicated by the legend.
 </p>
@@ -820,7 +820,7 @@ Indeed, no cell type is known to strongly express both of these genes at the sam
 <div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb546-1" data-line-number="1"><span class="kw">plotExpression</span>(sce.mam, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;Acta2&quot;</span>, <span class="st">&quot;Csn2&quot;</span>), </a>
 <a class="sourceLine" id="cb546-2" data-line-number="2">    <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:markerexprs"></span>
-<img src="P2_W11.doublet-detection_files/figure-html/markerexprs-1.svg" alt="Distribution of log-normalized expression values for _Acta2_ and _Csn2_ in each cluster. Each point represents a cell." width="960" />
+<img src="P2_W11.doublet-detection_files/figure-html/markerexprs-1.png" alt="Distribution of log-normalized expression values for _Acta2_ and _Csn2_ in each cluster. Each point represents a cell." width="960" />
 <p class="caption">
 Figure 15.2: Distribution of log-normalized expression values for <em>Acta2</em> and <em>Csn2</em> in each cluster. Each point represents a cell.
 </p>
@@ -861,7 +861,7 @@ To speed up the density calculations, <code>doubletCells()</code> will perform a
 <div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb549-1" data-line-number="1">sce.mam<span class="op">$</span>DoubletScore &lt;-<span class="st"> </span><span class="kw">log10</span>(dbl.dens<span class="op">+</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb549-2" data-line-number="2"><span class="kw">plotTSNE</span>(sce.mam, <span class="dt">colour_by=</span><span class="st">&quot;DoubletScore&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:denstsne"></span>
-<img src="P2_W11.doublet-detection_files/figure-html/denstsne-1.svg" alt="t-SNE plot of the mammary gland data set. Each point is a cell coloured according to its doublet density." width="672" />
+<img src="P2_W11.doublet-detection_files/figure-html/denstsne-1.png" alt="t-SNE plot of the mammary gland data set. Each point is a cell coloured according to its doublet density." width="672" />
 <p class="caption">
 Figure 15.3: t-SNE plot of the mammary gland data set. Each point is a cell coloured according to its doublet density.
 </p>
@@ -869,7 +869,7 @@ Figure 15.3: t-SNE plot of the mammary gland data set. Each point is a cell colo
 <p>From the clustering information, we see that the affected cells belong to the same cluster that was identified using <code>doubletCluster()</code> (Figure <a href="doublet-detection.html#fig:densclust">15.4</a>), which is reassuring.</p>
 <div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb550-1" data-line-number="1"><span class="kw">plotColData</span>(sce.mam, <span class="dt">x=</span><span class="st">&quot;cluster&quot;</span>, <span class="dt">y=</span><span class="st">&quot;DoubletScore&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:densclust"></span>
-<img src="P2_W11.doublet-detection_files/figure-html/densclust-1.svg" alt="Distribution of doublet scores for each cluster in the mammary gland data set. Each point is a cell." width="672" />
+<img src="P2_W11.doublet-detection_files/figure-html/densclust-1.png" alt="Distribution of doublet scores for each cluster in the mammary gland data set. Each point is a cell." width="672" />
 <p class="caption">
 Figure 15.4: Distribution of doublet scores for each cluster in the mammary gland data set. Each point is a cell.
 </p>
@@ -936,7 +936,7 @@ other attached packages:
  [7] DelayedArray_0.13.2         BiocParallel_1.21.2         matrixStats_0.55.0         
 [10] Biobase_2.47.2              GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        
 [13] IRanges_2.21.2              S4Vectors_0.25.8            BiocGenerics_0.33.0        
-[16] BiocStyle_2.15.3            OSCAUtils_0.0.1            
+[16] Cairo_1.5-10                BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
  [1] viridis_0.5.1            edgeR_3.29.0             viridisLite_0.3.0       

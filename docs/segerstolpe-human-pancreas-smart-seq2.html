@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -730,7 +730,7 @@ For some batches that seem to have a majority of low-quality cells (Figure <a hr
 <a class="sourceLine" id="cb899-14" data-line-number="14">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb899-15" data-line-number="15">)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-seger-qc-dist"></span>
-<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-qc-dist-1.svg" alt="Distribution of each QC metric across cells from each donor of the Segerstolpe pancreas dataset. Each point represents a cell and is colored according to whether that cell was discarded." width="960" />
+<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-qc-dist-1.png" alt="Distribution of each QC metric across cells from each donor of the Segerstolpe pancreas dataset. Each point represents a cell and is colored according to whether that cell was discarded." width="960" />
 <p class="caption">
 Figure 31.1: Distribution of each QC metric across cells from each donor of the Segerstolpe pancreas dataset. Each point represents a cell and is colored according to whether that cell was discarded.
 </p>
@@ -753,7 +753,7 @@ Figure 31.1: Distribution of each QC metric across cells from each donor of the 
 <div class="sourceCode" id="cb905"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb905-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.seger), <span class="kw">sizeFactors</span>(sce.seger), <span class="dt">pch=</span><span class="dv">16</span>,</a>
 <a class="sourceLine" id="cb905-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-seger-norm"></span>
-<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-norm-1.svg" alt="Relationship between the library size factors and the deconvolution size factors in the Segerstolpe pancreas dataset." width="672" />
+<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-norm-1.png" alt="Relationship between the library size factors and the deconvolution size factors in the Segerstolpe pancreas dataset." width="672" />
 <p class="caption">
 Figure 31.2: Relationship between the library size factors and the deconvolution size factors in the Segerstolpe pancreas dataset.
 </p>
@@ -778,7 +778,7 @@ Donor AZ also has very low spike-in counts and is subsequently ignored.</p>
 <a class="sourceLine" id="cb907-9" data-line-number="9">    <span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb907-10" data-line-number="10">}</a></code></pre></div>
 <div class="figure"><span id="fig:unref-seger-variance"></span>
-<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-variance-1.svg" alt="Per-gene variance as a function of the mean for the log-expression values in the Grun pancreas dataset. Each point represents a gene (black) with the mean-variance trend (blue) fitted to the spike-in transcripts (red) separately for each donor." width="672" />
+<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-variance-1.png" alt="Per-gene variance as a function of the mean for the log-expression values in the Grun pancreas dataset. Each point represents a gene (black) with the mean-variance trend (blue) fitted to the spike-in transcripts (red) separately for each donor." width="672" />
 <p class="caption">
 Figure 31.3: Per-gene variance as a function of the mean for the log-expression values in the Grun pancreas dataset. Each point represents a gene (black) with the mean-variance trend (blue) fitted to the spike-in transcripts (red) separately for each donor.
 </p>
@@ -801,7 +801,7 @@ Figure 31.3: Per-gene variance as a function of the mean for the log-expression 
 <a class="sourceLine" id="cb910-2" data-line-number="2"><span class="kw">library</span>(pheatmap)</a>
 <a class="sourceLine" id="cb910-3" data-line-number="3"><span class="kw">pheatmap</span>(<span class="kw">log10</span>(tab<span class="op">+</span><span class="dv">10</span>), <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">100</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:unref-seger-heat-1"></span>
-<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-heat-1-1.svg" alt="Heatmap of the frequency of cells from each donor in each cluster." width="672" />
+<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-heat-1-1.png" alt="Heatmap of the frequency of cells from each donor in each cluster." width="672" />
 <p class="caption">
 Figure 31.4: Heatmap of the frequency of cells from each donor in each cluster.
 </p>
@@ -809,7 +809,7 @@ Figure 31.4: Heatmap of the frequency of cells from each donor in each cluster.
 <div class="sourceCode" id="cb911"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb911-1" data-line-number="1">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Cluster=</span>sce.seger<span class="op">$</span>cluster, <span class="dt">Donor=</span>sce.seger<span class="op">$</span>CellType)</a>
 <a class="sourceLine" id="cb911-2" data-line-number="2"><span class="kw">pheatmap</span>(<span class="kw">log10</span>(tab<span class="op">+</span><span class="dv">10</span>), <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">viridis</span>(<span class="dv">100</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:unref-seger-heat-2"></span>
-<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-heat-2-1.svg" alt="Heatmap of the frequency of cells from each cell type label in each cluster." width="672" />
+<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-seger-heat-2-1.png" alt="Heatmap of the frequency of cells from each cell type label in each cluster." width="672" />
 <p class="caption">
 Figure 31.5: Heatmap of the frequency of cells from each cell type label in each cluster.
 </p>
@@ -820,7 +820,7 @@ Figure 31.5: Heatmap of the frequency of cells from each cell type label in each
 <a class="sourceLine" id="cb912-4" data-line-number="4">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb912-5" data-line-number="5">)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-grun-tsne"></span>
-<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-grun-tsne-1.svg" alt="Obligatory $t$-SNE plots of the Segerstolpe pancreas dataset. Each point represents a cell that is colored by cluster (left) or batch (right)." width="672" />
+<img src="P3_W09.segerstolpe-pancreas_files/figure-html/unref-grun-tsne-1.png" alt="Obligatory $t$-SNE plots of the Segerstolpe pancreas dataset. Each point represents a cell that is colored by cluster (left) or batch (right)." width="672" />
 <p class="caption">
 Figure 28.3: Obligatory <span class="math inline">\(t\)</span>-SNE plots of the Segerstolpe pancreas dataset. Each point represents a cell that is colored by cluster (left) or batch (right).
 </p>
@@ -858,7 +858,7 @@ other attached packages:
 [16] DelayedArray_0.13.2         BiocParallel_1.21.2         matrixStats_0.55.0         
 [19] Biobase_2.47.2              GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        
 [22] IRanges_2.21.2              S4Vectors_0.25.8            BiocGenerics_0.33.0        
-[25] BiocStyle_2.15.3            OSCAUtils_0.0.1            
+[25] Cairo_1.5-10                BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
   [1] Rtsne_0.15                    ggbeeswarm_0.6.0              colorspace_1.4-1             

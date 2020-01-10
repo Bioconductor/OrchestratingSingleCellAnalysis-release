@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -727,7 +727,7 @@ The library sizes are unusually low for many plates of micro-dissected cells; th
 <a class="sourceLine" id="cb956-11" data-line-number="11">    <span class="dt">ncol=</span><span class="dv">1</span></a>
 <a class="sourceLine" id="cb956-12" data-line-number="12">)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-hgrun-qc-dist"></span>
-<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-qc-dist-1.svg" alt="Distribution of each QC metric across cells in the Grun HSC dataset. Each point represents a cell and is colored according to whether that cell was discarded." width="672" />
+<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-qc-dist-1.png" alt="Distribution of each QC metric across cells in the Grun HSC dataset. Each point represents a cell and is colored according to whether that cell was discarded." width="672" />
 <p class="caption">
 Figure 33.1: Distribution of each QC metric across cells in the Grun HSC dataset. Each point represents a cell and is colored according to whether that cell was discarded.
 </p>
@@ -747,7 +747,7 @@ Figure 33.1: Distribution of each QC metric across cells in the Grun HSC dataset
 <div class="sourceCode" id="cb960"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb960-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.grun.hsc), <span class="kw">sizeFactors</span>(sce.grun.hsc), <span class="dt">pch=</span><span class="dv">16</span>,</a>
 <a class="sourceLine" id="cb960-2" data-line-number="2">    <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-hgrun-norm"></span>
-<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-norm-1.svg" alt="Relationship between the library size factors and the deconvolution size factors in the Grun HSC dataset." width="672" />
+<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-norm-1.png" alt="Relationship between the library size factors and the deconvolution size factors in the Grun HSC dataset." width="672" />
 <p class="caption">
 Figure 33.2: Relationship between the library size factors and the deconvolution size factors in the Grun HSC dataset.
 </p>
@@ -766,7 +766,7 @@ We do not block on sample here as we want to preserve any difference between the
 <a class="sourceLine" id="cb962-3" data-line-number="3">curfit &lt;-<span class="st"> </span><span class="kw">metadata</span>(dec.grun.hsc)</a>
 <a class="sourceLine" id="cb962-4" data-line-number="4"><span class="kw">curve</span>(curfit<span class="op">$</span><span class="kw">trend</span>(x), <span class="dt">col=</span><span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-hgrun-var"></span>
-<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-var-1.svg" alt="Per-gene variance as a function of the mean for the log-expression values in the Grun HSC dataset. Each point represents a gene (black) with the mean-variance trend (blue) fitted to the simulated Poisson-distributed noise." width="672" />
+<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-var-1.png" alt="Per-gene variance as a function of the mean for the log-expression values in the Grun HSC dataset. Each point represents a gene (black) with the mean-variance trend (blue) fitted to the simulated Poisson-distributed noise." width="672" />
 <p class="caption">
 Figure 33.3: Per-gene variance as a function of the mean for the log-expression values in the Grun HSC dataset. Each point represents a gene (black) with the mean-variance trend (blue) fitted to the simulated Poisson-distributed noise.
 </p>
@@ -796,7 +796,7 @@ Figure 33.3: Per-gene variance as a function of the mean for the log-expression 
 <a class="sourceLine" id="cb969-5" data-line-number="5">    <span class="dt">ncol=</span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb969-6" data-line-number="6">)</a></code></pre></div>
 <div class="figure"><span id="fig:unref-hgrun-tsne"></span>
-<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-tsne-1.svg" alt="Obligatory $t$-SNE plot of the Grun HSC dataset, where each point represents a cell and is colored according to the assigned cluster (left) or extraction protocol (right)." width="960" />
+<img src="P3_W11.grun-hsc_files/figure-html/unref-hgrun-tsne-1.png" alt="Obligatory $t$-SNE plot of the Grun HSC dataset, where each point represents a cell and is colored according to the assigned cluster (left) or extraction protocol (right)." width="960" />
 <p class="caption">
 Figure 33.4: Obligatory <span class="math inline">\(t\)</span>-SNE plot of the Grun HSC dataset, where each point represents a cell and is colored according to the assigned cluster (left) or extraction protocol (right).
 </p>
@@ -817,7 +817,7 @@ Upregulation of <em>Camp</em>, <em>Lcn2</em>, <em>Ltf</em> and lysozyme genes in
 <a class="sourceLine" id="cb971-6" data-line-number="6"><span class="kw">library</span>(pheatmap)</a>
 <a class="sourceLine" id="cb971-7" data-line-number="7"><span class="kw">pheatmap</span>(aucs, <span class="dt">color=</span>viridis<span class="op">::</span><span class="kw">plasma</span>(<span class="dv">100</span>))</a></code></pre></div>
 <div class="figure"><span id="fig:unref-heat-hgrun-markers"></span>
-<img src="P3_W11.grun-hsc_files/figure-html/unref-heat-hgrun-markers-1.svg" alt="Heatmap of the AUCs for the top marker genes in cluster 6 compared to all other clusters in the Grun HSC dataset." width="672" />
+<img src="P3_W11.grun-hsc_files/figure-html/unref-heat-hgrun-markers-1.png" alt="Heatmap of the AUCs for the top marker genes in cluster 6 compared to all other clusters in the Grun HSC dataset." width="672" />
 <p class="caption">
 Figure 33.5: Heatmap of the AUCs for the top marker genes in cluster 6 compared to all other clusters in the Grun HSC dataset.
 </p>
@@ -853,8 +853,8 @@ other attached packages:
 [13] SingleCellExperiment_1.9.1  SummarizedExperiment_1.17.1 DelayedArray_0.13.2        
 [16] BiocParallel_1.21.2         matrixStats_0.55.0          Biobase_2.47.2             
 [19] GenomicRanges_1.39.1        GenomeInfoDb_1.23.1         IRanges_2.21.2             
-[22] S4Vectors_0.25.8            BiocGenerics_0.33.0         BiocStyle_2.15.3           
-[25] OSCAUtils_0.0.1            
+[22] S4Vectors_0.25.8            BiocGenerics_0.33.0         Cairo_1.5-10               
+[25] BiocStyle_2.15.3            OSCAUtils_0.0.1            
 
 loaded via a namespace (and not attached):
   [1] Rtsne_0.15                    ggbeeswarm_0.6.0              colorspace_1.4-1             
