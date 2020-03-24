@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Data Infrastructure | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Data Infrastructure | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-09" />
+<meta name="date" content="2020-03-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,67 +52,41 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  { background-color: #f8f8f8; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } /* Alert */
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #c4a000; } /* Attribute */
-code span.bn { color: #0000cf; } /* BaseN */
-code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4e9a06; } /* Char */
-code span.cn { color: #000000; } /* Constant */
-code span.co { color: #8f5902; font-style: italic; } /* Comment */
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code span.dt { color: #204a87; } /* DataType */
-code span.dv { color: #0000cf; } /* DecVal */
-code span.er { color: #a40000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #0000cf; } /* Float */
-code span.fu { color: #000000; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code span.ot { color: #8f5902; } /* Other */
-code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code span.sc { color: #000000; } /* SpecialChar */
-code span.ss { color: #4e9a06; } /* SpecialString */
-code span.st { color: #4e9a06; } /* String */
-code span.va { color: #000000; } /* Variable */
-code span.vs { color: #4e9a06; } /* VerbatimString */
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -167,20 +141,23 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="data-infrastructure.html"><a href="data-infrastructure.html"><i class="fa fa-check"></i><b>4</b> Data Infrastructure</a><ul>
-<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#prerequisites"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
-<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-singlecellexperiment-class"><i class="fa fa-check"></i><b>4.2</b> The <em>SingleCellExperiment</em> Class</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#primary-data-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Primary Data: The <code>assays</code> Slot</a></li>
-<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#extending-the-assays-slot"><i class="fa fa-check"></i><b>4.2.2</b> Extending the <code>assays</code> Slot</a></li>
-<li class="chapter" data-level="4.2.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#column-metadata-coldata-slot"><i class="fa fa-check"></i><b>4.2.3</b> Column (Meta)Data: <code>colData</code> Slot</a></li>
-<li class="chapter" data-level="4.2.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#feature-metadata-rowdatarowranges"><i class="fa fa-check"></i><b>4.2.4</b> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></a></li>
-<li class="chapter" data-level="4.2.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors-slot-sizefactors"><i class="fa fa-check"></i><b>4.2.5</b> Size Factors Slot: <code>sizeFactors</code></a></li>
+<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#background"><i class="fa fa-check"></i><b>4.1</b> Background</a></li>
+<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#storing-primary-experimental-data"><i class="fa fa-check"></i><b>4.2</b> Storing primary experimental data</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#filling-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Filling the <code>assays</code> slot</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#adding-more-assays"><i class="fa fa-check"></i><b>4.2.2</b> Adding more <code>assays</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#a-brief-recap-from-se-to-sce"><i class="fa fa-check"></i><b>4.3</b> A Brief Recap: From <code>se</code> to <code>sce</code></a></li>
-<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-reduceddims-slot"><i class="fa fa-check"></i><b>4.4</b> The <code>reducedDims</code> Slot</a></li>
-<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-metadata-slot"><i class="fa fa-check"></i><b>4.5</b> The <code>metadata</code> Slot</a></li>
-<li class="chapter" data-level="4.6" data-path="data-infrastructure.html"><a href="data-infrastructure.html#about-spike-ins"><i class="fa fa-check"></i><b>4.6</b> About Spike-Ins</a></li>
-<li class="chapter" data-level="4.7" data-path="data-infrastructure.html"><a href="data-infrastructure.html#recording-analyses-in-singlecellexperiment"><i class="fa fa-check"></i><b>4.7</b> Recording Analyses in <em>SingleCellExperiment</em></a></li>
-<li class="chapter" data-level="4.8" data-path="data-infrastructure.html"><a href="data-infrastructure.html#conclusion"><i class="fa fa-check"></i><b>4.8</b> Conclusion</a></li>
+<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#handling-metadata"><i class="fa fa-check"></i><b>4.3</b> Handling metadata</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#on-the-columns"><i class="fa fa-check"></i><b>4.3.1</b> On the columns</a></li>
+<li class="chapter" data-level="4.3.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#on-the-rows"><i class="fa fa-check"></i><b>4.3.2</b> On the rows</a></li>
+<li class="chapter" data-level="4.3.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#other-metadata"><i class="fa fa-check"></i><b>4.3.3</b> Other metadata</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#single-cell-specific-fields"><i class="fa fa-check"></i><b>4.4</b> Single-cell-specific fields</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#background-1"><i class="fa fa-check"></i><b>4.4.1</b> Background</a></li>
+<li class="chapter" data-level="4.4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#dimensionality-reduction-results"><i class="fa fa-check"></i><b>4.4.2</b> Dimensionality reduction results</a></li>
+<li class="chapter" data-level="4.4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#alternative-experiments"><i class="fa fa-check"></i><b>4.4.3</b> Alternative Experiments</a></li>
+<li class="chapter" data-level="4.4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors"><i class="fa fa-check"></i><b>4.4.4</b> Size factors</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#conclusion"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
 </ul></li>
 <li class="part"><span><b>II Focus Topics</b></span></li>
 <li class="chapter" data-level="5" data-path="overview.html"><a href="overview.html"><i class="fa fa-check"></i><b>5</b> Overview</a><ul>
@@ -201,7 +178,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6.4" data-path="quality-control.html"><a href="quality-control.html#quality-control-plots"><i class="fa fa-check"></i><b>6.4</b> Checking diagnostic plots</a></li>
 <li class="chapter" data-level="6.5" data-path="quality-control.html"><a href="quality-control.html#qc-droplets"><i class="fa fa-check"></i><b>6.5</b> Cell calling for droplet data</a><ul>
-<li class="chapter" data-level="6.5.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>6.5.1</b> Background</a></li>
+<li class="chapter" data-level="6.5.1" data-path="quality-control.html"><a href="quality-control.html#background-2"><i class="fa fa-check"></i><b>6.5.1</b> Background</a></li>
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
@@ -236,7 +213,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.3.4" data-path="feature-selection.html"><a href="feature-selection.html#feature-selection-positive"><i class="fa fa-check"></i><b>8.3.4</b> Keeping all genes above the trend</a></li>
 </ul></li>
 <li class="chapter" data-level="8.4" data-path="feature-selection.html"><a href="feature-selection.html#apriori-hvgs"><i class="fa fa-check"></i><b>8.4</b> Selecting <em>a priori</em> genes of interest</a></li>
-<li class="chapter" data-level="8.5" data-path="feature-selection.html"><a href="feature-selection.html#putting-it-all-together"><i class="fa fa-check"></i><b>8.5</b> Putting it all together</a></li>
+<li class="chapter" data-level="8.5" data-path="feature-selection.html"><a href="feature-selection.html#feature-selection-subsetting"><i class="fa fa-check"></i><b>8.5</b> Putting it all together</a></li>
 <li class="chapter" data-level="" data-path="feature-selection.html"><a href="feature-selection.html#session-info-3"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html"><i class="fa fa-check"></i><b>9</b> Dimensionality reduction</a><ul>
@@ -249,12 +226,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.3.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#based-on-population-structure"><i class="fa fa-check"></i><b>9.3.4</b> Based on population structure</a></li>
 <li class="chapter" data-level="9.3.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#putting-it-together"><i class="fa fa-check"></i><b>9.3.5</b> Putting it together</a></li>
 </ul></li>
-<li class="chapter" data-level="9.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>9.4</b> Dimensionality reduction for visualization</a><ul>
-<li class="chapter" data-level="9.4.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#motivation-3"><i class="fa fa-check"></i><b>9.4.1</b> Motivation</a></li>
-<li class="chapter" data-level="9.4.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualizating-with-pca"><i class="fa fa-check"></i><b>9.4.2</b> Visualizating with PCA</a></li>
-<li class="chapter" data-level="9.4.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>9.4.3</b> <span class="math inline">\(t\)</span>-stochastic neighbor embedding</a></li>
-<li class="chapter" data-level="9.4.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>9.4.4</b> Uniform manifold approximation and projection</a></li>
-<li class="chapter" data-level="9.4.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualization-interpretation"><i class="fa fa-check"></i><b>9.4.5</b> Interpreting the plots</a></li>
+<li class="chapter" data-level="9.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#non-negative-matrix-factorization"><i class="fa fa-check"></i><b>9.4</b> Non-negative matrix factorization</a></li>
+<li class="chapter" data-level="9.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>9.5</b> Dimensionality reduction for visualization</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#motivation-3"><i class="fa fa-check"></i><b>9.5.1</b> Motivation</a></li>
+<li class="chapter" data-level="9.5.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualizing-with-pca"><i class="fa fa-check"></i><b>9.5.2</b> Visualizing with PCA</a></li>
+<li class="chapter" data-level="9.5.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>9.5.3</b> <span class="math inline">\(t\)</span>-stochastic neighbor embedding</a></li>
+<li class="chapter" data-level="9.5.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>9.5.4</b> Uniform manifold approximation and projection</a></li>
+<li class="chapter" data-level="9.5.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualization-interpretation"><i class="fa fa-check"></i><b>9.5.5</b> Interpreting the plots</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#session-info-4"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -262,18 +240,18 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="clustering.html"><a href="clustering.html#motivation-4"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
 <li class="chapter" data-level="10.2" data-path="clustering.html"><a href="clustering.html#what-is-the-true-clustering"><i class="fa fa-check"></i><b>10.2</b> What is the “true clustering”?</a></li>
 <li class="chapter" data-level="10.3" data-path="clustering.html"><a href="clustering.html#clustering-graph"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
-<li class="chapter" data-level="10.3.1" data-path="clustering.html"><a href="clustering.html#background-1"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
+<li class="chapter" data-level="10.3.1" data-path="clustering.html"><a href="clustering.html#background-3"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
 <li class="chapter" data-level="10.3.2" data-path="clustering.html"><a href="clustering.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
 <li class="chapter" data-level="10.3.3" data-path="clustering.html"><a href="clustering.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
 <li class="chapter" data-level="10.3.4" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
 </ul></li>
 <li class="chapter" data-level="10.4" data-path="clustering.html"><a href="clustering.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="clustering.html"><a href="clustering.html#background-2"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
+<li class="chapter" data-level="10.4.1" data-path="clustering.html"><a href="clustering.html#background-4"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
 <li class="chapter" data-level="10.4.2" data-path="clustering.html"><a href="clustering.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
 <li class="chapter" data-level="10.4.3" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
 </ul></li>
 <li class="chapter" data-level="10.5" data-path="clustering.html"><a href="clustering.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
-<li class="chapter" data-level="10.5.1" data-path="clustering.html"><a href="clustering.html#background-3"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
+<li class="chapter" data-level="10.5.1" data-path="clustering.html"><a href="clustering.html#background-5"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
 <li class="chapter" data-level="10.5.2" data-path="clustering.html"><a href="clustering.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
 <li class="chapter" data-level="10.5.3" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
 </ul></li>
@@ -340,7 +318,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#differential-expression-between-conditions"><i class="fa fa-check"></i><b>14.3</b> Differential expression between conditions</a><ul>
 <li class="chapter" data-level="14.3.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#creating-pseudo-bulk-samples"><i class="fa fa-check"></i><b>14.3.1</b> Creating pseudo-bulk samples</a></li>
 <li class="chapter" data-level="14.3.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#performing-the-de-analysis"><i class="fa fa-check"></i><b>14.3.2</b> Performing the DE analysis</a></li>
-<li class="chapter" data-level="14.3.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#putting-it-all-together-1"><i class="fa fa-check"></i><b>14.3.3</b> Putting it all together</a></li>
+<li class="chapter" data-level="14.3.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#putting-it-all-together"><i class="fa fa-check"></i><b>14.3.3</b> Putting it all together</a></li>
 </ul></li>
 <li class="chapter" data-level="14.4" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#differential-abundance"><i class="fa fa-check"></i><b>14.4</b> Differential abundance between conditions</a><ul>
 <li class="chapter" data-level="14.4.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#overview-4"><i class="fa fa-check"></i><b>14.4.1</b> Overview</a></li>
@@ -374,7 +352,22 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="cell-cycle-assignment.html"><a href="cell-cycle-assignment.html#session-info-11"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="17" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html"><i class="fa fa-check"></i><b>17</b> Trajectory Analysis</a><ul>
-<li class="chapter" data-level="" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#session-info-12"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="17.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#overview-6"><i class="fa fa-check"></i><b>17.1</b> Overview</a></li>
+<li class="chapter" data-level="17.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#obtaining-pseudo-times"><i class="fa fa-check"></i><b>17.2</b> Obtaining pseudo-times</a><ul>
+<li class="chapter" data-level="17.2.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#cluster-based-minimum-spanning-tree"><i class="fa fa-check"></i><b>17.2.1</b> Cluster-based minimum spanning tree</a></li>
+<li class="chapter" data-level="17.2.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#principal-curves"><i class="fa fa-check"></i><b>17.2.2</b> Principal curves</a></li>
+<li class="chapter" data-level="17.2.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#whatever-monocle-does-nowadays"><i class="fa fa-check"></i><b>17.2.3</b> Whatever monocle does nowadays</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#characterizing-trajectories"><i class="fa fa-check"></i><b>17.3</b> Characterizing trajectories</a><ul>
+<li class="chapter" data-level="17.3.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-along-a-trajectory"><i class="fa fa-check"></i><b>17.3.1</b> Changes along a trajectory</a></li>
+<li class="chapter" data-level="17.3.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-between-lineages"><i class="fa fa-check"></i><b>17.3.2</b> Changes between lineages</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#finding-the-root"><i class="fa fa-check"></i><b>17.4</b> Finding the root</a><ul>
+<li class="chapter" data-level="17.4.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#overview-7"><i class="fa fa-check"></i><b>17.4.1</b> Overview</a></li>
+<li class="chapter" data-level="17.4.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#entropy-based-methods"><i class="fa fa-check"></i><b>17.4.2</b> Entropy-based methods</a></li>
+<li class="chapter" data-level="17.4.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#rna-velocity"><i class="fa fa-check"></i><b>17.4.3</b> RNA velocity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#session-information"><i class="fa fa-check"></i>Session information</a></li>
 </ul></li>
 <li class="chapter" data-level="18" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html"><i class="fa fa-check"></i><b>18</b> Integrating with protein abundance</a><ul>
 <li class="chapter" data-level="18.1" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#motivation-11"><i class="fa fa-check"></i><b>18.1</b> Motivation</a></li>
@@ -389,32 +382,33 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="18.4.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-clustering"><i class="fa fa-check"></i><b>18.4.2</b> By combined clustering</a></li>
 <li class="chapter" data-level="18.4.3" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-differential-testing"><i class="fa fa-check"></i><b>18.4.3</b> By differential testing</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-12"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="19" data-path="repertoire-seq.html"><a href="repertoire-seq.html"><i class="fa fa-check"></i><b>19</b> Analyzing repertoire sequencing data</a><ul>
 <li class="chapter" data-level="19.1" data-path="repertoire-seq.html"><a href="repertoire-seq.html#motivation-12"><i class="fa fa-check"></i><b>19.1</b> Motivation</a></li>
 <li class="chapter" data-level="19.2" data-path="repertoire-seq.html"><a href="repertoire-seq.html#analyzing-the-t-cell-receptor-repertoire"><i class="fa fa-check"></i><b>19.2</b> Analyzing the T cell receptor repertoire</a><ul>
 <li class="chapter" data-level="19.2.1" data-path="repertoire-seq.html"><a href="repertoire-seq.html#data-processing"><i class="fa fa-check"></i><b>19.2.1</b> Data processing</a></li>
 <li class="chapter" data-level="19.2.2" data-path="repertoire-seq.html"><a href="repertoire-seq.html#basic-diagnostics"><i class="fa fa-check"></i><b>19.2.2</b> Basic diagnostics</a></li>
-<li class="chapter" data-level="19.2.3" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-clonal-expansion"><i class="fa fa-check"></i><b>19.2.3</b> Quantifying clonal expansion</a></li>
-<li class="chapter" data-level="19.2.4" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-gene-expression-and-properties"><i class="fa fa-check"></i><b>19.2.4</b> Quantifying gene expression and properties</a></li>
+<li class="chapter" data-level="19.2.3" data-path="repertoire-seq.html"><a href="repertoire-seq.html#complex-diagnostics"><i class="fa fa-check"></i><b>19.2.3</b> Complex diagnostics</a></li>
+<li class="chapter" data-level="19.2.4" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-clonal-expansion"><i class="fa fa-check"></i><b>19.2.4</b> Quantifying clonal expansion</a></li>
+<li class="chapter" data-level="19.2.5" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-gene-expression-and-properties"><i class="fa fa-check"></i><b>19.2.5</b> Quantifying gene expression and properties</a></li>
 </ul></li>
 <li class="chapter" data-level="19.3" data-path="repertoire-seq.html"><a href="repertoire-seq.html#analyzing-the-immunoglobulin-repertoire"><i class="fa fa-check"></i><b>19.3</b> Analyzing the immunoglobulin repertoire</a></li>
 <li class="chapter" data-level="19.4" data-path="repertoire-seq.html"><a href="repertoire-seq.html#multi-sample-analyses"><i class="fa fa-check"></i><b>19.4</b> Multi-sample analyses</a></li>
-<li class="chapter" data-level="" data-path="repertoire-seq.html"><a href="repertoire-seq.html#session-info-14"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="repertoire-seq.html"><a href="repertoire-seq.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="interactive-sharing.html"><a href="interactive-sharing.html"><i class="fa fa-check"></i><b>20</b> Interactive Interfaces and Sharing</a><ul>
+<li class="chapter" data-level="20" data-path="interactive-sharing.html"><a href="interactive-sharing.html"><i class="fa fa-check"></i><b>20</b> Interactive data exploration</a><ul>
 <li class="chapter" data-level="20.1" data-path="interactive-sharing.html"><a href="interactive-sharing.html#motivation-13"><i class="fa fa-check"></i><b>20.1</b> Motivation</a></li>
 <li class="chapter" data-level="20.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#interactive-quickstart"><i class="fa fa-check"></i><b>20.2</b> Quick start</a></li>
-<li class="chapter" data-level="20.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#isee-examples"><i class="fa fa-check"></i><b>20.3</b> Examples of usages for iSEE apps</a><ul>
+<li class="chapter" data-level="20.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#isee-examples"><i class="fa fa-check"></i><b>20.3</b> Usage examples</a><ul>
 <li class="chapter" data-level="20.3.1" data-path="interactive-sharing.html"><a href="interactive-sharing.html#quality-control-2"><i class="fa fa-check"></i><b>20.3.1</b> Quality control</a></li>
-<li class="chapter" data-level="20.3.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#annotation-and-identification-of-cell-populations"><i class="fa fa-check"></i><b>20.3.2</b> Annotation and identification of cell populations</a></li>
-<li class="chapter" data-level="20.3.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#collaborative-analysis"><i class="fa fa-check"></i><b>20.3.3</b> Collaborative analysis</a></li>
-<li class="chapter" data-level="20.3.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#dissemination"><i class="fa fa-check"></i><b>20.3.4</b> Dissemination of analysis results</a></li>
+<li class="chapter" data-level="20.3.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#annotation-of-cell-populations"><i class="fa fa-check"></i><b>20.3.2</b> Annotation of cell populations</a></li>
+<li class="chapter" data-level="20.3.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#querying-features-of-interest"><i class="fa fa-check"></i><b>20.3.3</b> Querying features of interest</a></li>
 </ul></li>
-<li class="chapter" data-level="20.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#reproducibility"><i class="fa fa-check"></i><b>20.4</b> Reproducibility</a></li>
-<li class="chapter" data-level="20.5" data-path="interactive-sharing.html"><a href="interactive-sharing.html#additional-resources"><i class="fa fa-check"></i><b>20.5</b> Additional resources</a></li>
-<li class="chapter" data-level="" data-path="interactive-sharing.html"><a href="interactive-sharing.html#session-info-15"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="20.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#reproducible-visualizations"><i class="fa fa-check"></i><b>20.4</b> Reproducible visualizations</a></li>
+<li class="chapter" data-level="20.5" data-path="interactive-sharing.html"><a href="interactive-sharing.html#dissemination"><i class="fa fa-check"></i><b>20.5</b> Dissemination of analysis results</a></li>
+<li class="chapter" data-level="20.6" data-path="interactive-sharing.html"><a href="interactive-sharing.html#additional-resources"><i class="fa fa-check"></i><b>20.6</b> Additional resources</a></li>
+<li class="chapter" data-level="" data-path="interactive-sharing.html"><a href="interactive-sharing.html#session-info-14"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="21" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html"><i class="fa fa-check"></i><b>21</b> Dealing with big data</a><ul>
 <li class="chapter" data-level="21.1" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#motivation-14"><i class="fa fa-check"></i><b>21.1</b> Motivation</a></li>
@@ -424,13 +418,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="21.3" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#parallelization"><i class="fa fa-check"></i><b>21.3</b> Parallelization</a></li>
 <li class="chapter" data-level="21.4" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#out-of-memory-representations"><i class="fa fa-check"></i><b>21.4</b> Out of memory representations</a></li>
-<li class="chapter" data-level="" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#session-info-16"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#session-info-15"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="22" data-path="interoperability.html"><a href="interoperability.html"><i class="fa fa-check"></i><b>22</b> Interoperability</a><ul>
 <li class="chapter" data-level="22.1" data-path="interoperability.html"><a href="interoperability.html#motivation-15"><i class="fa fa-check"></i><b>22.1</b> Motivation</a></li>
 <li class="chapter" data-level="22.2" data-path="interoperability.html"><a href="interoperability.html#interchanging-with-seurat"><i class="fa fa-check"></i><b>22.2</b> Interchanging with <em>Seurat</em></a></li>
 <li class="chapter" data-level="22.3" data-path="interoperability.html"><a href="interoperability.html#interchanging-with-scanpy"><i class="fa fa-check"></i><b>22.3</b> Interchanging with <em>scanpy</em></a></li>
-<li class="chapter" data-level="" data-path="interoperability.html"><a href="interoperability.html#session-info-17"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="interoperability.html"><a href="interoperability.html#session-info-16"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="part"><span><b>III Workflows</b></span></li>
 <li class="chapter" data-level="23" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html"><i class="fa fa-check"></i><b>23</b> Lun 416B cell line (Smart-seq2)</a><ul>
@@ -443,7 +437,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="23.7" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#dimensionality-reduction-1"><i class="fa fa-check"></i><b>23.7</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="23.8" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#clustering-1"><i class="fa fa-check"></i><b>23.8</b> Clustering</a></li>
 <li class="chapter" data-level="23.9" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#interpretation"><i class="fa fa-check"></i><b>23.9</b> Interpretation</a></li>
-<li class="chapter" data-level="" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#session-info-18"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#session-info-17"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="24" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html"><i class="fa fa-check"></i><b>24</b> Zeisel mouse brain (STRT-Seq)</a><ul>
 <li class="chapter" data-level="24.1" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#introduction-4"><i class="fa fa-check"></i><b>24.1</b> Introduction</a></li>
@@ -454,7 +448,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="24.6" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>24.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="24.7" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#clustering-2"><i class="fa fa-check"></i><b>24.7</b> Clustering</a></li>
 <li class="chapter" data-level="24.8" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#interpretation-1"><i class="fa fa-check"></i><b>24.8</b> Interpretation</a></li>
-<li class="chapter" data-level="" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#session-info-19"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#session-info-18"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="25" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html"><i class="fa fa-check"></i><b>25</b> Unfiltered human PBMCs (10X Genomics)</a><ul>
 <li class="chapter" data-level="25.1" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#introduction-5"><i class="fa fa-check"></i><b>25.1</b> Introduction</a></li>
@@ -465,7 +459,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="25.6" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#dimensionality-reduction-3"><i class="fa fa-check"></i><b>25.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="25.7" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#clustering-3"><i class="fa fa-check"></i><b>25.7</b> Clustering</a></li>
 <li class="chapter" data-level="25.8" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#interpretation-2"><i class="fa fa-check"></i><b>25.8</b> Interpretation</a></li>
-<li class="chapter" data-level="" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#session-info-20"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#session-info-19"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="26" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html"><i class="fa fa-check"></i><b>26</b> Filtered human PBMCs (10X Genomics)</a><ul>
 <li class="chapter" data-level="26.1" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#introduction-6"><i class="fa fa-check"></i><b>26.1</b> Introduction</a></li>
@@ -476,7 +470,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="26.6" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#dimensionality-reduction-4"><i class="fa fa-check"></i><b>26.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="26.7" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#clustering-4"><i class="fa fa-check"></i><b>26.7</b> Clustering</a></li>
 <li class="chapter" data-level="26.8" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#data-integration"><i class="fa fa-check"></i><b>26.8</b> Data integration</a></li>
-<li class="chapter" data-level="" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#session-info-21"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#session-info-20"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="27" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html"><i class="fa fa-check"></i><b>27</b> Human PBMC 10X dataset (surface proteins)</a><ul>
 <li class="chapter" data-level="27.1" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#introduction-7"><i class="fa fa-check"></i><b>27.1</b> Introduction</a></li>
@@ -492,7 +486,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="27.3.2" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#normalization-7"><i class="fa fa-check"></i><b>27.3.2</b> Normalization</a></li>
 <li class="chapter" data-level="27.3.3" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#clustering-6"><i class="fa fa-check"></i><b>27.3.3</b> Clustering</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#session-info-22"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#session-info-21"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="28" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html"><i class="fa fa-check"></i><b>28</b> Grun human pancreas (CEL-seq2)</a><ul>
 <li class="chapter" data-level="28.1" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#introduction-8"><i class="fa fa-check"></i><b>28.1</b> Introduction</a></li>
@@ -503,7 +497,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="28.6" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#data-integration-1"><i class="fa fa-check"></i><b>28.6</b> Data integration</a></li>
 <li class="chapter" data-level="28.7" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#dimensionality-reduction-6"><i class="fa fa-check"></i><b>28.7</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="28.8" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#clustering-7"><i class="fa fa-check"></i><b>28.8</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#session-info-23"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#session-info-22"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="29" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html"><i class="fa fa-check"></i><b>29</b> Muraro human pancreas (CEL-seq)</a><ul>
 <li class="chapter" data-level="29.1" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#introduction-9"><i class="fa fa-check"></i><b>29.1</b> Introduction</a></li>
@@ -515,7 +509,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="29.5" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#data-integration-2"><i class="fa fa-check"></i><b>29.5</b> Data integration</a></li>
 <li class="chapter" data-level="29.6" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#dimensionality-reduction-7"><i class="fa fa-check"></i><b>29.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="29.7" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#clustering-8"><i class="fa fa-check"></i><b>29.7</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#session-info-24"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#session-info-23"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="30" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html"><i class="fa fa-check"></i><b>30</b> Lawlor human pancreas (SMARTer)</a><ul>
 <li class="chapter" data-level="30.1" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#introduction-10"><i class="fa fa-check"></i><b>30.1</b> Introduction</a></li>
@@ -525,7 +519,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="30.5" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#variance-modelling-6"><i class="fa fa-check"></i><b>30.5</b> Variance modelling</a></li>
 <li class="chapter" data-level="30.6" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#dimensionality-reduction-8"><i class="fa fa-check"></i><b>30.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="30.7" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#clustering-9"><i class="fa fa-check"></i><b>30.7</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#session-info-25"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#session-info-24"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="31" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html"><i class="fa fa-check"></i><b>31</b> Segerstolpe human pancreas (Smart-seq2)</a><ul>
 <li class="chapter" data-level="31.1" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#introduction-11"><i class="fa fa-check"></i><b>31.1</b> Introduction</a></li>
@@ -536,14 +530,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="31.3.3" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#dimensionality-reduction-9"><i class="fa fa-check"></i><b>31.3.3</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="31.3.4" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#clustering-10"><i class="fa fa-check"></i><b>31.3.4</b> Clustering</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#session-info-26"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#session-info-25"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="32" data-path="merged-pancreas.html"><a href="merged-pancreas.html"><i class="fa fa-check"></i><b>32</b> Merged human pancreas datasets</a><ul>
 <li class="chapter" data-level="32.1" data-path="merged-pancreas.html"><a href="merged-pancreas.html#introduction-12"><i class="fa fa-check"></i><b>32.1</b> Introduction</a></li>
 <li class="chapter" data-level="32.2" data-path="merged-pancreas.html"><a href="merged-pancreas.html#the-good"><i class="fa fa-check"></i><b>32.2</b> The good</a></li>
 <li class="chapter" data-level="32.3" data-path="merged-pancreas.html"><a href="merged-pancreas.html#the-bad"><i class="fa fa-check"></i><b>32.3</b> The bad</a></li>
 <li class="chapter" data-level="32.4" data-path="merged-pancreas.html"><a href="merged-pancreas.html#the-ugly"><i class="fa fa-check"></i><b>32.4</b> The ugly</a></li>
-<li class="chapter" data-level="" data-path="merged-pancreas.html"><a href="merged-pancreas.html#session-info-27"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="merged-pancreas.html"><a href="merged-pancreas.html#session-info-26"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="33" data-path="merged-hcsc.html"><a href="merged-hcsc.html"><i class="fa fa-check"></i><b>33</b> Grun mouse HSC (CEL-seq)</a><ul>
 <li class="chapter" data-level="33.1" data-path="merged-hcsc.html"><a href="merged-hcsc.html#introduction-13"><i class="fa fa-check"></i><b>33.1</b> Introduction</a></li>
@@ -554,7 +548,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="33.6" data-path="merged-hcsc.html"><a href="merged-hcsc.html#dimensionality-reduction-10"><i class="fa fa-check"></i><b>33.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="33.7" data-path="merged-hcsc.html"><a href="merged-hcsc.html#clustering-11"><i class="fa fa-check"></i><b>33.7</b> Clustering</a></li>
 <li class="chapter" data-level="33.8" data-path="merged-hcsc.html"><a href="merged-hcsc.html#marker-gene-detection"><i class="fa fa-check"></i><b>33.8</b> Marker gene detection</a></li>
-<li class="chapter" data-level="" data-path="merged-hcsc.html"><a href="merged-hcsc.html#session-info-28"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="merged-hcsc.html"><a href="merged-hcsc.html#session-info-27"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="34" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html"><i class="fa fa-check"></i><b>34</b> Nestorowa mouse HSC (Smart-seq2)</a><ul>
 <li class="chapter" data-level="34.1" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#introduction-14"><i class="fa fa-check"></i><b>34.1</b> Introduction</a></li>
@@ -567,7 +561,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="34.8" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#marker-gene-detection-1"><i class="fa fa-check"></i><b>34.8</b> Marker gene detection</a></li>
 <li class="chapter" data-level="34.9" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#cell-type-annotation-1"><i class="fa fa-check"></i><b>34.9</b> Cell type annotation</a></li>
 <li class="chapter" data-level="34.10" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#miscellaneous-analyses"><i class="fa fa-check"></i><b>34.10</b> Miscellaneous analyses</a></li>
-<li class="chapter" data-level="" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#session-info-29"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#session-info-28"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="35" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><i class="fa fa-check"></i><b>35</b> Pijuan-Sala chimeric mouse embryo (10X Genomics)</a><ul>
 <li class="chapter" data-level="35.1" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#introduction-15"><i class="fa fa-check"></i><b>35.1</b> Introduction</a></li>
@@ -578,7 +572,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="35.6" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#merging"><i class="fa fa-check"></i><b>35.6</b> Merging</a></li>
 <li class="chapter" data-level="35.7" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#clustering-13"><i class="fa fa-check"></i><b>35.7</b> Clustering</a></li>
 <li class="chapter" data-level="35.8" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#dimensionality-reduction-12"><i class="fa fa-check"></i><b>35.8</b> Dimensionality reduction</a></li>
-<li class="chapter" data-level="" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#session-info-30"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#session-info-29"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="36" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html"><i class="fa fa-check"></i><b>36</b> Bach mouse mammary gland (10X Genomics)</a><ul>
 <li class="chapter" data-level="36.1" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#introduction-16"><i class="fa fa-check"></i><b>36.1</b> Introduction</a></li>
@@ -588,7 +582,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="36.5" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#variance-modelling-11"><i class="fa fa-check"></i><b>36.5</b> Variance modelling</a></li>
 <li class="chapter" data-level="36.6" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#dimensionality-reduction-13"><i class="fa fa-check"></i><b>36.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="36.7" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#clustering-14"><i class="fa fa-check"></i><b>36.7</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#session-info-31"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#session-info-30"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="37" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html"><i class="fa fa-check"></i><b>37</b> HCA human bone marrow (10X Genomics)</a><ul>
 <li class="chapter" data-level="37.1" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#introduction-17"><i class="fa fa-check"></i><b>37.1</b> Introduction</a></li>
@@ -602,7 +596,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="37.7" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#clustering-15"><i class="fa fa-check"></i><b>37.7</b> Clustering</a></li>
 <li class="chapter" data-level="37.8" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#differential-expression"><i class="fa fa-check"></i><b>37.8</b> Differential expression</a></li>
 <li class="chapter" data-level="37.9" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#cell-type-classification"><i class="fa fa-check"></i><b>37.9</b> Cell type classification</a></li>
-<li class="chapter" data-level="" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#session-info-32"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#session-info-31"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="part"><span><b>IV Appendix</b></span></li>
 <li class="chapter" data-level="38" data-path="contributors.html"><a href="contributors.html"><i class="fa fa-check"></i><b>38</b> Contributors</a><ul>
@@ -635,44 +629,37 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-infrastructure" class="section level1">
 <h1><span class="header-section-number">Chapter 4</span> Data Infrastructure</h1>
-<p>One of the advantages of using Bioconductor packages is that they utilize common data infrastructures which makes analyses interoperable across various packages. Furthermore, much engineering effort is put into making this infrastructure robust and scalable. Here, we describe the <em>SingleCellExperiment</em> object (or <code>sce</code> in shorthand) in detail to describe how it is constructed, utilized in downstream analysis, and how it stores various types of primary data and metadata.</p>
-<div id="prerequisites" class="section level2">
-<h2><span class="header-section-number">4.1</span> Prerequisites</h2>
-<p>The Bioconductor package <em>SingleCellExperiment</em> provides the <em>SingleCellExperiment</em> class for usage. While the package is implicitly installed and loaded when using any package that depends on the <em>SingleCellExperiment</em> class, it can be explicitly installed (and loaded) as follows:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">&#39;SingleCellExperiment&#39;</span>)</a></code></pre></div>
-<p>Additionally, we use some functions from the <code>scater</code> and <code>scran</code> packages, as well as the CRAN package <code>uwot</code> (which conveniently can also be installed through <code>BiocManager</code>). These functions will be accessed through the <code>&lt;package&gt;::&lt;function&gt;</code> convention as needed.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="kw">c</span>(<span class="st">&#39;scater&#39;</span>, <span class="st">&#39;scran&#39;</span>, <span class="st">&#39;uwot&#39;</span>, <span class="st">&#39;Rtsne&#39;</span>))</a></code></pre></div>
-<p>For this session, all we will need loaded is the <em>SingleCellExperiment</em> package:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(SingleCellExperiment)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">library</span>(uwot)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="kw">library</span>(Rtsne)</a></code></pre></div>
+<div id="background" class="section level2">
+<h2><span class="header-section-number">4.1</span> Background</h2>
+<p>One of the main strengths of the Bioconductor project lies in the use of a common data infrastructure that powers interoperability across packages. Users should be able to analyze their data using functions from different Bioconductor packages without the need to convert between formats. To this end, the <code>SingleCellExperiment</code> class (from the <em><a href="https://bioconductor.org/packages/3.11/SingleCellExperiment">SingleCellExperiment</a></em> package) serves as the common currency for data exchange across 70+ single-cell-related Bioconductor packages. This class implements a data structure that stores all aspects of our single-cell data - gene-by-cell expression data, per-cell metadata and per-gene annotation (Figure <a href="data-infrastructure.html#fig:sce-structure">4.1</a>) - and manipulate them in a synchronized manner.</p>
+<div class="figure"><span id="fig:sce-structure"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/SingleCellExperiment.png" alt="Overview of the structure of the `SingleCellExperiment` class. Each row of the assays corresponds to a row of the `rowData` (pink shading), while each column of the assays corresponds to a column of the `colData` and `reducedDims` (yellow shading)."  />
+<p class="caption">
+Figure 4.1: Overview of the structure of the <code>SingleCellExperiment</code> class. Each row of the assays corresponds to a row of the <code>rowData</code> (pink shading), while each column of the assays corresponds to a column of the <code>colData</code> and <code>reducedDims</code> (yellow shading).
+</p>
 </div>
-<div id="the-singlecellexperiment-class" class="section level2">
-<h2><span class="header-section-number">4.2</span> The <em>SingleCellExperiment</em> Class</h2>
-<div class="figure">
-<img src="images/SingleCellExperiment.png" alt="Overview of the SingleCellExperiment class object" />
-<p class="caption">Overview of the <em>SingleCellExperiment</em> class object</p>
+<p>The <em><a href="https://bioconductor.org/packages/3.11/SingleCellExperiment">SingleCellExperiment</a></em> package is implicitly installed and loaded when using any package that depends on the <code>SingleCellExperiment</code> class, but it can also be explicitly installed (and loaded) as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">&#39;SingleCellExperiment&#39;</span>)</code></pre></div>
+<p>Additionally, we use some functions from the <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> and <em><a href="https://bioconductor.org/packages/3.11/scran">scran</a></em> packages, as well as the CRAN package <em><a href="https://CRAN.R-project.org/package=uwot">uwot</a></em> (which conveniently can also be installed through <code>BiocManager::install</code>). These functions will be accessed through the <code>&lt;package&gt;::&lt;function&gt;</code> convention as needed.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="kw">c</span>(<span class="st">&#39;scater&#39;</span>, <span class="st">&#39;scran&#39;</span>, <span class="st">&#39;uwot&#39;</span>))</code></pre></div>
+<p>We then load the <em>SingleCellExperiment</em> package into our R session. This avoids the need to prefix our function calls with <code>::</code>, especially for packages that are heavily used throughout a workflow.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SingleCellExperiment)</code></pre></div>
+<p>Each piece of (meta)data in the <code>SingleCellExperiment</code> is represented by a separate “slot”. (This terminology comes from the <a href="https://adv-r.hadley.nz/s4.html">S4 class system</a>, but that’s not important right now.) If we imagine the <code>SingleCellExperiment</code> object to be a cargo ship, the slots can be thought of as individual cargo boxes with different contents, e.g., certain slots expect numeric matrices whereas others may expect data frames. In the rest of this chapter, we will discuss the available slots, their expected formats, and how we can interact with them. More experienced readers may note the similarity with the <code>SummarizedExperiment</code> class, and if you are such a reader, you may wish to jump directly to the end of this chapter for the single-cell-specific aspects of this class.</p>
 </div>
-<div id="primary-data-the-assays-slot" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Primary Data: The <code>assays</code> Slot</h3>
-<p>The <em>SingleCellExperiment</em> (<code>sce</code>) object is the basis of single-cell analytical applications based in Bioconductor. The <code>sce</code> object is an <a href="https://adv-r.hadley.nz/s4.html">S4 object</a>, which in essence provides a more formalized approach towards construction and accession of data compared to other methods available in R. The utility of S4 comes from validity checks that ensure safe data manipulation, and most important for our discussion, from its extensibility through <em>slots</em>.</p>
-<p>If we imagine the <code>sce</code> object to be a ship, the <em>slots</em> of <code>sce</code> can be thought of as individual cargo boxes - each exists as a separate entity <em>within</em> the <code>sce</code> object. Furthermore, each slot contains data that arrives in its own format. To extend the metaphor, we can imagine that different variations of cargo boxes are required for fruits versus bricks. In the case of <code>sce</code>, certain slots expect numeric matrices, whereas others may expect data frames.</p>
-<p>To construct a rudimentary <code>sce</code> object, all we need is a single slot:</p>
-<ul>
-<li><code>assays</code> slot: contains primary data such as counts in a list, where each entry of the list is in a matrix format, where rows correspond to features (genes) and columns correspond to samples (cells) (<em>Figure 1A, blue box</em>)</li>
-</ul>
-<p>Let’s start simple by generating three cells worth of count data across ten genes.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">counts_matrix &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">cell_1 =</span> <span class="kw">rpois</span>(<span class="dv">10</span>, <span class="dv">10</span>), </a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">                    <span class="dt">cell_2 =</span> <span class="kw">rpois</span>(<span class="dv">10</span>, <span class="dv">10</span>), </a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">                    <span class="dt">cell_3 =</span> <span class="kw">rpois</span>(<span class="dv">10</span>, <span class="dv">30</span>))</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="kw">rownames</span>(counts_matrix) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;gene_&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(counts_matrix) <span class="co"># must be a matrix object!</span></a></code></pre></div>
-<p>From this, we can now construct our first <em>SingleCellExperiment</em> object, using the defined <em>constructor</em>, <code>SingleCellExperiment()</code>. Note that we provide our data as a <em>named</em> <em>list</em>, and each entry of the list is a <em>matrix</em>. Here, we name the <code>counts_matrix</code> entry as simply <code>counts</code> within the list.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> counts_matrix))</a></code></pre></div>
+<div id="storing-primary-experimental-data" class="section level2">
+<h2><span class="header-section-number">4.2</span> Storing primary experimental data</h2>
+<div id="filling-the-assays-slot" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Filling the <code>assays</code> slot</h3>
+<p>To construct a rudimentary <code>SingleCellExperiment</code> object, we only need to fill the <code>assays</code> slot. This contains primary data such as a matrix of sequencing counts where rows correspond to features (genes) and columns correspond to samples (cells) (Figure <a href="data-infrastructure.html#fig:sce-structure">4.1</a>, blue box). Let’s start simple by generating three cells’ worth of count data across ten genes:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counts_matrix &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">cell_1 =</span> <span class="kw">rpois</span>(<span class="dv">10</span>, <span class="dv">10</span>), 
+                    <span class="dt">cell_2 =</span> <span class="kw">rpois</span>(<span class="dv">10</span>, <span class="dv">10</span>), 
+                    <span class="dt">cell_3 =</span> <span class="kw">rpois</span>(<span class="dv">10</span>, <span class="dv">30</span>))
+<span class="kw">rownames</span>(counts_matrix) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;gene_&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(counts_matrix) <span class="co"># must be a matrix object!</span></code></pre></div>
+<p>From this, we can now construct our first <code>SingleCellExperiment</code> object using the <code>SingleCellExperiment()</code> function. Note that we provide our data as a named list where each entry of the list is a matrix. Here, we name the <code>counts_matrix</code> entry as simply <code>&quot;counts&quot;</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> counts_matrix))</code></pre></div>
 <p>To inspect the object, we can simply type <code>sce</code> into the console to see some pertinent information, which will display an overview of the various slots available to us (which may or may not have any data).</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">sce</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 10 3 
 ## metadata(0):
@@ -682,35 +669,31 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## colnames(3): cell_1 cell_2 cell_3
 ## colData names(0):
 ## reducedDimNames(0):
-## spikeNames(0):
 ## altExpNames(0):</code></pre>
 <p>To access the count data we just supplied, we can do any one of the following:</p>
 <ul>
 <li><code>assay(sce, &quot;counts&quot;)</code> - this is the most general method, where we can supply the name of the assay as the second argument.</li>
-<li><code>counts(sce)</code> - this is the same as the above, but <em>only</em> works for assays with the special name <code>&quot;counts&quot;</code>.</li>
+<li><code>counts(sce)</code> - this is a short-cut for the above, but <em>only</em> works for assays with the special name <code>&quot;counts&quot;</code>.</li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">counts</span>(sce)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">counts</span>(sce)</code></pre></div>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1      12     11     30
-## gene_2       9     13     25
-## gene_3       9     17     33
-## gene_4       9     11     25
-## gene_5       8     13     21
-## gene_6      12      7     43
-## gene_7      10     11     24
-## gene_8      13     15     33
-## gene_9      10      6     25
-## gene_10     11     14     34</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">## assay(sce, &quot;counts&quot;) ## same as above in this special case</a></code></pre></div>
+## gene_1       6     10     24
+## gene_2       7     11     27
+## gene_3       9      9     32
+## gene_4      10     15     24
+## gene_5      13     10     30
+## gene_6       5     18     16
+## gene_7      11     12     34
+## gene_8      13      9     18
+## gene_9       6     10     35
+## gene_10     17      6     35</code></pre>
 </div>
-<div id="extending-the-assays-slot" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> Extending the <code>assays</code> Slot</h3>
-<p>What makes the <code>assay</code> slot especially powerful is that it can hold <em>multiple</em> representations of the primary data. This is especially useful for storing the raw as well as a <em>normalized</em> version of the data. We can do just that as shown below, using the <code>scran</code> and <code>scater</code> packages to compute a normalized and log-transformed representation of the initial primary data.</p>
-<p>Note that here, we overwrite our previous <code>sce</code> upon reassigning the results to <code>sce</code> - this is because these functions <em>return</em> a <em>SingleCellExperiment</em> object. Some functions - especially those outside of single-cell oriented Bioconductor packages - do not, in which case you will need to append your results to the <code>sce</code> object (see below).</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce)</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce)</a></code></pre></div>
-<p>Viewing the object again, we see that these functions added some new entries:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">sce</a></code></pre></div>
+<div id="adding-more-assays" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Adding more <code>assays</code></h3>
+<p>What makes the <code>assays</code> slot especially powerful is that it can hold multiple representations of the primary data. This is especially useful for storing the raw count matrix as well as a normalized version of the data. We can do just that as shown below, using the <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> package to compute a normalized and log-transformed representation of the initial primary data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">logNormCounts</span>(sce)</code></pre></div>
+<p>Note that, at each step, we overwrite our previous <code>sce</code> by reassigning the results back to <code>sce</code>. This is possible because these particular functions return a <code>SingleCellExperiment</code> object that contains the results in addition to original data. (Some functions - especially those outside of single-cell oriented Bioconductor packages - do not, in which case you will need to append your results to the <code>sce</code> object - see below for an example.) Viewing the object again, we see that these functions added some new entries:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 10 3 
 ## metadata(0):
@@ -718,71 +701,46 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## rownames(10): gene_1 gene_2 ... gene_9 gene_10
 ## rowData names(0):
 ## colnames(3): cell_1 cell_2 cell_3
-## colData names(0):
+## colData names(1): sizeFactor
 ## reducedDimNames(0):
-## spikeNames(0):
 ## altExpNames(0):</code></pre>
-<p>Specifically, we see that the <code>assays</code> slot has grown to be comprised of two entries: <code>counts</code> (our initial data) and <code>logcounts</code> (the normalized data). Similar to <code>counts</code>, the <code>logcounts</code> name is a special name which lets us access it simply by typing <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">logcounts</span>(sce)</a></code></pre></div>
-<pre><code>##         cell_1 cell_2 cell_3
-## gene_1    4.39   4.09   4.21
-## gene_2    4.00   4.31   3.97
-## gene_3    4.00   4.68   4.34
-## gene_4    4.00   4.09   3.97
-## gene_5    3.84   4.31   3.73
-## gene_6    4.39   3.48   4.71
-## gene_7    4.14   4.09   3.91
-## gene_8    4.50   4.51   4.34
-## gene_9    4.14   3.28   3.97
-## gene_10   4.27   4.41   4.38</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">## assay(sce, &quot;logcounts&quot;) ## same as above</a></code></pre></div>
-<p>Notice that the data before had a severe discrepancy in counts between cells 1/2 versus 3, and that normalization has ameliorated this difference.</p>
-<p>To look at all the available assays within <code>sce</code>, we can type:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">assays</span>(sce)</a></code></pre></div>
+<p>Specifically, we see that the <code>assays</code> slot has grown to contain two entries: <code>&quot;counts&quot;</code> (our initial data) and <code>&quot;logcounts&quot;</code> (the log-transformed normalized data). Similar to <code>&quot;counts&quot;</code>, the <code>&quot;logcounts&quot;</code> name can be conveniently accessed using <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logcounts</span>(sce)</code></pre></div>
+<pre><code>##           cell_1   cell_2   cell_3
+## gene_1  3.451296 3.964035 3.908988
+## gene_2  3.654722 4.093109 4.068202
+## gene_3  3.991610 3.822267 4.299813
+## gene_4  4.134515 4.517848 3.908988
+## gene_5  4.493945 3.964035 4.211579
+## gene_6  3.214403 4.770349 3.371263
+## gene_7  4.264531 4.211579 4.382961
+## gene_8  4.493945 3.822267 3.525613
+## gene_9  3.451296 3.964035 4.422804
+## gene_10 4.865824 3.287419 4.422804</code></pre>
+<p>To look at all the available assays within <code>sce</code>, we can use the <code>assays()</code> accessor. By comparison, <code>assay()</code> only returns a single assay of interest.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">assays</span>(sce)</code></pre></div>
 <pre><code>## List of length 2
 ## names(2): counts logcounts</code></pre>
-<p>While the functions above demonstrate automatic addition of assays to our <code>sce</code> object, there may be cases where we want to perform our own calculations and save the result into the <code>assays</code> slot. In particular, this is important for using functions that do <em>not</em> return a <em>SingleCellExperiment</em> object.</p>
-<p>Let’s append a new version of the data that has been offset by <code>+100</code>.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">counts_<span class="dv">100</span> &lt;-<span class="st"> </span><span class="kw">assay</span>(sce, <span class="st">&quot;counts&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">assay</span>(sce, <span class="st">&quot;counts_100&quot;</span>) &lt;-<span class="st"> </span>counts_<span class="dv">100</span> <span class="co"># assign a new entry to assays slot</span></a></code></pre></div>
-<p>Then we can use the accessor <code>assays()</code> (notice this is plural!) to see all our entries into the <code>assay</code> slot that we have made so far. Note that to see all the assays, we use the plural <code>assays()</code> accessor, and to retrieve a single assay entry (as a matrix) we use the singular <code>assay()</code> accessor, providing the name of the assay we wish to retrieve as above.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">assays</span>(sce)</a></code></pre></div>
+<p>While the functions above automatically add assays to our <code>sce</code> object, there may be cases where we want to perform our own calculations and save the result into the <code>assays</code> slot. This is often necessary when using functions that do <em>not</em> return a <code>SingleCellExperiment</code> object. To illustrate, let’s append a new version of the data that has been offset by adding 100 to all values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counts_<span class="dv">100</span> &lt;-<span class="st"> </span><span class="kw">counts</span>(sce) <span class="op">+</span><span class="st"> </span><span class="dv">100</span>
+<span class="kw">assay</span>(sce, <span class="st">&quot;counts_100&quot;</span>) &lt;-<span class="st"> </span>counts_<span class="dv">100</span> <span class="co"># assign a new entry to assays slot</span>
+<span class="kw">assays</span>(sce) <span class="co"># new assay has now been added.</span></code></pre></div>
 <pre><code>## List of length 3
 ## names(3): counts logcounts counts_100</code></pre>
-<p>These entries are also seen on the default view of <code>sce</code>:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">sce</a></code></pre></div>
-<pre><code>## class: SingleCellExperiment 
-## dim: 10 3 
-## metadata(0):
-## assays(3): counts logcounts counts_100
-## rownames(10): gene_1 gene_2 ... gene_9 gene_10
-## rowData names(0):
-## colnames(3): cell_1 cell_2 cell_3
-## colData names(0):
-## reducedDimNames(0):
-## spikeNames(0):
-## altExpNames(0):</code></pre>
-<p>This sort of extension of the <code>assays</code> slot is represented graphically in <em>Figure 1B (dark blue box)</em>, showing the addition of the <code>logcounts</code> matrix into the <code>assays</code> slot.</p>
-<p>In a similar manner, many of the slots of <code>sce</code> are extendable through assignment as shown above, thus allowing for myriad custom functionality as needed for interoperability with functions outside of single-cell oriented Bioconductor packages.</p>
 </div>
-<div id="column-metadata-coldata-slot" class="section level3">
-<h3><span class="header-section-number">4.2.3</span> Column (Meta)Data: <code>colData</code> Slot</h3>
-<p>To further annotate our <code>sce</code> object, one of the first and most useful pieces of information is adding metadata that describes the columns of our primary data, e.g., the samples or cells of our experiment. This data is entered into the <code>colData</code> slot:</p>
-<ul>
-<li><code>colData</code> slot: metadata that describes that samples (cells) provided as a <code>data.frame</code> (or <code>DataFrame</code> if appending), where rows correspond to cells, and columns correspond to the sample (cells) metadata features (e.g. id, batch, author, etc.) (<em>Figure 1A, orange box</em>).</li>
-</ul>
-<p>So, let’s come up with some metadata for the cells, starting with a batch variable, where cells 1 and 2 are in batch 1, and cell 3 is from batch 2.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">cell_metadata &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">batch =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw">rownames</span>(cell_metadata) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;cell_&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
-<p>Now, we can take two approaches - either append the <code>cell_metadata</code> to our existing <code>sce</code>, or start from scratch via the <code>SingleCellExperiment()</code> constructor and provide it from the get go. We’ll start from scratch for now, but will also show how to append the data:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">## From scratch:</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> counts_matrix),</a>
-<a class="sourceLine" id="cb29-3" data-line-number="3">                           <span class="dt">colData =</span> cell_metadata)</a>
-<a class="sourceLine" id="cb29-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">## Appending to existing object (requires DataFrame() coercion)</a>
-<a class="sourceLine" id="cb29-6" data-line-number="6">## colData(sce) &lt;- DataFrame(cell_metadata)</a></code></pre></div>
-<p>Similar to <code>assays</code>, we can see our colData is now populated from the default view of <code>sce</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">sce</a></code></pre></div>
+</div>
+<div id="handling-metadata" class="section level2">
+<h2><span class="header-section-number">4.3</span> Handling metadata</h2>
+<div id="on-the-columns" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> On the columns</h3>
+<p>To further annotate our <code>SingleCellExperiment</code> object, we can add metadata to describe the columns of our primary data, e.g., the samples or cells of our experiment. This data is entered into the <code>colData</code> slot, a <code>data.frame</code> or <code>DataFrame</code> object where rows correspond to cells and columns correspond to metadata fields, e.g., batch of origin, treatment condition (Figure <a href="data-infrastructure.html#fig:sce-structure">4.1</a>, orange box). Let’s come up with some metadata for the cells, starting with a batch variable where cells 1 and 2 are in batch 1 and cell 3 is from batch 2.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cell_metadata &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">batch =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))
+<span class="kw">rownames</span>(cell_metadata) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;cell_&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</code></pre></div>
+<p>Now, we can take two approaches - either append the <code>cell_metadata</code> to our existing <code>sce</code>, or start from scratch via the <code>SingleCellExperiment()</code> constructor. We’ll start from scratch for now:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(<span class="dt">assays =</span> <span class="kw">list</span>(<span class="dt">counts =</span> counts_matrix),
+    <span class="dt">colData =</span> cell_metadata)</code></pre></div>
+<p>Similar to <code>assays</code>, we can see our <code>colData</code> is now populated:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 10 3 
 ## metadata(0):
@@ -792,33 +750,35 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## colnames(3): cell_1 cell_2 cell_3
 ## colData names(1): batch
 ## reducedDimNames(0):
-## spikeNames(0):
 ## altExpNames(0):</code></pre>
-<p>And furthermore access our column (meta)data with the accessor, <code>colData()</code>:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">colData</span>(sce)</a></code></pre></div>
+<p>We can access our column data with the <code>colData()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colData</span>(sce)</code></pre></div>
 <pre><code>## DataFrame with 3 rows and 1 column
 ##            batch
 ##        &lt;numeric&gt;
 ## cell_1         1
 ## cell_2         1
 ## cell_3         2</code></pre>
-<p>Finally, some packages automatically add to the <code>colData</code> slot, for example, the <code>scater</code> package features a function, <code>addPerCellQC()</code>, which appends a lot of quality control data. Here we show the first five columns of <code>colData(sce)</code> with the quality control metrics appended to it.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">addPerCellQC</span>(sce)</a>
-<a class="sourceLine" id="cb34-2" data-line-number="2"><span class="kw">colData</span>(sce)[, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<p>Or even more simply, we can extract a single field using the <code>$</code> shortcut:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce<span class="op">$</span>batch</code></pre></div>
+<pre><code>## [1] 1 1 2</code></pre>
+<p>Some functions automatically add column metadata by returning a <code>SingleCellExperiment</code> with extra fields in the <code>colData</code> slot. For example, the <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> package contains the <code>addPerCellQC()</code> function that appends a lot of quality control data. Here, we show the first five columns of <code>colData(sce)</code> with the quality control metrics appended to it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">addPerCellQC</span>(sce)
+<span class="kw">colData</span>(sce)[, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
 <pre><code>## DataFrame with 3 rows and 5 columns
 ##            batch       sum  detected percent_top_50 percent_top_100
 ##        &lt;numeric&gt; &lt;integer&gt; &lt;integer&gt;      &lt;numeric&gt;       &lt;numeric&gt;
-## cell_1         1       103        10            100             100
-## cell_2         1       118        10            100             100
-## cell_3         2       293        10            100             100</code></pre>
-<div id="using-coldata-for-subsetting" class="section level4">
-<h4><span class="header-section-number">4.2.3.1</span> Using <code>colData</code> for Subsetting</h4>
-<p>A common operation with <code>colData</code> is its use in subsetting. One simple way to access <code>colData</code> is through the use of the <code>$</code> operator, which is a shortcut for accessing a variable within the <code>colData</code> slot:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">sce<span class="op">$</span>batch</a></code></pre></div>
-<pre><code>## [1] 1 1 2</code></pre>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">## colData(sce)$batch # same as above</a></code></pre></div>
-<p>If we only wanted cells within batch 1, we could subset our sce object as follows (remember, we subset on the <em>columns</em> in this case because we are filtering by cells/samples here).</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">sce[, sce<span class="op">$</span>batch <span class="op">==</span><span class="st"> </span><span class="dv">1</span>]</a></code></pre></div>
+## cell_1         1        97        10            100             100
+## cell_2         1       110        10            100             100
+## cell_3         2       275        10            100             100</code></pre>
+<p>Alternatively, we might want to manually add more fields to the column metadata:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce<span class="op">$</span>more_stuff &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="kw">ncol</span>(sce))
+<span class="kw">colnames</span>(<span class="kw">colData</span>(sce))</code></pre></div>
+<pre><code>## [1] &quot;batch&quot;           &quot;sum&quot;             &quot;detected&quot;        &quot;percent_top_50&quot; 
+## [5] &quot;percent_top_100&quot; &quot;percent_top_200&quot; &quot;percent_top_500&quot; &quot;total&quot;          
+## [9] &quot;more_stuff&quot;</code></pre>
+<p>A common operation with <code>colData</code> is to use its values for subsetting. For example, if we only wanted cells within batch 1, we could subset our <code>sce</code> object as shown below. (Remember, we subset on the columns in this case because we are filtering by cells/samples here.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce[, sce<span class="op">$</span>batch <span class="op">==</span><span class="st"> </span><span class="dv">1</span>]</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 10 2 
 ## metadata(0):
@@ -826,24 +786,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## rownames(10): gene_1 gene_2 ... gene_9 gene_10
 ## rowData names(0):
 ## colnames(2): cell_1 cell_2
-## colData names(8): batch sum ... percent_top_500 total
+## colData names(9): batch sum ... total more_stuff
 ## reducedDimNames(0):
-## spikeNames(0):
 ## altExpNames(0):</code></pre>
 </div>
-</div>
-<div id="feature-metadata-rowdatarowranges" class="section level3">
-<h3><span class="header-section-number">4.2.4</span> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></h3>
-<p>Lastly, the rows also have their own metadata slot to store information that pertains to the features of the <code>sce</code> object:</p>
-<ul>
-<li><code>rowData</code> slot: contains data in a <code>data.frame</code> (<code>DataFrame</code>) format that describes aspects of the data corresponding to the rows of the primary data (<em>Figure 1A, green box</em>).</li>
-</ul>
-<p>Furthermore, there is a special slot which pertains to features with genomic coordinates:</p>
-<ul>
-<li><code>rowRanges</code> slot: contains data in a <code>GRangesList</code> (where each entry is a <code>GenomicRanges</code> format) that describes the chromosome, start, and end coordinates of the features (genes, genomic regions).</li>
-</ul>
-<p>Both of these can be accessed via their respective accessors, <code>rowRanges()</code> and <code>rowData()</code>. In our case, <code>rowRanges(sce)</code> produces an empty list:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw">rowRanges</span>(sce) <span class="co"># empty</span></a></code></pre></div>
+<div id="on-the-rows" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> On the rows</h3>
+<p>To store feature-level annotation, the <code>SingleCellExperiment</code> has the <code>rowData</code> slot containing a <code>DataFrame</code> where each row corresponds to a gene and contains annotations like the transcript length or gene symbol. Furthermore, there is a special <code>rowRanges</code> slot to hold genomic coordinates in the form of a <code>GRanges</code> or <code>GRangesList</code>. This stores describes the chromosome, start, and end coordinates of the features (genes, genomic regions) in a manner that is easy to query and manipulate via the <em><a href="https://bioconductor.org/packages/3.11/GenomicRanges">GenomicRanges</a></em> framework.</p>
+<p>Both of these slots can be accessed via their respective accessors, <code>rowRanges()</code> and <code>rowData()</code>. In our case, <code>rowRanges(sce)</code> produces an empty list because we did not fill it with any coordinate information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rowRanges</span>(sce) <span class="co"># empty</span></code></pre></div>
 <pre><code>## GRangesList object of length 10:
 ## $gene_1
 ## GRanges object with 0 ranges and 0 metadata columns:
@@ -868,27 +819,44 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## ...
 ## &lt;7 more elements&gt;</code></pre>
-<p>Currently the <code>rowData</code> slot is also empty. However, analogous to our call to <code>addPerCellQC()</code> in the prior section, the function <code>addPerFeatureQC()</code> will insert values in the <code>rowData</code> slot of our <code>sce</code> object, as we can see below:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">addPerFeatureQC</span>(sce)</a>
-<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">rowData</span>(sce)</a></code></pre></div>
+<p>Currently the <code>rowData</code> slot is also empty. However, analogous to our call to <code>addPerCellQC()</code> in the prior section, the <code>addPerFeatureQC()</code> function will insert values in the <code>rowData</code> slot of our <code>sce</code> object:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">addPerFeatureQC</span>(sce)
+<span class="kw">rowData</span>(sce)</code></pre></div>
 <pre><code>## DataFrame with 10 rows and 2 columns
 ##              mean  detected
 ##         &lt;numeric&gt; &lt;numeric&gt;
-## gene_1    17.6667       100
-## gene_2    15.6667       100
-## gene_3    19.6667       100
-## gene_4    15.0000       100
-## gene_5    14.0000       100
-## gene_6    20.6667       100
-## gene_7    15.0000       100
-## gene_8    20.3333       100
-## gene_9    13.6667       100
-## gene_10   19.6667       100</code></pre>
-<p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <em>SingleCellExperiment</em> object, which we leave up to the reader as an exercise.</p>
-<div id="subsetting-by-rows" class="section level4">
-<h4><span class="header-section-number">4.2.4.1</span> Subsetting by Rows</h4>
-<p>To subset an <code>sce</code> object down at the feature/gene level, we can do a row subsetting operation similar to other R objects, by supplying either numeric indices or a vector of names:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">sce[<span class="kw">c</span>(<span class="st">&quot;gene_1&quot;</span>, <span class="st">&quot;gene_4&quot;</span>), ]</a></code></pre></div>
+## gene_1    13.3333       100
+## gene_2    15.0000       100
+## gene_3    16.6667       100
+## gene_4    16.3333       100
+## gene_5    17.6667       100
+## gene_6    13.0000       100
+## gene_7    19.0000       100
+## gene_8    13.3333       100
+## gene_9    17.0000       100
+## gene_10   19.3333       100</code></pre>
+<p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <code>SingleCellExperiment</code> object. Exactly how this is done depends on the organism and annotation available during alignment and quantification; for example, given Ensembl identifiers, we might use <em><a href="https://bioconductor.org/packages/3.11/AnnotationHub">AnnotationHub</a></em> resources to pull down an Ensembl anotation object and extract the gene bodies to store in the <code>rowRanges</code> of our <code>SingleCellExperiment</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(AnnotationHub)
+edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]] <span class="co"># Human, Ensembl v97.</span>
+<span class="kw">genes</span>(edb)[,<span class="dv">2</span>]</code></pre></div>
+<pre><code>## GRanges object with 67667 ranges and 1 metadata column:
+##                   seqnames            ranges strand |   gene_name
+##                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
+##   ENSG00000223972        1       11869-14409      + |     DDX11L1
+##   ENSG00000227232        1       14404-29570      - |      WASH7P
+##   ENSG00000278267        1       17369-17436      - |   MIR6859-1
+##   ENSG00000243485        1       29554-31109      + | MIR1302-2HG
+##   ENSG00000284332        1       30366-30503      + |   MIR1302-2
+##               ...      ...               ...    ... .         ...
+##   ENSG00000224240        Y 26549425-26549743      + |     CYCSP49
+##   ENSG00000227629        Y 26586642-26591601      - |  SLC25A15P1
+##   ENSG00000237917        Y 26594851-26634652      - |     PARP4P1
+##   ENSG00000231514        Y 26626520-26627159      - |      CCNQP2
+##   ENSG00000235857        Y 56855244-56855488      + |     CTBP2P1
+##   -------
+##   seqinfo: 424 sequences from GRCh38 genome</code></pre>
+<p>To subset a <code>SingleCellExperiment</code> object at the feature/gene level, we can do a row subsetting operation similar to other R objects, by supplying either numeric indices or a vector of names:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce[<span class="kw">c</span>(<span class="st">&quot;gene_1&quot;</span>, <span class="st">&quot;gene_4&quot;</span>), ]</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 2 3 
 ## metadata(0):
@@ -896,109 +864,150 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## rownames(2): gene_1 gene_4
 ## rowData names(2): mean detected
 ## colnames(3): cell_1 cell_2 cell_3
-## colData names(8): batch sum ... percent_top_500 total
+## colData names(9): batch sum ... total more_stuff
 ## reducedDimNames(0):
-## spikeNames(0):
 ## altExpNames(0):</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">## sce[c(1, 4), ] # same as above in this case</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>), ] <span class="co"># same as above in this case</span></code></pre></div>
+<pre><code>## class: SingleCellExperiment 
+## dim: 2 3 
+## metadata(0):
+## assays(1): counts
+## rownames(2): gene_1 gene_4
+## rowData names(2): mean detected
+## colnames(3): cell_1 cell_2 cell_3
+## colData names(9): batch sum ... total more_stuff
+## reducedDimNames(0):
+## altExpNames(0):</code></pre>
 </div>
-</div>
-<div id="size-factors-slot-sizefactors" class="section level3">
-<h3><span class="header-section-number">4.2.5</span> Size Factors Slot: <code>sizeFactors</code></h3>
-<p>Briefly, we already encountered this via the <code>scran::computeSumFactors(sce)</code> call, which adds a <code>sizeFactors</code> slot:</p>
-<ul>
-<li><code>sizeFactors</code> slot: contains information in a numeric vector regarding the sample/cell normalization factors used to produce a normalized data representation (<em>Figure 1B, brown box</em>)</li>
-</ul>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)</a>
-<a class="sourceLine" id="cb48-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">logNormCounts</span>(sce)</a>
-<a class="sourceLine" id="cb48-3" data-line-number="3"><span class="kw">sizeFactors</span>(sce)</a></code></pre></div>
-<pre><code>## [1] 0.601 0.689 1.710</code></pre>
-</div>
-</div>
-<div id="a-brief-recap-from-se-to-sce" class="section level2">
-<h2><span class="header-section-number">4.3</span> A Brief Recap: From <code>se</code> to <code>sce</code></h2>
-<p>So far, we have covered the <code>assays</code> (primary data), <code>colData</code> (sample metadata), <code>rowData</code>/<code>rowRanges</code> (feature metadata), and <code>sizeFactors</code> slots of <em>SingleCellExperiment</em>.</p>
-<p>What is important to note is that the <em>SingleCellExperiment</em> class <em>derives</em> from the <code>SummarizedExperiment</code> (<code>se</code>) class, its predecessor, and in particular inherits the <code>assays</code>, <code>colData</code> and <code>rowData</code>/<code>rowRanges</code> slots. As such, much of the <code>SummarizedExperiment</code> functionality is retained in <em>SingleCellExperiment</em>. This allows existing methods that work with <code>SummarizedExperiment</code> to work similarly on <em>SingleCellExperiment</em> objects.</p>
-<p>So what’s new about the <em>SingleCellExperiment</em> class then? For our discussion, the most important change is the addition of a new slot called <code>reducedDims</code>.</p>
-</div>
-<div id="the-reduceddims-slot" class="section level2">
-<h2><span class="header-section-number">4.4</span> The <code>reducedDims</code> Slot</h2>
-<p>The <code>reducedDims</code> slot is a new addition which is specially designed to store reduced dimensionality representations of primary data, obtained by methods such as PCA, tSNE, UMAP, and others.</p>
-<ul>
-<li><code>reducedDims</code> slot: contains a list of numeric <code>matrix</code> entries which describe dimensionality reduced representations of the primary data, such that rows represent the columns of the primary data (aka the samples/cells), and columns represent the dimensions</li>
-</ul>
-<p>Most importantly, just like the <code>assays</code> slot, the <code>reducedDims</code> slot can hold a list of many entries. So, it can hold a PCA, TSNE, and UMAP representation of a given dataset all within the <code>reducedDims</code> slot.</p>
-<p>In our example, we can calculate a PCA representation of our data as follows using the <code>scater</code> package function <code>runPCA()</code>. We see that the <code>sce</code> now shows a new <code>reducedDim</code> and that the accessor <code>reducedDim()</code> produces the results of running PCA on the normalized data from <code>logcounts(sce)</code>.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)</a>
-<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</a></code></pre></div>
-<pre><code>##           PC1     PC2
-## cell_1 -0.495 -0.3154
-## cell_2  1.047  0.0111
-## cell_3 -0.552  0.3043
-## attr(,&quot;percentVar&quot;)
-## [1] 89.5 10.5</code></pre>
-<p>From this, we can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>, and see that it can be seen both in the default view of <code>sce</code> and via accession:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</a></code></pre></div>
-<pre><code>## Perplexity should be lower than K!</code></pre>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</a></code></pre></div>
-<pre><code>##         [,1]  [,2]
-## cell_1   783  5637
-## cell_2 -5278 -2133
-## cell_3  4495 -3504</code></pre>
-<p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code> (notice that this is plural, and thus not the same as <code>reducedDim()</code>:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="kw">reducedDims</span>(sce)</a></code></pre></div>
-<pre><code>## List of length 2
-## names(2): PCA TSNE</code></pre>
-<p>Now, say we have a different dimensionality reduction algorithm we’d like to try that is not yet implemented with direct compatibility for <em>SingleCellExperiment</em>, e.g. with an associated wrapper in packages such as <code>scater</code>. To accommodate this case (or alternately, when we want to directly run the dimensionality reduction method on the data ourselves rather than through a wrapper), we can directly add to the <code>reducedDims</code> slot. This is similar to how we previously extended the <code>assays</code> slot with our own custom entry of <code>counts_100</code>.</p>
-<p>Below, we show how to run <code>umap()</code> as implemented in the <code>uwot</code> package directly, rather than through the associated wrapper function implemented in <code>scater</code> via <code>runUMAP()</code>, saving the intermediate results, and then adding them into the <code>sce</code> object we had previously.</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">u &lt;-<span class="st"> </span>uwot<span class="op">::</span><span class="kw">umap</span>(<span class="kw">t</span>(<span class="kw">logcounts</span>(sce)), <span class="dt">n_neighbors =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb58-2" data-line-number="2"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) &lt;-<span class="st"> </span>u</a>
-<a class="sourceLine" id="cb58-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb58-4" data-line-number="4"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>)</a></code></pre></div>
-<pre><code>##          [,1]    [,2]
-## cell_1 -0.168 -0.3907
-## cell_2  0.647 -0.0126
-## cell_3 -0.479  0.4034
-## attr(,&quot;scaled:center&quot;)
-## [1] 11.23 -8.34</code></pre>
-<p>And now we can also see its entry when we look at the <code>reducedDims()</code> accessor output:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1"><span class="kw">reducedDims</span>(sce)</a></code></pre></div>
-<pre><code>## List of length 3
-## names(3): PCA TSNE UMAP_uwot</code></pre>
-</div>
-<div id="the-metadata-slot" class="section level2">
-<h2><span class="header-section-number">4.5</span> The <code>metadata</code> Slot</h2>
-<p>Some analyses produce results that do not fit into the aforementioned slots. Thankfully, there is a slot just for this type of messy data, and in fact, can accommodate any type of data, so long as it is in a named list:</p>
-<ul>
-<li><code>metadata</code> slot: a named list of entries, where each entry in the list can be anything you want it to be</li>
-</ul>
-<p>For example, say we have some favorite genes, such as highly variable genes, we want to save inside of <code>sce</code> for use in our analysis at a later point. We can do this simply by appending to the metadata slot as follows:</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1">my_genes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gene_1&quot;</span>, <span class="st">&quot;gene_5&quot;</span>)</a>
-<a class="sourceLine" id="cb62-2" data-line-number="2"><span class="kw">metadata</span>(sce) &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">favorite_genes =</span> my_genes)</a>
-<a class="sourceLine" id="cb62-3" data-line-number="3"><span class="kw">metadata</span>(sce)</a></code></pre></div>
+<div id="other-metadata" class="section level3">
+<h3><span class="header-section-number">4.3.3</span> Other metadata</h3>
+<p>Some analyses contain results or annotations that do not fit into the aforementioned slots, e.g., study metadata. Thankfully, there is a slot just for this type of messy data - the <code>metadata</code> slot, a named list of entries where each entry in the list can be anything you want it to be. For example, say we have some favorite genes (e.g., highly variable genes) that we want to store inside of <code>sce</code> for use in our analysis at a later point. We can do this simply by appending to the metadata slot as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_genes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gene_1&quot;</span>, <span class="st">&quot;gene_5&quot;</span>)
+<span class="kw">metadata</span>(sce) &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">favorite_genes =</span> my_genes)
+<span class="kw">metadata</span>(sce)</code></pre></div>
 <pre><code>## $favorite_genes
 ## [1] &quot;gene_1&quot; &quot;gene_5&quot;</code></pre>
 <p>Similarly, we can append more information via the <code>$</code> operator:</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" data-line-number="1">your_genes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gene_4&quot;</span>, <span class="st">&quot;gene_8&quot;</span>)</a>
-<a class="sourceLine" id="cb64-2" data-line-number="2"><span class="kw">metadata</span>(sce)<span class="op">$</span>your_genes &lt;-<span class="st"> </span>your_genes</a>
-<a class="sourceLine" id="cb64-3" data-line-number="3"><span class="kw">metadata</span>(sce)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">your_genes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gene_4&quot;</span>, <span class="st">&quot;gene_8&quot;</span>)
+<span class="kw">metadata</span>(sce)<span class="op">$</span>your_genes &lt;-<span class="st"> </span>your_genes
+<span class="kw">metadata</span>(sce)</code></pre></div>
 <pre><code>## $favorite_genes
 ## [1] &quot;gene_1&quot; &quot;gene_5&quot;
 ## 
 ## $your_genes
 ## [1] &quot;gene_4&quot; &quot;gene_8&quot;</code></pre>
 </div>
-<div id="about-spike-ins" class="section level2">
-<h2><span class="header-section-number">4.6</span> About Spike-Ins</h2>
-<p>You might have noticed that the <code>sce</code> default view produces an entry with <code>spikeNames</code>. The <em>SingleCellExperiment</em> object contains some special considerations for experiments with spike-in (ERCC) controls. We leave this to the interested reader to learn more about in the <a href="https://bioconductor.org/packages/release/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html"><em>SingleCellExperiment</em> introductory vignette</a>.</p>
 </div>
-<div id="recording-analyses-in-singlecellexperiment" class="section level2">
-<h2><span class="header-section-number">4.7</span> Recording Analyses in <em>SingleCellExperiment</em></h2>
-<p>In subsequent sections, we will show an example workflow that uses the <em>SingleCellExperiment</em> object as its base, and similar to our walkthrough of the <em>SingleCellExperiment</em> class above, continually appends new entries to save the results of the analysis. The <em>SingleCellExperiment</em> thus can serve as a record of analysis in this manner. This makes it especially useful for collaboration, as the object can be transferred, analyzed, and even visualized via graphical user interfaces such as <em>iSEE</em>.</p>
+<div id="single-cell-specific-fields" class="section level2">
+<h2><span class="header-section-number">4.4</span> Single-cell-specific fields</h2>
+<div id="background-1" class="section level3">
+<h3><span class="header-section-number">4.4.1</span> Background</h3>
+<p>So far, we have covered the <code>assays</code> (primary data), <code>colData</code> (cell metadata), <code>rowData</code>/<code>rowRanges</code> (feature metadata), and <code>metadata</code> slots (other) of the <code>SingleCellExperiment</code> class. These slots are actually inherited from the <code>SummarizedExperiment</code> parent class (see <a href="https://bioconductor.org/packages/3.11/SummarizedExperiment/vignettes/SummarizedExperiment.html">here</a> for details), so any method that works on a <code>SummarizedExperiment</code> will also work on a <code>SingleCellExperiment</code> object. But why do we need a separate <code>SingleCellExperiment</code> class? This is motivated by the desire to streamline some single-cell-specific operations, which we will discuss in the rest of this section.</p>
+</div>
+<div id="dimensionality-reduction-results" class="section level3">
+<h3><span class="header-section-number">4.4.2</span> Dimensionality reduction results</h3>
+<p>The <code>reducedDims</code> slot is specially designed to store reduced dimensionality representations of the primary data obtained by methods such as PCA and <span class="math inline">\(t\)</span>-SNE (see Chapter <a href="dimensionality-reduction.html#dimensionality-reduction">9</a> for more details). This slot contains a list of numeric matrices of low-reduced representations of the primary data, where the rows represent the columns of the primary data (i.e., cells), and columns represent the dimensions. As this slot holds a list, we can store multiple PCA/<span class="math inline">\(t\)</span>-SNE/etc. results for the same dataset.</p>
+<p>In our example, we can calculate a PCA representation of our data using the <code>runPCA()</code> function from <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em>. We see that the <code>sce</code> now shows a new <code>reducedDim</code> that can be retrieved with the accessor <code>reducedDim()</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">logNormCounts</span>(sce)
+sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)
+<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</code></pre></div>
+<pre><code>##               PC1        PC2
+## cell_1 -1.1191164 -0.5789229
+## cell_2  1.4202511 -0.2750972
+## cell_3 -0.3011346  0.8540201
+## attr(,&quot;percentVar&quot;)
+## [1] 74.66489 25.33511
+## attr(,&quot;rotation&quot;)
+##                 PC1         PC2
+## gene_6   0.64358877 -0.25791909
+## gene_10 -0.62743656  0.04899841
+## gene_8  -0.19711632 -0.56324219
+## gene_9   0.12965314  0.60396949
+## gene_4   0.18223354 -0.26141356
+## gene_1   0.17570013  0.21910986
+## gene_5  -0.19867036 -0.08364427
+## gene_2   0.14823655  0.20393333
+## gene_3  -0.09919602  0.27170938
+## gene_7  -0.03299467  0.10148234</code></pre>
+<p>We can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</code></pre></div>
+<pre><code>## Perplexity should be lower than K!</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</code></pre></div>
+<pre><code>##             [,1]      [,2]
+## cell_1 -1200.274 -5567.405
+## cell_2  5421.452  1744.845
+## cell_3 -4221.177  3822.560</code></pre>
+<p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code>. Note that this is plural and returns a list of all results, whereas <code>reducedDim()</code> only returns a single result.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre></div>
+<pre><code>## List of length 2
+## names(2): PCA TSNE</code></pre>
+<p>We can also manually add content to the <code>reducedDims()</code> slot, much like how we added matrices to the <code>assays</code> slot previously. To illustrate, we run the <code>umap()</code> function directly from the <em><a href="https://CRAN.R-project.org/package=uwot">uwot</a></em> package to generate a matrix of UMAP coordinates that is added to the <code>reducedDims</code> of our <code>sce</code> object. (In practice, <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> has a <code>runUMAP()</code> wrapper function that adds the results for us, but we will manually call <code>umap()</code> here for demonstration purposes.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">u &lt;-<span class="st"> </span>uwot<span class="op">::</span><span class="kw">umap</span>(<span class="kw">t</span>(<span class="kw">logcounts</span>(sce)), <span class="dt">n_neighbors =</span> <span class="dv">2</span>)
+<span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) &lt;-<span class="st"> </span>u
+<span class="kw">reducedDims</span>(sce) <span class="co"># Now stored in the object.</span></code></pre></div>
+<pre><code>## List of length 3
+## names(3): PCA TSNE UMAP_uwot</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) </code></pre></div>
+<pre><code>##              [,1]       [,2]
+## cell_1 -0.5841204 -0.3420447
+## cell_2  0.3266629  0.5602762
+## cell_3  0.2574576 -0.2182315
+## attr(,&quot;scaled:center&quot;)
+## [1]  7.787171 -7.601479</code></pre>
+</div>
+<div id="alternative-experiments" class="section level3">
+<h3><span class="header-section-number">4.4.3</span> Alternative Experiments</h3>
+<p>The <code>SingleCellExperiment</code> class provides the concept of “alternative Experiments” where we have data for a distinct set of features but the same set of samples/cells. The classic application would be to store the per-cell counts for spike-in transcripts; this allows us to retain this data for downstream use but separate it from the <code>assays</code> holding the counts for endogenous genes. The separation is particularly important as such alternative features often need to be processed separately, see Chapter <a href="#intergrating-with-protein-abundance"><strong>??</strong></a> for examples on antibody-derived tags.</p>
+<p>If we have data for alternative feature sets, we can store it in our <code>SingleCellExperiment</code> as an alternative Experiment. For example, if we have some data for spike-in transcripts, we first create a separate <code>SummarizedExperiment</code> object:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spike_counts &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">cell_1 =</span> <span class="kw">rpois</span>(<span class="dv">5</span>, <span class="dv">10</span>), 
+    <span class="dt">cell_2 =</span> <span class="kw">rpois</span>(<span class="dv">5</span>, <span class="dv">10</span>), 
+    <span class="dt">cell_3 =</span> <span class="kw">rpois</span>(<span class="dv">5</span>, <span class="dv">30</span>))
+<span class="kw">rownames</span>(spike_counts) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;spike_&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)
+spike_se &lt;-<span class="st"> </span><span class="kw">SummarizedExperiment</span>(<span class="kw">list</span>(<span class="dt">counts=</span>spike_counts))
+spike_se</code></pre></div>
+<pre><code>## class: SummarizedExperiment 
+## dim: 5 3 
+## metadata(0):
+## assays(1): counts
+## rownames(5): spike_1 spike_2 spike_3 spike_4 spike_5
+## rowData names(0):
+## colnames(3): cell_1 cell_2 cell_3
+## colData names(0):</code></pre>
+<p>Then we store this <code>SummarizedExperiment</code> in our <code>sce</code> object via the <code>altExp()</code> setter. Like <code>assays()</code> and <code>reducedDims()</code>, we can also retrieve all of the available alternative Experiments with <code>altExps()</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">altExp</span>(sce, <span class="st">&quot;spike&quot;</span>) &lt;-<span class="st"> </span>spike_se
+<span class="kw">altExps</span>(sce)</code></pre></div>
+<pre><code>## List of length 1
+## names(1): spike</code></pre>
+<p>The alternative Experiment concept ensures that all relevant aspects of a single-cell dataset can be held in a single object. It is also convenient as it ensures that our spike-in data is synchronized with the data for the endogenous genes. For example, if we subsetted <code>sce</code>, the spike-in data would be subsetted to match:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sub &lt;-<span class="st"> </span>sce[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] <span class="co"># retain only two samples.</span>
+<span class="kw">altExp</span>(sub, <span class="st">&quot;spike&quot;</span>)</code></pre></div>
+<pre><code>## class: SummarizedExperiment 
+## dim: 5 2 
+## metadata(0):
+## assays(1): counts
+## rownames(5): spike_1 spike_2 spike_3 spike_4 spike_5
+## rowData names(0):
+## colnames(2): cell_1 cell_2
+## colData names(0):</code></pre>
+<p>Any <code>SummarizedExperiment</code> object can be stored as an alternative Experiment, including another <code>SingleCellExperiment</code>! This allows power users to perform tricks like those described in Section <a href="feature-selection.html#feature-selection-subsetting">8.5</a>.</p>
+</div>
+<div id="size-factors" class="section level3">
+<h3><span class="header-section-number">4.4.4</span> Size factors</h3>
+<p>The <code>sizeFactors</code> slot contains a numeric vector of per-cell normalization factors used to normalize the expression data (see Chapter <a href="normalization.html#normalization">7</a> for more details). This is typically automatically added by normalization functions, as shown below for <em><a href="https://bioconductor.org/packages/3.11/scran">scran</a></em>’s deconvolution-based size factors:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)
+<span class="kw">sizeFactors</span>(sce)</code></pre></div>
+<pre><code>## [1] 0.6037344 0.6846473 1.7116183</code></pre>
+<p>Alternatively, we can manually add the size factors, as shown below for library size-derived factors:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sizeFactors</span>(sce) &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">librarySizeFactors</span>(sce)
+<span class="kw">sizeFactors</span>(sce)</code></pre></div>
+<pre><code>##    cell_1    cell_2    cell_3 
+## 0.6037344 0.6846473 1.7116183</code></pre>
+<p>Technically speaking, the <code>sizeFactors</code> concept is not unique to single-cell analyses. Nonetheless, we mention it here as it is an extension beyond what is available in the <code>SummarizedExperiment</code> parent class.</p>
+</div>
 </div>
 <div id="conclusion" class="section level2">
-<h2><span class="header-section-number">4.8</span> Conclusion</h2>
-<p>The <em>SingleCellExperiment</em> class to the Bioc-verse single-cell related packages. It is this connection to <em>SingleCellExperiment</em> that makes many of these packages easily interoperable and modular over the span of an scRNA-seq analysis. Furthermore, it allows anybody to implement their own analytical tools for scRNA-seq that build on the <em>SingleCellExperiment</em>, enabling decentralized scientific developments.</p>
+<h2><span class="header-section-number">4.5</span> Conclusion</h2>
+<p>The widespread use of the <code>SingleCellExperiment</code> class provides the foundation for interoperability between single-cell-related packages in the Bioconductor ecosystem. <code>SingleCellExperiment</code> objects generated by one package can be used as input into another package, encouraging synergies that enable our analysis to be greater than the sum of its parts. Each step of the analysis will also add new entries to the <code>assays</code>, <code>colData</code>, <code>reducedDims</code>, etc., meaning that the final <code>SingleCellExperiment</code> object effectively serves as a self-contained record of the analysis. This is convenient as the object can be saved for future use or transferred to collaborators for further analysis. Thus, for the rest of this book, we will be using the <code>SingleCellExperiment</code> as our basic data structure.</p>
 <!-- ## Multimodal Data: _MultiAssayExperiment_ -->
 <!-- Recent advances in technology and protocols allow the simultaneous collection of DNA and RNA from the same cells, enabling single-cell multi-modal analysis. These data present new challenges in the complexity of statistical analyses, which are addressed in Bioconductor through the *MultiAssayExperiment* container. The *MultiAssayExperiment* class integrates all major Bioconductor experimental data containers, and any containers derived from those, including *SingleCellExperiment*. It provides harmonized data management for heterogeneous assays, including subsetting by genomic identifiers, genomic coordinates, or sample/cell attributes such as cell type. The user interface mimics that of *SingleCellExperiment*, with comparable actions working across all assays. -->
 <!-- Multi-modal profiling is an emergent area of single-cell biology with many exciting technologies coming online, such as gene expression profiling in tandem with protein via CITE-seq/REAP-seq and adaptive repertoire sequencing. While we won't cover multimodal data analysis further in this online book as of this writing, we anticipate infrastructure and statistical methodology advances in this area in the near future. -->
@@ -1102,7 +1111,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "true";
+    var src = "";
     if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))

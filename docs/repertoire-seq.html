@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 19 Analyzing repertoire sequencing data | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 19 Analyzing repertoire sequencing data | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-01-09" />
+<meta name="date" content="2020-03-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,67 +52,41 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  { background-color: #f8f8f8; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } /* Alert */
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #c4a000; } /* Attribute */
-code span.bn { color: #0000cf; } /* BaseN */
-code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4e9a06; } /* Char */
-code span.cn { color: #000000; } /* Constant */
-code span.co { color: #8f5902; font-style: italic; } /* Comment */
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code span.dt { color: #204a87; } /* DataType */
-code span.dv { color: #0000cf; } /* DecVal */
-code span.er { color: #a40000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #0000cf; } /* Float */
-code span.fu { color: #000000; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code span.ot { color: #8f5902; } /* Other */
-code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code span.sc { color: #000000; } /* SpecialChar */
-code span.ss { color: #4e9a06; } /* SpecialString */
-code span.st { color: #4e9a06; } /* String */
-code span.va { color: #000000; } /* Variable */
-code span.vs { color: #4e9a06; } /* VerbatimString */
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -167,20 +141,23 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="data-infrastructure.html"><a href="data-infrastructure.html"><i class="fa fa-check"></i><b>4</b> Data Infrastructure</a><ul>
-<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#prerequisites"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
-<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-singlecellexperiment-class"><i class="fa fa-check"></i><b>4.2</b> The <em>SingleCellExperiment</em> Class</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#primary-data-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Primary Data: The <code>assays</code> Slot</a></li>
-<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#extending-the-assays-slot"><i class="fa fa-check"></i><b>4.2.2</b> Extending the <code>assays</code> Slot</a></li>
-<li class="chapter" data-level="4.2.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#column-metadata-coldata-slot"><i class="fa fa-check"></i><b>4.2.3</b> Column (Meta)Data: <code>colData</code> Slot</a></li>
-<li class="chapter" data-level="4.2.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#feature-metadata-rowdatarowranges"><i class="fa fa-check"></i><b>4.2.4</b> Feature Metadata: <code>rowData</code>/<code>rowRanges</code></a></li>
-<li class="chapter" data-level="4.2.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors-slot-sizefactors"><i class="fa fa-check"></i><b>4.2.5</b> Size Factors Slot: <code>sizeFactors</code></a></li>
+<li class="chapter" data-level="4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#background"><i class="fa fa-check"></i><b>4.1</b> Background</a></li>
+<li class="chapter" data-level="4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#storing-primary-experimental-data"><i class="fa fa-check"></i><b>4.2</b> Storing primary experimental data</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#filling-the-assays-slot"><i class="fa fa-check"></i><b>4.2.1</b> Filling the <code>assays</code> slot</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#adding-more-assays"><i class="fa fa-check"></i><b>4.2.2</b> Adding more <code>assays</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#a-brief-recap-from-se-to-sce"><i class="fa fa-check"></i><b>4.3</b> A Brief Recap: From <code>se</code> to <code>sce</code></a></li>
-<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-reduceddims-slot"><i class="fa fa-check"></i><b>4.4</b> The <code>reducedDims</code> Slot</a></li>
-<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#the-metadata-slot"><i class="fa fa-check"></i><b>4.5</b> The <code>metadata</code> Slot</a></li>
-<li class="chapter" data-level="4.6" data-path="data-infrastructure.html"><a href="data-infrastructure.html#about-spike-ins"><i class="fa fa-check"></i><b>4.6</b> About Spike-Ins</a></li>
-<li class="chapter" data-level="4.7" data-path="data-infrastructure.html"><a href="data-infrastructure.html#recording-analyses-in-singlecellexperiment"><i class="fa fa-check"></i><b>4.7</b> Recording Analyses in <em>SingleCellExperiment</em></a></li>
-<li class="chapter" data-level="4.8" data-path="data-infrastructure.html"><a href="data-infrastructure.html#conclusion"><i class="fa fa-check"></i><b>4.8</b> Conclusion</a></li>
+<li class="chapter" data-level="4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#handling-metadata"><i class="fa fa-check"></i><b>4.3</b> Handling metadata</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#on-the-columns"><i class="fa fa-check"></i><b>4.3.1</b> On the columns</a></li>
+<li class="chapter" data-level="4.3.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#on-the-rows"><i class="fa fa-check"></i><b>4.3.2</b> On the rows</a></li>
+<li class="chapter" data-level="4.3.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#other-metadata"><i class="fa fa-check"></i><b>4.3.3</b> Other metadata</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#single-cell-specific-fields"><i class="fa fa-check"></i><b>4.4</b> Single-cell-specific fields</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="data-infrastructure.html"><a href="data-infrastructure.html#background-1"><i class="fa fa-check"></i><b>4.4.1</b> Background</a></li>
+<li class="chapter" data-level="4.4.2" data-path="data-infrastructure.html"><a href="data-infrastructure.html#dimensionality-reduction-results"><i class="fa fa-check"></i><b>4.4.2</b> Dimensionality reduction results</a></li>
+<li class="chapter" data-level="4.4.3" data-path="data-infrastructure.html"><a href="data-infrastructure.html#alternative-experiments"><i class="fa fa-check"></i><b>4.4.3</b> Alternative Experiments</a></li>
+<li class="chapter" data-level="4.4.4" data-path="data-infrastructure.html"><a href="data-infrastructure.html#size-factors"><i class="fa fa-check"></i><b>4.4.4</b> Size factors</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="data-infrastructure.html"><a href="data-infrastructure.html#conclusion"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
 </ul></li>
 <li class="part"><span><b>II Focus Topics</b></span></li>
 <li class="chapter" data-level="5" data-path="overview.html"><a href="overview.html"><i class="fa fa-check"></i><b>5</b> Overview</a><ul>
@@ -201,7 +178,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6.4" data-path="quality-control.html"><a href="quality-control.html#quality-control-plots"><i class="fa fa-check"></i><b>6.4</b> Checking diagnostic plots</a></li>
 <li class="chapter" data-level="6.5" data-path="quality-control.html"><a href="quality-control.html#qc-droplets"><i class="fa fa-check"></i><b>6.5</b> Cell calling for droplet data</a><ul>
-<li class="chapter" data-level="6.5.1" data-path="quality-control.html"><a href="quality-control.html#background"><i class="fa fa-check"></i><b>6.5.1</b> Background</a></li>
+<li class="chapter" data-level="6.5.1" data-path="quality-control.html"><a href="quality-control.html#background-2"><i class="fa fa-check"></i><b>6.5.1</b> Background</a></li>
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
@@ -236,7 +213,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.3.4" data-path="feature-selection.html"><a href="feature-selection.html#feature-selection-positive"><i class="fa fa-check"></i><b>8.3.4</b> Keeping all genes above the trend</a></li>
 </ul></li>
 <li class="chapter" data-level="8.4" data-path="feature-selection.html"><a href="feature-selection.html#apriori-hvgs"><i class="fa fa-check"></i><b>8.4</b> Selecting <em>a priori</em> genes of interest</a></li>
-<li class="chapter" data-level="8.5" data-path="feature-selection.html"><a href="feature-selection.html#putting-it-all-together"><i class="fa fa-check"></i><b>8.5</b> Putting it all together</a></li>
+<li class="chapter" data-level="8.5" data-path="feature-selection.html"><a href="feature-selection.html#feature-selection-subsetting"><i class="fa fa-check"></i><b>8.5</b> Putting it all together</a></li>
 <li class="chapter" data-level="" data-path="feature-selection.html"><a href="feature-selection.html#session-info-3"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html"><i class="fa fa-check"></i><b>9</b> Dimensionality reduction</a><ul>
@@ -249,12 +226,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.3.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#based-on-population-structure"><i class="fa fa-check"></i><b>9.3.4</b> Based on population structure</a></li>
 <li class="chapter" data-level="9.3.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#putting-it-together"><i class="fa fa-check"></i><b>9.3.5</b> Putting it together</a></li>
 </ul></li>
-<li class="chapter" data-level="9.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>9.4</b> Dimensionality reduction for visualization</a><ul>
-<li class="chapter" data-level="9.4.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#motivation-3"><i class="fa fa-check"></i><b>9.4.1</b> Motivation</a></li>
-<li class="chapter" data-level="9.4.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualizating-with-pca"><i class="fa fa-check"></i><b>9.4.2</b> Visualizating with PCA</a></li>
-<li class="chapter" data-level="9.4.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>9.4.3</b> <span class="math inline">\(t\)</span>-stochastic neighbor embedding</a></li>
-<li class="chapter" data-level="9.4.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>9.4.4</b> Uniform manifold approximation and projection</a></li>
-<li class="chapter" data-level="9.4.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualization-interpretation"><i class="fa fa-check"></i><b>9.4.5</b> Interpreting the plots</a></li>
+<li class="chapter" data-level="9.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#non-negative-matrix-factorization"><i class="fa fa-check"></i><b>9.4</b> Non-negative matrix factorization</a></li>
+<li class="chapter" data-level="9.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#dimensionality-reduction-for-visualization"><i class="fa fa-check"></i><b>9.5</b> Dimensionality reduction for visualization</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#motivation-3"><i class="fa fa-check"></i><b>9.5.1</b> Motivation</a></li>
+<li class="chapter" data-level="9.5.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualizing-with-pca"><i class="fa fa-check"></i><b>9.5.2</b> Visualizing with PCA</a></li>
+<li class="chapter" data-level="9.5.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#t-stochastic-neighbor-embedding"><i class="fa fa-check"></i><b>9.5.3</b> <span class="math inline">\(t\)</span>-stochastic neighbor embedding</a></li>
+<li class="chapter" data-level="9.5.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#uniform-manifold-approximation-and-projection"><i class="fa fa-check"></i><b>9.5.4</b> Uniform manifold approximation and projection</a></li>
+<li class="chapter" data-level="9.5.5" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#visualization-interpretation"><i class="fa fa-check"></i><b>9.5.5</b> Interpreting the plots</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#session-info-4"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -262,18 +240,18 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="clustering.html"><a href="clustering.html#motivation-4"><i class="fa fa-check"></i><b>10.1</b> Motivation</a></li>
 <li class="chapter" data-level="10.2" data-path="clustering.html"><a href="clustering.html#what-is-the-true-clustering"><i class="fa fa-check"></i><b>10.2</b> What is the “true clustering”?</a></li>
 <li class="chapter" data-level="10.3" data-path="clustering.html"><a href="clustering.html#clustering-graph"><i class="fa fa-check"></i><b>10.3</b> Graph-based clustering</a><ul>
-<li class="chapter" data-level="10.3.1" data-path="clustering.html"><a href="clustering.html#background-1"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
+<li class="chapter" data-level="10.3.1" data-path="clustering.html"><a href="clustering.html#background-3"><i class="fa fa-check"></i><b>10.3.1</b> Background</a></li>
 <li class="chapter" data-level="10.3.2" data-path="clustering.html"><a href="clustering.html#implementation"><i class="fa fa-check"></i><b>10.3.2</b> Implementation</a></li>
 <li class="chapter" data-level="10.3.3" data-path="clustering.html"><a href="clustering.html#other-parameters"><i class="fa fa-check"></i><b>10.3.3</b> Other parameters</a></li>
 <li class="chapter" data-level="10.3.4" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation"><i class="fa fa-check"></i><b>10.3.4</b> Assessing cluster separation</a></li>
 </ul></li>
 <li class="chapter" data-level="10.4" data-path="clustering.html"><a href="clustering.html#k-means-clustering"><i class="fa fa-check"></i><b>10.4</b> <span class="math inline">\(k\)</span>-means clustering</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="clustering.html"><a href="clustering.html#background-2"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
+<li class="chapter" data-level="10.4.1" data-path="clustering.html"><a href="clustering.html#background-4"><i class="fa fa-check"></i><b>10.4.1</b> Background</a></li>
 <li class="chapter" data-level="10.4.2" data-path="clustering.html"><a href="clustering.html#base-implementation"><i class="fa fa-check"></i><b>10.4.2</b> Base implementation</a></li>
 <li class="chapter" data-level="10.4.3" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation-1"><i class="fa fa-check"></i><b>10.4.3</b> Assessing cluster separation</a></li>
 </ul></li>
 <li class="chapter" data-level="10.5" data-path="clustering.html"><a href="clustering.html#hierarchical-clustering"><i class="fa fa-check"></i><b>10.5</b> Hierarchical clustering</a><ul>
-<li class="chapter" data-level="10.5.1" data-path="clustering.html"><a href="clustering.html#background-3"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
+<li class="chapter" data-level="10.5.1" data-path="clustering.html"><a href="clustering.html#background-5"><i class="fa fa-check"></i><b>10.5.1</b> Background</a></li>
 <li class="chapter" data-level="10.5.2" data-path="clustering.html"><a href="clustering.html#implementation-1"><i class="fa fa-check"></i><b>10.5.2</b> Implementation</a></li>
 <li class="chapter" data-level="10.5.3" data-path="clustering.html"><a href="clustering.html#assessing-cluster-separation-2"><i class="fa fa-check"></i><b>10.5.3</b> Assessing cluster separation</a></li>
 </ul></li>
@@ -340,7 +318,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#differential-expression-between-conditions"><i class="fa fa-check"></i><b>14.3</b> Differential expression between conditions</a><ul>
 <li class="chapter" data-level="14.3.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#creating-pseudo-bulk-samples"><i class="fa fa-check"></i><b>14.3.1</b> Creating pseudo-bulk samples</a></li>
 <li class="chapter" data-level="14.3.2" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#performing-the-de-analysis"><i class="fa fa-check"></i><b>14.3.2</b> Performing the DE analysis</a></li>
-<li class="chapter" data-level="14.3.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#putting-it-all-together-1"><i class="fa fa-check"></i><b>14.3.3</b> Putting it all together</a></li>
+<li class="chapter" data-level="14.3.3" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#putting-it-all-together"><i class="fa fa-check"></i><b>14.3.3</b> Putting it all together</a></li>
 </ul></li>
 <li class="chapter" data-level="14.4" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#differential-abundance"><i class="fa fa-check"></i><b>14.4</b> Differential abundance between conditions</a><ul>
 <li class="chapter" data-level="14.4.1" data-path="multi-sample-comparisons.html"><a href="multi-sample-comparisons.html#overview-4"><i class="fa fa-check"></i><b>14.4.1</b> Overview</a></li>
@@ -374,7 +352,22 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="cell-cycle-assignment.html"><a href="cell-cycle-assignment.html#session-info-11"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="17" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html"><i class="fa fa-check"></i><b>17</b> Trajectory Analysis</a><ul>
-<li class="chapter" data-level="" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#session-info-12"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="17.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#overview-6"><i class="fa fa-check"></i><b>17.1</b> Overview</a></li>
+<li class="chapter" data-level="17.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#obtaining-pseudo-times"><i class="fa fa-check"></i><b>17.2</b> Obtaining pseudo-times</a><ul>
+<li class="chapter" data-level="17.2.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#cluster-based-minimum-spanning-tree"><i class="fa fa-check"></i><b>17.2.1</b> Cluster-based minimum spanning tree</a></li>
+<li class="chapter" data-level="17.2.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#principal-curves"><i class="fa fa-check"></i><b>17.2.2</b> Principal curves</a></li>
+<li class="chapter" data-level="17.2.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#whatever-monocle-does-nowadays"><i class="fa fa-check"></i><b>17.2.3</b> Whatever monocle does nowadays</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#characterizing-trajectories"><i class="fa fa-check"></i><b>17.3</b> Characterizing trajectories</a><ul>
+<li class="chapter" data-level="17.3.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-along-a-trajectory"><i class="fa fa-check"></i><b>17.3.1</b> Changes along a trajectory</a></li>
+<li class="chapter" data-level="17.3.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-between-lineages"><i class="fa fa-check"></i><b>17.3.2</b> Changes between lineages</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#finding-the-root"><i class="fa fa-check"></i><b>17.4</b> Finding the root</a><ul>
+<li class="chapter" data-level="17.4.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#overview-7"><i class="fa fa-check"></i><b>17.4.1</b> Overview</a></li>
+<li class="chapter" data-level="17.4.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#entropy-based-methods"><i class="fa fa-check"></i><b>17.4.2</b> Entropy-based methods</a></li>
+<li class="chapter" data-level="17.4.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#rna-velocity"><i class="fa fa-check"></i><b>17.4.3</b> RNA velocity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#session-information"><i class="fa fa-check"></i>Session information</a></li>
 </ul></li>
 <li class="chapter" data-level="18" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html"><i class="fa fa-check"></i><b>18</b> Integrating with protein abundance</a><ul>
 <li class="chapter" data-level="18.1" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#motivation-11"><i class="fa fa-check"></i><b>18.1</b> Motivation</a></li>
@@ -389,32 +382,33 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="18.4.2" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-combined-clustering"><i class="fa fa-check"></i><b>18.4.2</b> By combined clustering</a></li>
 <li class="chapter" data-level="18.4.3" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#by-differential-testing"><i class="fa fa-check"></i><b>18.4.3</b> By differential testing</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="integrating-with-protein-abundance.html"><a href="integrating-with-protein-abundance.html#session-info-12"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="19" data-path="repertoire-seq.html"><a href="repertoire-seq.html"><i class="fa fa-check"></i><b>19</b> Analyzing repertoire sequencing data</a><ul>
 <li class="chapter" data-level="19.1" data-path="repertoire-seq.html"><a href="repertoire-seq.html#motivation-12"><i class="fa fa-check"></i><b>19.1</b> Motivation</a></li>
 <li class="chapter" data-level="19.2" data-path="repertoire-seq.html"><a href="repertoire-seq.html#analyzing-the-t-cell-receptor-repertoire"><i class="fa fa-check"></i><b>19.2</b> Analyzing the T cell receptor repertoire</a><ul>
 <li class="chapter" data-level="19.2.1" data-path="repertoire-seq.html"><a href="repertoire-seq.html#data-processing"><i class="fa fa-check"></i><b>19.2.1</b> Data processing</a></li>
 <li class="chapter" data-level="19.2.2" data-path="repertoire-seq.html"><a href="repertoire-seq.html#basic-diagnostics"><i class="fa fa-check"></i><b>19.2.2</b> Basic diagnostics</a></li>
-<li class="chapter" data-level="19.2.3" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-clonal-expansion"><i class="fa fa-check"></i><b>19.2.3</b> Quantifying clonal expansion</a></li>
-<li class="chapter" data-level="19.2.4" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-gene-expression-and-properties"><i class="fa fa-check"></i><b>19.2.4</b> Quantifying gene expression and properties</a></li>
+<li class="chapter" data-level="19.2.3" data-path="repertoire-seq.html"><a href="repertoire-seq.html#complex-diagnostics"><i class="fa fa-check"></i><b>19.2.3</b> Complex diagnostics</a></li>
+<li class="chapter" data-level="19.2.4" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-clonal-expansion"><i class="fa fa-check"></i><b>19.2.4</b> Quantifying clonal expansion</a></li>
+<li class="chapter" data-level="19.2.5" data-path="repertoire-seq.html"><a href="repertoire-seq.html#quantifying-gene-expression-and-properties"><i class="fa fa-check"></i><b>19.2.5</b> Quantifying gene expression and properties</a></li>
 </ul></li>
 <li class="chapter" data-level="19.3" data-path="repertoire-seq.html"><a href="repertoire-seq.html#analyzing-the-immunoglobulin-repertoire"><i class="fa fa-check"></i><b>19.3</b> Analyzing the immunoglobulin repertoire</a></li>
 <li class="chapter" data-level="19.4" data-path="repertoire-seq.html"><a href="repertoire-seq.html#multi-sample-analyses"><i class="fa fa-check"></i><b>19.4</b> Multi-sample analyses</a></li>
-<li class="chapter" data-level="" data-path="repertoire-seq.html"><a href="repertoire-seq.html#session-info-14"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="repertoire-seq.html"><a href="repertoire-seq.html#session-info-13"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="interactive-sharing.html"><a href="interactive-sharing.html"><i class="fa fa-check"></i><b>20</b> Interactive Interfaces and Sharing</a><ul>
+<li class="chapter" data-level="20" data-path="interactive-sharing.html"><a href="interactive-sharing.html"><i class="fa fa-check"></i><b>20</b> Interactive data exploration</a><ul>
 <li class="chapter" data-level="20.1" data-path="interactive-sharing.html"><a href="interactive-sharing.html#motivation-13"><i class="fa fa-check"></i><b>20.1</b> Motivation</a></li>
 <li class="chapter" data-level="20.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#interactive-quickstart"><i class="fa fa-check"></i><b>20.2</b> Quick start</a></li>
-<li class="chapter" data-level="20.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#isee-examples"><i class="fa fa-check"></i><b>20.3</b> Examples of usages for iSEE apps</a><ul>
+<li class="chapter" data-level="20.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#isee-examples"><i class="fa fa-check"></i><b>20.3</b> Usage examples</a><ul>
 <li class="chapter" data-level="20.3.1" data-path="interactive-sharing.html"><a href="interactive-sharing.html#quality-control-2"><i class="fa fa-check"></i><b>20.3.1</b> Quality control</a></li>
-<li class="chapter" data-level="20.3.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#annotation-and-identification-of-cell-populations"><i class="fa fa-check"></i><b>20.3.2</b> Annotation and identification of cell populations</a></li>
-<li class="chapter" data-level="20.3.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#collaborative-analysis"><i class="fa fa-check"></i><b>20.3.3</b> Collaborative analysis</a></li>
-<li class="chapter" data-level="20.3.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#dissemination"><i class="fa fa-check"></i><b>20.3.4</b> Dissemination of analysis results</a></li>
+<li class="chapter" data-level="20.3.2" data-path="interactive-sharing.html"><a href="interactive-sharing.html#annotation-of-cell-populations"><i class="fa fa-check"></i><b>20.3.2</b> Annotation of cell populations</a></li>
+<li class="chapter" data-level="20.3.3" data-path="interactive-sharing.html"><a href="interactive-sharing.html#querying-features-of-interest"><i class="fa fa-check"></i><b>20.3.3</b> Querying features of interest</a></li>
 </ul></li>
-<li class="chapter" data-level="20.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#reproducibility"><i class="fa fa-check"></i><b>20.4</b> Reproducibility</a></li>
-<li class="chapter" data-level="20.5" data-path="interactive-sharing.html"><a href="interactive-sharing.html#additional-resources"><i class="fa fa-check"></i><b>20.5</b> Additional resources</a></li>
-<li class="chapter" data-level="" data-path="interactive-sharing.html"><a href="interactive-sharing.html#session-info-15"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="20.4" data-path="interactive-sharing.html"><a href="interactive-sharing.html#reproducible-visualizations"><i class="fa fa-check"></i><b>20.4</b> Reproducible visualizations</a></li>
+<li class="chapter" data-level="20.5" data-path="interactive-sharing.html"><a href="interactive-sharing.html#dissemination"><i class="fa fa-check"></i><b>20.5</b> Dissemination of analysis results</a></li>
+<li class="chapter" data-level="20.6" data-path="interactive-sharing.html"><a href="interactive-sharing.html#additional-resources"><i class="fa fa-check"></i><b>20.6</b> Additional resources</a></li>
+<li class="chapter" data-level="" data-path="interactive-sharing.html"><a href="interactive-sharing.html#session-info-14"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="21" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html"><i class="fa fa-check"></i><b>21</b> Dealing with big data</a><ul>
 <li class="chapter" data-level="21.1" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#motivation-14"><i class="fa fa-check"></i><b>21.1</b> Motivation</a></li>
@@ -424,13 +418,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="21.3" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#parallelization"><i class="fa fa-check"></i><b>21.3</b> Parallelization</a></li>
 <li class="chapter" data-level="21.4" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#out-of-memory-representations"><i class="fa fa-check"></i><b>21.4</b> Out of memory representations</a></li>
-<li class="chapter" data-level="" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#session-info-16"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="dealing-with-big-data.html"><a href="dealing-with-big-data.html#session-info-15"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="22" data-path="interoperability.html"><a href="interoperability.html"><i class="fa fa-check"></i><b>22</b> Interoperability</a><ul>
 <li class="chapter" data-level="22.1" data-path="interoperability.html"><a href="interoperability.html#motivation-15"><i class="fa fa-check"></i><b>22.1</b> Motivation</a></li>
 <li class="chapter" data-level="22.2" data-path="interoperability.html"><a href="interoperability.html#interchanging-with-seurat"><i class="fa fa-check"></i><b>22.2</b> Interchanging with <em>Seurat</em></a></li>
 <li class="chapter" data-level="22.3" data-path="interoperability.html"><a href="interoperability.html#interchanging-with-scanpy"><i class="fa fa-check"></i><b>22.3</b> Interchanging with <em>scanpy</em></a></li>
-<li class="chapter" data-level="" data-path="interoperability.html"><a href="interoperability.html#session-info-17"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="interoperability.html"><a href="interoperability.html#session-info-16"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="part"><span><b>III Workflows</b></span></li>
 <li class="chapter" data-level="23" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html"><i class="fa fa-check"></i><b>23</b> Lun 416B cell line (Smart-seq2)</a><ul>
@@ -443,7 +437,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="23.7" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#dimensionality-reduction-1"><i class="fa fa-check"></i><b>23.7</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="23.8" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#clustering-1"><i class="fa fa-check"></i><b>23.8</b> Clustering</a></li>
 <li class="chapter" data-level="23.9" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#interpretation"><i class="fa fa-check"></i><b>23.9</b> Interpretation</a></li>
-<li class="chapter" data-level="" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#session-info-18"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="lun-416b-cell-line-smart-seq2.html"><a href="lun-416b-cell-line-smart-seq2.html#session-info-17"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="24" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html"><i class="fa fa-check"></i><b>24</b> Zeisel mouse brain (STRT-Seq)</a><ul>
 <li class="chapter" data-level="24.1" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#introduction-4"><i class="fa fa-check"></i><b>24.1</b> Introduction</a></li>
@@ -454,7 +448,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="24.6" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#dimensionality-reduction-2"><i class="fa fa-check"></i><b>24.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="24.7" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#clustering-2"><i class="fa fa-check"></i><b>24.7</b> Clustering</a></li>
 <li class="chapter" data-level="24.8" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#interpretation-1"><i class="fa fa-check"></i><b>24.8</b> Interpretation</a></li>
-<li class="chapter" data-level="" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#session-info-19"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="zeisel-mouse-brain-strt-seq.html"><a href="zeisel-mouse-brain-strt-seq.html#session-info-18"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="25" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html"><i class="fa fa-check"></i><b>25</b> Unfiltered human PBMCs (10X Genomics)</a><ul>
 <li class="chapter" data-level="25.1" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#introduction-5"><i class="fa fa-check"></i><b>25.1</b> Introduction</a></li>
@@ -465,7 +459,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="25.6" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#dimensionality-reduction-3"><i class="fa fa-check"></i><b>25.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="25.7" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#clustering-3"><i class="fa fa-check"></i><b>25.7</b> Clustering</a></li>
 <li class="chapter" data-level="25.8" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#interpretation-2"><i class="fa fa-check"></i><b>25.8</b> Interpretation</a></li>
-<li class="chapter" data-level="" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#session-info-20"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="unfiltered-human-pbmcs-10x-genomics.html"><a href="unfiltered-human-pbmcs-10x-genomics.html#session-info-19"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="26" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html"><i class="fa fa-check"></i><b>26</b> Filtered human PBMCs (10X Genomics)</a><ul>
 <li class="chapter" data-level="26.1" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#introduction-6"><i class="fa fa-check"></i><b>26.1</b> Introduction</a></li>
@@ -476,7 +470,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="26.6" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#dimensionality-reduction-4"><i class="fa fa-check"></i><b>26.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="26.7" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#clustering-4"><i class="fa fa-check"></i><b>26.7</b> Clustering</a></li>
 <li class="chapter" data-level="26.8" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#data-integration"><i class="fa fa-check"></i><b>26.8</b> Data integration</a></li>
-<li class="chapter" data-level="" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#session-info-21"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="filtered-human-pbmcs-10x-genomics.html"><a href="filtered-human-pbmcs-10x-genomics.html#session-info-20"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="27" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html"><i class="fa fa-check"></i><b>27</b> Human PBMC 10X dataset (surface proteins)</a><ul>
 <li class="chapter" data-level="27.1" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#introduction-7"><i class="fa fa-check"></i><b>27.1</b> Introduction</a></li>
@@ -492,7 +486,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="27.3.2" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#normalization-7"><i class="fa fa-check"></i><b>27.3.2</b> Normalization</a></li>
 <li class="chapter" data-level="27.3.3" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#clustering-6"><i class="fa fa-check"></i><b>27.3.3</b> Clustering</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#session-info-22"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="human-pbmc-10x-dataset-surface-proteins.html"><a href="human-pbmc-10x-dataset-surface-proteins.html#session-info-21"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="28" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html"><i class="fa fa-check"></i><b>28</b> Grun human pancreas (CEL-seq2)</a><ul>
 <li class="chapter" data-level="28.1" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#introduction-8"><i class="fa fa-check"></i><b>28.1</b> Introduction</a></li>
@@ -503,7 +497,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="28.6" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#data-integration-1"><i class="fa fa-check"></i><b>28.6</b> Data integration</a></li>
 <li class="chapter" data-level="28.7" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#dimensionality-reduction-6"><i class="fa fa-check"></i><b>28.7</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="28.8" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#clustering-7"><i class="fa fa-check"></i><b>28.8</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#session-info-23"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="grun-human-pancreas-cel-seq2.html"><a href="grun-human-pancreas-cel-seq2.html#session-info-22"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="29" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html"><i class="fa fa-check"></i><b>29</b> Muraro human pancreas (CEL-seq)</a><ul>
 <li class="chapter" data-level="29.1" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#introduction-9"><i class="fa fa-check"></i><b>29.1</b> Introduction</a></li>
@@ -515,7 +509,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="29.5" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#data-integration-2"><i class="fa fa-check"></i><b>29.5</b> Data integration</a></li>
 <li class="chapter" data-level="29.6" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#dimensionality-reduction-7"><i class="fa fa-check"></i><b>29.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="29.7" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#clustering-8"><i class="fa fa-check"></i><b>29.7</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#session-info-24"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="muraro-human-pancreas-cel-seq.html"><a href="muraro-human-pancreas-cel-seq.html#session-info-23"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="30" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html"><i class="fa fa-check"></i><b>30</b> Lawlor human pancreas (SMARTer)</a><ul>
 <li class="chapter" data-level="30.1" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#introduction-10"><i class="fa fa-check"></i><b>30.1</b> Introduction</a></li>
@@ -525,7 +519,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="30.5" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#variance-modelling-6"><i class="fa fa-check"></i><b>30.5</b> Variance modelling</a></li>
 <li class="chapter" data-level="30.6" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#dimensionality-reduction-8"><i class="fa fa-check"></i><b>30.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="30.7" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#clustering-9"><i class="fa fa-check"></i><b>30.7</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#session-info-25"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="lawlor-human-pancreas-smarter.html"><a href="lawlor-human-pancreas-smarter.html#session-info-24"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="31" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html"><i class="fa fa-check"></i><b>31</b> Segerstolpe human pancreas (Smart-seq2)</a><ul>
 <li class="chapter" data-level="31.1" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#introduction-11"><i class="fa fa-check"></i><b>31.1</b> Introduction</a></li>
@@ -536,14 +530,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="31.3.3" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#dimensionality-reduction-9"><i class="fa fa-check"></i><b>31.3.3</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="31.3.4" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#clustering-10"><i class="fa fa-check"></i><b>31.3.4</b> Clustering</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#session-info-26"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="segerstolpe-human-pancreas-smart-seq2.html"><a href="segerstolpe-human-pancreas-smart-seq2.html#session-info-25"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="32" data-path="merged-pancreas.html"><a href="merged-pancreas.html"><i class="fa fa-check"></i><b>32</b> Merged human pancreas datasets</a><ul>
 <li class="chapter" data-level="32.1" data-path="merged-pancreas.html"><a href="merged-pancreas.html#introduction-12"><i class="fa fa-check"></i><b>32.1</b> Introduction</a></li>
 <li class="chapter" data-level="32.2" data-path="merged-pancreas.html"><a href="merged-pancreas.html#the-good"><i class="fa fa-check"></i><b>32.2</b> The good</a></li>
 <li class="chapter" data-level="32.3" data-path="merged-pancreas.html"><a href="merged-pancreas.html#the-bad"><i class="fa fa-check"></i><b>32.3</b> The bad</a></li>
 <li class="chapter" data-level="32.4" data-path="merged-pancreas.html"><a href="merged-pancreas.html#the-ugly"><i class="fa fa-check"></i><b>32.4</b> The ugly</a></li>
-<li class="chapter" data-level="" data-path="merged-pancreas.html"><a href="merged-pancreas.html#session-info-27"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="merged-pancreas.html"><a href="merged-pancreas.html#session-info-26"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="33" data-path="merged-hcsc.html"><a href="merged-hcsc.html"><i class="fa fa-check"></i><b>33</b> Grun mouse HSC (CEL-seq)</a><ul>
 <li class="chapter" data-level="33.1" data-path="merged-hcsc.html"><a href="merged-hcsc.html#introduction-13"><i class="fa fa-check"></i><b>33.1</b> Introduction</a></li>
@@ -554,7 +548,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="33.6" data-path="merged-hcsc.html"><a href="merged-hcsc.html#dimensionality-reduction-10"><i class="fa fa-check"></i><b>33.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="33.7" data-path="merged-hcsc.html"><a href="merged-hcsc.html#clustering-11"><i class="fa fa-check"></i><b>33.7</b> Clustering</a></li>
 <li class="chapter" data-level="33.8" data-path="merged-hcsc.html"><a href="merged-hcsc.html#marker-gene-detection"><i class="fa fa-check"></i><b>33.8</b> Marker gene detection</a></li>
-<li class="chapter" data-level="" data-path="merged-hcsc.html"><a href="merged-hcsc.html#session-info-28"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="merged-hcsc.html"><a href="merged-hcsc.html#session-info-27"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="34" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html"><i class="fa fa-check"></i><b>34</b> Nestorowa mouse HSC (Smart-seq2)</a><ul>
 <li class="chapter" data-level="34.1" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#introduction-14"><i class="fa fa-check"></i><b>34.1</b> Introduction</a></li>
@@ -567,7 +561,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="34.8" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#marker-gene-detection-1"><i class="fa fa-check"></i><b>34.8</b> Marker gene detection</a></li>
 <li class="chapter" data-level="34.9" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#cell-type-annotation-1"><i class="fa fa-check"></i><b>34.9</b> Cell type annotation</a></li>
 <li class="chapter" data-level="34.10" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#miscellaneous-analyses"><i class="fa fa-check"></i><b>34.10</b> Miscellaneous analyses</a></li>
-<li class="chapter" data-level="" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#session-info-29"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="nestorowa-mouse-hsc-smart-seq2.html"><a href="nestorowa-mouse-hsc-smart-seq2.html#session-info-28"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="35" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><i class="fa fa-check"></i><b>35</b> Pijuan-Sala chimeric mouse embryo (10X Genomics)</a><ul>
 <li class="chapter" data-level="35.1" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#introduction-15"><i class="fa fa-check"></i><b>35.1</b> Introduction</a></li>
@@ -578,7 +572,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="35.6" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#merging"><i class="fa fa-check"></i><b>35.6</b> Merging</a></li>
 <li class="chapter" data-level="35.7" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#clustering-13"><i class="fa fa-check"></i><b>35.7</b> Clustering</a></li>
 <li class="chapter" data-level="35.8" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#dimensionality-reduction-12"><i class="fa fa-check"></i><b>35.8</b> Dimensionality reduction</a></li>
-<li class="chapter" data-level="" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#session-info-30"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html"><a href="pijuan-sala-chimeric-mouse-embryo-10x-genomics.html#session-info-29"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="36" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html"><i class="fa fa-check"></i><b>36</b> Bach mouse mammary gland (10X Genomics)</a><ul>
 <li class="chapter" data-level="36.1" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#introduction-16"><i class="fa fa-check"></i><b>36.1</b> Introduction</a></li>
@@ -588,7 +582,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="36.5" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#variance-modelling-11"><i class="fa fa-check"></i><b>36.5</b> Variance modelling</a></li>
 <li class="chapter" data-level="36.6" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#dimensionality-reduction-13"><i class="fa fa-check"></i><b>36.6</b> Dimensionality reduction</a></li>
 <li class="chapter" data-level="36.7" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#clustering-14"><i class="fa fa-check"></i><b>36.7</b> Clustering</a></li>
-<li class="chapter" data-level="" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#session-info-31"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="bach-mouse-mammary-gland-10x-genomics.html"><a href="bach-mouse-mammary-gland-10x-genomics.html#session-info-30"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="chapter" data-level="37" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html"><i class="fa fa-check"></i><b>37</b> HCA human bone marrow (10X Genomics)</a><ul>
 <li class="chapter" data-level="37.1" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#introduction-17"><i class="fa fa-check"></i><b>37.1</b> Introduction</a></li>
@@ -602,7 +596,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="37.7" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#clustering-15"><i class="fa fa-check"></i><b>37.7</b> Clustering</a></li>
 <li class="chapter" data-level="37.8" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#differential-expression"><i class="fa fa-check"></i><b>37.8</b> Differential expression</a></li>
 <li class="chapter" data-level="37.9" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#cell-type-classification"><i class="fa fa-check"></i><b>37.9</b> Cell type classification</a></li>
-<li class="chapter" data-level="" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#session-info-32"><i class="fa fa-check"></i>Session Info</a></li>
+<li class="chapter" data-level="" data-path="hca-human-bone-marrow-10x-genomics.html"><a href="hca-human-bone-marrow-10x-genomics.html#session-info-31"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
 <li class="part"><span><b>IV Appendix</b></span></li>
 <li class="chapter" data-level="38" data-path="contributors.html"><a href="contributors.html"><i class="fa fa-check"></i><b>38</b> Contributors</a><ul>
@@ -669,261 +663,479 @@ document.addEventListener("click", function (event) {
 }
 </style>
 <div class="figure"><span id="fig:unnamed-chunk-1"></span>
-<img src="https://honeysanime.com/wp-content/uploads/2018/10/Hataraku-Saibou-Cells-at-Work-Wallpaper-5.jpg" alt="This page is under construction. Enjoy these platelets at work instead."  />
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/placeholder_yuno.jpg" alt="This page is under construction."  />
 <p class="caption">
-Figure 19.1: This page is under construction. Enjoy these platelets at work instead.
+Figure 19.1: This page is under construction.
 </p>
 </div>
 <div id="motivation-12" class="section level2">
 <h2><span class="header-section-number">19.1</span> Motivation</h2>
-<p>An organism’s immune repertoire is defined as the set of T and B cell subtypes that contain genetic diversity in the T cell receptor (TCR) components or immunoglobin chains, respectively.
-This diversity is important for ensuring that the adaptive immune system can respond effectively to a wide range of antigens.
-We can profile the immune repertoire by simply sequencing the relevant transcripts <span class="citation">(Georgiou et al. <a href="#ref-georgiou2014promise">2014</a>; Rosati et al. <a href="#ref-rosati2017overview">2017</a>)</span>, which can be combined with previously mentioned technologies <span class="citation">(Zheng et al. <a href="#ref-zheng2017massively">2017</a>)</span> to achieve single-cell resolution.
-This data can then be used to characterize an individual’s immune response based on the expansion of T or B cell clones, i.e., multiple cells with the same sequences for each TCR component or immunoglobulin chain.</p>
-<p>By itself, single-cell repertoire sequencing data can be readily analyzed using tools from the <a href="https://immcantation.readthedocs.io/en/stable/">ImmCantation suite</a>.
-In particular, the <em><a href="https://CRAN.R-project.org/package=alakazam">alakazam</a></em> package provides functions to perform common analyses to quantify clonal diversity, reconstruct lineages, examine amino acid properties, etc.
-However, in most experiments, we also obtain standard RNA sequencing data for each cell; the challenge lies in how we can integrate these two datasets together in the same analysis.
-This is not entirely trivial as each cell may have zero, one or multiple sequences for any given repertoire component, whereas we only obtain a single expression profile for that cell.</p>
-<p>We would like to define a single data structure that captures both the expression profile and repertoire state for each cell.
-This ensures synchronization during operations like subsetting (as previously discussed for the <code>SingleCellExperiment</code> class) and reduces book-keeping errors throughout the course of an interactive analysis.
-We achieve this using the <code>SplitDataFrame</code> class from the <em><a href="https://bioconductor.org/packages/3.11/S4Vectors">S4Vectors</a></em> package, which allows us to accommodate repertoire sequencing data into existing Bioconductor classes while retaining compatibility with ImmCantation functions.
-We demonstrate on a publicly available 10X Genomics dataset using mouse PBMCs:</p>
+<p>An organism’s immune repertoire is defined as the set of T and B cell subtypes that contain genetic diversity in the T cell receptor (TCR) components or immunoglobin chains, respectively. This diversity is important for ensuring that the adaptive immune system can respond effectively to a wide range of antigens. We can profile the immune repertoire by simply sequencing the relevant transcripts <span class="citation">(Georgiou et al. <a href="#ref-georgiou2014promise">2014</a>; Rosati et al. <a href="#ref-rosati2017overview">2017</a>)</span>, a procedure that can be combined with previously mentioned technologies <span class="citation">(Zheng et al. <a href="#ref-zheng2017massively">2017</a>)</span> to achieve single-cell resolution. This data can then be used to characterize an individual’s immune response based on the expansion of T or B cell clones, i.e., multiple cells with the same sequences for each TCR component or immunoglobulin chain.</p>
+<p>By itself, single-cell repertoire sequencing data can be readily analyzed using tools from the <a href="https://immcantation.readthedocs.io/en/stable/">ImmCantation suite</a>. In particular, the <em><a href="https://CRAN.R-project.org/package=alakazam">alakazam</a></em> package provides functions to perform common analyses to quantify clonal diversity, reconstruct lineages, examine amino acid properties, etc. However, in most experiments, we also obtain standard RNA sequencing data for each cell; the challenge lies in how we can integrate these two datasets together in the same analysis. This is not entirely trivial as each cell may have zero, one or multiple sequences for any given repertoire component, whereas we only obtain a single expression profile for that cell.</p>
+<p>We would like to define a single data structure that captures both the expression profile and repertoire state for each cell. This ensures synchronization during operations like subsetting (as previously discussed for the <code>SingleCellExperiment</code> class) and reduces book-keeping errors throughout the course of an interactive analysis. We achieve this using the <code>SplitDataFrameList</code> class from the <em><a href="https://bioconductor.org/packages/3.11/IRanges">IRanges</a></em> package, which allows us to accommodate repertoire sequencing data into existing Bioconductor classes while retaining compatibility with ImmCantation functions. We demonstrate on a publicly available 10X Genomics dataset using mouse PBMCs, for which the expression and ADT data have already been processed below:</p>
+<p>processing file: P3_W05.tenx-repertoire-pbmc8k.Rmd</p>
+<p>|<br />
+| | 0% |<br />
+|.. | 3% ordinary text without R code</p>
+<p>|<br />
+|…. | 6% label: unref-setup (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
+<p>|<br />
+|……. | 9% ordinary text without R code</p>
+<p>|<br />
+|……… | 12% label: loading Loading required package: dbplyr Loading required package: SingleCellExperiment Loading required package: SummarizedExperiment Loading required package: GenomicRanges Loading required package: stats4 Loading required package: BiocGenerics Loading required package: parallel</p>
+<p>Attaching package: ‘BiocGenerics’</p>
+<p>The following objects are masked from ‘package:parallel’:</p>
+<pre><code>clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+clusterExport, clusterMap, parApply, parCapply, parLapply,
+parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
+<p>The following objects are masked from ‘package:stats’:</p>
+<pre><code>IQR, mad, sd, var, xtabs</code></pre>
+<p>The following objects are masked from ‘package:base’:</p>
+<pre><code>anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+union, unique, unsplit, which, which.max, which.min</code></pre>
+<p>Loading required package: S4Vectors</p>
+<p>Attaching package: ‘S4Vectors’</p>
+<p>The following object is masked from ‘package:base’:</p>
+<pre><code>expand.grid</code></pre>
+<p>Loading required package: IRanges Loading required package: GenomeInfoDb Loading required package: Biobase Welcome to Bioconductor</p>
+<pre><code>Vignettes contain introductory material; view with
+&#39;browseVignettes()&#39;. To cite Bioconductor, see
+&#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
+<p>Loading required package: DelayedArray Loading required package: matrixStats</p>
+<p>Attaching package: ‘matrixStats’</p>
+<p>The following objects are masked from ‘package:Biobase’:</p>
+<pre><code>anyMissing, rowMedians</code></pre>
+<p>Loading required package: BiocParallel</p>
+<p>Attaching package: ‘DelayedArray’</p>
+<p>The following objects are masked from ‘package:matrixStats’:</p>
+<pre><code>colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
+<p>The following objects are masked from ‘package:base’:</p>
+<pre><code>aperm, apply, rowsum</code></pre>
+<p>|<br />
+|……….. | 16% ordinary text without R code</p>
+<p>|<br />
+|…………. | 19% label: unnamed-chunk-1</p>
+<p>|<br />
+|…………… | 22% ordinary text without R code</p>
+<p>|<br />
+|……………… | 25% label: quality-control Loading required package: ggplot2</p>
+<p>|<br />
+|……………….. | 28% ordinary text without R code</p>
+<p>|<br />
+|…………………. | 31% label: normalization</p>
+<p>Attaching package: ‘DelayedMatrixStats’</p>
+<p>The following objects are masked from ‘package:matrixStats’:</p>
+<pre><code>colAlls, colAnyMissings, colAnyNAs, colAnys, colAvgsPerRowSet,
+colCollapse, colCounts, colCummaxs, colCummins, colCumprods,
+colCumsums, colDiffs, colIQRDiffs, colIQRs, colLogSumExps,
+colMadDiffs, colMads, colMeans2, colMedians, colOrderStats,
+colProds, colQuantiles, colRanks, colSdDiffs, colSds, colSums2,
+colTabulates, colVarDiffs, colVars, colWeightedMads,
+colWeightedMeans, colWeightedMedians, colWeightedSds,
+colWeightedVars, rowAlls, rowAnyMissings, rowAnyNAs, rowAnys,
+rowAvgsPerColSet, rowCollapse, rowCounts, rowCummaxs, rowCummins,
+rowCumprods, rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs,
+rowLogSumExps, rowMadDiffs, rowMads, rowMeans2, rowMedians,
+rowOrderStats, rowProds, rowQuantiles, rowRanks, rowSdDiffs,
+rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+rowWeightedSds, rowWeightedVars</code></pre>
+<p>The following object is masked from ‘package:Biobase’:</p>
+<pre><code>rowMedians</code></pre>
+<p>|<br />
+|…………………… | 34% ordinary text without R code</p>
+<p>|<br />
+|…………………….. | 38% label: dimensionality-reduction</p>
+<p>|<br />
+|………………………. | 41% ordinary text without R code</p>
+<p>|<br />
+|…………………………. | 44% label: clustering Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead. Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth = TRUE, : You’re computing too large a percentage of total singular values, use a standard svd instead.</p>
+<p>|<br />
+|…………………………… | 47% ordinary text without R code</p>
+<p>|<br />
+|…………………………….. | 50% label: unnamed-chunk-2 (with options) List of 1 $ fig.wide: logi TRUE</p>
+<p>|<br />
+|………………………………. | 53% ordinary text without R code</p>
+<p>|<br />
+|………………………………… | 56% label: unnamed-chunk-3</p>
+<p>|<br />
+|…………………………………… | 59% ordinary text without R code</p>
+<p>|<br />
+|…………………………………….. | 62% label: unnamed-chunk-4</p>
+<p>|<br />
+|………………………………………. | 66% ordinary text without R code</p>
+<p>|<br />
+|………………………………………… | 69% label: unnamed-chunk-5</p>
+<p>|<br />
+|………………………………………….. | 72% ordinary text without R code</p>
+<p>|<br />
+|……………………………………………. | 75% label: unnamed-chunk-6</p>
+<p>|<br />
+|………………………………………………. | 78% ordinary text without R code</p>
+<p>|<br />
+|………………………………………………… | 81% label: unnamed-chunk-7</p>
+<p>|<br />
+|………………………………………………….. | 84% ordinary text without R code</p>
+<p>|<br />
+|……………………………………………………. | 88% label: unnamed-chunk-8</p>
+<p>|<br />
+|……………………………………………………… | 91% ordinary text without R code</p>
+<p>|<br />
+|………………………………………………………… | 94% label: unnamed-chunk-9</p>
+<p>|<br />
+|………………………………………………………….. | 97% ordinary text without R code</p>
+<p>|<br />
+|…………………………………………………………….| 100% label: sessionInfo (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
+<p>output file: P3_W05.tenx-repertoire-pbmc8k.knit.md</p>
+<p>/usr/bin/pandoc +RTS -K512m -RTS P3_W05.tenx-repertoire-pbmc8k.utf8.md –to html4 –from markdown+autolink_bare_uris+tex_math_single_backslash –output P3_W05.tenx-repertoire-pbmc8k.html –smart –email-obfuscation none –standalone –section-divs –table-of-contents –toc-depth 3 –template /home/luna/Software/R/trunk/library/bookdown/templates/gitbook.html –highlight-style tango –number-sections –css style.css –include-in-header /tmp/RtmpV3kPzQ/rmarkdown-str16b31628ae64.html –mathjax</p>
+Output created: human-pbmc-10x-dataset-surface-proteins.html There were 12 warnings (use warnings() to see them)
 <button class="aaron-collapse">
 View history
 </button>
 <div class="aaron-content">
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" data-line-number="1"><span class="co">#--- setup ---#</span></a>
-<a class="sourceLine" id="cb621-2" data-line-number="2"><span class="kw">library</span>(OSCAUtils)</a>
-<a class="sourceLine" id="cb621-3" data-line-number="3"><span class="kw">chapterPreamble</span>(<span class="dt">use_cache =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb621-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb621-5" data-line-number="5"><span class="co">#--- loading ---#</span></a>
-<a class="sourceLine" id="cb621-6" data-line-number="6"><span class="kw">library</span>(BiocFileCache)</a>
-<a class="sourceLine" id="cb621-7" data-line-number="7">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="dt">ask=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb621-8" data-line-number="8">exprs.data &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(</a>
-<a class="sourceLine" id="cb621-9" data-line-number="9">    <span class="st">&quot;http://cf.10xgenomics.com/samples/cell-vdj/3.1.0&quot;</span>,</a>
-<a class="sourceLine" id="cb621-10" data-line-number="10">    <span class="st">&quot;vdj_v1_hs_pbmc3&quot;</span>,</a>
-<a class="sourceLine" id="cb621-11" data-line-number="11">    <span class="st">&quot;vdj_v1_hs_pbmc3_filtered_feature_bc_matrix.tar.gz&quot;</span>))</a>
-<a class="sourceLine" id="cb621-12" data-line-number="12"><span class="kw">untar</span>(exprs.data, <span class="dt">exdir=</span><span class="kw">tempdir</span>())</a>
-<a class="sourceLine" id="cb621-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb621-14" data-line-number="14"><span class="kw">library</span>(DropletUtils)</a>
-<a class="sourceLine" id="cb621-15" data-line-number="15">sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(<span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;filtered_feature_bc_matrix&quot;</span>))</a>
-<a class="sourceLine" id="cb621-16" data-line-number="16">sce.pbmc &lt;-<span class="st"> </span><span class="kw">splitAltExps</span>(sce.pbmc, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Type)</a>
-<a class="sourceLine" id="cb621-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb621-18" data-line-number="18"><span class="co">#--- quality-control ---#</span></a>
-<a class="sourceLine" id="cb621-19" data-line-number="19"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb621-20" data-line-number="20">is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^MT-&quot;</span>, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)</a>
-<a class="sourceLine" id="cb621-21" data-line-number="21">stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.pbmc, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))</a>
-<a class="sourceLine" id="cb621-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb621-23" data-line-number="23">high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)</a>
-<a class="sourceLine" id="cb621-24" data-line-number="24">low.adt &lt;-<span class="st"> </span>stats<span class="op">$</span><span class="st">`</span><span class="dt">altexps_Antibody Capture_detected</span><span class="st">`</span> <span class="op">&lt;</span><span class="st"> </span><span class="kw">nrow</span>(<span class="kw">altExp</span>(sce.pbmc))<span class="op">/</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb621-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb621-26" data-line-number="26">discard &lt;-<span class="st"> </span>high.mito <span class="op">|</span><span class="st"> </span>low.adt</a>
-<a class="sourceLine" id="cb621-27" data-line-number="27">sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>discard]</a>
-<a class="sourceLine" id="cb621-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb621-29" data-line-number="29"><span class="co">#--- normalization ---#</span></a>
-<a class="sourceLine" id="cb621-30" data-line-number="30"><span class="kw">library</span>(scran)</a>
-<a class="sourceLine" id="cb621-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb621-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb621-33" data-line-number="33">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)</a>
-<a class="sourceLine" id="cb621-34" data-line-number="34">sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">cluster=</span>clusters)</a>
-<a class="sourceLine" id="cb621-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb621-36" data-line-number="36"><span class="co"># </span><span class="al">TODO</span><span class="co">: move into scran somewhere.</span></a>
-<a class="sourceLine" id="cb621-37" data-line-number="37"><span class="kw">library</span>(DelayedMatrixStats)</a>
-<a class="sourceLine" id="cb621-38" data-line-number="38">ambient &lt;-<span class="st"> </span><span class="kw">rowMeans</span>(<span class="kw">counts</span>(<span class="kw">altExp</span>(sce.pbmc)))</a>
-<a class="sourceLine" id="cb621-39" data-line-number="39">sf.amb &lt;-<span class="st"> </span><span class="kw">colMedians</span>(<span class="kw">DelayedArray</span>(<span class="kw">counts</span>(<span class="kw">altExp</span>(sce.pbmc)))<span class="op">/</span>ambient)</a>
-<a class="sourceLine" id="cb621-40" data-line-number="40">sf.amb &lt;-<span class="st"> </span>sf.amb<span class="op">/</span><span class="kw">mean</span>(sf.amb)</a>
-<a class="sourceLine" id="cb621-41" data-line-number="41"><span class="kw">sizeFactors</span>(<span class="kw">altExp</span>(sce.pbmc)) &lt;-<span class="st"> </span>sf.amb</a>
-<a class="sourceLine" id="cb621-42" data-line-number="42"></a>
-<a class="sourceLine" id="cb621-43" data-line-number="43">sce.pbmc &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.pbmc, <span class="dt">use_altexps=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb621-44" data-line-number="44"></a>
-<a class="sourceLine" id="cb621-45" data-line-number="45"><span class="co">#--- dimensionality-reduction ---#</span></a>
-<a class="sourceLine" id="cb621-46" data-line-number="46"><span class="kw">set.seed</span>(<span class="dv">100000</span>)</a>
-<a class="sourceLine" id="cb621-47" data-line-number="47"><span class="kw">altExp</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(<span class="kw">altExp</span>(sce.pbmc))</a>
-<a class="sourceLine" id="cb621-48" data-line-number="48"></a>
-<a class="sourceLine" id="cb621-49" data-line-number="49"><span class="kw">set.seed</span>(<span class="dv">1000000</span>)</a>
-<a class="sourceLine" id="cb621-50" data-line-number="50"><span class="kw">altExp</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(<span class="kw">altExp</span>(sce.pbmc))</a>
-<a class="sourceLine" id="cb621-51" data-line-number="51"></a>
-<a class="sourceLine" id="cb621-52" data-line-number="52"><span class="co">#--- clustering ---#</span></a>
-<a class="sourceLine" id="cb621-53" data-line-number="53">g.adt &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(<span class="kw">altExp</span>(sce.pbmc), <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">d=</span><span class="ot">NA</span>)</a>
-<a class="sourceLine" id="cb621-54" data-line-number="54">clust.adt &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g.adt)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb621-55" data-line-number="55"><span class="kw">altExp</span>(sce.pbmc)<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.adt)</a>
-<a class="sourceLine" id="cb621-56" data-line-number="56"></a>
-<a class="sourceLine" id="cb621-57" data-line-number="57"><span class="kw">set.seed</span>(<span class="dv">1010010</span>)</a>
-<a class="sourceLine" id="cb621-58" data-line-number="58">subclusters &lt;-<span class="st"> </span><span class="kw">quickSubCluster</span>(sce.pbmc, clust.adt,</a>
-<a class="sourceLine" id="cb621-59" data-line-number="59">    <span class="dt">prepFUN=</span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb621-60" data-line-number="60">        dec &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(x)</a>
-<a class="sourceLine" id="cb621-61" data-line-number="61">        top &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec, <span class="dt">prop=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb621-62" data-line-number="62">        <span class="kw">denoisePCA</span>(x, dec, <span class="dt">subset.row=</span>top)</a>
-<a class="sourceLine" id="cb621-63" data-line-number="63">    }, </a>
-<a class="sourceLine" id="cb621-64" data-line-number="64">    <span class="dt">clusterFUN=</span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb621-65" data-line-number="65">        g.gene &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(x, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)</a>
-<a class="sourceLine" id="cb621-66" data-line-number="66">        igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g.gene)<span class="op">$</span>membership</a>
-<a class="sourceLine" id="cb621-67" data-line-number="67">    }</a>
-<a class="sourceLine" id="cb621-68" data-line-number="68">)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#--- loading ---#</span>
+<span class="kw">library</span>(BiocFileCache)
+bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="dt">ask=</span><span class="ot">FALSE</span>)
+exprs.data &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(
+    <span class="st">&quot;http://cf.10xgenomics.com/samples/cell-vdj/3.1.0&quot;</span>,
+    <span class="st">&quot;vdj_v1_hs_pbmc3&quot;</span>,
+    <span class="st">&quot;vdj_v1_hs_pbmc3_filtered_feature_bc_matrix.tar.gz&quot;</span>))
+<span class="kw">untar</span>(exprs.data, <span class="dt">exdir=</span><span class="kw">tempdir</span>())
+
+<span class="kw">library</span>(DropletUtils)
+sce.pbmc &lt;-<span class="st"> </span><span class="kw">read10xCounts</span>(<span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;filtered_feature_bc_matrix&quot;</span>))
+sce.pbmc &lt;-<span class="st"> </span><span class="kw">splitAltExps</span>(sce.pbmc, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Type)
+
+<span class="co">#--- quality-control ---#</span>
+<span class="kw">library</span>(scater)
+is.mito &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;^MT-&quot;</span>, <span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol)
+stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.pbmc, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))
+
+high.mito &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(stats<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)
+low.adt &lt;-<span class="st"> </span>stats<span class="op">$</span><span class="st">`</span><span class="dt">altexps_Antibody Capture_detected</span><span class="st">`</span> <span class="op">&lt;</span><span class="st"> </span><span class="kw">nrow</span>(<span class="kw">altExp</span>(sce.pbmc))<span class="op">/</span><span class="dv">2</span>
+
+discard &lt;-<span class="st"> </span>high.mito <span class="op">|</span><span class="st"> </span>low.adt
+sce.pbmc &lt;-<span class="st"> </span>sce.pbmc[,<span class="op">!</span>discard]
+
+<span class="co">#--- normalization ---#</span>
+<span class="kw">library</span>(scran)
+
+<span class="kw">set.seed</span>(<span class="dv">1000</span>)
+clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.pbmc)
+sce.pbmc &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce.pbmc, <span class="dt">cluster=</span>clusters)
+
+<span class="co"># </span><span class="al">TODO</span><span class="co">: move into scran somewhere.</span>
+<span class="kw">library</span>(DelayedMatrixStats)
+ambient &lt;-<span class="st"> </span><span class="kw">rowMeans</span>(<span class="kw">counts</span>(<span class="kw">altExp</span>(sce.pbmc)))
+sf.amb &lt;-<span class="st"> </span><span class="kw">colMedians</span>(<span class="kw">DelayedArray</span>(<span class="kw">counts</span>(<span class="kw">altExp</span>(sce.pbmc)))<span class="op">/</span>ambient)
+sf.amb &lt;-<span class="st"> </span>sf.amb<span class="op">/</span><span class="kw">mean</span>(sf.amb)
+<span class="kw">sizeFactors</span>(<span class="kw">altExp</span>(sce.pbmc)) &lt;-<span class="st"> </span>sf.amb
+
+sce.pbmc &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.pbmc, <span class="dt">use_altexps=</span><span class="ot">TRUE</span>)
+
+<span class="co">#--- dimensionality-reduction ---#</span>
+<span class="kw">set.seed</span>(<span class="dv">100000</span>)
+<span class="kw">altExp</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(<span class="kw">altExp</span>(sce.pbmc))
+
+<span class="kw">set.seed</span>(<span class="dv">1000000</span>)
+<span class="kw">altExp</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(<span class="kw">altExp</span>(sce.pbmc))
+
+<span class="co">#--- clustering ---#</span>
+g.adt &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(<span class="kw">altExp</span>(sce.pbmc), <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">d=</span><span class="ot">NA</span>)
+clust.adt &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g.adt)<span class="op">$</span>membership
+<span class="kw">altExp</span>(sce.pbmc)<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">factor</span>(clust.adt)
+
+<span class="kw">set.seed</span>(<span class="dv">1010010</span>)
+subclusters &lt;-<span class="st"> </span><span class="kw">quickSubCluster</span>(sce.pbmc, clust.adt,
+    <span class="dt">prepFUN=</span><span class="cf">function</span>(x) {
+        dec &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(x)
+        top &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec, <span class="dt">prop=</span><span class="fl">0.1</span>)
+        <span class="kw">denoisePCA</span>(x, dec, <span class="dt">subset.row=</span>top)
+    }, 
+    <span class="dt">clusterFUN=</span><span class="cf">function</span>(x) {
+        g.gene &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(x, <span class="dt">k=</span><span class="dv">10</span>, <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span>)
+        igraph<span class="op">::</span><span class="kw">cluster_walktrap</span>(g.gene)<span class="op">$</span>membership
+    }
+)</code></pre></div>
 </div>
-<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb622-1" data-line-number="1">sce.pbmc</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.pbmc</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 33538 6660 
 ## metadata(1): Samples
 ## assays(2): counts logcounts
-## rownames(33538): ENSG00000243485 ENSG00000237613 ... ENSG00000277475 ENSG00000268674
+## rownames(33538): ENSG00000243485 ENSG00000237613 ... ENSG00000277475
+##   ENSG00000268674
 ## rowData names(3): ID Symbol Type
 ## colnames: NULL
-## colData names(2): Sample Barcode
+## colData names(3): Sample Barcode sizeFactor
 ## reducedDimNames(0):
-## spikeNames(0):
 ## altExpNames(1): Antibody Capture</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Moving ADT-based clustering to the top level for convenience.</span>
+sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">altExp</span>(sce.pbmc)<span class="op">$</span>cluster</code></pre></div>
 </div>
 <div id="analyzing-the-t-cell-receptor-repertoire" class="section level2">
 <h2><span class="header-section-number">19.2</span> Analyzing the T cell receptor repertoire</h2>
 <div id="data-processing" class="section level3">
 <h3><span class="header-section-number">19.2.1</span> Data processing</h3>
-<p>First, we obtain the filtered TCR contig annotations for the same set of cells.
-Each row of the resulting data frame contains information about a single TCR component sequence in one cell, broken down into the alleles of the V(D)J genes making up that component (<code>v_gene</code>, <code>d_gene</code>, <code>j_gene</code>) where possible.
-The number of reads and UMIs supporting the set of allele assignments for a cell is also shown, though only the UMI count should be used for quantifying expression of a particular TCR sequence.
-Each cell is assigned to a clonotype (<code>raw_clonotype_id</code>) based on the combination of the <span class="math inline">\(\alpha\)</span>-chain (TRA) and <span class="math inline">\(\beta\)</span>-chain (TRB) sequences in that cell.</p>
-<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb624-1" data-line-number="1"><span class="kw">library</span>(BiocFileCache)</a>
-<a class="sourceLine" id="cb624-2" data-line-number="2">bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="dt">ask=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb624-3" data-line-number="3">tcr.data &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(</a>
-<a class="sourceLine" id="cb624-4" data-line-number="4">    <span class="st">&quot;http://cf.10xgenomics.com/samples/cell-vdj/3.1.0&quot;</span>,</a>
-<a class="sourceLine" id="cb624-5" data-line-number="5">    <span class="st">&quot;vdj_v1_hs_pbmc3/vdj_v1_hs_pbmc3_t_filtered_contig_annotations.csv&quot;</span>))</a>
-<a class="sourceLine" id="cb624-6" data-line-number="6">tcr &lt;-<span class="st"> </span><span class="kw">read.csv</span>(tcr.data, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb624-7" data-line-number="7"><span class="kw">head</span>(tcr)</a></code></pre></div>
-<pre><code>##              barcode is_cell                   contig_id high_confidence length chain     v_gene
-## 1 AAACCTGAGATCTGAA-1    True AAACCTGAGATCTGAA-1_contig_1            True    521   TRB   TRBV20-1
-## 2 AAACCTGAGATCTGAA-1    True AAACCTGAGATCTGAA-1_contig_2            True    474   TRA   TRAV13-1
-## 3 AAACCTGAGGAACTGC-1    True AAACCTGAGGAACTGC-1_contig_1            True    496   TRB    TRBV7-2
-## 4 AAACCTGAGGAACTGC-1    True AAACCTGAGGAACTGC-1_contig_2            True    505   TRA TRAV23/DV6
-## 5 AAACCTGAGGAGTCTG-1    True AAACCTGAGGAGTCTG-1_contig_1            True    495   TRA      TRAV2
-## 6 AAACCTGAGGAGTCTG-1    True AAACCTGAGGAGTCTG-1_contig_2            True    526   TRB    TRBV6-2
-##   d_gene  j_gene c_gene full_length productive               cdr3
-## 1   None TRBJ2-7  TRBC2        True       True     CSARDKGLSYEQYF
-## 2   None  TRAJ44   TRAC        True       True CAASIGPLGTGTASKLTF
-## 3   None TRBJ2-1  TRBC2        True       True      CASSLGPSGEQFF
-## 4   None  TRAJ34   TRAC        True       True       CAASDNTDKLIF
-## 5   None  TRAJ38   TRAC        True       True   CAVEANNAGNNRKLIW
-## 6   None TRBJ1-1  TRBC1        True       True      CASSRTGGTEAFF
-##                                                  cdr3_nt reads umis raw_clonotype_id
-## 1             TGCAGTGCTAGAGACAAGGGGCTTAGCTACGAGCAGTACTTC  9327   12     clonotype100
-## 2 TGTGCAGCAAGTATCGGCCCCCTAGGAACCGGCACTGCCAGTAAACTCACCTTT  3440    3     clonotype100
-## 3                TGTGCCAGCAGCTTGGGACCATCGGGTGAGCAGTTCTTC 32991   29     clonotype101
-## 4                   TGTGCAGCAAGCGATAACACCGACAAGCTCATCTTT 10714    9     clonotype101
-## 5       TGTGCTGTGGAGGCTAATAATGCTGGCAACAACCGTAAGCTGATTTGG  1734    3     clonotype102
-## 6                TGTGCCAGCAGTCGGACAGGGGGCACTGAAGCTTTCTTT 15530   13     clonotype102
-##           raw_consensus_id
-## 1 clonotype100_consensus_1
-## 2 clonotype100_consensus_2
-## 3 clonotype101_consensus_2
-## 4 clonotype101_consensus_1
-## 5 clonotype102_consensus_1
-## 6 clonotype102_consensus_2</code></pre>
-<p>The challenge in incorporating all of these data structures into a single object lies in the fact that each cell may have zero, one or many TCR/immunoglobulin sequences.
-This precludes direct storage of repertoire information in the <code>colData()</code> of the <code>SingleCellExperiment</code>, which expects a 1:1 mapping from each cell to each repertoire sequence.
-Instead, we store the repertoire data as a <code>SplitDataFrameList</code> object where each cell corresponds to a variable-row <code>DataFrame</code> containing information for zero-to-many sequences.
-This is easily done using the <code>DataFrame()</code> constructor and the <code>split()</code> function, as shown below:</p>
-<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb626-1" data-line-number="1">tra &lt;-<span class="st"> </span>tcr[tcr<span class="op">$</span>chain<span class="op">==</span><span class="st">&quot;TRA&quot;</span>,]</a>
-<a class="sourceLine" id="cb626-2" data-line-number="2">trb &lt;-<span class="st"> </span>tcr[tcr<span class="op">$</span>chain<span class="op">==</span><span class="st">&quot;TRB&quot;</span>,]</a>
-<a class="sourceLine" id="cb626-3" data-line-number="3">sce.pbmc<span class="op">$</span>TRA &lt;-<span class="st"> </span><span class="kw">split</span>(<span class="kw">DataFrame</span>(tra), <span class="kw">factor</span>(tra<span class="op">$</span>barcode, sce.pbmc<span class="op">$</span>Barcode))</a>
-<a class="sourceLine" id="cb626-4" data-line-number="4">sce.pbmc<span class="op">$</span>TRB &lt;-<span class="st"> </span><span class="kw">split</span>(<span class="kw">DataFrame</span>(trb), <span class="kw">factor</span>(trb<span class="op">$</span>barcode, sce.pbmc<span class="op">$</span>Barcode))</a>
-<a class="sourceLine" id="cb626-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb626-6" data-line-number="6"><span class="co"># Putting cluster information at the top level, for convenience.</span></a>
-<a class="sourceLine" id="cb626-7" data-line-number="7">sce.pbmc<span class="op">$</span>cluster &lt;-<span class="st"> </span><span class="kw">altExp</span>(sce.pbmc)<span class="op">$</span>cluster</a></code></pre></div>
+<p>First, we obtain the filtered TCR contig annotations for the same set of cells. Each row of the resulting data frame contains information about a single TCR component sequence in one cell, broken down into the alleles of the V(D)J genes making up that component (<code>v_gene</code>, <code>d_gene</code>, <code>j_gene</code>) where possible. The number of reads and UMIs supporting the set of allele assignments for a cell is also shown, though only the UMI count should be used for quantifying expression of a particular TCR sequence. Each cell is assigned to a clonotype (<code>raw_clonotype_id</code>) based on the combination of the <span class="math inline">\(\alpha\)</span>-chain (TRA) and <span class="math inline">\(\beta\)</span>-chain (TRB) sequences in that cell.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BiocFileCache)
+bfc &lt;-<span class="st"> </span><span class="kw">BiocFileCache</span>(<span class="dt">ask=</span><span class="ot">FALSE</span>)
+tcr.data &lt;-<span class="st"> </span><span class="kw">bfcrpath</span>(bfc, <span class="kw">file.path</span>(
+    <span class="st">&quot;http://cf.10xgenomics.com/samples/cell-vdj/3.1.0&quot;</span>,
+    <span class="st">&quot;vdj_v1_hs_pbmc3/vdj_v1_hs_pbmc3_t_filtered_contig_annotations.csv&quot;</span>))
+tcr &lt;-<span class="st"> </span><span class="kw">read.csv</span>(tcr.data, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
+<span class="kw">nrow</span>(tcr)</code></pre></div>
+<pre><code>## [1] 10121</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(tcr)</code></pre></div>
+<pre><code>##              barcode is_cell                   contig_id high_confidence length
+## 1 AAACCTGAGATCTGAA-1    True AAACCTGAGATCTGAA-1_contig_1            True    521
+## 2 AAACCTGAGATCTGAA-1    True AAACCTGAGATCTGAA-1_contig_2            True    474
+## 3 AAACCTGAGGAACTGC-1    True AAACCTGAGGAACTGC-1_contig_1            True    496
+## 4 AAACCTGAGGAACTGC-1    True AAACCTGAGGAACTGC-1_contig_2            True    505
+## 5 AAACCTGAGGAGTCTG-1    True AAACCTGAGGAGTCTG-1_contig_1            True    495
+## 6 AAACCTGAGGAGTCTG-1    True AAACCTGAGGAGTCTG-1_contig_2            True    526
+##   chain     v_gene d_gene  j_gene c_gene full_length productive
+## 1   TRB   TRBV20-1   None TRBJ2-7  TRBC2        True       True
+## 2   TRA   TRAV13-1   None  TRAJ44   TRAC        True       True
+## 3   TRB    TRBV7-2   None TRBJ2-1  TRBC2        True       True
+## 4   TRA TRAV23/DV6   None  TRAJ34   TRAC        True       True
+## 5   TRA      TRAV2   None  TRAJ38   TRAC        True       True
+## 6   TRB    TRBV6-2   None TRBJ1-1  TRBC1        True       True
+##                 cdr3                                                cdr3_nt
+## 1     CSARDKGLSYEQYF             TGCAGTGCTAGAGACAAGGGGCTTAGCTACGAGCAGTACTTC
+## 2 CAASIGPLGTGTASKLTF TGTGCAGCAAGTATCGGCCCCCTAGGAACCGGCACTGCCAGTAAACTCACCTTT
+## 3      CASSLGPSGEQFF                TGTGCCAGCAGCTTGGGACCATCGGGTGAGCAGTTCTTC
+## 4       CAASDNTDKLIF                   TGTGCAGCAAGCGATAACACCGACAAGCTCATCTTT
+## 5   CAVEANNAGNNRKLIW       TGTGCTGTGGAGGCTAATAATGCTGGCAACAACCGTAAGCTGATTTGG
+## 6      CASSRTGGTEAFF                TGTGCCAGCAGTCGGACAGGGGGCACTGAAGCTTTCTTT
+##   reads umis raw_clonotype_id         raw_consensus_id
+## 1  9327   12     clonotype100 clonotype100_consensus_1
+## 2  3440    3     clonotype100 clonotype100_consensus_2
+## 3 32991   29     clonotype101 clonotype101_consensus_2
+## 4 10714    9     clonotype101 clonotype101_consensus_1
+## 5  1734    3     clonotype102 clonotype102_consensus_1
+## 6 15530   13     clonotype102 clonotype102_consensus_2</code></pre>
+<p>The challenge in incorporating all of these data structures into a single object lies in the fact that each cell may have zero, one or many TCR/immunoglobulin sequences. This precludes direct storage of repertoire information in the <code>colData()</code> of the <code>SingleCellExperiment</code>, which expects a 1:1 mapping from each cell to each repertoire sequence. Instead, we store the repertoire data as a <code>SplitDataFrameList</code> object where each cell corresponds to a variable-row <code>DataFrame</code> containing information for zero-to-many sequences. This is easily done using the <code>DataFrame()</code> constructor and the <code>split()</code> function, as shown below:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tra &lt;-<span class="st"> </span>tcr[tcr<span class="op">$</span>chain<span class="op">==</span><span class="st">&quot;TRA&quot;</span>,]
+sce.pbmc<span class="op">$</span>TRA &lt;-<span class="st"> </span><span class="kw">split</span>(<span class="kw">DataFrame</span>(tra), <span class="kw">factor</span>(tra<span class="op">$</span>barcode, sce.pbmc<span class="op">$</span>Barcode))
+<span class="kw">length</span>(sce.pbmc<span class="op">$</span>TRA) <span class="co"># Now the same as the number of cells.</span></code></pre></div>
+<pre><code>## [1] 6660</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trb &lt;-<span class="st"> </span>tcr[tcr<span class="op">$</span>chain<span class="op">==</span><span class="st">&quot;TRB&quot;</span>,]
+sce.pbmc<span class="op">$</span>TRB &lt;-<span class="st"> </span><span class="kw">split</span>(<span class="kw">DataFrame</span>(trb), <span class="kw">factor</span>(trb<span class="op">$</span>barcode, sce.pbmc<span class="op">$</span>Barcode))
+<span class="kw">length</span>(sce.pbmc<span class="op">$</span>TRB)</code></pre></div>
+<pre><code>## [1] 6660</code></pre>
 </div>
 <div id="basic-diagnostics" class="section level3">
 <h3><span class="header-section-number">19.2.2</span> Basic diagnostics</h3>
-<p>We start by generating some basic cell-level diagnostics.
-For each cluster, we determine the proportion of cells that have at least one sequence of a TCR component (Figure <a href="repertoire-seq.html#fig:tcr-prop-cluster-all">19.2</a>).
-Clusters with large counts are most likely to be T cells, though some background level of TCR expression may be observed in other clusters due to a mixture of clustering uncertainty, ambient contamination, doublet formation and expression in other cell types.</p>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" data-line-number="1">ncells &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb627-2" data-line-number="2">ncells</a></code></pre></div>
+<p>We start by generating some basic cell-level diagnostics. For each cluster, we determine the proportion of cells that have at least one sequence of a TCR component (Figure <a href="repertoire-seq.html#fig:tcr-prop-cluster-all">19.2</a>). Clusters with large counts are most likely to be T cells, though some background level of TCR expression may be observed in other clusters due to a mixture of clustering uncertainty, ambient contamination, doublet formation and potential expression in other cell types.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncells &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster)
+ncells</code></pre></div>
 <pre><code>## 
-##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20 
-##  160  507  662   39  691 1415   32  650   76 1037  121   47   68   25   15  562  139   32   44  120 
-##   21   22   23   24 
-##   84   65   52   17</code></pre>
-<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" data-line-number="1">tra.counts.any &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb629-2" data-line-number="2">trb.counts.any &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRB) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb629-3" data-line-number="3"><span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.any<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.any<span class="op">/</span>ncells), </a>
-<a class="sourceLine" id="cb629-4" data-line-number="4">    <span class="dt">beside=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
+##  160  507  662   39  691 1415   32  650   76 1037  121   47   68   25   15  562 
+##   17   18   19   20   21   22   23   24 
+##  139   32   44  120   84   65   52   17</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># `lengths()` returns the number of sequences per cell.</span>
+at.least.one.A &lt;-<span class="st"> </span><span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>
+tra.counts.any &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[at.least.one.A])
+
+at.least.one.B &lt;-<span class="st"> </span><span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRB) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>
+trb.counts.any &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[at.least.one.B])
+
+<span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.any<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.any<span class="op">/</span>ncells), <span class="dt">beside=</span><span class="ot">TRUE</span>)</code></pre></div>
 <div class="figure"><span id="fig:tcr-prop-cluster-all"></span>
-<img src="P2_W15.repertoire-seq_files/figure-html/tcr-prop-cluster-all-1.png" alt="Proportion of cells in each cluster that express at least one sequence of the TCR $\alpha$ or $\beta$-chains." width="960" />
+<img src="P2_W15.repertoire-seq_files/figure-html/tcr-prop-cluster-all-1.png" alt="Proportion of cells in each cluster that express at least one sequence of the TCR $\alpha$ (dark) or $\beta$-chains (light)." width="960" />
 <p class="caption">
-Figure 19.2: Proportion of cells in each cluster that express at least one sequence of the TCR <span class="math inline">\(\alpha\)</span> or <span class="math inline">\(\beta\)</span>-chains.
+Figure 19.2: Proportion of cells in each cluster that express at least one sequence of the TCR <span class="math inline">\(\alpha\)</span> (dark) or <span class="math inline">\(\beta\)</span>-chains (light).
 </p>
 </div>
-<p>We can refine this to only consider the productive sequences, i.e., contigs that are likely to produce a functional protein (Figure <a href="repertoire-seq.html#fig:tcr-prop-cluster-prod">19.3</a>).
-This is achieved by subsetting the <code>SplitDataFrameList</code> with a <code>LogicalList</code> object, the latter of which specifies the rows of each per-cell <code>DataFrame</code> corresponding to productive sequences.</p>
-<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb630-1" data-line-number="1">is.prod.A &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;productive&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span> <span class="co"># LogicalList</span></a>
-<a class="sourceLine" id="cb630-2" data-line-number="2">has.prod.A &lt;-<span class="st"> </span><span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRA[is.prod.A]) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb630-3" data-line-number="3">tra.counts.prod &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[has.prod.A])</a>
-<a class="sourceLine" id="cb630-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb630-5" data-line-number="5">is.prod.B &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRB[,<span class="st">&quot;productive&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span></a>
-<a class="sourceLine" id="cb630-6" data-line-number="6">has.prod.B &lt;-<span class="st"> </span><span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRB[is.prod.B]) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb630-7" data-line-number="7">trb.counts.prod &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[has.prod.B])</a>
-<a class="sourceLine" id="cb630-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb630-9" data-line-number="9"><span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.prod<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.prod<span class="op">/</span>ncells),</a>
-<a class="sourceLine" id="cb630-10" data-line-number="10">    <span class="dt">legend=</span><span class="ot">TRUE</span>, <span class="dt">beside=</span><span class="ot">TRUE</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>))</a></code></pre></div>
+<p>We can refine this to only consider the productive sequences, i.e., contigs that are likely to produce a functional protein. This is easily achieved by taking advantage of some powerful grammar in the <em><a href="https://bioconductor.org/packages/3.11/IRanges">IRanges</a></em> package for handling <code>List</code> structures as if they were standard R vectors. We see a slight drop in the proportions in Figure <a href="repertoire-seq.html#fig:tcr-prop-cluster-prod">19.3</a>, which is to be expected as not all sequences are productive.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate a LogicalList class where each entry corresponds to a cell and is</span>
+<span class="co"># a logical vector specifying which of that cell&#39;s sequences are productive.</span>
+is.prod.A &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;productive&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span> 
+is.prod.A</code></pre></div>
+<pre><code>## LogicalList of length 6660
+## [[&quot;AAACCTGAGATCTGAA-1&quot;]] TRUE
+## [[&quot;AAACCTGAGGAACTGC-1&quot;]] TRUE
+## [[&quot;AAACCTGAGGAGTCTG-1&quot;]] TRUE
+## [[&quot;AAACCTGAGGCTCTTA-1&quot;]] TRUE FALSE
+## [[&quot;AAACCTGAGTACGTTC-1&quot;]] logical(0)
+## [[&quot;AAACCTGGTCTTGTCC-1&quot;]] logical(0)
+## [[&quot;AAACCTGGTTGCGTTA-1&quot;]] logical(0)
+## [[&quot;AAACCTGTCAACGGGA-1&quot;]] TRUE FALSE
+## [[&quot;AAACCTGTCACTGGGC-1&quot;]] logical(0)
+## [[&quot;AAACCTGTCAGCTGGC-1&quot;]] logical(0)
+## ...
+## &lt;6650 more elements&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># We can apply operations to this LogicalList that mimic looping over a logical</span>
+<span class="co"># vector. For example, `any()` will return a logical vector of length equal to </span>
+<span class="co"># the number of cells, with a value of TRUE if any sequence is productive.</span>
+has.prod.A &lt;-<span class="st"> </span><span class="kw">any</span>(is.prod.A)
+<span class="kw">head</span>(has.prod.A)</code></pre></div>
+<pre><code>## AAACCTGAGATCTGAA-1 AAACCTGAGGAACTGC-1 AAACCTGAGGAGTCTG-1 AAACCTGAGGCTCTTA-1 
+##               TRUE               TRUE               TRUE               TRUE 
+## AAACCTGAGTACGTTC-1 AAACCTGGTCTTGTCC-1 
+##              FALSE              FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># And then we simply count the number of cells in each cluster.</span>
+tra.counts.prod &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[has.prod.A])
+
+is.prod.B &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRB[,<span class="st">&quot;productive&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span>
+has.prod.B &lt;-<span class="st"> </span><span class="kw">any</span>(is.prod.B)
+trb.counts.prod &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[has.prod.B])
+
+<span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.prod<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.prod<span class="op">/</span>ncells),
+    <span class="dt">legend=</span><span class="ot">TRUE</span>, <span class="dt">beside=</span><span class="ot">TRUE</span>)</code></pre></div>
 <div class="figure"><span id="fig:tcr-prop-cluster-prod"></span>
-<img src="P2_W15.repertoire-seq_files/figure-html/tcr-prop-cluster-prod-1.png" alt="Proportion of cells in each cluster that express at least one productive sequence of the TCR $\alpha$ or $\beta$-chains." width="672" />
+<img src="P2_W15.repertoire-seq_files/figure-html/tcr-prop-cluster-prod-1.png" alt="Proportion of cells in each cluster that express at least one productive sequence of the TCR $\alpha$ (dark) or $\beta$-chains (light)." width="960" />
 <p class="caption">
-Figure 19.3: Proportion of cells in each cluster that express at least one productive sequence of the TCR <span class="math inline">\(\alpha\)</span> or <span class="math inline">\(\beta\)</span>-chains.
+Figure 19.3: Proportion of cells in each cluster that express at least one productive sequence of the TCR <span class="math inline">\(\alpha\)</span> (dark) or <span class="math inline">\(\beta\)</span>-chains (light).
 </p>
 </div>
-<p>In contrast, using a conventional logical or integer vector to subset the <code>SplitDataFrameList</code> will subset the cells themselves (rather than the rows for each cell, as shown above).
-For example, we can use this approach to count the number of cells in each cluster that have multiple sequences for a component (Figure <a href="#tcr-prop-cluster-multi"><strong>??</strong></a>).</p>
-<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" data-line-number="1">tra.counts.multi &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>])</a>
-<a class="sourceLine" id="cb631-2" data-line-number="2">trb.counts.multi &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRB) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>])</a>
-<a class="sourceLine" id="cb631-3" data-line-number="3"><span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.multi<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.multi<span class="op">/</span>ncells), </a>
-<a class="sourceLine" id="cb631-4" data-line-number="4">    <span class="dt">legend=</span><span class="ot">TRUE</span>, <span class="dt">beside=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>For completeness, we also count the number of cells in each cluster that have multiple sequences for a component (Figure <a href="#tcr-prop-cluster-multi"><strong>??</strong></a>). The percentages are clearly lower but this phenomenon is still surprisingly common.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tra.counts.multi &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>])
+trb.counts.multi &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRB) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>])
+<span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.multi<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.multi<span class="op">/</span>ncells), 
+    <span class="dt">beside=</span><span class="ot">TRUE</span>)</code></pre></div>
 <div class="figure"><span id="fig:tcr-prop-cluster-multi"></span>
-<img src="P2_W15.repertoire-seq_files/figure-html/tcr-prop-cluster-multi-1.png" alt="Proportion of cells in each cluster that express two or more sequences of the TCR $\alpha$ or $\beta$-chains." width="672" />
+<img src="P2_W15.repertoire-seq_files/figure-html/tcr-prop-cluster-multi-1.png" alt="Proportion of cells in each cluster that express two or more sequences of the TCR $\alpha$ (dark) or $\beta$-chains (light)." width="960" />
 <p class="caption">
-Figure 19.4: Proportion of cells in each cluster that express two or more sequences of the TCR <span class="math inline">\(\alpha\)</span> or <span class="math inline">\(\beta\)</span>-chains.
+Figure 19.4: Proportion of cells in each cluster that express two or more sequences of the TCR <span class="math inline">\(\alpha\)</span> (dark) or <span class="math inline">\(\beta\)</span>-chains (light).
 </p>
 </div>
+</div>
+<div id="complex-diagnostics" class="section level3">
+<h3><span class="header-section-number">19.2.3</span> Complex diagnostics</h3>
+<p>At this point, it is worth spending some time on the amazingness of the <code>List</code> grammar. We can easily assemble complex queries on the table of contig sequence information by using nothing more than basic R syntax. To illustrate, we will use the <span class="math inline">\(\alpha\)</span>-chain data to extract some complex features, starting with the identification of sequences that have UMI counts no less than 50% of the largest UMI count for the same cell.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Assigning to a short-name variable for convenience.</span>
+tra &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRA
+
+<span class="co"># Obtaining the maximum UMI count for each cell.</span>
+max.umi &lt;-<span class="st"> </span><span class="kw">max</span>(tra[,<span class="st">&quot;umis&quot;</span>])
+<span class="kw">head</span>(max.umi)</code></pre></div>
+<pre><code>## AAACCTGAGATCTGAA-1 AAACCTGAGGAACTGC-1 AAACCTGAGGAGTCTG-1 AAACCTGAGGCTCTTA-1 
+##                  3                  9                  3                  3 
+## AAACCTGAGTACGTTC-1 AAACCTGGTCTTGTCC-1 
+##        -2147483647        -2147483647</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate a LogicalList indicating which sequences have UMI counts</span>
+<span class="co"># greater than half the maximum UMI count in the same cell.</span>
+keep &lt;-<span class="st"> </span>tra[,<span class="st">&quot;umis&quot;</span>] <span class="op">&gt;=</span><span class="st"> </span>max.umi<span class="op">/</span><span class="dv">2</span>
+keep</code></pre></div>
+<pre><code>## LogicalList of length 6660
+## [[&quot;AAACCTGAGATCTGAA-1&quot;]] AAACCTGAGATCTGAA-1=TRUE
+## [[&quot;AAACCTGAGGAACTGC-1&quot;]] AAACCTGAGGAACTGC-1=TRUE
+## [[&quot;AAACCTGAGGAGTCTG-1&quot;]] AAACCTGAGGAGTCTG-1=TRUE
+## [[&quot;AAACCTGAGGCTCTTA-1&quot;]] AAACCTGAGGCTCTTA-1=TRUE AAACCTGAGGCTCTTA-1=TRUE
+## [[&quot;AAACCTGAGTACGTTC-1&quot;]] named logical(0)
+## [[&quot;AAACCTGGTCTTGTCC-1&quot;]] named logical(0)
+## [[&quot;AAACCTGGTTGCGTTA-1&quot;]] named logical(0)
+## [[&quot;AAACCTGTCAACGGGA-1&quot;]] AAACCTGTCAACGGGA-1=TRUE AAACCTGTCAACGGGA-1=FALSE
+## [[&quot;AAACCTGTCACTGGGC-1&quot;]] named logical(0)
+## [[&quot;AAACCTGTCAGCTGGC-1&quot;]] named logical(0)
+## ...
+## &lt;6650 more elements&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Examine the distribution of the proportion of sequences in each cell</span>
+<span class="co"># that satisfied our requirements.</span>
+<span class="kw">summary</span>(<span class="kw">mean</span>(keep))</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     0.2     1.0     1.0     0.9     1.0     1.0    3067</code></pre>
+<p>Boolean statements are easily accommodated with standard methods. For example, we can identify sequences that are full-length, productive and have the largest UMI count in the cell. Another useful aspect of the <code>SplitDataFrameList</code>’s behavior is that we can use a <code>LogicalList</code> as an argument for subsetting, which will then subset at the sequence level, i.e., the rows of each per-cell <code>DataFrame</code>. (This contrasts with more conventional uses of a logical vector as the subset argument, which will simply subset at the cell level, i.e., the elements of the <code>SplitDataFrameList</code> itself.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">keep &lt;-<span class="st"> </span>tra[,<span class="st">&quot;full_length&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span> <span class="op">&amp;</span>
+<span class="st">    </span>tra[,<span class="st">&quot;productive&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span> <span class="op">&amp;</span>
+<span class="st">    </span>tra[,<span class="st">&quot;umis&quot;</span>] <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(tra[,<span class="st">&quot;umis&quot;</span>])
+keep </code></pre></div>
+<pre><code>## LogicalList of length 6660
+## [[&quot;AAACCTGAGATCTGAA-1&quot;]] AAACCTGAGATCTGAA-1=TRUE
+## [[&quot;AAACCTGAGGAACTGC-1&quot;]] AAACCTGAGGAACTGC-1=TRUE
+## [[&quot;AAACCTGAGGAGTCTG-1&quot;]] AAACCTGAGGAGTCTG-1=TRUE
+## [[&quot;AAACCTGAGGCTCTTA-1&quot;]] AAACCTGAGGCTCTTA-1=TRUE AAACCTGAGGCTCTTA-1=FALSE
+## [[&quot;AAACCTGAGTACGTTC-1&quot;]] named logical(0)
+## [[&quot;AAACCTGGTCTTGTCC-1&quot;]] named logical(0)
+## [[&quot;AAACCTGGTTGCGTTA-1&quot;]] named logical(0)
+## [[&quot;AAACCTGTCAACGGGA-1&quot;]] AAACCTGTCAACGGGA-1=TRUE AAACCTGTCAACGGGA-1=FALSE
+## [[&quot;AAACCTGTCACTGGGC-1&quot;]] named logical(0)
+## [[&quot;AAACCTGTCAGCTGGC-1&quot;]] named logical(0)
+## ...
+## &lt;6650 more elements&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subsets the SplitDataFrameList to only retain sequences in each cell</span>
+<span class="co"># that satisfy our requirements.</span>
+tra.sub &lt;-<span class="st"> </span>tra[keep]</code></pre></div>
+<p>The grammar also extends to dealing with character vectors. Say we want to quantify all combinations of V and J genes, each of which is extracted from <code>tra</code> as a <code>CharacterList</code> object. The simplest approach is to simply <code>paste()</code> the <code>CharacterList</code> objects together and count the frequencies of the concatenated strings, as shown below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">combined &lt;-<span class="st"> </span><span class="kw">paste</span>(tra[,<span class="st">&quot;v_gene&quot;</span>], tra[,<span class="st">&quot;j_gene&quot;</span>])
+combined</code></pre></div>
+<pre><code>## CharacterList of length 6660
+## [[&quot;AAACCTGAGATCTGAA-1&quot;]] TRAV13-1 TRAJ44
+## [[&quot;AAACCTGAGGAACTGC-1&quot;]] TRAV23/DV6 TRAJ34
+## [[&quot;AAACCTGAGGAGTCTG-1&quot;]] TRAV2 TRAJ38
+## [[&quot;AAACCTGAGGCTCTTA-1&quot;]] TRAV12-3 TRAJ37 TRAV25 TRAJ29
+## [[&quot;AAACCTGAGTACGTTC-1&quot;]] character(0)
+## [[&quot;AAACCTGGTCTTGTCC-1&quot;]] character(0)
+## [[&quot;AAACCTGGTTGCGTTA-1&quot;]] character(0)
+## [[&quot;AAACCTGTCAACGGGA-1&quot;]] TRAV9-2 TRAJ38 TRAV25 TRAJ31
+## [[&quot;AAACCTGTCACTGGGC-1&quot;]] character(0)
+## [[&quot;AAACCTGTCAGCTGGC-1&quot;]] character(0)
+## ...
+## &lt;6650 more elements&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">combo.freq &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">unlist</span>(combined))
+<span class="kw">head</span>(<span class="kw">sort</span>(combo.freq, <span class="dt">decreasing=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>## 
+##      TRAV1-2 TRAJ33 TRAV38-2/DV8 TRAJ45     TRAV26-1 TRAJ49          None TRAJ6 
+##                 137                  40                  32                  27 
+##         None TRAJ18       TRAV41 TRAJ58 
+##                  17                  17</code></pre>
+<p>If an operation must be performed on the original sequence-level data frame, we can efficiently recover the latter by calling <code>unlist()</code> on our <code>SplitDataFrameList</code>. It is similarly straightforward to regenerate our <code>SplitDataFrameList</code> from the data frame by using the little-known <code>relist()</code> command. This framework permits users to quickly switch between sequence level and cell level perspectives of the repertoire data depending on which is most convenient at any given point in the analysis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tra.seq &lt;-<span class="st"> </span><span class="kw">unlist</span>(tra)
+<span class="kw">dim</span>(tra.seq) <span class="co"># Each row represents a sequence now.</span></code></pre></div>
+<pre><code>## [1] 4863   18</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adding some arbitrary extra annotation (mocked up here).</span>
+extra.anno &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">anno=</span><span class="kw">sample</span>(LETTERS, <span class="kw">nrow</span>(tra.seq), <span class="dt">replace=</span><span class="ot">TRUE</span>))
+tra.seq &lt;-<span class="st"> </span><span class="kw">cbind</span>(tra.seq, extra.anno)
+
+<span class="co"># Regenerating the SplitDataFrameList from the modified DataFrame.</span>
+tra2 &lt;-<span class="st"> </span><span class="kw">relist</span>(tra.seq, tra)
+<span class="kw">length</span>(tra2) <span class="co"># Each element represents a cell again.</span></code></pre></div>
+<pre><code>## [1] 6660</code></pre>
 </div>
 <div id="quantifying-clonal-expansion" class="section level3">
-<h3><span class="header-section-number">19.2.3</span> Quantifying clonal expansion</h3>
-<p>Quantification of clonal expansion is the most obvious application of repertoire sequencing data.
-Cells with the same T cell clonotype are assumed to target the same antigen, and any increase in the frequency of a clonotype provides evidence for T cell activation and proliferation upon stimulation by the corresponding antigen.
-Thus, we can gain some insights into the immune activity of each T cell cluster by counting the number of expanded clonotypes in each cluster, as shown below for the <span class="math inline">\(\alpha\)</span>-chain.
-(We do not exclude clonotypes containing cells in different clusters, which can arise for various genuine biological reasons, e.g., differences in the microenvironment.)</p>
-<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb632-1" data-line-number="1">clone.id.A &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">unique</span>(sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>]))</a>
-<a class="sourceLine" id="cb632-2" data-line-number="2">expanded.id.A &lt;-<span class="st"> </span><span class="kw">setdiff</span>(clone.id.A[<span class="kw">duplicated</span>(clone.id.A)], <span class="st">&quot;None&quot;</span>)</a>
-<a class="sourceLine" id="cb632-3" data-line-number="3"><span class="kw">length</span>(expanded.id.A) <span class="co"># number of expanded clonotypes for TRA</span></a></code></pre></div>
+<h3><span class="header-section-number">19.2.4</span> Quantifying clonal expansion</h3>
+<p>Quantification of clonal expansion is the most obvious application of repertoire sequencing data. Cells with the same T cell clonotype are assumed to target the same antigen, and any increase in the frequency of a clonotype provides evidence for T cell activation and proliferation upon stimulation by the corresponding antigen. Thus, we can gain some insights into the immune activity of each T cell cluster by counting the number of expanded clonotypes in each cluster, as shown below for the <span class="math inline">\(\alpha\)</span>-chain. (We do not exclude clonotypes containing cells in different clusters, which can arise for various genuine biological reasons, e.g., differences in the microenvironment.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clone.id.A &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">unique</span>(sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>]))
+expanded.id.A &lt;-<span class="st"> </span><span class="kw">setdiff</span>(clone.id.A[<span class="kw">duplicated</span>(clone.id.A)], <span class="st">&quot;None&quot;</span>)
+<span class="kw">length</span>(expanded.id.A) <span class="co"># number of expanded clonotypes for TRA</span></code></pre></div>
 <pre><code>## [1] 92</code></pre>
-<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb634-1" data-line-number="1">clone.id.B &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">unique</span>(sce.pbmc<span class="op">$</span>TRB[,<span class="st">&quot;raw_clonotype_id&quot;</span>]))</a>
-<a class="sourceLine" id="cb634-2" data-line-number="2">expanded.id.B &lt;-<span class="st"> </span><span class="kw">setdiff</span>(clone.id.B[<span class="kw">duplicated</span>(clone.id.B)], <span class="st">&quot;None&quot;</span>)</a>
-<a class="sourceLine" id="cb634-3" data-line-number="3"><span class="kw">length</span>(expanded.id.B) <span class="co"># number of expanded clonotypes for TRB</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clone.id.B &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">unique</span>(sce.pbmc<span class="op">$</span>TRB[,<span class="st">&quot;raw_clonotype_id&quot;</span>]))
+expanded.id.B &lt;-<span class="st"> </span><span class="kw">setdiff</span>(clone.id.B[<span class="kw">duplicated</span>(clone.id.B)], <span class="st">&quot;None&quot;</span>)
+<span class="kw">length</span>(expanded.id.B) <span class="co"># number of expanded clonotypes for TRB</span></code></pre></div>
 <pre><code>## [1] 96</code></pre>
-<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb636-1" data-line-number="1">is.clone.A &lt;-<span class="st"> </span><span class="kw">any</span>(sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>] <span class="op">%in%</span><span class="st"> </span>expanded.id.A)</a>
-<a class="sourceLine" id="cb636-2" data-line-number="2">tra.counts.clonal &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[is.clone.A])</a>
-<a class="sourceLine" id="cb636-3" data-line-number="3">is.clone.B &lt;-<span class="st"> </span><span class="kw">any</span>(sce.pbmc<span class="op">$</span>TRB[,<span class="st">&quot;raw_clonotype_id&quot;</span>] <span class="op">%in%</span><span class="st"> </span>expanded.id.B)</a>
-<a class="sourceLine" id="cb636-4" data-line-number="4">trb.counts.clonal &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[is.clone.B])</a>
-<a class="sourceLine" id="cb636-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb636-6" data-line-number="6"><span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.clonal<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.clonal<span class="op">/</span>ncells), </a>
-<a class="sourceLine" id="cb636-7" data-line-number="7">    <span class="dt">legend=</span><span class="ot">TRUE</span>, <span class="dt">beside=</span><span class="ot">TRUE</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-6"></span>
-<img src="P2_W15.repertoire-seq_files/figure-html/unnamed-chunk-6-1.png" alt="Proportion of cells in each cluster that have multiple clonotypes, based on the TCR $\alpha$ or $\beta$-chains." width="672" />
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">is.clone.A &lt;-<span class="st"> </span><span class="kw">any</span>(sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>] <span class="op">%in%</span><span class="st"> </span>expanded.id.A)
+tra.counts.clonal &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[is.clone.A])
+is.clone.B &lt;-<span class="st"> </span><span class="kw">any</span>(sce.pbmc<span class="op">$</span>TRB[,<span class="st">&quot;raw_clonotype_id&quot;</span>] <span class="op">%in%</span><span class="st"> </span>expanded.id.B)
+trb.counts.clonal &lt;-<span class="st"> </span><span class="kw">table</span>(sce.pbmc<span class="op">$</span>cluster[is.clone.B])
+
+<span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.clonal<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.clonal<span class="op">/</span>ncells), 
+    <span class="dt">legend=</span><span class="ot">TRUE</span>, <span class="dt">beside=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="figure"><span id="fig:unnamed-chunk-10"></span>
+<img src="P2_W15.repertoire-seq_files/figure-html/unnamed-chunk-10-1.png" alt="Proportion of cells in each cluster that have multiple clonotypes, based on the TCR $\alpha$ or $\beta$-chains." width="672" />
 <p class="caption">
 Figure 19.5: Proportion of cells in each cluster that have multiple clonotypes, based on the TCR <span class="math inline">\(\alpha\)</span> or <span class="math inline">\(\beta\)</span>-chains.
 </p>
 </div>
-<p>We can use this information to determine whether a particular T cell cluster is enriched for expanding clonotypes.
-The example below uses Fisher’s exact test to identify a significant increase in the proportion of expanded clonotypes in a cluster of putative CD8<sup>+</sup> T cells compared to another cluster of CD4<sup>+</sup> T cells (Figure <a href="repertoire-seq.html#fig:expanded-t-clusters">19.6</a>).
-This provides some relative measure of the average immune activity of each cluster though, of course, further subclustering may reveal finer subpopulations with more or less activity than the average of the parent cluster.</p>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb637-1" data-line-number="1"><span class="co"># Identifying the clusters:</span></a>
-<a class="sourceLine" id="cb637-2" data-line-number="2">tclust<span class="fl">.1</span> &lt;-<span class="st"> &quot;2&quot;</span></a>
-<a class="sourceLine" id="cb637-3" data-line-number="3">tclust<span class="fl">.2</span> &lt;-<span class="st"> &quot;6&quot;</span></a>
-<a class="sourceLine" id="cb637-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb637-5" data-line-number="5">mat &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">Expanded=</span>tra.counts.clonal,</a>
-<a class="sourceLine" id="cb637-6" data-line-number="6">    <span class="dt">Unexpanded=</span>tra.counts.any <span class="op">-</span><span class="st"> </span>tra.counts.clonal)[<span class="kw">c</span>(tclust<span class="fl">.1</span>, tclust<span class="fl">.2</span>),]</a>
-<a class="sourceLine" id="cb637-7" data-line-number="7">mat </a></code></pre></div>
+<p>We can use this information to determine whether a particular T cell cluster is enriched for expanding clonotypes. The example below uses Fisher’s exact test to identify a significant increase in the proportion of expanded clonotypes in a cluster of putative CD8<sup>+</sup> T cells compared to another cluster of CD4<sup>+</sup> T cells (Figure <a href="repertoire-seq.html#fig:expanded-t-clusters">19.6</a>). This provides some relative measure of the average immune activity of each cluster though, of course, further subclustering may reveal finer subpopulations with more or less activity than the average of the parent cluster.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identifying the clusters:</span>
+tclust<span class="fl">.1</span> &lt;-<span class="st"> &quot;2&quot;</span>
+tclust<span class="fl">.2</span> &lt;-<span class="st"> &quot;6&quot;</span>
+
+mat &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">Expanded=</span>tra.counts.clonal,
+    <span class="dt">Unexpanded=</span>tra.counts.any <span class="op">-</span><span class="st"> </span>tra.counts.clonal)[<span class="kw">c</span>(tclust<span class="fl">.1</span>, tclust<span class="fl">.2</span>),]
+mat </code></pre></div>
 <pre><code>##   Expanded Unexpanded
 ## 2      138        309
 ## 6       80       1193</code></pre>
-<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb639-1" data-line-number="1">stats &lt;-<span class="st"> </span><span class="kw">fisher.test</span>(mat)</a>
-<a class="sourceLine" id="cb639-2" data-line-number="2">stats</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stats &lt;-<span class="st"> </span><span class="kw">fisher.test</span>(mat)
+stats</code></pre></div>
 <pre><code>## 
 ##  Fisher&#39;s Exact Test for Count Data
 ## 
@@ -935,15 +1147,15 @@ This provides some relative measure of the average immune activity of each clust
 ## sample estimates:
 ## odds ratio 
 ##       6.65</code></pre>
-<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb641-1" data-line-number="1"><span class="co"># Checking the identities of the relevant clusters. Note that &#39;cluster&#39; is also</span></a>
-<a class="sourceLine" id="cb641-2" data-line-number="2"><span class="co"># present as a colData entry in &#39;altExp(sce.pbmc)&#39;, which is why the</span></a>
-<a class="sourceLine" id="cb641-3" data-line-number="3"><span class="co"># &#39;other_fields=&quot;cluster&quot;&#39; argument works correctty.</span></a>
-<a class="sourceLine" id="cb641-4" data-line-number="4">of.interest &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>cluster <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(tclust<span class="fl">.1</span>, tclust<span class="fl">.2</span>)</a>
-<a class="sourceLine" id="cb641-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb641-6" data-line-number="6"><span class="kw">library</span>(scater)</a>
-<a class="sourceLine" id="cb641-7" data-line-number="7"><span class="kw">plotExpression</span>(<span class="kw">altExp</span>(sce.pbmc)[,of.interest], </a>
-<a class="sourceLine" id="cb641-8" data-line-number="8">    <span class="dt">features=</span><span class="kw">rownames</span>(<span class="kw">altExp</span>(sce.pbmc)),</a>
-<a class="sourceLine" id="cb641-9" data-line-number="9">    <span class="dt">other_fields=</span><span class="st">&quot;cluster&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>cluster, <span class="dt">ncol=</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Checking the identities of the relevant clusters. Note that &#39;cluster&#39; is also</span>
+<span class="co"># present as a colData entry in &#39;altExp(sce.pbmc)&#39;, which is why the</span>
+<span class="co"># &#39;other_fields=&quot;cluster&quot;&#39; argument works correctty.</span>
+of.interest &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>cluster <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(tclust<span class="fl">.1</span>, tclust<span class="fl">.2</span>)
+
+<span class="kw">library</span>(scater)
+<span class="kw">plotExpression</span>(<span class="kw">altExp</span>(sce.pbmc)[,of.interest], 
+    <span class="dt">features=</span><span class="kw">rownames</span>(<span class="kw">altExp</span>(sce.pbmc)),
+    <span class="dt">other_fields=</span><span class="st">&quot;cluster&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>cluster, <span class="dt">ncol=</span><span class="dv">1</span>)</code></pre></div>
 <div class="figure"><span id="fig:expanded-t-clusters"></span>
 <img src="P2_W15.repertoire-seq_files/figure-html/expanded-t-clusters-1.png" alt="Distribution of log-abundance values for each antibody-derived tag in the PBMC dataset, across all cells in either T cell cluster (top and bottom panels)." width="672" />
 <p class="caption">
@@ -952,32 +1164,29 @@ Figure 19.6: Distribution of log-abundance values for each antibody-derived tag 
 </div>
 </div>
 <div id="quantifying-gene-expression-and-properties" class="section level3">
-<h3><span class="header-section-number">19.2.4</span> Quantifying gene expression and properties</h3>
-<p>We may also be interested in the expression of specific TCR genes, which can provide some insight into the type of antigens being targeted <span class="citation">(Shugay et al. <a href="#ref-shugay2018vdjdb">2018</a>)</span>.
-We again use Fisher’s exact test to test if our two T cell clusters of interest differ in the proportion of TCR sequences containing each gene.
-This yields a number of significant differences that may or may not be interesting, I don’t know.
-As usual, composition effects apply here.</p>
-<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb642-1" data-line-number="1"><span class="co"># This should DEFINITELY use countGenes().</span></a>
-<a class="sourceLine" id="cb642-2" data-line-number="2">gene.id.A &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;v_gene&quot;</span>]</a>
-<a class="sourceLine" id="cb642-3" data-line-number="3">expanded.cluster &lt;-<span class="st"> </span><span class="kw">rep</span>(sce.pbmc<span class="op">$</span>cluster, <span class="kw">lengths</span>(gene.id.A))</a>
-<a class="sourceLine" id="cb642-4" data-line-number="4">gene.tab.A &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">unlist</span>(gene.id.A), expanded.cluster)</a>
-<a class="sourceLine" id="cb642-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb642-6" data-line-number="6"><span class="co"># Testing for differences between our clusters.</span></a>
-<a class="sourceLine" id="cb642-7" data-line-number="7">collected &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb642-8" data-line-number="8">totals &lt;-<span class="st"> </span><span class="kw">colSums</span>(gene.tab.A)</a>
-<a class="sourceLine" id="cb642-9" data-line-number="9"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">rownames</span>(gene.tab.A)) {</a>
-<a class="sourceLine" id="cb642-10" data-line-number="10">    mat &lt;-<span class="st"> </span><span class="kw">cbind</span>(</a>
-<a class="sourceLine" id="cb642-11" data-line-number="11">        <span class="dt">Gene=</span>gene.tab.A[i,],</a>
-<a class="sourceLine" id="cb642-12" data-line-number="12">        <span class="dt">Other=</span>totals <span class="op">-</span><span class="st"> </span>gene.tab.A[i,])[<span class="kw">c</span>(tclust<span class="fl">.1</span>, tclust<span class="fl">.2</span>),]</a>
-<a class="sourceLine" id="cb642-13" data-line-number="13">    stats &lt;-<span class="st"> </span><span class="kw">fisher.test</span>(mat)</a>
-<a class="sourceLine" id="cb642-14" data-line-number="14">    collected[[i]] &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">OR=</span>stats<span class="op">$</span>estimate, <span class="dt">p.value=</span>stats<span class="op">$</span>p.value,</a>
-<a class="sourceLine" id="cb642-15" data-line-number="15">        <span class="dt">row.names=</span>i)</a>
-<a class="sourceLine" id="cb642-16" data-line-number="16">}</a>
-<a class="sourceLine" id="cb642-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb642-18" data-line-number="18">collected &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, collected)</a>
-<a class="sourceLine" id="cb642-19" data-line-number="19">collected<span class="op">$</span>FDR &lt;-<span class="st"> </span><span class="kw">p.adjust</span>(collected<span class="op">$</span>p.value, <span class="dt">method=</span><span class="st">&quot;BH&quot;</span>)</a>
-<a class="sourceLine" id="cb642-20" data-line-number="20">collected &lt;-<span class="st"> </span>collected[<span class="kw">order</span>(collected<span class="op">$</span>p.value),]</a>
-<a class="sourceLine" id="cb642-21" data-line-number="21"><span class="kw">head</span>(collected)</a></code></pre></div>
+<h3><span class="header-section-number">19.2.5</span> Quantifying gene expression and properties</h3>
+<p>We may also be interested in the expression of specific TCR genes, which can provide some insight into the type of antigens being targeted <span class="citation">(Shugay et al. <a href="#ref-shugay2018vdjdb">2018</a>)</span>. We again use Fisher’s exact test to test if our two T cell clusters of interest differ in the proportion of TCR sequences containing each gene. This yields a number of significant differences that may or may not be interesting, I don’t know. As usual, composition effects apply here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This should DEFINITELY use countGenes().</span>
+gene.id.A &lt;-<span class="st"> </span>sce.pbmc<span class="op">$</span>TRA[,<span class="st">&quot;v_gene&quot;</span>]
+expanded.cluster &lt;-<span class="st"> </span><span class="kw">rep</span>(sce.pbmc<span class="op">$</span>cluster, <span class="kw">lengths</span>(gene.id.A))
+gene.tab.A &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">unlist</span>(gene.id.A), expanded.cluster)
+
+<span class="co"># Testing for differences between our clusters.</span>
+collected &lt;-<span class="st"> </span><span class="kw">list</span>()
+totals &lt;-<span class="st"> </span><span class="kw">colSums</span>(gene.tab.A)
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">rownames</span>(gene.tab.A)) {
+    mat &lt;-<span class="st"> </span><span class="kw">cbind</span>(
+        <span class="dt">Gene=</span>gene.tab.A[i,],
+        <span class="dt">Other=</span>totals <span class="op">-</span><span class="st"> </span>gene.tab.A[i,])[<span class="kw">c</span>(tclust<span class="fl">.1</span>, tclust<span class="fl">.2</span>),]
+    stats &lt;-<span class="st"> </span><span class="kw">fisher.test</span>(mat)
+    collected[[i]] &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">OR=</span>stats<span class="op">$</span>estimate, <span class="dt">p.value=</span>stats<span class="op">$</span>p.value,
+        <span class="dt">row.names=</span>i)
+}
+
+collected &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, collected)
+collected<span class="op">$</span>FDR &lt;-<span class="st"> </span><span class="kw">p.adjust</span>(collected<span class="op">$</span>p.value, <span class="dt">method=</span><span class="st">&quot;BH&quot;</span>)
+collected &lt;-<span class="st"> </span>collected[<span class="kw">order</span>(collected<span class="op">$</span>p.value),]
+<span class="kw">head</span>(collected)</code></pre></div>
 <pre><code>## DataFrame with 6 rows and 3 columns
 ##                     OR     p.value         FDR
 ##              &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;
@@ -987,55 +1196,54 @@ As usual, composition effects apply here.</p>
 ## TRAV13-1      0.407479 2.72881e-04 3.06991e-03
 ## TRAV38-1      0.152513 1.28213e-03 1.09826e-02
 ## TRAV12-1      2.217839 1.49621e-03 1.09826e-02</code></pre>
-<p>The same philosophy can be applied to detect significant differences in biophysical properties.
-I have no idea what to say about this.
-I can only assume that gravy refers to hydrophobicity, and not the sauce.
-(One 300g can of gravy gives me a quarter of my daily fat, according to Google.
-And half my sodium as well. What a bargain!)
-And maybe basic TCRs will prefer to bind acidic pepties?
-Now we just have to find all those acidic antigens out there - how hard can it be?
-What kind of pathogen uses acidic residues, anyway?
-Prolines, now that’s a sign of class.</p>
-<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb644-1" data-line-number="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: move this somewhere else.</span></a>
-<a class="sourceLine" id="cb644-2" data-line-number="2">extractDataFrame &lt;-<span class="st"> </span><span class="cf">function</span>(splitted, ...) {</a>
-<a class="sourceLine" id="cb644-3" data-line-number="3">    thing &lt;-<span class="st"> </span><span class="kw">data.frame</span>(...)</a>
-<a class="sourceLine" id="cb644-4" data-line-number="4">    thing &lt;-<span class="st"> </span>thing[<span class="kw">rep</span>(<span class="kw">seq_len</span>(<span class="kw">NROW</span>(thing)), <span class="kw">lengths</span>(splitted)),,drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb644-5" data-line-number="5">    <span class="kw">cbind</span>(<span class="kw">as.data.frame</span>(<span class="kw">unlist</span>(splitted)), thing)</a>
-<a class="sourceLine" id="cb644-6" data-line-number="6">}</a>
-<a class="sourceLine" id="cb644-7" data-line-number="7">df.A &lt;-<span class="st"> </span><span class="kw">extractDataFrame</span>(sce.pbmc<span class="op">$</span>TRA, <span class="dt">cluster=</span>sce.pbmc<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb644-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb644-9" data-line-number="9"><span class="kw">library</span>(alakazam)</a>
-<a class="sourceLine" id="cb644-10" data-line-number="10">aap &lt;-<span class="st"> </span><span class="kw">aminoAcidProperties</span>(df.A, <span class="dt">seq=</span><span class="st">&quot;cdr3&quot;</span>)</a>
-<a class="sourceLine" id="cb644-11" data-line-number="11">properties &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;_AA_&quot;</span>, <span class="kw">colnames</span>(aap))</a>
-<a class="sourceLine" id="cb644-12" data-line-number="12"><span class="kw">head</span>(aap[,properties])</a></code></pre></div>
-<pre><code>##                      cdr3_AA_LENGTH cdr3_AA_GRAVY cdr3_AA_BULK cdr3_AA_ALIPHATIC cdr3_AA_POLARITY
-## AAACCTGAGATCTGAA-1               18        0.6889        13.42            0.8167            7.806
-## AAACCTGAGGAACTGC-1               12        0.1083        14.68            0.8167            8.642
-## AAACCTGAGGAGTCTG-1               16       -0.4250        14.52            0.8562            8.794
-## AAACCTGAGGCTCTTA-1               14        0.4286        13.09            0.6286            7.979
-## AAACCTGAGGCTCTTA-1.1             NA            NA           NA                NA               NA
-## AAACCTGTCAACGGGA-1               17       -0.2118        14.15            0.8059            8.324
-##                      cdr3_AA_CHARGE cdr3_AA_BASIC cdr3_AA_ACIDIC cdr3_AA_AROMATIC
-## AAACCTGAGATCTGAA-1           0.9260       0.05556         0.0000          0.05556
-## AAACCTGAGGAACTGC-1          -1.0734       0.08333         0.1667          0.08333
-## AAACCTGAGGAGTCTG-1           0.9265       0.12500         0.0625          0.06250
-## AAACCTGAGGCTCTTA-1           0.9260       0.07143         0.0000          0.07143
-## AAACCTGAGGCTCTTA-1.1             NA            NA             NA               NA
-## AAACCTGTCAACGGGA-1           2.0378       0.17647         0.0000          0.17647</code></pre>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb646-1" data-line-number="1">collected &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb646-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> properties) {</a>
-<a class="sourceLine" id="cb646-3" data-line-number="3">    prop &lt;-<span class="st"> </span><span class="kw">colnames</span>(aap)[i]</a>
-<a class="sourceLine" id="cb646-4" data-line-number="4">    current &lt;-<span class="st"> </span><span class="kw">split</span>(aap[,prop], aap<span class="op">$</span>cluster)</a>
-<a class="sourceLine" id="cb646-5" data-line-number="5">    left &lt;-<span class="st"> </span>current[[tclust<span class="fl">.1</span>]]</a>
-<a class="sourceLine" id="cb646-6" data-line-number="6">    right &lt;-<span class="st"> </span>current[[tclust<span class="fl">.2</span>]]</a>
-<a class="sourceLine" id="cb646-7" data-line-number="7">    stats &lt;-<span class="st"> </span><span class="kw">wilcox.test</span>(left, right)</a>
-<a class="sourceLine" id="cb646-8" data-line-number="8">    collected[[prop]] &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">Delta=</span><span class="kw">median</span>(left, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb646-9" data-line-number="9"><span class="st">        </span><span class="kw">median</span>(right, <span class="dt">na.rm=</span><span class="ot">TRUE</span>), <span class="dt">p.value=</span>stats<span class="op">$</span>p.value,</a>
-<a class="sourceLine" id="cb646-10" data-line-number="10">        <span class="dt">row.names=</span>prop)</a>
-<a class="sourceLine" id="cb646-11" data-line-number="11">}</a>
-<a class="sourceLine" id="cb646-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb646-13" data-line-number="13">collected &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, collected)</a>
-<a class="sourceLine" id="cb646-14" data-line-number="14">collected</a></code></pre></div>
+<p>The same philosophy can be applied to detect significant differences in biophysical properties. I have no idea what to say about this. I can only assume that gravy refers to hydrophobicity, and not the sauce. (One 300g can of gravy gives me a quarter of my daily fat, according to Google. And half my sodium as well. What a bargain!) And maybe basic TCRs will prefer to bind acidic pepties? Now we just have to find all those acidic antigens out there - how hard can it be? What kind of pathogen uses acidic residues, anyway? Prolines, now that’s a sign of class.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># </span><span class="al">TODO</span><span class="co">: move this somewhere else.</span>
+extractDataFrame &lt;-<span class="st"> </span><span class="cf">function</span>(splitted, ...) {
+    thing &lt;-<span class="st"> </span><span class="kw">data.frame</span>(...)
+    thing &lt;-<span class="st"> </span>thing[<span class="kw">rep</span>(<span class="kw">seq_len</span>(<span class="kw">NROW</span>(thing)), <span class="kw">lengths</span>(splitted)),,drop=<span class="ot">FALSE</span>]
+    <span class="kw">cbind</span>(<span class="kw">as.data.frame</span>(<span class="kw">unlist</span>(splitted)), thing)
+}
+df.A &lt;-<span class="st"> </span><span class="kw">extractDataFrame</span>(sce.pbmc<span class="op">$</span>TRA, <span class="dt">cluster=</span>sce.pbmc<span class="op">$</span>cluster)
+
+<span class="kw">library</span>(alakazam)
+aap &lt;-<span class="st"> </span><span class="kw">aminoAcidProperties</span>(df.A, <span class="dt">seq=</span><span class="st">&quot;cdr3&quot;</span>)
+properties &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;_AA_&quot;</span>, <span class="kw">colnames</span>(aap))
+<span class="kw">head</span>(aap[,properties])</code></pre></div>
+<pre><code>##                      cdr3_AA_LENGTH cdr3_AA_GRAVY cdr3_AA_BULK
+## AAACCTGAGATCTGAA-1               18        0.6889        13.42
+## AAACCTGAGGAACTGC-1               12        0.1083        14.68
+## AAACCTGAGGAGTCTG-1               16       -0.4250        14.52
+## AAACCTGAGGCTCTTA-1               14        0.4286        13.09
+## AAACCTGAGGCTCTTA-1.1             NA            NA           NA
+## AAACCTGTCAACGGGA-1               17       -0.2118        14.15
+##                      cdr3_AA_ALIPHATIC cdr3_AA_POLARITY cdr3_AA_CHARGE
+## AAACCTGAGATCTGAA-1              0.8167            7.806         0.9260
+## AAACCTGAGGAACTGC-1              0.8167            8.642        -1.0734
+## AAACCTGAGGAGTCTG-1              0.8562            8.794         0.9265
+## AAACCTGAGGCTCTTA-1              0.6286            7.979         0.9260
+## AAACCTGAGGCTCTTA-1.1                NA               NA             NA
+## AAACCTGTCAACGGGA-1              0.8059            8.324         2.0378
+##                      cdr3_AA_BASIC cdr3_AA_ACIDIC cdr3_AA_AROMATIC
+## AAACCTGAGATCTGAA-1         0.05556         0.0000          0.05556
+## AAACCTGAGGAACTGC-1         0.08333         0.1667          0.08333
+## AAACCTGAGGAGTCTG-1         0.12500         0.0625          0.06250
+## AAACCTGAGGCTCTTA-1         0.07143         0.0000          0.07143
+## AAACCTGAGGCTCTTA-1.1            NA             NA               NA
+## AAACCTGTCAACGGGA-1         0.17647         0.0000          0.17647</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collected &lt;-<span class="st"> </span><span class="kw">list</span>()
+<span class="cf">for</span> (i <span class="cf">in</span> properties) {
+    prop &lt;-<span class="st"> </span><span class="kw">colnames</span>(aap)[i]
+    current &lt;-<span class="st"> </span><span class="kw">split</span>(aap[,prop], aap<span class="op">$</span>cluster)
+    left &lt;-<span class="st"> </span>current[[tclust<span class="fl">.1</span>]]
+    right &lt;-<span class="st"> </span>current[[tclust<span class="fl">.2</span>]]
+    stats &lt;-<span class="st"> </span><span class="kw">wilcox.test</span>(left, right)
+    collected[[prop]] &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">Delta=</span><span class="kw">median</span>(left, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span>
+<span class="st">        </span><span class="kw">median</span>(right, <span class="dt">na.rm=</span><span class="ot">TRUE</span>), <span class="dt">p.value=</span>stats<span class="op">$</span>p.value,
+        <span class="dt">row.names=</span>prop)
+}
+
+collected &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, collected)
+collected</code></pre></div>
 <pre><code>## DataFrame with 9 rows and 2 columns
 ##                         Delta     p.value
 ##                     &lt;numeric&gt;   &lt;numeric&gt;
@@ -1056,106 +1264,107 @@ Prolines, now that’s a sign of class.</p>
 </div>
 <div id="multi-sample-analyses" class="section level2">
 <h2><span class="header-section-number">19.4</span> Multi-sample analyses</h2>
-<p>A much more interesting analysis is possible when there are multiple samples and treatment conditions, where the aim is to determine which clusters contain T cell clonotypes that expand in response to treatment.
-In much the same vein as the analysis in Chapter <a href="multi-sample-comparisons.html#multi-sample-comparisons">14</a>, we can obtain a cluster-by-sample count matrix by simply <code>cbind()</code>ing together the <code>tra.counts.clonal</code> vector from each sample.
-To demonstrate, we will pretend that our cells are derived from 4 samples that have been merged together for common clustering (Chapter <a href="integrating-datasets.html#integrating-datasets">13</a>).</p>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb648-1" data-line-number="1">pretend.samples &lt;-<span class="st"> </span><span class="kw">sample</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="kw">ncol</span>(sce.pbmc), <span class="dt">replace=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb648-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb648-3" data-line-number="3"><span class="co"># Creating a count matrix.</span></a>
-<a class="sourceLine" id="cb648-4" data-line-number="4">clone.counts &lt;-<span class="st"> </span>any.counts &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb648-5" data-line-number="5"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">sort</span>(<span class="kw">unique</span>(pretend.samples))) {</a>
-<a class="sourceLine" id="cb648-6" data-line-number="6">    current.sample &lt;-<span class="st"> </span>sce.pbmc[,i<span class="op">==</span>pretend.samples]</a>
-<a class="sourceLine" id="cb648-7" data-line-number="7">    clone.id.A &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">unique</span>(current.sample<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>]))</a>
-<a class="sourceLine" id="cb648-8" data-line-number="8">    expanded.id.A &lt;-<span class="st"> </span><span class="kw">setdiff</span>(clone.id.A[<span class="kw">duplicated</span>(clone.id.A)], <span class="st">&quot;None&quot;</span>)</a>
-<a class="sourceLine" id="cb648-9" data-line-number="9">    is.clone.A &lt;-<span class="st"> </span><span class="kw">any</span>(current.sample<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>] <span class="op">%in%</span><span class="st"> </span>expanded.id.A)</a>
-<a class="sourceLine" id="cb648-10" data-line-number="10">    clone.counts[[i]] &lt;-<span class="st"> </span><span class="kw">table</span>(current.sample<span class="op">$</span>cluster[is.clone.A])</a>
-<a class="sourceLine" id="cb648-11" data-line-number="11">    any.counts[[i]] &lt;-<span class="st"> </span><span class="kw">table</span>(current.sample<span class="op">$</span>cluster[<span class="kw">lengths</span>(current.sample<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb648-12" data-line-number="12">}</a>
-<a class="sourceLine" id="cb648-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb648-14" data-line-number="14">clone.counts &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, clone.counts)</a>
-<a class="sourceLine" id="cb648-15" data-line-number="15">any.counts &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, any.counts)</a></code></pre></div>
-<p>We then test for condition-specific differences in the proportion of clonotypes that are expanded.
-A natural approach would be to apply a beta-binomial model to each cluster, using the expanded and TCR-containing counts as input; for the time being, though, we will just perform a simple Wilcoxon ranked sum test.
-We test on proportions to accommodate biological differences in T cell abundance between samples well as technical differences in, say, sequencing depth that might affect the success rate of TCR calls on a sample-by-sample basis.</p>
-<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb649-1" data-line-number="1">prop &lt;-<span class="st"> </span>clone.counts<span class="op">/</span>any.counts</a>
-<a class="sourceLine" id="cb649-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb649-3" data-line-number="3"><span class="co"># Pretending that the first two samples are cases,</span></a>
-<a class="sourceLine" id="cb649-4" data-line-number="4"><span class="co"># and the second two samples are controls.</span></a>
-<a class="sourceLine" id="cb649-5" data-line-number="5"><span class="kw">wilcox.test</span>(prop[tclust<span class="fl">.1</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], prop[tclust<span class="fl">.1</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>])</a></code></pre></div>
+<p>A much more interesting analysis is possible when there are multiple samples and treatment conditions, where the aim is to determine which clusters contain T cell clonotypes that expand in response to treatment. In much the same vein as the analysis in Chapter <a href="multi-sample-comparisons.html#multi-sample-comparisons">14</a>, we can obtain a cluster-by-sample count matrix by simply <code>cbind()</code>ing together the <code>tra.counts.clonal</code> vector from each sample. To demonstrate, we will pretend that our cells are derived from 4 samples that have been merged together for common clustering (Chapter <a href="integrating-datasets.html#integrating-datasets">13</a>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pretend.samples &lt;-<span class="st"> </span><span class="kw">sample</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="kw">ncol</span>(sce.pbmc), <span class="dt">replace=</span><span class="ot">TRUE</span>)
+
+<span class="co"># Creating a count matrix.</span>
+clone.counts &lt;-<span class="st"> </span>any.counts &lt;-<span class="st"> </span><span class="kw">list</span>()
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">sort</span>(<span class="kw">unique</span>(pretend.samples))) {
+    current.sample &lt;-<span class="st"> </span>sce.pbmc[,i<span class="op">==</span>pretend.samples]
+    clone.id.A &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">unique</span>(current.sample<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>]))
+    expanded.id.A &lt;-<span class="st"> </span><span class="kw">setdiff</span>(clone.id.A[<span class="kw">duplicated</span>(clone.id.A)], <span class="st">&quot;None&quot;</span>)
+    is.clone.A &lt;-<span class="st"> </span><span class="kw">any</span>(current.sample<span class="op">$</span>TRA[,<span class="st">&quot;raw_clonotype_id&quot;</span>] <span class="op">%in%</span><span class="st"> </span>expanded.id.A)
+    clone.counts[[i]] &lt;-<span class="st"> </span><span class="kw">table</span>(current.sample<span class="op">$</span>cluster[is.clone.A])
+    any.counts[[i]] &lt;-<span class="st"> </span><span class="kw">table</span>(current.sample<span class="op">$</span>cluster[<span class="kw">lengths</span>(current.sample<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>])
+}
+
+clone.counts &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, clone.counts)
+any.counts &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, any.counts)</code></pre></div>
+<p>We then test for condition-specific differences in the proportion of clonotypes that are expanded. A natural approach would be to apply a beta-binomial model to each cluster, using the expanded and TCR-containing counts as input; for the time being, though, we will just perform a simple Wilcoxon ranked sum test. We test on proportions to accommodate biological differences in T cell abundance between samples well as technical differences in, say, sequencing depth that might affect the success rate of TCR calls on a sample-by-sample basis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prop &lt;-<span class="st"> </span>clone.counts<span class="op">/</span>any.counts
+
+<span class="co"># Pretending that the first two samples are cases,</span>
+<span class="co"># and the second two samples are controls.</span>
+<span class="kw">wilcox.test</span>(prop[tclust<span class="fl">.1</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], prop[tclust<span class="fl">.1</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>])</code></pre></div>
 <pre><code>## 
 ##  Wilcoxon rank sum exact test
 ## 
 ## data:  prop[tclust.1, 1:2] and prop[tclust.1, 3:4]
 ## W = 0, p-value = 0.3
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
-<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb651-1" data-line-number="1"><span class="kw">wilcox.test</span>(prop[tclust<span class="fl">.2</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], prop[tclust<span class="fl">.2</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>])</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">wilcox.test</span>(prop[tclust<span class="fl">.2</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], prop[tclust<span class="fl">.2</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>])</code></pre></div>
 <pre><code>## 
 ##  Wilcoxon rank sum exact test
 ## 
 ## data:  prop[tclust.2, 1:2] and prop[tclust.2, 3:4]
-## W = 1, p-value = 0.7
+## W = 0, p-value = 0.3
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
-<div id="session-info-14" class="section level2 unnumbered">
+<div id="session-info-13" class="section level2 unnumbered">
 <h2>Session Info</h2>
 <button class="aaron-collapse">
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2019-12-29 r77627)
+<pre><code>R Under development (unstable) (2020-03-23 r78035)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 14.04.6 LTS
+Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS/LAPACK: /app/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib/libopenblas_prescottp-r0.2.18.so
+BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
+LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
- [4] LC_COLLATE=C               LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
-[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] parallel  stats4    stats     graphics  grDevices utils     datasets  methods   base     
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
 
 other attached packages:
- [1] alakazam_0.3.0              scater_1.15.12              ggplot2_3.2.1              
- [4] BiocFileCache_1.11.4        dbplyr_1.4.2                SingleCellExperiment_1.9.1 
- [7] SummarizedExperiment_1.17.1 DelayedArray_0.13.2         BiocParallel_1.21.2        
-[10] matrixStats_0.55.0          Biobase_2.47.2              GenomicRanges_1.39.1       
-[13] GenomeInfoDb_1.23.1         IRanges_2.21.2              S4Vectors_0.25.8           
-[16] BiocGenerics_0.33.0         Cairo_1.5-10                BiocStyle_2.15.3           
-[19] OSCAUtils_0.0.1            
+ [1] alakazam_0.3.0              scater_1.15.28             
+ [3] ggplot2_3.3.0               BiocFileCache_1.11.4       
+ [5] dbplyr_1.4.2                SingleCellExperiment_1.9.2 
+ [7] SummarizedExperiment_1.17.3 DelayedArray_0.13.7        
+ [9] BiocParallel_1.21.2         matrixStats_0.56.0         
+[11] Biobase_2.47.3              GenomicRanges_1.39.2       
+[13] GenomeInfoDb_1.23.13        IRanges_2.21.5             
+[15] S4Vectors_0.25.13           BiocGenerics_0.33.2        
+[17] BiocStyle_2.15.6            OSCAUtils_0.0.2            
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-143             bitops_1.0-6             bit64_0.9-7             
+ [1] nlme_3.1-145             bitops_1.0-6             bit64_0.9-7             
  [4] progress_1.2.2           httr_1.4.1               tools_4.0.0             
- [7] backports_1.1.5          R6_2.4.1                 irlba_2.3.3             
-[10] vipor_0.4.5              DBI_1.1.0                lazyeval_0.2.2          
-[13] colorspace_1.4-1         ade4_1.7-13              withr_2.1.2             
-[16] prettyunits_1.0.2        tidyselect_0.2.5         gridExtra_2.3           
-[19] processx_3.4.1           bit_1.1-14               curl_4.3                
-[22] compiler_4.0.0           BiocNeighbors_1.5.1      labeling_0.3            
-[25] bookdown_0.16            scales_1.1.0             readr_1.3.1             
-[28] callr_3.4.0              rappdirs_0.3.1           stringr_1.4.0           
-[31] digest_0.6.23            rmarkdown_2.0            XVector_0.27.0          
-[34] pkgconfig_2.0.3          htmltools_0.4.0          highr_0.8               
-[37] rlang_0.4.2              RSQLite_2.2.0            DelayedMatrixStats_1.9.0
-[40] farver_2.0.1             dplyr_0.8.3              RCurl_1.95-4.12         
-[43] magrittr_1.5             BiocSingular_1.3.1       GenomeInfoDbData_1.2.2  
-[46] Matrix_1.2-18            Rcpp_1.0.3               ggbeeswarm_0.6.0        
-[49] munsell_0.5.0            ape_5.3                  viridis_0.5.1           
-[52] lifecycle_0.1.0          stringi_1.4.3            yaml_2.2.0              
-[55] MASS_7.3-51.5            zlibbioc_1.33.0          grid_4.0.0              
-[58] blob_1.2.0               crayon_1.3.4             lattice_0.20-38         
-[61] cowplot_1.0.0            hms_0.5.2                zeallot_0.1.0           
-[64] knitr_1.26               ps_1.3.0                 pillar_1.4.3            
-[67] igraph_1.2.4.2           seqinr_3.6-1             glue_1.3.1              
-[70] evaluate_0.14            BiocManager_1.30.10      vctrs_0.2.1             
-[73] tidyr_1.0.0              gtable_0.3.0             purrr_0.3.3             
-[76] assertthat_0.2.1         xfun_0.11                rsvd_1.0.2              
-[79] viridisLite_0.3.0        tibble_2.1.3             beeswarm_0.2.3          
-[82] memoise_1.1.0           </code></pre>
+ [7] R6_2.4.1                 irlba_2.3.3              vipor_0.4.5             
+[10] DBI_1.1.0                lazyeval_0.2.2           colorspace_1.4-1        
+[13] ade4_1.7-15              withr_2.1.2              tidyselect_1.0.0        
+[16] gridExtra_2.3            prettyunits_1.1.1        processx_3.4.2          
+[19] bit_1.1-15.2             curl_4.3                 compiler_4.0.0          
+[22] BiocNeighbors_1.5.2      labeling_0.3             bookdown_0.18           
+[25] scales_1.1.0             readr_1.3.1              callr_3.4.2             
+[28] rappdirs_0.3.1           stringr_1.4.0            digest_0.6.25           
+[31] rmarkdown_2.1            XVector_0.27.1           pkgconfig_2.0.3         
+[34] htmltools_0.4.0          highr_0.8                rlang_0.4.5             
+[37] RSQLite_2.2.0            DelayedMatrixStats_1.9.0 farver_2.0.3            
+[40] dplyr_0.8.5              RCurl_1.98-1.1           magrittr_1.5            
+[43] BiocSingular_1.3.2       GenomeInfoDbData_1.2.2   Matrix_1.2-18           
+[46] Rcpp_1.0.4               ggbeeswarm_0.6.0         munsell_0.5.0           
+[49] ape_5.3                  viridis_0.5.1            lifecycle_0.2.0         
+[52] stringi_1.4.6            yaml_2.2.1               MASS_7.3-51.5           
+[55] zlibbioc_1.33.1          grid_4.0.0               blob_1.2.1              
+[58] crayon_1.3.4             lattice_0.20-40          cowplot_1.0.0           
+[61] hms_0.5.3                knitr_1.28               ps_1.3.2                
+[64] pillar_1.4.3             igraph_1.2.5             seqinr_3.6-1            
+[67] glue_1.3.2               evaluate_0.14            BiocManager_1.30.10     
+[70] vctrs_0.2.4              tidyr_1.0.2              gtable_0.3.0            
+[73] purrr_0.3.3              assertthat_0.2.1         xfun_0.12               
+[76] rsvd_1.0.3               viridisLite_0.3.0        tibble_2.1.3            
+[79] beeswarm_0.2.3           memoise_1.1.0           </code></pre>
 </div>
 
 </div>
@@ -1163,16 +1372,16 @@ loaded via a namespace (and not attached):
 <h3> Bibliography</h3>
 <div id="refs" class="references">
 <div id="ref-georgiou2014promise">
-<p>Georgiou, G., G. C. Ippolito, J. Beausang, C. E. Busse, H. Wardemann, and S. R. Quake. 2014. “The promise and challenge of high-throughput sequencing of the antibody repertoire.” <em>Nat. Biotechnol.</em> 32 (2):158–68.</p>
+<p>Georgiou, G., G. C. Ippolito, J. Beausang, C. E. Busse, H. Wardemann, and S. R. Quake. 2014. “The promise and challenge of high-throughput sequencing of the antibody repertoire.” <em>Nat. Biotechnol.</em> 32 (2): 158–68.</p>
 </div>
 <div id="ref-rosati2017overview">
-<p>Rosati, E., C. M. Dowds, E. Liaskou, E. K. K. Henriksen, T. H. Karlsen, and A. Franke. 2017. “Overview of methodologies for T-cell receptor repertoire analysis.” <em>BMC Biotechnol.</em> 17 (1):61.</p>
+<p>Rosati, E., C. M. Dowds, E. Liaskou, E. K. K. Henriksen, T. H. Karlsen, and A. Franke. 2017. “Overview of methodologies for T-cell receptor repertoire analysis.” <em>BMC Biotechnol.</em> 17 (1): 61.</p>
 </div>
 <div id="ref-shugay2018vdjdb">
-<p>Shugay, M., D. V. Bagaev, I. V. Zvyagin, R. M. Vroomans, J. C. Crawford, G. Dolton, E. A. Komech, et al. 2018. “VDJdb: a curated database of T-cell receptor sequences with known antigen specificity.” <em>Nucleic Acids Res.</em> 46 (D1):D419–D427.</p>
+<p>Shugay, M., D. V. Bagaev, I. V. Zvyagin, R. M. Vroomans, J. C. Crawford, G. Dolton, E. A. Komech, et al. 2018. “VDJdb: a curated database of T-cell receptor sequences with known antigen specificity.” <em>Nucleic Acids Res.</em> 46 (D1): D419–D427.</p>
 </div>
 <div id="ref-zheng2017massively">
-<p>Zheng, G. X., J. M. Terry, P. Belgrader, P. Ryvkin, Z. W. Bent, R. Wilson, S. B. Ziraldo, et al. 2017. “Massively parallel digital transcriptional profiling of single cells.” <em>Nat Commun</em> 8 (January):14049.</p>
+<p>Zheng, G. X., J. M. Terry, P. Belgrader, P. Ryvkin, Z. W. Bent, R. Wilson, S. B. Ziraldo, et al. 2017. “Massively parallel digital transcriptional profiling of single cells.” <em>Nat Commun</em> 8 (January): 14049.</p>
 </div>
 </div>
             </section>
@@ -1238,7 +1447,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "true";
+    var src = "";
     if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
