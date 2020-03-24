@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-03-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -925,124 +925,6 @@ Figure 11.3: Heatmap of AUCs for cluster 9 compared to all other clusters.
 </p>
 </div>
 <p>One practical advantage of the WMW test over the Welch <span class="math inline">\(t\)</span>-test is that it is symmetric with respect to differences in the size of the groups being compared. This means that, all else being equal, the top-ranked genes on each side of a DE comparison will have similar expression profiles regardless of the number of cells in each group. In contrast, the <span class="math inline">\(t\)</span>-test will favor genes where the larger group has the higher relative variance as this increases the estimated degrees of freedom and decreases the resulting <span class="math inline">\(p\)</span>-value. This can lead to unappealing rankings when the aim is to identify genes upregulated in smaller groups. The WMW test is not completely immune to variance effects - for example, it will slightly favor detection of DEGs at low average abundance where the greater number of ties at zero deflates the approximate variance of the rank sum statistic - but this is relatively benign as the selected genes are still fairly interesting. We observe both of these effects in a comparison between alpha and gamma cells in the human pancreas data set from <span class="citation">Lawlor et al. (<a href="#ref-lawlor2017singlecell">2017</a>)</span> (Figure <a href="marker-detection.html#fig:comparative-markers-tw">11.4</a>).</p>
-<p>processing file: P3_W08.lawlor-pancreas.Rmd</p>
-<p>|<br />
-| | 0% |<br />
-|.. | 3% ordinary text without R code</p>
-<p>|<br />
-|…. | 5% label: unref-setup (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>|<br />
-|…… | 8% ordinary text without R code</p>
-<p>|<br />
-|……. | 11% label: loading Loading required package: SingleCellExperiment Loading required package: SummarizedExperiment Loading required package: GenomicRanges Loading required package: stats4 Loading required package: BiocGenerics Loading required package: parallel</p>
-<p>Attaching package: ‘BiocGenerics’</p>
-<p>The following objects are masked from ‘package:parallel’:</p>
-<pre><code>clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-clusterExport, clusterMap, parApply, parCapply, parLapply,
-parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
-<p>The following objects are masked from ‘package:stats’:</p>
-<pre><code>IQR, mad, sd, var, xtabs</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>anyDuplicated, append, as.data.frame, basename, cbind, colnames,
-dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
-grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
-order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
-union, unique, unsplit, which, which.max, which.min</code></pre>
-<p>Loading required package: S4Vectors</p>
-<p>Attaching package: ‘S4Vectors’</p>
-<p>The following object is masked from ‘package:base’:</p>
-<pre><code>expand.grid</code></pre>
-<p>Loading required package: IRanges Loading required package: GenomeInfoDb Loading required package: Biobase Welcome to Bioconductor</p>
-<pre><code>Vignettes contain introductory material; view with
-&#39;browseVignettes()&#39;. To cite Bioconductor, see
-&#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<p>Loading required package: DelayedArray Loading required package: matrixStats</p>
-<p>Attaching package: ‘matrixStats’</p>
-<p>The following objects are masked from ‘package:Biobase’:</p>
-<pre><code>anyMissing, rowMedians</code></pre>
-<p>Loading required package: BiocParallel</p>
-<p>Attaching package: ‘DelayedArray’</p>
-<p>The following objects are masked from ‘package:matrixStats’:</p>
-<pre><code>colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>aperm, apply, rowsum</code></pre>
-<p>snapshotDate(): 2020-03-12 see ?scRNAseq and browseVignettes(‘scRNAseq’) for documentation loading from cache see ?scRNAseq and browseVignettes(‘scRNAseq’) for documentation loading from cache</p>
-<p>|<br />
-|……… | 13% ordinary text without R code</p>
-<p>|<br />
-|……….. | 16% label: gene-annotation Loading required package: BiocFileCache Loading required package: dbplyr</p>
-<p>Attaching package: ‘AnnotationHub’</p>
-<p>The following object is masked from ‘package:Biobase’:</p>
-<pre><code>cache</code></pre>
-<p>snapshotDate(): 2020-02-28 loading from cache require(“ensembldb”)</p>
-<p>|<br />
-|…………. | 18% ordinary text without R code</p>
-<p>|<br />
-|…………… | 21% label: unnamed-chunk-1</p>
-<p>|<br />
-|…………….. | 24% ordinary text without R code</p>
-<p>|<br />
-|……………… | 26% label: quality-control Loading required package: ggplot2</p>
-<p>|<br />
-|……………….. | 29% ordinary text without R code</p>
-<p>|<br />
-|…………………. | 32% label: unref-lawlor-qc-dist (with options) List of 3 $ fig.width: num 10 $ fig.asp : num 1 $ fig.cap : chr “Distribution of each QC metric across cells from each donor of the Lawlor pancreas dataset. Each point represen”| <strong>truncated</strong></p>
-<p>|<br />
-|…………………… | 34% ordinary text without R code</p>
-<p>|<br />
-|…………………….. | 37% label: unref-lawlor-qc-comp (with options) List of 1 $ fig.cap: chr “Percentage of mitochondrial reads in each cell in the 416B dataset compared to the total count. Each point repr”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………. | 39% ordinary text without R code</p>
-<p>|<br />
-|……………………….. | 42% label: unnamed-chunk-2</p>
-<p>|<br />
-|…………………………. | 45% ordinary text without R code</p>
-<p>|<br />
-|…………………………… | 47% label: normalization</p>
-<p>|<br />
-|…………………………….. | 50% ordinary text without R code</p>
-<p>|<br />
-|………………………………. | 53% label: unnamed-chunk-3</p>
-<p>|<br />
-|………………………………… | 55% ordinary text without R code</p>
-<p>|<br />
-|………………………………….. | 58% label: unref-lawlor-norm (with options) List of 1 $ fig.cap: chr “Relationship between the library size factors and the deconvolution size factors in the Lawlor pancreas dataset.”</p>
-<p>|<br />
-|…………………………………… | 61% ordinary text without R code</p>
-<p>|<br />
-|…………………………………….. | 63% label: variance-modelling</p>
-<p>|<br />
-|………………………………………. | 66% ordinary text without R code</p>
-<p>|<br />
-|………………………………………… | 68% label: unnamed-chunk-4 (with options) List of 3 $ fig.asp : num 2 $ fig.height: num 10 $ fig.cap : chr “Per-gene variance as a function of the mean for the log-expression values in the Lawlor pancreas dataset. Each”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………………….. | 71% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………. | 74% label: dimensionality-reduction</p>
-<p>|<br />
-|…………………………………………….. | 76% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………. | 79% label: clustering</p>
-<p>|<br />
-|………………………………………………… | 82% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………….. | 84% label: unnamed-chunk-5</p>
-<p>|<br />
-|……………………………………………………. | 87% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………………… | 89% label: unnamed-chunk-6</p>
-<p>|<br />
-|………………………………………………………. | 92% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………………… | 95% label: unref-grun-tsne (with options) List of 1 $ fig.cap: chr “Obligatory <span class="math inline">\(t\)</span>-SNE plots of the Lawlor pancreas dataset. Each point represents a cell that is colored by cluste”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………………………………….. | 97% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………………………….| 100% label: sessionInfo (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>output file: P3_W08.lawlor-pancreas.knit.md</p>
-<p>/usr/bin/pandoc +RTS -K512m -RTS P3_W08.lawlor-pancreas.utf8.md –to html4 –from markdown+autolink_bare_uris+tex_math_single_backslash –output P3_W08.lawlor-pancreas.html –smart –email-obfuscation none –standalone –section-divs –table-of-contents –toc-depth 3 –template /home/luna/Software/R/trunk/library/bookdown/templates/gitbook.html –highlight-style tango –number-sections –css style.css –include-in-header /tmp/RtmpNPRtfa/rmarkdown-str116517bd18a4.html –mathjax</p>
-Output created: lawlor-human-pancreas-smarter.html Warning messages: 1: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 2: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 3: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 4: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 5: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 6: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 7: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 8: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values 9: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) : collapsing to unique ‘x’ values
 <button class="aaron-collapse">
 View history
 </button>
@@ -1474,7 +1356,7 @@ loaded via a namespace (and not attached):
 [31] farver_2.0.3             withr_2.1.2              magrittr_1.5            
 [34] crayon_1.3.4             evaluate_0.14            ps_1.3.2                
 [37] beeswarm_0.2.3           tools_4.0.0              lifecycle_0.2.0         
-[40] stringr_1.4.0            munsell_0.5.0            locfit_1.5-9.1          
+[40] stringr_1.4.0            munsell_0.5.0            locfit_1.5-9.2          
 [43] irlba_2.3.3              callr_3.4.2              compiler_4.0.0          
 [46] rsvd_1.0.3               rlang_0.4.5              grid_4.0.0              
 [49] RCurl_1.98-1.1           BiocNeighbors_1.5.2      igraph_1.2.5            

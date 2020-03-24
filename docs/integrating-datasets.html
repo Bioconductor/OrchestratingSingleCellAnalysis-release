@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-03-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -670,120 +670,6 @@ document.addEventListener("click", function (event) {
 <div id="setting-up-the-data" class="section level2">
 <h2><span class="header-section-number">13.2</span> Setting up the data</h2>
 <p>To demonstrate, we will use two separate 10X Genomics PBMC datasets generated in two different batches. Each dataset was obtained from the <em><a href="https://bioconductor.org/packages/3.11/TENxPBMCData">TENxPBMCData</a></em> package and separately subjected to basic processing steps. Separate processing prior to the batch correction step is more convenient, scalable and (on occasion) more reliable. For example, outlier-based QC on the cells is more effective when performed within a batch (Section <a href="quality-control.html#qc-batch">6.3.2.3</a>). The same can also be said for trend fitting when modelling the mean-variance relationship (Section <a href="feature-selection.html#variance-batch">8.2.4.1</a>).</p>
-<p>processing file: P3_W04.tenx-filtered-pbmc3k-4k-8k.Rmd</p>
-<p>|<br />
-| | 0% |<br />
-|.. | 3% ordinary text without R code</p>
-<p>|<br />
-|…. | 5% label: unref-setup (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>|<br />
-|…… | 8% ordinary text without R code</p>
-<p>|<br />
-|……. | 11% label: loading Loading required package: SingleCellExperiment Loading required package: SummarizedExperiment Loading required package: GenomicRanges Loading required package: stats4 Loading required package: BiocGenerics Loading required package: parallel</p>
-<p>Attaching package: ‘BiocGenerics’</p>
-<p>The following objects are masked from ‘package:parallel’:</p>
-<pre><code>clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-clusterExport, clusterMap, parApply, parCapply, parLapply,
-parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
-<p>The following objects are masked from ‘package:stats’:</p>
-<pre><code>IQR, mad, sd, var, xtabs</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>anyDuplicated, append, as.data.frame, basename, cbind, colnames,
-dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
-grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
-order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
-union, unique, unsplit, which, which.max, which.min</code></pre>
-<p>Loading required package: S4Vectors</p>
-<p>Attaching package: ‘S4Vectors’</p>
-<p>The following object is masked from ‘package:base’:</p>
-<pre><code>expand.grid</code></pre>
-<p>Loading required package: IRanges Loading required package: GenomeInfoDb Loading required package: Biobase Welcome to Bioconductor</p>
-<pre><code>Vignettes contain introductory material; view with
-&#39;browseVignettes()&#39;. To cite Bioconductor, see
-&#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<p>Loading required package: DelayedArray Loading required package: matrixStats</p>
-<p>Attaching package: ‘matrixStats’</p>
-<p>The following objects are masked from ‘package:Biobase’:</p>
-<pre><code>anyMissing, rowMedians</code></pre>
-<p>Loading required package: BiocParallel</p>
-<p>Attaching package: ‘DelayedArray’</p>
-<p>The following objects are masked from ‘package:matrixStats’:</p>
-<pre><code>colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>aperm, apply, rowsum</code></pre>
-<p>Loading required package: HDF5Array Loading required package: rhdf5 snapshotDate(): 2020-03-12 see ?TENxPBMCData and browseVignettes(‘TENxPBMCData’) for documentation loading from cache snapshotDate(): 2020-03-12 see ?TENxPBMCData and browseVignettes(‘TENxPBMCData’) for documentation loading from cache snapshotDate(): 2020-03-12 see ?TENxPBMCData and browseVignettes(‘TENxPBMCData’) for documentation loading from cache</p>
-<p>|<br />
-|……… | 13% ordinary text without R code</p>
-<p>|<br />
-|……….. | 16% label: unnamed-chunk-1</p>
-<p>|<br />
-|…………. | 18% ordinary text without R code</p>
-<p>|<br />
-|…………… | 21% label: quality-control Loading required package: ggplot2</p>
-<p>|<br />
-|…………….. | 24% ordinary text without R code</p>
-<p>|<br />
-|……………… | 26% label: unref-pbmc-filtered-var (with options) List of 2 $ fig.wide: logi TRUE $ fig.cap : chr “Percentage of mitochondrial reads in each cell in each of the 10X PBMC datasets, compared to the total count. E”| <strong>truncated</strong></p>
-<p>|<br />
-|……………….. | 29% ordinary text without R code</p>
-<p>|<br />
-|…………………. | 32% label: unnamed-chunk-2</p>
-<p>|<br />
-|…………………… | 34% ordinary text without R code</p>
-<p>|<br />
-|…………………….. | 37% label: normalization</p>
-<p>|<br />
-|………………………. | 39% ordinary text without R code</p>
-<p>|<br />
-|……………………….. | 42% label: unnamed-chunk-3</p>
-<p>|<br />
-|…………………………. | 45% ordinary text without R code</p>
-<p>|<br />
-|…………………………… | 47% label: variance-modelling</p>
-<p>|<br />
-|…………………………….. | 50% ordinary text without R code</p>
-<p>|<br />
-|………………………………. | 53% label: unref-filtered-pbmc-variance (with options) List of 2 $ fig.wide: logi TRUE $ fig.cap : chr “Per-gene variance as a function of the mean for the log-expression values in each PBMC dataset. Each point repr”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………… | 55% ordinary text without R code</p>
-<p>|<br />
-|………………………………….. | 58% label: dimensionality-reduction</p>
-<p>|<br />
-|…………………………………… | 61% ordinary text without R code</p>
-<p>|<br />
-|…………………………………….. | 63% label: clustering</p>
-<p>|<br />
-|………………………………………. | 66% ordinary text without R code</p>
-<p>|<br />
-|………………………………………… | 68% label: unnamed-chunk-4</p>
-<p>|<br />
-|………………………………………….. | 71% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………. | 74% label: unref-filtered-pbmc-tsne (with options) List of 2 $ fig.asp: num 1 $ fig.cap: chr “Obligatory <span class="math inline">\(t\)</span>-SNE plots of each PBMC dataset, where each point represents a cell in the corresponding dataset”| <strong>truncated</strong></p>
-<p>|<br />
-|…………………………………………….. | 76% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………. | 79% label: data-integration</p>
-<p>|<br />
-|………………………………………………… | 82% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………….. | 84% label: unnamed-chunk-5</p>
-<p>|<br />
-|……………………………………………………. | 87% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………………… | 89% label: merged-clustering</p>
-<p>|<br />
-|………………………………………………………. | 92% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………………… | 95% label: unref-filtered-pbmc-merged-tsne (with options) List of 2 $ fig.asp: num 1.2 $ fig.cap: chr “Obligatory <span class="math inline">\(t\)</span>-SNE plots for the merged PBMC datasets, where each point represents a cell and is colored by clu”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………………………………….. | 97% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………………………….| 100% label: sessionInfo (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>output file: P3_W04.tenx-filtered-pbmc3k-4k-8k.knit.md</p>
-<p>/usr/bin/pandoc +RTS -K512m -RTS P3_W04.tenx-filtered-pbmc3k-4k-8k.utf8.md –to html4 –from markdown+autolink_bare_uris+tex_math_single_backslash –output P3_W04.tenx-filtered-pbmc3k-4k-8k.html –smart –email-obfuscation none –standalone –section-divs –table-of-contents –toc-depth 3 –template /home/luna/Software/R/trunk/library/bookdown/templates/gitbook.html –highlight-style tango –number-sections –css style.css –include-in-header /tmp/Rtmps6G91B/rmarkdown-str12651e2244c3.html –mathjax</p>
-Output created: filtered-human-pbmcs-10x-genomics.html
 <button class="aaron-collapse">
 View history
 </button>
@@ -1306,7 +1192,7 @@ loaded via a namespace (and not attached):
 [43] edgeR_3.29.1             zlibbioc_1.33.1          Rtsne_0.15              
 [46] grid_4.0.0               dqrng_0.2.1              crayon_1.3.4            
 [49] lattice_0.20-40          beachmat_2.3.2           cowplot_1.0.0           
-[52] locfit_1.5-9.1           knitr_1.28               ps_1.3.2                
+[52] locfit_1.5-9.2           knitr_1.28               ps_1.3.2                
 [55] pillar_1.4.3             igraph_1.2.5             glue_1.3.2              
 [58] evaluate_0.14            BiocManager_1.30.10      gtable_0.3.0            
 [61] purrr_0.3.3              assertthat_0.2.1         xfun_0.12               

@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-03-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -677,16 +677,16 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">counts</span>(sce)</code></pre></div>
 <pre><code>##         cell_1 cell_2 cell_3
-## gene_1       6     10     24
-## gene_2       7     11     27
-## gene_3       9      9     32
-## gene_4      10     15     24
-## gene_5      13     10     30
-## gene_6       5     18     16
-## gene_7      11     12     34
-## gene_8      13      9     18
-## gene_9       6     10     35
-## gene_10     17      6     35</code></pre>
+## gene_1       6      4     39
+## gene_2      12      7     37
+## gene_3      12      6     23
+## gene_4       8      7     28
+## gene_5      12     12     37
+## gene_6      16     11     18
+## gene_7      11     15     39
+## gene_8       7     12     34
+## gene_9      12     15     29
+## gene_10      8      8     33</code></pre>
 </div>
 <div id="adding-more-assays" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Adding more <code>assays</code></h3>
@@ -707,16 +707,16 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 <p>Specifically, we see that the <code>assays</code> slot has grown to contain two entries: <code>&quot;counts&quot;</code> (our initial data) and <code>&quot;logcounts&quot;</code> (the log-transformed normalized data). Similar to <code>&quot;counts&quot;</code>, the <code>&quot;logcounts&quot;</code> name can be conveniently accessed using <code>logcounts(sce)</code>, although the longhand version works just as well.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logcounts</span>(sce)</code></pre></div>
 <pre><code>##           cell_1   cell_2   cell_3
-## gene_1  3.451296 3.964035 3.908988
-## gene_2  3.654722 4.093109 4.068202
-## gene_3  3.991610 3.822267 4.299813
-## gene_4  4.134515 4.517848 3.908988
-## gene_5  4.493945 3.964035 4.211579
-## gene_6  3.214403 4.770349 3.371263
-## gene_7  4.264531 4.211579 4.382961
-## gene_8  4.493945 3.822267 3.525613
-## gene_9  3.451296 3.964035 4.422804
-## gene_10 4.865824 3.287419 4.422804</code></pre>
+## gene_1  3.454378 3.021529 4.475273
+## gene_2  4.387023 3.750658 4.402826
+## gene_3  4.387023 3.546019 3.757862
+## gene_4  3.836131 3.750658 4.022485
+## gene_5  4.387023 4.482901 4.402826
+## gene_6  4.784719 4.363224 3.433549
+## gene_7  4.267747 4.791868 4.475273
+## gene_8  3.657845 4.482901 4.286841
+## gene_9  4.387023 4.791868 4.070046
+## gene_10 3.836131 3.929843 4.246010</code></pre>
 <p>To look at all the available assays within <code>sce</code>, we can use the <code>assays()</code> accessor. By comparison, <code>assay()</code> only returns a single assay of interest.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">assays</span>(sce)</code></pre></div>
 <pre><code>## List of length 2
@@ -768,9 +768,9 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 <pre><code>## DataFrame with 3 rows and 5 columns
 ##            batch       sum  detected percent_top_50 percent_top_100
 ##        &lt;numeric&gt; &lt;integer&gt; &lt;integer&gt;      &lt;numeric&gt;       &lt;numeric&gt;
-## cell_1         1        97        10            100             100
-## cell_2         1       110        10            100             100
-## cell_3         2       275        10            100             100</code></pre>
+## cell_1         1       104        10            100             100
+## cell_2         1        97        10            100             100
+## cell_3         2       317        10            100             100</code></pre>
 <p>Alternatively, we might want to manually add more fields to the column metadata:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce<span class="op">$</span>more_stuff &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="kw">ncol</span>(sce))
 <span class="kw">colnames</span>(<span class="kw">colData</span>(sce))</code></pre></div>
@@ -825,16 +825,16 @@ counts_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(co
 <pre><code>## DataFrame with 10 rows and 2 columns
 ##              mean  detected
 ##         &lt;numeric&gt; &lt;numeric&gt;
-## gene_1    13.3333       100
-## gene_2    15.0000       100
-## gene_3    16.6667       100
-## gene_4    16.3333       100
-## gene_5    17.6667       100
-## gene_6    13.0000       100
-## gene_7    19.0000       100
-## gene_8    13.3333       100
-## gene_9    17.0000       100
-## gene_10   19.3333       100</code></pre>
+## gene_1    16.3333       100
+## gene_2    18.6667       100
+## gene_3    13.6667       100
+## gene_4    14.3333       100
+## gene_5    20.3333       100
+## gene_6    15.0000       100
+## gene_7    21.6667       100
+## gene_8    17.6667       100
+## gene_9    18.6667       100
+## gene_10   16.3333       100</code></pre>
 <p>In a similar fashion to the <code>colData</code> slot, such feature metadata could be provided at the onset when creating the <code>SingleCellExperiment</code> object. Exactly how this is done depends on the organism and annotation available during alignment and quantification; for example, given Ensembl identifiers, we might use <em><a href="https://bioconductor.org/packages/3.11/AnnotationHub">AnnotationHub</a></em> resources to pull down an Ensembl anotation object and extract the gene bodies to store in the <code>rowRanges</code> of our <code>SingleCellExperiment</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(AnnotationHub)
 edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]] <span class="co"># Human, Ensembl v97.</span>
@@ -911,32 +911,32 @@ edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">logNormCounts</span>(sce)
 sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runPCA</span>(sce)
 <span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>)</code></pre></div>
-<pre><code>##               PC1        PC2
-## cell_1 -1.1191164 -0.5789229
-## cell_2  1.4202511 -0.2750972
-## cell_3 -0.3011346  0.8540201
+<pre><code>##               PC1         PC2
+## cell_1 -0.5361693  0.84201253
+## cell_2 -0.7073444 -0.76813144
+## cell_3  1.2435137 -0.07388109
 ## attr(,&quot;percentVar&quot;)
-## [1] 74.66489 25.33511
+## [1] 64.14923 35.85077
 ## attr(,&quot;rotation&quot;)
 ##                 PC1         PC2
-## gene_6   0.64358877 -0.25791909
-## gene_10 -0.62743656  0.04899841
-## gene_8  -0.19711632 -0.56324219
-## gene_9   0.12965314  0.60396949
-## gene_4   0.18223354 -0.26141356
-## gene_1   0.17570013  0.21910986
-## gene_5  -0.19867036 -0.08364427
-## gene_2   0.14823655  0.20393333
-## gene_3  -0.09919602  0.27170938
-## gene_7  -0.03299467  0.10148234</code></pre>
+## gene_1   0.67505400  0.19706153
+## gene_6  -0.59210499  0.32472142
+## gene_3  -0.08032543  0.53085534
+## gene_8   0.08507016 -0.52145536
+## gene_2   0.20126487  0.37382591
+## gene_9  -0.29155484 -0.22043851
+## gene_7  -0.04827144 -0.32037995
+## gene_10  0.18996432 -0.07839603
+## gene_4   0.12518177  0.03977609
+## gene_5  -0.02063625 -0.05735261</code></pre>
 <p>We can also calculate a tSNE representation using the <code>scater</code> package function <code>runTSNE()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">perplexity =</span> <span class="fl">0.1</span>)</code></pre></div>
 <pre><code>## Perplexity should be lower than K!</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;TSNE&quot;</span>)</code></pre></div>
-<pre><code>##             [,1]      [,2]
-## cell_1 -1200.274 -5567.405
-## cell_2  5421.452  1744.845
-## cell_3 -4221.177  3822.560</code></pre>
+<pre><code>##              [,1]      [,2]
+## cell_1  5310.4111  2055.625
+## cell_2 -4436.6963  3571.337
+## cell_3  -873.7149 -5626.962</code></pre>
 <p>We can view the names of all our entries in the <code>reducedDims</code> slot via the accessor, <code>reducedDims()</code>. Note that this is plural and returns a list of all results, whereas <code>reducedDim()</code> only returns a single result.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(sce)</code></pre></div>
 <pre><code>## List of length 2
@@ -948,12 +948,12 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 <pre><code>## List of length 3
 ## names(3): PCA TSNE UMAP_uwot</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDim</span>(sce, <span class="st">&quot;UMAP_uwot&quot;</span>) </code></pre></div>
-<pre><code>##              [,1]       [,2]
-## cell_1 -0.5841204 -0.3420447
-## cell_2  0.3266629  0.5602762
-## cell_3  0.2574576 -0.2182315
+<pre><code>##              [,1]        [,2]
+## cell_1  0.1177603 -0.29556235
+## cell_2 -0.6676634 -0.08236798
+## cell_3  0.5499031  0.37793032
 ## attr(,&quot;scaled:center&quot;)
-## [1]  7.787171 -7.601479</code></pre>
+## [1] -7.311630  2.997331</code></pre>
 </div>
 <div id="alternative-experiments" class="section level3">
 <h3><span class="header-section-number">4.4.3</span> Alternative Experiments</h3>
@@ -996,12 +996,12 @@ spike_se</code></pre></div>
 <p>The <code>sizeFactors</code> slot contains a numeric vector of per-cell normalization factors used to normalize the expression data (see Chapter <a href="normalization.html#normalization">7</a> for more details). This is typically automatically added by normalization functions, as shown below for <em><a href="https://bioconductor.org/packages/3.11/scran">scran</a></em>’s deconvolution-based size factors:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce)
 <span class="kw">sizeFactors</span>(sce)</code></pre></div>
-<pre><code>## [1] 0.6037344 0.6846473 1.7116183</code></pre>
+<pre><code>## [1] 0.6023166 0.5617761 1.8359073</code></pre>
 <p>Alternatively, we can manually add the size factors, as shown below for library size-derived factors:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sizeFactors</span>(sce) &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">librarySizeFactors</span>(sce)
 <span class="kw">sizeFactors</span>(sce)</code></pre></div>
 <pre><code>##    cell_1    cell_2    cell_3 
-## 0.6037344 0.6846473 1.7116183</code></pre>
+## 0.6023166 0.5617761 1.8359073</code></pre>
 <p>Technically speaking, the <code>sizeFactors</code> concept is not unique to single-cell analyses. Nonetheless, we mention it here as it is an extension beyond what is available in the <code>SummarizedExperiment</code> parent class.</p>
 </div>
 </div>

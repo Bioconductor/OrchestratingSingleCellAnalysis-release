@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-03-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -667,141 +667,6 @@ document.addEventListener("click", function (event) {
 <p>Systematic differences in sequencing coverage between libraries are often observed in single-cell RNA sequencing data <span class="citation">(Stegle, Teichmann, and Marioni <a href="#ref-stegle2015computational">2015</a>)</span>. They typically arise from technical differences in cDNA capture or PCR amplification efficiency across cells, attributable to the difficulty of achieving consistent library preparation with minimal starting material. Normalization aims to remove these differences such that they do not interfere with comparisons of the expression profiles between cells. This ensures that any observed heterogeneity or differential expression within the cell population are driven by biology and not technical biases.</p>
 <p>At this point, it is worth noting the difference between normalization and batch correction (Chapter <a href="filtered-human-pbmcs-10x-genomics.html#data-integration">26.8</a>). Normalization occurs regardless of the batch structure and only considers technical biases, while batch correction - as the name suggests - only occurs across batches and must consider both technical biases and biological differences. Technical biases tend to affect genes in a similar manner, or at least in a manner related to their biophysical properties (e.g., length, GC content), while biological differences between batches can be highly unpredictable. As such, these two tasks involve different assumptions and generally involve different computational methods (though some packages aim to perform both steps at once, e.g., <em><a href="https://bioconductor.org/packages/3.11/zinbwave">zinbwave</a></em>). Thus, it is important to avoid conflating “normalized” and “batch-corrected” data, as these usually refer to different things.</p>
 <p>We will mostly focus our attention on scaling normalization, which is the simplest and most commonly used class of normalization strategies. This involves dividing all counts for each cell by a cell-specific scaling factor, often called a “size factor” <span class="citation">(Anders and Huber <a href="#ref-anders2010differential">2010</a>)</span>. The assumption here is that any cell-specific bias (e.g., in capture or amplification efficiency) affects all genes equally via scaling of the expected mean count for that cell. The size factor for each cell represents the estimate of the relative bias in that cell, so division of its counts by its size factor should remove that bias. The resulting “normalized expression values” can then be used for downstream analyses such as clustering and dimensionality reduction. To demonstrate, we will use the <span class="citation">Zeisel et al. (<a href="#ref-zeisel2015brain">2015</a>)</span> dataset from the <em><a href="https://bioconductor.org/packages/3.11/scRNAseq">scRNAseq</a></em> package.</p>
-<p>processing file: P3_W02.zeisel-brain.Rmd</p>
-<p>|<br />
-| | 0% |<br />
-|. | 2% ordinary text without R code</p>
-<p>|<br />
-|… | 4% label: unref-setup (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>|<br />
-|…. | 6% ordinary text without R code</p>
-<p>| Loading required package: SingleCellExperiment Loading required package: SummarizedExperiment Loading required package: GenomicRanges Loading required package: stats4</p>
-<p>|…… | 8% label: loading Loading required package: BiocGenerics Loading required package: parallel</p>
-<p>Attaching package: ‘BiocGenerics’</p>
-<p>The following objects are masked from ‘package:parallel’:</p>
-<pre><code>clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-clusterExport, clusterMap, parApply, parCapply, parLapply,
-parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
-<p>The following objects are masked from ‘package:stats’:</p>
-<pre><code>IQR, mad, sd, var, xtabs</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>anyDuplicated, append, as.data.frame, basename, cbind, colnames,
-dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
-grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
-order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
-union, unique, unsplit, which, which.max, which.min</code></pre>
-<p>Loading required package: S4Vectors</p>
-<p>Attaching package: ‘S4Vectors’</p>
-<p>The following object is masked from ‘package:base’:</p>
-<pre><code>expand.grid</code></pre>
-<p>Loading required package: IRanges Loading required package: GenomeInfoDb Loading required package: Biobase Welcome to Bioconductor</p>
-<pre><code>Vignettes contain introductory material; view with
-&#39;browseVignettes()&#39;. To cite Bioconductor, see
-&#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<p>Loading required package: DelayedArray Loading required package: matrixStats</p>
-<p>Attaching package: ‘matrixStats’</p>
-<p>The following objects are masked from ‘package:Biobase’:</p>
-<pre><code>anyMissing, rowMedians</code></pre>
-<p>Loading required package: BiocParallel</p>
-<p>Attaching package: ‘DelayedArray’</p>
-<p>The following objects are masked from ‘package:matrixStats’:</p>
-<pre><code>colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>aperm, apply, rowsum</code></pre>
-<p>snapshotDate(): 2020-03-12 see ?scRNAseq and browseVignettes(‘scRNAseq’) for documentation loading from cache see ?scRNAseq and browseVignettes(‘scRNAseq’) for documentation loading from cache see ?scRNAseq and browseVignettes(‘scRNAseq’) for documentation loading from cache Loading required package: ggplot2</p>
-<p>|<br />
-|……. | 10% ordinary text without R code</p>
-<p>|<br />
-|……… | 12% label: gene-annotation Loading required package: AnnotationDbi</p>
-<p>‘select()’ returned 1:many mapping between keys and columns</p>
-<p>|<br />
-|………. | 15% ordinary text without R code</p>
-<p>|<br />
-|………… | 17% label: unnamed-chunk-1</p>
-<p>|<br />
-|…………. | 19% ordinary text without R code</p>
-<p>|<br />
-|…………… | 21% label: quality-control</p>
-<p>|<br />
-|……………. | 23% ordinary text without R code</p>
-<p>|<br />
-|……………… | 25% label: unref-zeisel-qc-dist (with options) List of 2 $ fig.wide: logi TRUE $ fig.cap : chr “Distribution of each QC metric across cells in the Zeisel brain dataset. Each point represents a cell and is co”| <strong>truncated</strong></p>
-<p>|<br />
-|………………. | 27% ordinary text without R code</p>
-<p>|<br />
-|……………….. | 29% label: unref-zeisel-qc-comp (with options) List of 1 $ fig.cap: chr “Percentage of mitochondrial reads in each cell in the Zeisel brain dataset, compared to the total count (left)”| <strong>truncated</strong></p>
-<p>|<br />
-|…………………. | 31% ordinary text without R code</p>
-<p>|<br />
-|………………….. | 33% label: unnamed-chunk-2</p>
-<p>|<br />
-|……………………. | 35% ordinary text without R code</p>
-<p>|<br />
-|…………………….. | 38% label: normalization</p>
-<p>|<br />
-|………………………. | 40% ordinary text without R code</p>
-<p>|<br />
-|……………………….. | 42% label: unnamed-chunk-3</p>
-<p>|<br />
-|…………………………. | 44% ordinary text without R code</p>
-<p>|<br />
-|………………………….. | 46% label: unref-zeisel-norm (with options) List of 1 $ fig.cap: chr “Relationship between the library size factors and the deconvolution size factors in the Zeisel brain dataset.”</p>
-<p>|<br />
-|……………………………. | 48% ordinary text without R code</p>
-<p>|<br />
-|…………………………….. | 50% label: variance-modelling</p>
-<p>|<br />
-|……………………………… | 52% ordinary text without R code</p>
-<p>|<br />
-|……………………………….. | 54% label: unref-zeisel-var (with options) List of 1 $ fig.cap: chr “Per-gene variance as a function of the mean for the log-expression values in the Zeisel brain dataset. Each poi”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………… | 56% ordinary text without R code</p>
-<p>|<br />
-|………………………………….. | 58% label: dimensionality-reduction</p>
-<p>|<br />
-|…………………………………… | 60% ordinary text without R code</p>
-<p>|<br />
-|…………………………………….. | 62% label: unnamed-chunk-4</p>
-<p>|<br />
-|……………………………………… | 65% ordinary text without R code</p>
-<p>|<br />
-|……………………………………….. | 67% label: clustering</p>
-<p>|<br />
-|………………………………………… | 69% ordinary text without R code</p>
-<p>|<br />
-|………………………………………….. | 71% label: unnamed-chunk-5</p>
-<p>|<br />
-|…………………………………………… | 73% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………. | 75% label: unref-zeisel-tsne (with options) List of 1 $ fig.cap: chr “Obligatory <span class="math inline">\(t\)</span>-SNE plot of the Zeisel brain dataset, where each point represents a cell and is colored accordin”| <strong>truncated</strong></p>
-<p>|<br />
-|……………………………………………… | 77% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………. | 79% label: unnamed-chunk-6 (with options) List of 2 $ echo : logi FALSE $ results: chr “hide”</p>
-<p>|<br />
-|………………………………………………… | 81% inline R code fragments</p>
-<p>|<br />
-|…………………………………………………. | 83% label: unnamed-chunk-7</p>
-<p>|<br />
-|…………………………………………………… | 85% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………………. | 88% label: unnamed-chunk-8 (with options) List of 2 $ echo : logi FALSE $ results: chr “hide”</p>
-<p>|<br />
-|……………………………………………………… | 90% inline R code fragments</p>
-<p>|<br />
-|………………………………………………………. | 92% label: unref-zeisel-heat-cell (with options) List of 3 $ fig.wide: logi TRUE $ fig.asp : num 1.5 $ fig.cap : language sprintf(“Heatmap of the log-expression of the top markers for cluster %s compared to each other cluster. Cells ar| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………………………………… | 94% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………………………. | 96% label: unref-zeisel-heat-lfc (with options) List of 2 $ fig.asp: num 1.5 $ fig.cap: language sprintf(“Heatmap of the log-fold changes of the top markers for cluster %s compared to each other cluster.”, | <strong>truncated</strong></p>
-<p>|<br />
-|…………………………………………………………… | 98% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………………………….| 100% label: sessionInfo (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>output file: P3_W02.zeisel-brain.knit.md</p>
-<p>/usr/bin/pandoc +RTS -K512m -RTS P3_W02.zeisel-brain.utf8.md –to html4 –from markdown+autolink_bare_uris+tex_math_single_backslash –output P3_W02.zeisel-brain.html –smart –email-obfuscation none –standalone –section-divs –table-of-contents –toc-depth 3 –template /home/luna/Software/R/trunk/library/bookdown/templates/gitbook.html –highlight-style tango –number-sections –css style.css –include-in-header /tmp/RtmpOWaGjh/rmarkdown-str104a498aa40d.html –mathjax</p>
-Output created: zeisel-mouse-brain-strt-seq.html
 <button class="aaron-collapse">
 View history
 </button>
@@ -1106,7 +971,7 @@ loaded via a namespace (and not attached):
  [85] RCurl_1.98-1.1                tibble_2.1.3                 
  [87] crayon_1.3.4                  DropletUtils_1.7.7           
  [89] rmarkdown_2.1                 viridis_0.5.1                
- [91] progress_1.2.2                locfit_1.5-9.1               
+ [91] progress_1.2.2                locfit_1.5-9.2               
  [93] grid_4.0.0                    blob_1.2.1                   
  [95] callr_3.4.2                   digest_0.6.25                
  [97] xtable_1.8-4                  httpuv_1.5.2                 

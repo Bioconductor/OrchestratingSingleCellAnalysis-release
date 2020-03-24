@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-03-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -666,146 +666,6 @@ document.addEventListener("click", function (event) {
 <h2><span class="header-section-number">8.1</span> Motivation</h2>
 <p>We often use scRNA-seq data in exploratory analyses to characterize heterogeneity across cells. Procedures like clustering and dimensionality reduction compare cells based on their gene expression profiles, which involves aggregating per-gene differences into a single (dis)similarity metric between a pair of cells. The choice of genes to use in this calculation has a major impact on the behavior of the metric and the performance of downstream methods. We want to select genes that contain useful information about the biology of the system while removing genes that contain random noise. This aims to preserve interesting biological structure without the variance that obscures that structure, and to reduce the size of the data to improve computational efficiency of later steps.</p>
 <p>The simplest approach to feature selection is to select the most variable genes based on their expression across the population. This assumes that genuine biological differences will manifest as increased variation in the affected genes, compared to other genes that are only affected by technical noise or a baseline level of “uninteresting” biological variation (e.g., from transcriptional bursting). Several methods are available to quantify the variation per gene and to select an appropriate set of highly variable genes (HVGs). We will discuss these below using the 10X PBMC dataset for demonstration:</p>
-<p>processing file: P3_W03.tenx-unfiltered-pbmc4k.Rmd</p>
-<p>|<br />
-| | 0% |<br />
-|. | 2% ordinary text without R code</p>
-<p>|<br />
-|… | 4% label: unref-setup (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>|<br />
-|…. | 6% ordinary text without R code</p>
-<p>|<br />
-|…… | 8% label: loading Loading required package: dbplyr Loading required package: SingleCellExperiment Loading required package: SummarizedExperiment Loading required package: GenomicRanges Loading required package: stats4 Loading required package: BiocGenerics Loading required package: parallel</p>
-<p>Attaching package: ‘BiocGenerics’</p>
-<p>The following objects are masked from ‘package:parallel’:</p>
-<pre><code>clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-clusterExport, clusterMap, parApply, parCapply, parLapply,
-parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
-<p>The following objects are masked from ‘package:stats’:</p>
-<pre><code>IQR, mad, sd, var, xtabs</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>anyDuplicated, append, as.data.frame, basename, cbind, colnames,
-dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
-grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
-order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
-union, unique, unsplit, which, which.max, which.min</code></pre>
-<p>Loading required package: S4Vectors</p>
-<p>Attaching package: ‘S4Vectors’</p>
-<p>The following object is masked from ‘package:base’:</p>
-<pre><code>expand.grid</code></pre>
-<p>Loading required package: IRanges Loading required package: GenomeInfoDb Loading required package: Biobase Welcome to Bioconductor</p>
-<pre><code>Vignettes contain introductory material; view with
-&#39;browseVignettes()&#39;. To cite Bioconductor, see
-&#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<p>Loading required package: DelayedArray Loading required package: matrixStats</p>
-<p>Attaching package: ‘matrixStats’</p>
-<p>The following objects are masked from ‘package:Biobase’:</p>
-<pre><code>anyMissing, rowMedians</code></pre>
-<p>Loading required package: BiocParallel</p>
-<p>Attaching package: ‘DelayedArray’</p>
-<p>The following objects are masked from ‘package:matrixStats’:</p>
-<pre><code>colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
-<p>The following objects are masked from ‘package:base’:</p>
-<pre><code>aperm, apply, rowsum</code></pre>
-<p>|<br />
-|……. | 10% ordinary text without R code</p>
-<p>|<br />
-|…….. | 12% label: gene-annotation Loading required package: ggplot2 Loading required package: ensembldb Loading required package: GenomicFeatures Loading required package: AnnotationDbi Loading required package: AnnotationFilter</p>
-<p>Attaching package: ‘ensembldb’</p>
-<p>The following object is masked from ‘package:stats’:</p>
-<pre><code>filter</code></pre>
-<p>|<br />
-|………. | 14% ordinary text without R code</p>
-<p>|<br />
-|……….. | 16% label: cell-detection</p>
-<p>|<br />
-|…………. | 18% ordinary text without R code</p>
-<p>|<br />
-|………….. | 20% label: unnamed-chunk-1</p>
-<p>|<br />
-|…………… | 22% ordinary text without R code</p>
-<p>|<br />
-|…………….. | 24% label: quality-control</p>
-<p>|<br />
-|……………… | 26% ordinary text without R code</p>
-<p>|<br />
-|……………….. | 28% label: unnamed-chunk-2</p>
-<p>|<br />
-|………………… | 30% ordinary text without R code</p>
-<p>|<br />
-|…………………. | 32% label: unref-unfiltered-pbmc-qc (with options) List of 3 $ fig.wide: logi TRUE $ fig.asp : num 1 $ fig.cap : chr “Distribution of various QC metrics in the PBMC dataset after cell calling. Each point is a cell and is colored”| <strong>truncated</strong></p>
-<p>|<br />
-|…………………… | 34% ordinary text without R code</p>
-<p>|<br />
-|……………………. | 36% label: unref-unfiltered-pbmc-mito (with options) List of 1 $ fig.cap: chr “Proportion of mitochondrial reads in each cell of the PBMC dataset compared to its total count.”</p>
-<p>|<br />
-|……………………… | 38% ordinary text without R code</p>
-<p>|<br />
-|………………………. | 40% label: normalization</p>
-<p>|<br />
-|……………………….. | 42% ordinary text without R code</p>
-<p>|<br />
-|…………………………. | 44% label: unnamed-chunk-3</p>
-<p>|<br />
-|………………………….. | 46% ordinary text without R code</p>
-<p>|<br />
-|……………………………. | 48% label: unref-unfiltered-pbmc-norm (with options) List of 1 $ fig.cap: chr “Relationship between the library size factors and the deconvolution size factors in the PBMC dataset.”</p>
-<p>|<br />
-|…………………………….. | 50% ordinary text without R code</p>
-<p>|<br />
-|……………………………… | 52% label: variance-modelling</p>
-<p>|<br />
-|……………………………….. | 54% ordinary text without R code</p>
-<p>|<br />
-|………………………………… | 56% label: unref-unfiltered-pbmc-var (with options) List of 1 $ fig.cap: chr “Per-gene variance as a function of the mean for the log-expression values in the PBMC dataset. Each point repre”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………….. | 58% ordinary text without R code</p>
-<p>|<br />
-|…………………………………… | 60% label: dimensionality-reduction</p>
-<p>|<br />
-|……………………………………. | 62% ordinary text without R code</p>
-<p>|<br />
-|……………………………………… | 64% label: unnamed-chunk-4</p>
-<p>|<br />
-|………………………………………. | 66% ordinary text without R code</p>
-<p>|<br />
-|………………………………………… | 68% label: clustering</p>
-<p>|<br />
-|…………………………………………. | 70% ordinary text without R code</p>
-<p>|<br />
-|………………………………………….. | 72% label: unnamed-chunk-5</p>
-<p>|<br />
-|……………………………………………. | 74% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………….. | 76% label: unref-unfiltered-pbmc-tsne (with options) List of 1 $ fig.cap: chr “Obligatory <span class="math inline">\(t\)</span>-SNE plot of the PBMC dataset, where each point represents a cell and is colored according to the”| <strong>truncated</strong></p>
-<p>|<br />
-|………………………………………………. | 78% ordinary text without R code</p>
-<p>|<br />
-|……………………………………………….. | 80% label: unnamed-chunk-6 (with options) List of 1 $ echo: logi FALSE</p>
-<p>|<br />
-|………………………………………………… | 82% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………….. | 84% label: unnamed-chunk-7</p>
-<p>|<br />
-|…………………………………………………… | 86% inline R code fragments</p>
-<p>|<br />
-|…………………………………………………….. | 88% label: unnamed-chunk-8</p>
-<p>|<br />
-|……………………………………………………… | 90% ordinary text without R code</p>
-<p>|<br />
-|………………………………………………………. | 92% label: unnamed-chunk-9 (with options) List of 2 $ echo : logi FALSE $ results: chr “hide”</p>
-<p>|<br />
-|………………………………………………………… | 94% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………………………. | 96% label: unnamed-chunk-10 (with options) List of 2 $ fig.wide: logi TRUE $ fig.asp : num 0.8</p>
-<p>|<br />
-|…………………………………………………………… | 98% ordinary text without R code</p>
-<p>|<br />
-|…………………………………………………………….| 100% label: sessionInfo (with options) List of 2 $ echo : logi FALSE $ results: chr “asis”</p>
-<p>output file: P3_W03.tenx-unfiltered-pbmc4k.knit.md</p>
-<p>/usr/bin/pandoc +RTS -K512m -RTS P3_W03.tenx-unfiltered-pbmc4k.utf8.md –to html4 –from markdown+autolink_bare_uris+tex_math_single_backslash –output P3_W03.tenx-unfiltered-pbmc4k.html –smart –email-obfuscation none –standalone –section-divs –table-of-contents –toc-depth 3 –template /home/luna/Software/R/trunk/library/bookdown/templates/gitbook.html –highlight-style tango –number-sections –css style.css –include-in-header /tmp/RtmpPfU7j2/rmarkdown-str108d4ecb084c.html –mathjax</p>
-Output created: unfiltered-human-pbmcs-10x-genomics.html Warning messages: 1: Unable to map 144 of 33694 requested IDs. 2: The label(s) qc-droplets not found
 <button class="aaron-collapse">
 View history
 </button>
@@ -906,7 +766,7 @@ sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">
 ##   SLX-9555.N701_S503.C89V9ANXX.s_1.r_1 ...
 ##   SLX-11312.N712_S507.H5H5YBBXX.s_8.r_1
 ##   SLX-11312.N712_S517.H5H5YBBXX.s_8.r_1
-## colData names(9): Source Name cell line ... spike-in addition block
+## colData names(10): Source Name cell line ... block sizeFactor
 ## reducedDimNames(0):
 ## altExpNames(2): ERCC SIRV</code></pre>
 </div>
@@ -1317,7 +1177,7 @@ loaded via a namespace (and not attached):
 [75] RCurl_1.98-1.1                tibble_2.1.3                 
 [77] crayon_1.3.4                  rmarkdown_2.1                
 [79] viridis_0.5.1                 progress_1.2.2               
-[81] locfit_1.5-9.1                grid_4.0.0                   
+[81] locfit_1.5-9.2                grid_4.0.0                   
 [83] blob_1.2.1                    callr_3.4.2                  
 [85] digest_0.6.25                 xtable_1.8-4                 
 [87] httpuv_1.5.2                  openssl_1.4.1                
