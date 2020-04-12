@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-08" />
+<meta name="date" content="2020-04-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -667,7 +667,7 @@ document.addEventListener("click", function (event) {
 </div>
 <div id="interactive-quickstart" class="section level2">
 <h2><span class="header-section-number">20.2</span> Quick start</h2>
-<p>An instance of an interactive <code>iSEE</code> application can be launched with any data set that is stored in an object of the <code>SummarizedExperiment</code> class (or any class that extends it, e.g., <code>SingleCellExperiment</code>, <code>DESeqDataSet</code>, <code>MethylSet</code>). In its simplest form, this is done simply by calling <code>iSEE(sce)</code> with the <code>sce</code> data object as the sole argument, as demonstrated here with the 10X PBMC dataset.</p>
+<p>An instance of an interactive <code>iSEE</code> application can be launched with any data set that is stored in an object of the <code>SummarizedExperiment</code> class (or any class that extends it, e.g., <code>SingleCellExperiment</code>, <code>DESeqDataSet</code>, <code>MethylSet</code>). In its simplest form, this is done simply by calling <code>iSEE(sce)</code> with the <code>sce</code> data object as the sole argument, as demonstrated here with the 10X PBMC dataset (Figure <a href="interactive-sharing.html#fig:iSEE-default">20.1</a>).</p>
 <button class="aaron-collapse">
 View history
 </button>
@@ -730,11 +730,23 @@ clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class=
 <span class="kw">colLabels</span>(sce.pbmc) &lt;-<span class="st"> </span><span class="kw">factor</span>(clust)</code></pre></div>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(iSEE)
-<span class="kw">iSEE</span>(sce.pbmc)</code></pre></div>
+app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(sce.pbmc)</code></pre></div>
+<div class="figure"><span id="fig:iSEE-default"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_default.png" alt="Screenshot of the _iSEE_ application with its default initialization."  />
+<p class="caption">
+Figure 20.1: Screenshot of the <em>iSEE</em> application with its default initialization.
+</p>
+</div>
 <p>The default interface contains up to eight built-in panels, each displaying a particular aspect of the data set. The layout of panels in the interface may be altered interactively - panels can be added, removed, resized or repositioned using the “Organize panels” menu in the top right corner of the interface. The initial layout of the application can also be altered programmatically as described in the rest of this Chapter.</p>
 <p>To familiarize themselves with the GUI, users can launch an interactive tour from the menu in the top right corner. In addition, custom tours can be written to substitute the default built-in tour. This feature is particularly useful to disseminate new data sets with accompanying bespoke explanations guiding users through the salient features of any given data set (see Section @ref{dissemination}).</p>
-<p>It is also possible to deploy “empty” instances of <code>iSEE</code> apps, where any <code>SummarizedExperiment</code> object stored in an RDS file may be uploaded to the running application. Once the file is uploaded, the application will import the <code>sce</code> object and initialize the GUI panels with the contents of the object for interactive exploration. This type of <code>iSEE</code> applications is launched without specifying the <code>sce</code> argument, as shown below.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">iSEE</span>()</code></pre></div>
+<p>It is also possible to deploy “empty” instances of <code>iSEE</code> apps, where any <code>SummarizedExperiment</code> object stored in an RDS file may be uploaded to the running application. Once the file is uploaded, the application will import the <code>sce</code> object and initialize the GUI panels with the contents of the object for interactive exploration. This type of <code>iSEE</code> applications is launched without specifying the <code>sce</code> argument, as shown in Figure <a href="interactive-sharing.html#fig:iSEE-landing">20.2</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app &lt;-<span class="st"> </span><span class="kw">iSEE</span>()</code></pre></div>
+<div class="figure"><span id="fig:iSEE-landing"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_landing.png" alt="Screenshot of the _iSEE_ application with a landing page."  />
+<p class="caption">
+Figure 20.2: Screenshot of the <em>iSEE</em> application with a landing page.
+</p>
+</div>
 </div>
 <div id="isee-examples" class="section level2">
 <h2><span class="header-section-number">20.3</span> Usage examples</h2>
@@ -749,7 +761,7 @@ clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class=
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">copy.pbmc &lt;-<span class="st"> </span>sce.pbmc
 
 <span class="co"># Computing various QC metrics; in particular, the log10-transformed library</span>
-<span class="co"># size for each cell and the log-rank by decreasing library size</span>
+<span class="co"># size for each cell and the log-rank by decreasing library size.</span>
 <span class="kw">library</span>(scater)
 copy.pbmc &lt;-<span class="st"> </span><span class="kw">addPerCellQC</span>(copy.pbmc, <span class="dt">exprs_values=</span><span class="st">&quot;counts&quot;</span>)
 copy.pbmc<span class="op">$</span>log10_total_counts &lt;-<span class="st"> </span><span class="kw">log10</span>(copy.pbmc<span class="op">$</span>total)
@@ -776,8 +788,13 @@ initial.state &lt;-<span class="st"> </span><span class="kw">list</span>(
 
 <span class="co"># Prepare the app</span>
 app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span class="dt">initial=</span>initial.state)</code></pre></div>
-<p>The configured Shiny app can then be launched as shown below, or by simply printing the <code>app</code> object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shiny<span class="op">::</span><span class="kw">runApp</span>(app)</code></pre></div>
+<p>The configured Shiny app can then be launched with the <code>runApp()</code> function or by simply printing the <code>app</code> object (Figure <a href="interactive-sharing.html#fig:iSEE-qc">20.3</a>).</p>
+<div class="figure"><span id="fig:iSEE-qc"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_qc.png" alt="Screenshot of an _iSEE_ application for interactive exploration of quality control metrics."  />
+<p class="caption">
+Figure 20.3: Screenshot of an <em>iSEE</em> application for interactive exploration of quality control metrics.
+</p>
+</div>
 <p>This app remains fully interactive, i.e., users can interactively control the settings and layout of the panels. For instance, users may choose to color data points by percentage of UMI mapped to mitochondrial genes (<code>&quot;pct_counts_Mito&quot;</code>) in the <em>Reduced dimension plot</em>. Using the transfer of point selection between panels, users could select cells with small library sizes in the <em>Column data plot</em> and highlight them in the <em>Reduced dimension plot</em>, to investigate a possible relation between library size, clustering and proportion of reads mapped to mitochondrial genes.</p>
 </div>
 <div id="annotation-of-cell-populations" class="section level3">
@@ -826,7 +843,13 @@ all.p &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(all.p, <sp
 
 <span class="co"># Prepare the app</span>
 app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span class="dt">initial=</span>initial.state)</code></pre></div>
-<p>Once the application is launched, we sort the table by ascending value of “cluster1” to identify genes that are strong markers for cluster 1. Then, users may select the first row in the <em>Row statistics table</em> and watch the second and third panel automatically update to display the most significant marker gene on the y-axis (<em>Feature assay plot</em>) or as a color scale overlaid on the data points (<em>Reduced dimension plot</em>). Alternatively, users can simply search the table for arbitrary gene names and select known markers for visualization.</p>
+<p>After launching the application (Figure <a href="interactive-sharing.html#fig:iSEE-anno">20.4</a>), we can then sort the table by ascending values of <code>cluster1</code> to identify genes that are strong markers for cluster 1. Then, users may select the first row in the <em>Row statistics table</em> and watch the second and third panel automatically update to display the most significant marker gene on the y-axis (<em>Feature assay plot</em>) or as a color scale overlaid on the data points (<em>Reduced dimension plot</em>). Alternatively, users can simply search the table for arbitrary gene names and select known markers for visualization.</p>
+<div class="figure"><span id="fig:iSEE-anno"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_anno.png" alt="Screenshot of the _iSEE_ application initialized for interactive exploration of population-specific marker expression."  />
+<p class="caption">
+Figure 20.4: Screenshot of the <em>iSEE</em> application initialized for interactive exploration of population-specific marker expression.
+</p>
+</div>
 </div>
 <div id="querying-features-of-interest" class="section level3">
 <h3><span class="header-section-number">20.3.3</span> Querying features of interest</h3>
@@ -836,7 +859,7 @@ app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span 
 <span class="co"># Adding some mean-variance information.</span>
 dec &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(copy.pbmc)
 <span class="kw">rowData</span>(copy.pbmc) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">rowData</span>(copy.pbmc), dec) </code></pre></div>
-<p>The next code chunk sets up an app that contains:</p>
+<p>The next code chunk sets up an app (Figure <a href="interactive-sharing.html#fig:iSEE-hvg">20.5</a>) that contains:</p>
 <ol style="list-style-type: decimal">
 <li>A plot showing the mean-variance trend, where each point represents a cell.</li>
 <li>A table of feature statistics, similar to that generated in the previous example.</li>
@@ -870,7 +893,13 @@ dec &lt;-<span class="st"> </span><span class="kw">modelGeneVarByPoisson</span>(
 
 <span class="co"># Prepare the app</span>
 app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span class="dt">initial=</span>initial.state)</code></pre></div>
-<p>It is entirely possible for these row-centric panels to exist alongside the column-centric panels discussed previously. The only limitation is that row-based panels cannot transmit multi-row selections to column-based panels and vice versa. That said, a row-based panel can still transmit a single row selection to a column-based panel for, e.g., coloring by expression; this allows us to set up an app where selecting a single HVG in the mean-variance plot causes the neighboring <span class="math inline">\(t\)</span>-SNE to be colored by the expression of the selected gene.</p>
+<div class="figure"><span id="fig:iSEE-hvg"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_hvg.png" alt="Screenshot of the _iSEE_ application initialized for examining highly variable genes."  />
+<p class="caption">
+Figure 20.5: Screenshot of the <em>iSEE</em> application initialized for examining highly variable genes.
+</p>
+</div>
+<p>It is entirely possible for these row-centric panels to exist alongside the column-centric panels discussed previously. The only limitation is that row-based panels cannot transmit multi-row selections to column-based panels and vice versa. That said, a row-based panel can still transmit a single row selection to a column-based panel for, e.g., coloring by expression; this allows us to set up an app where selecting a single HVG in the mean-variance plot causes the neighboring <span class="math inline">\(t\)</span>-SNE to be colored by the expression of the selected gene (Figure <a href="interactive-sharing.html#fig:iSEE-rowcol">20.6</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">initial.state &lt;-<span class="st"> </span><span class="kw">list</span>(
     <span class="co"># Configure a &quot;Feature assay plot&quot; panel</span>
     <span class="kw">RowDataPlot</span>(
@@ -891,6 +920,12 @@ app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span 
 
 <span class="co"># Prepare the app</span>
 app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span class="dt">initial=</span>initial.state)</code></pre></div>
+<div class="figure"><span id="fig:iSEE-rowcol"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_rowcol.png" alt="Screenshot of the _iSEE_ application containing both row- and column-based panels."  />
+<p class="caption">
+Figure 20.6: Screenshot of the <em>iSEE</em> application containing both row- and column-based panels.
+</p>
+</div>
 </div>
 </div>
 <div id="reproducible-visualizations" class="section level2">
@@ -900,7 +935,7 @@ app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(copy.pbmc, <span 
 </div>
 <div id="dissemination" class="section level2">
 <h2><span class="header-section-number">20.5</span> Dissemination of analysis results</h2>
-<p><code>iSEE</code> provides a powerful avenue for disseminating results through a “guided tour” of the dataset. This involves writing a step-by-step walkthrough of the different panels with explanations to facilitate their interpretation. All that is needed to add a tour to an <code>iSEE</code> instance is a data frame with two columns named “element” and “intro”; the first column declares the UI element to highlight in each step of the tour, and the second one contains the text to display at that step. This data frame must then be provided to the <code>iSEE()</code> function via the <code>tour</code> argument. In the code chunk below, we demonstrate the implementation of a simple tour taking through the two panels that compose a GUI, and interactively train users to use the collapsible boxes.</p>
+<p><code>iSEE</code> provides a powerful avenue for disseminating results through a “guided tour” of the dataset. This involves writing a step-by-step walkthrough of the different panels with explanations to facilitate their interpretation. All that is needed to add a tour to an <code>iSEE</code> instance is a data frame with two columns named “element” and “intro”; the first column declares the UI element to highlight in each step of the tour, and the second one contains the text to display at that step. This data frame must then be provided to the <code>iSEE()</code> function via the <code>tour</code> argument. Below we demonstrate the implementation of a simple tour that takes users through the two panels that compose a GUI and trains them to use the collapsible boxes.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tour &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
     <span class="dt">element =</span> <span class="kw">c</span>(
         <span class="st">&quot;#Welcome&quot;</span>,
@@ -920,8 +955,14 @@ initial.state &lt;-<span class="st"> </span><span class="kw">list</span>(
     <span class="kw">ReducedDimensionPlot</span>(<span class="dt">PanelWidth=</span>6L), 
     <span class="kw">ColumnDataPlot</span>(<span class="dt">PanelWidth=</span>6L)
 )</code></pre></div>
-<p>The preconfigured Shiny app can then be loaded with the tour and launched as show below. Note that the viewer is free to leave the interactive tour at any time and explore the data from their own perspective. Examples of advanced tours showcasing a selection of published data sets can be found at <a href="https://github.com/iSEE/iSEE2018" class="uri">https://github.com/iSEE/iSEE2018</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">initial =</span> initial.state, <span class="dt">tour =</span> tour)</code></pre></div>
+<p>The preconfigured Shiny app can then be loaded with the tour and launched to obtain Figure <a href="interactive-sharing.html#fig:iSEE-tour">20.7</a>. Note that the viewer is free to leave the interactive tour at any time and explore the data from their own perspective. Examples of advanced tours showcasing a selection of published data sets can be found at <a href="https://github.com/iSEE/iSEE2018" class="uri">https://github.com/iSEE/iSEE2018</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app &lt;-<span class="st"> </span><span class="kw">iSEE</span>(sce.pbmc, <span class="dt">initial =</span> initial.state, <span class="dt">tour =</span> tour)</code></pre></div>
+<div class="figure"><span id="fig:iSEE-tour"></span>
+<img src="https://raw.githubusercontent.com/Bioconductor/OSCABase/images/images/iSEE_tour.png" alt="Screenshot of the _iSEE_ application initialized with a tour."  />
+<p class="caption">
+Figure 20.7: Screenshot of the <em>iSEE</em> application initialized with a tour.
+</p>
+</div>
 </div>
 <div id="additional-resources" class="section level2">
 <h2><span class="header-section-number">20.6</span> Additional resources</h2>
@@ -973,38 +1014,39 @@ other attached packages:
 [15] OSCAUtils_0.0.2             BiocStyle_2.15.6           
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-145             bitops_1.0-6             RColorBrewer_1.1-2      
- [4] tools_4.0.0              irlba_2.3.3              R6_2.4.1                
- [7] DT_0.13                  vipor_0.4.5              mgcv_1.8-31             
-[10] colorspace_1.4-1         GetoptLong_0.1.8         withr_2.1.2             
-[13] gridExtra_2.3            tidyselect_1.0.0         processx_3.4.2          
-[16] compiler_4.0.0           cli_2.0.2                BiocNeighbors_1.5.2     
-[19] shinyjs_1.1              colourpicker_1.0         bookdown_0.18           
-[22] scales_1.1.0             callr_3.4.3              stringr_1.4.0           
-[25] digest_0.6.25            rmarkdown_2.1            XVector_0.27.2          
-[28] pkgconfig_2.0.3          htmltools_0.4.0          limma_3.43.5            
-[31] fastmap_1.0.1            htmlwidgets_1.5.1        rlang_0.4.5             
-[34] GlobalOptions_0.1.1      DelayedMatrixStats_1.9.1 shiny_1.4.0.2           
-[37] shape_1.4.4              jsonlite_1.6.1           BiocParallel_1.21.2     
-[40] dplyr_0.8.5              BiocSingular_1.3.2       RCurl_1.98-1.1          
-[43] magrittr_1.5             GenomeInfoDbData_1.2.2   Matrix_1.2-18           
-[46] ggbeeswarm_0.6.0         Rcpp_1.0.4               munsell_0.5.0           
-[49] fansi_0.4.1              viridis_0.5.1            lifecycle_0.2.0         
-[52] edgeR_3.29.1             stringi_1.4.6            yaml_2.2.1              
-[55] rintrojs_0.2.2           zlibbioc_1.33.1          grid_4.0.0              
-[58] dqrng_0.2.1              promises_1.1.0           shinydashboard_0.7.1    
-[61] crayon_1.3.4             miniUI_0.1.1.1           lattice_0.20-40         
-[64] splines_4.0.0            circlize_0.4.8           locfit_1.5-9.4          
-[67] knitr_1.28               ComplexHeatmap_2.3.3     ps_1.3.2                
-[70] pillar_1.4.3             igraph_1.2.5             rjson_0.2.20            
-[73] codetools_0.2-16         glue_1.3.2               evaluate_0.14           
-[76] BiocManager_1.30.10      png_0.1-7                vctrs_0.2.4             
-[79] httpuv_1.5.2             gtable_0.3.0             purrr_0.3.3             
-[82] clue_0.3-57              assertthat_0.2.1         xfun_0.12               
-[85] rsvd_1.0.3               mime_0.9                 xtable_1.8-4            
-[88] later_1.0.0              viridisLite_0.3.0        tibble_3.0.0            
-[91] beeswarm_0.2.3           cluster_2.1.0            statmod_1.4.34          
-[94] shinyWidgets_0.5.1       ellipsis_0.3.0           shinyAce_0.4.1          </code></pre>
+ [1] ggbeeswarm_0.6.0         colorspace_1.4-1         rjson_0.2.20            
+ [4] ellipsis_0.3.0           circlize_0.4.8           XVector_0.27.2          
+ [7] GlobalOptions_0.1.1      BiocNeighbors_1.5.2      clue_0.3-57             
+[10] DT_0.13                  fansi_0.4.1              codetools_0.2-16        
+[13] splines_4.0.0            knitr_1.28               jsonlite_1.6.1          
+[16] cluster_2.1.0            png_0.1-7                shinydashboard_0.7.1    
+[19] shiny_1.4.0.2            BiocManager_1.30.10      compiler_4.0.0          
+[22] dqrng_0.2.1              assertthat_0.2.1         Matrix_1.2-18           
+[25] fastmap_1.0.1            limma_3.43.5             cli_2.0.2               
+[28] later_1.0.0              BiocSingular_1.3.2       htmltools_0.4.0         
+[31] tools_4.0.0              rsvd_1.0.3               igraph_1.2.5            
+[34] gtable_0.3.0             glue_1.3.2               GenomeInfoDbData_1.2.2  
+[37] dplyr_0.8.5              Rcpp_1.0.4               vctrs_0.2.4             
+[40] nlme_3.1-145             rintrojs_0.2.2           DelayedMatrixStats_1.9.1
+[43] xfun_0.12                stringr_1.4.0            ps_1.3.2                
+[46] mime_0.9                 miniUI_0.1.1.1           lifecycle_0.2.0         
+[49] irlba_2.3.3              statmod_1.4.34           shinyAce_0.4.1          
+[52] edgeR_3.29.1             zlibbioc_1.33.1          scales_1.1.0            
+[55] colourpicker_1.0         promises_1.1.0           RColorBrewer_1.1-2      
+[58] ComplexHeatmap_2.3.3     yaml_2.2.1               gridExtra_2.3           
+[61] stringi_1.4.6            highr_0.8                BiocParallel_1.21.2     
+[64] shape_1.4.4              rlang_0.4.5              pkgconfig_2.0.3         
+[67] bitops_1.0-6             evaluate_0.14            lattice_0.20-40         
+[70] purrr_0.3.3              htmlwidgets_1.5.1        processx_3.4.2          
+[73] tidyselect_1.0.0         magrittr_1.5             bookdown_0.18           
+[76] R6_2.4.1                 pillar_1.4.3             withr_2.1.2             
+[79] mgcv_1.8-31              RCurl_1.98-1.1           tibble_3.0.0            
+[82] crayon_1.3.4             shinyWidgets_0.5.1       rmarkdown_2.1           
+[85] viridis_0.5.1            GetoptLong_0.1.8         locfit_1.5-9.4          
+[88] grid_4.0.0               callr_3.4.3              digest_0.6.25           
+[91] xtable_1.8-4             httpuv_1.5.2             munsell_0.5.0           
+[94] beeswarm_0.2.3           viridisLite_0.3.0        vipor_0.4.5             
+[97] shinyjs_1.1             </code></pre>
 </div>
 
 </div>
