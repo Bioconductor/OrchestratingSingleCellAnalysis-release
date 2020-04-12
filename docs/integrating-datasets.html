@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -924,18 +924,30 @@ mnn.out</code></pre></div>
 <p>A <code>reconstructed</code> matrix in the <code>assays()</code> contains the corrected expression values for each gene in each cell, obtained by projecting the low-dimensional coordinates in <code>corrected</code> back into gene expression space. We do not recommend using this for anything other than visualization (Section <a href="integrating-datasets.html#using-corrected-values">13.7</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">assay</span>(mnn.out, <span class="st">&quot;reconstructed&quot;</span>)</code></pre></div>
 <pre><code>## &lt;13431 x 6791&gt; matrix of class LowRankMatrix and type &quot;double&quot;:
-##                       [,1]       [,2]       [,3] ...    [,6790]    [,6791]
-## ENSG00000239945 -2.522e-06 -1.851e-06 -1.199e-05   .  1.832e-06 -3.641e-06
-## ENSG00000228463 -6.627e-04 -6.724e-04 -4.820e-04   . -8.531e-04 -3.999e-04
-## ENSG00000237094 -8.077e-05 -8.038e-05 -9.631e-05   .  7.261e-06 -4.094e-05
-## ENSG00000229905  3.838e-06  6.180e-06  5.432e-06   .  8.534e-06  3.485e-06
-## ENSG00000237491 -4.527e-04 -3.178e-04 -1.510e-04   . -3.491e-04 -2.082e-04
-##             ...          .          .          .   .          .          .
-## ENSG00000198840 -0.0296508 -0.0340101 -0.0502385   . -0.0362884 -0.0183084
-## ENSG00000212907 -0.0041681 -0.0056570 -0.0106420   . -0.0083837  0.0005996
-## ENSG00000198886  0.0145358  0.0200517 -0.0307131   . -0.0109254 -0.0070064
-## ENSG00000198695  0.0014427  0.0013490  0.0001493   . -0.0009826 -0.0022712
-## ENSG00000198727  0.0152570  0.0106167 -0.0256450   . -0.0227962 -0.0022898</code></pre>
+##                          [,1]          [,2]          [,3] ...       [,6790]
+## ENSG00000239945 -2.522191e-06 -1.851424e-06 -1.198984e-05   .  1.831777e-06
+## ENSG00000228463 -6.626821e-04 -6.724341e-04 -4.820230e-04   . -8.531370e-04
+## ENSG00000237094 -8.077231e-05 -8.038006e-05 -9.630608e-05   .  7.261218e-06
+## ENSG00000229905  3.838135e-06  6.179994e-06  5.432122e-06   .  8.533821e-06
+## ENSG00000237491 -4.527173e-04 -3.178168e-04 -1.510488e-04   . -3.490597e-04
+##             ...             .             .             .   .             .
+## ENSG00000198840 -0.0296507947 -0.0340100587 -0.0502384904   . -0.0362883569
+## ENSG00000212907 -0.0041681457 -0.0056569549 -0.0106420441   . -0.0083837431
+## ENSG00000198886  0.0145358352  0.0200516598 -0.0307130838   . -0.0109253965
+## ENSG00000198695  0.0014427168  0.0013489620  0.0001493234   . -0.0009825885
+## ENSG00000198727  0.0152570264  0.0106167007 -0.0256449590   . -0.0227962145
+##                       [,6791]
+## ENSG00000239945 -3.640783e-06
+## ENSG00000228463 -3.998685e-04
+## ENSG00000237094 -4.093746e-05
+## ENSG00000229905  3.484915e-06
+## ENSG00000237491 -2.082230e-04
+##             ...             .
+## ENSG00000198840 -0.0183084463
+## ENSG00000212907  0.0005995725
+## ENSG00000198886 -0.0070064062
+## ENSG00000198695 -0.0022712251
+## ENSG00000198727 -0.0022897927</code></pre>
 <p>The most relevant parameter for tuning <code>fastMNN()</code> is <code>k</code>, which specifies the number of nearest neighbors to consider when defining MNN pairs. This can be interpreted as the minimum anticipated frequency of any shared cell type or state in each batch. Increasing <code>k</code> will generally result in more aggressive merging as the algorithm is more generous in matching subpopulations across batches. It can occasionally be desirable to increase <code>k</code> if one clearly sees that the same cell types are not being adequately merged across batches.</p>
 <p>See Chapter <a href="merged-pancreas.html#merged-pancreas">32</a> for an example of a more complex <code>fastMNN()</code> merge involving several human pancreas datasets generated by different authors on different patients with different technologies.</p>
 </div>
@@ -980,8 +992,8 @@ Figure 13.3: <span class="math inline">\(t\)</span>-SNE plot of the PBMC dataset
 </div>
 <p>For <code>fastMNN()</code>, one useful diagnostic is the proportion of variance within each batch that is lost during MNN correction. Specifically, this refers to the within-batch variance that is removed during orthogonalization with respect to the average correction vector at each merge step. This is returned via the <code>lost.var</code> field in the metadata of <code>mnn.out</code>, which contains a matrix of the variance lost in each batch (column) at each merge step (row).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">metadata</span>(mnn.out)<span class="op">$</span>merge.info<span class="op">$</span>lost.var</code></pre></div>
-<pre><code>##          [,1]     [,2]
-## [1,] 0.006617 0.003315</code></pre>
+<pre><code>##             [,1]        [,2]
+## [1,] 0.006617087 0.003315395</code></pre>
 <p>Large proportions of lost variance (&gt;10%) suggest that correction is removing genuine biological heterogeneity. This would occur due to violations of the assumption of orthogonality between the batch effect and the biological subspace <span class="citation">(Haghverdi et al. <a href="#ref-haghverdi2018batch">2018</a>)</span>. In this case, the proportion of lost variance is small, indicating that non-orthogonality is not a major concern.</p>
 </div>
 </div>
@@ -1036,11 +1048,11 @@ Figure 13.5: Coassignment probabilities for the within-batch clusters, based on 
 ri3k &lt;-<span class="st"> </span><span class="kw">rand.index</span>(<span class="kw">as.integer</span>(clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">1</span>]),
     <span class="kw">as.integer</span>(<span class="kw">colLabels</span>(pbmc3k)))
 ri3k</code></pre></div>
-<pre><code>## [1] 0.9335</code></pre>
+<pre><code>## [1] 0.9335226</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ri4k &lt;-<span class="st"> </span><span class="kw">rand.index</span>(<span class="kw">as.integer</span>(clusters.mnn[rescaled<span class="op">$</span>batch<span class="op">==</span><span class="dv">2</span>]),
     <span class="kw">as.integer</span>(<span class="kw">colLabels</span>(pbmc4k)))
 ri4k</code></pre></div>
-<pre><code>## [1] 0.9576</code></pre>
+<pre><code>## [1] 0.9575746</code></pre>
 </div>
 <div id="integration-with-markers" class="section level3">
 <h3><span class="header-section-number">13.6.2</span> Encouraging consistency with marker genes</h3>
@@ -1102,27 +1114,27 @@ However, these are probably minor given that the marker gene procedure is not pa
 <span class="co"># A (probably activated?) T cell subtype of some sort:</span>
 demo &lt;-<span class="st"> </span>m.out[[<span class="st">&quot;10&quot;</span>]]
 <span class="kw">as.data.frame</span>(demo[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>,<span class="kw">c</span>(<span class="st">&quot;Symbol&quot;</span>, <span class="st">&quot;Top&quot;</span>, <span class="st">&quot;p.value&quot;</span>, <span class="st">&quot;FDR&quot;</span>)]) </code></pre></div>
-<pre><code>##                 Symbol Top    p.value        FDR
-## ENSG00000177954  RPS27   1 3.399e-168 1.061e-163
-## ENSG00000227507    LTB   1 1.238e-157 1.934e-153
-## ENSG00000167286   CD3D   1  9.136e-89  4.076e-85
-## ENSG00000111716   LDHB   1  8.699e-44  1.811e-40
-## ENSG00000008517   IL32   1  4.880e-31  6.928e-28
-## ENSG00000172809  RPL38   1 8.727e-143 6.814e-139
-## ENSG00000171223   JUNB   1  8.762e-72  2.737e-68
-## ENSG00000071082  RPL31   2  8.612e-78  2.989e-74
-## ENSG00000121966  CXCR4   2  2.370e-07  1.322e-04
-## ENSG00000251562 MALAT1   2  3.618e-33  5.650e-30
-## ENSG00000133639   BTG1   2  6.847e-12  4.550e-09
-## ENSG00000170345    FOS   2  2.738e-46  6.108e-43
-## ENSG00000129824 RPS4Y1   2 1.075e-108 6.713e-105
-## ENSG00000177606    JUN   3  1.039e-37  1.910e-34
-## ENSG00000112306  RPS12   3  1.656e-33  2.722e-30
-## ENSG00000110700  RPS13   3  7.600e-18  7.657e-15
-## ENSG00000198851   CD3E   3  1.058e-36  1.836e-33
-## ENSG00000213741  RPS29   3 1.494e-148 1.555e-144
-## ENSG00000116251  RPL22   4  3.992e-25  4.796e-22
-## ENSG00000144713  RPL32   4  1.224e-32  1.820e-29</code></pre>
+<pre><code>##                 Symbol Top       p.value           FDR
+## ENSG00000177954  RPS27   1 3.398543e-168 1.061433e-163
+## ENSG00000227507    LTB   1 1.238347e-157 1.933803e-153
+## ENSG00000167286   CD3D   1  9.136016e-89  4.076229e-85
+## ENSG00000111716   LDHB   1  8.699141e-44  1.811277e-40
+## ENSG00000008517   IL32   1  4.880406e-31  6.928402e-28
+## ENSG00000172809  RPL38   1 8.726980e-143 6.814026e-139
+## ENSG00000171223   JUNB   1  8.762155e-72  2.736596e-68
+## ENSG00000071082  RPL31   2  8.612369e-78  2.988684e-74
+## ENSG00000121966  CXCR4   2  2.369668e-07  1.321598e-04
+## ENSG00000251562 MALAT1   2  3.618005e-33  5.649876e-30
+## ENSG00000133639   BTG1   2  6.847076e-12  4.549955e-09
+## ENSG00000170345    FOS   2  2.738128e-46  6.108372e-43
+## ENSG00000129824 RPS4Y1   2 1.074722e-108 6.713145e-105
+## ENSG00000177606    JUN   3  1.039395e-37  1.909553e-34
+## ENSG00000112306  RPS12   3  1.655795e-33  2.721779e-30
+## ENSG00000110700  RPS13   3  7.600217e-18  7.657096e-15
+## ENSG00000198851   CD3E   3  1.057929e-36  1.835625e-33
+## ENSG00000213741  RPS29   3 1.493885e-148 1.555234e-144
+## ENSG00000116251  RPL22   4  3.992343e-25  4.795726e-22
+## ENSG00000144713  RPL32   4  1.223940e-32  1.820290e-29</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotExpression</span>(uncorrected, <span class="dt">x=</span><span class="kw">I</span>(<span class="kw">factor</span>(clusters.mnn)), 
     <span class="dt">features=</span><span class="st">&quot;ENSG00000177954&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;batch&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>colour_by)</code></pre></div>
 <div class="figure"><span id="fig:pbmc-marker-blocked"></span>

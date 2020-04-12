@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -955,7 +955,7 @@ sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="k
 </div>
 <div id="alternative-experiments" class="section level3">
 <h3><span class="header-section-number">4.4.3</span> Alternative Experiments</h3>
-<p>The <code>SingleCellExperiment</code> class provides the concept of “alternative Experiments” where we have data for a distinct set of features but the same set of samples/cells. The classic application would be to store the per-cell counts for spike-in transcripts; this allows us to retain this data for downstream use but separate it from the <code>assays</code> holding the counts for endogenous genes. The separation is particularly important as such alternative features often need to be processed separately, see Chapter <a href="#intergrating-with-protein-abundance"><strong>??</strong></a> for examples on antibody-derived tags.</p>
+<p>The <code>SingleCellExperiment</code> class provides the concept of “alternative Experiments” where we have data for a distinct set of features but the same set of samples/cells. The classic application would be to store the per-cell counts for spike-in transcripts; this allows us to retain this data for downstream use but separate it from the <code>assays</code> holding the counts for endogenous genes. The separation is particularly important as such alternative features often need to be processed separately, see Chapter <a href="integrating-with-protein-abundance.html#integrating-with-protein-abundance">18</a> for examples on antibody-derived tags.</p>
 <p>If we have data for alternative feature sets, we can store it in our <code>SingleCellExperiment</code> as an alternative Experiment. For example, if we have some data for spike-in transcripts, we first create a separate <code>SummarizedExperiment</code> object:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spike_counts &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">cell_1 =</span> <span class="kw">rpois</span>(<span class="dv">5</span>, <span class="dv">10</span>), 
     <span class="dt">cell_2 =</span> <span class="kw">rpois</span>(<span class="dv">5</span>, <span class="dv">10</span>), 

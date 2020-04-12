@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -789,7 +789,7 @@ df</code></pre></div>
 ## [21] &quot;altexps_ERCC_percent&quot;     &quot;altexps_SIRV_sum&quot;        
 ## [23] &quot;altexps_SIRV_detected&quot;    &quot;altexps_SIRV_percent&quot;    
 ## [25] &quot;total&quot;</code></pre>
-<p>A key assumption here is that the QC metrics are independent of the biological state of each cell. Poor values (e.g., low library sizes, high mitochondrial proportions) are presumed to be driven by technical factors rather than biological processes, meaning that the subsequent removal of cells will not misrepresent the biology in downstream analyses. Major violations of this assumption would potentially result in the loss of cell types that have, say, systematically low RNA content or high numbers of mitochondria. We can check for such violations using some diagnostics described in Sections <a href="quality-control.html#quality-control-plots">6.4</a> and <a href="#quality-control-discarded"><strong>??</strong></a>.</p>
+<p>A key assumption here is that the QC metrics are independent of the biological state of each cell. Poor values (e.g., low library sizes, high mitochondrial proportions) are presumed to be driven by technical factors rather than biological processes, meaning that the subsequent removal of cells will not misrepresent the biology in downstream analyses. Major violations of this assumption would potentially result in the loss of cell types that have, say, systematically low RNA content or high numbers of mitochondria. We can check for such violations using some diagnostics described in Sections <a href="quality-control.html#quality-control-plots">6.4</a> and <a href="quality-control.html#quality-control-discarded">6.6</a>.</p>
 </div>
 <div id="identifying-low-quality-cells" class="section level2">
 <h2><span class="header-section-number">6.3</span> Identifying low-quality cells</h2>
@@ -822,20 +822,20 @@ discard &lt;-<span class="st"> </span>qc.lib <span class="op">|</span><span clas
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc.nexprs2 &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(df<span class="op">$</span>detected, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</code></pre></div>
 <p><code>isOutlier()</code> will also return the exact filter thresholds for each metric in the attributes of the output vector. These is useful for checking whether the automatically selected thresholds are appropriate.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attr</span>(qc.lib2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
-<pre><code>##  lower higher 
-## 434083    Inf</code></pre>
+<pre><code>##    lower   higher 
+## 434082.9      Inf</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attr</span>(qc.nexprs2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
-<pre><code>##  lower higher 
-##   5231    Inf</code></pre>
+<pre><code>##    lower   higher 
+## 5231.468      Inf</code></pre>
 <p>We identify outliers for the proportion-based metrics in a similar manner. Here, no transformation is performed as we are aiming to identify and remove large outliers that should already be clearly distinguishable from zero.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc.spike2 &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(df<span class="op">$</span>altexps_ERCC_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)
 <span class="kw">attr</span>(qc.spike2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
-<pre><code>##  lower higher 
-##   -Inf  14.15</code></pre>
+<pre><code>##    lower   higher 
+##     -Inf 14.15371</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc.mito2 &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(df<span class="op">$</span>subsets_Mito_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)
 <span class="kw">attr</span>(qc.mito2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
-<pre><code>##  lower higher 
-##   -Inf  11.92</code></pre>
+<pre><code>##    lower   higher 
+##     -Inf 11.91734</code></pre>
 <p>A cell that is an outlier for any of these metrics is considered to be of low-quality and discarded.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">discard2 &lt;-<span class="st"> </span>qc.lib2 <span class="op">|</span><span class="st"> </span>qc.nexprs2 <span class="op">|</span><span class="st"> </span>qc.spike2 <span class="op">|</span><span class="st"> </span>qc.mito2
 
@@ -904,8 +904,8 @@ Figure 6.1: Distribution of the proportion of ERCC transcripts in each donor of 
 <p>To identify problematic batches, one useful rule of thumb is to find batches with QC thresholds that are <em>themselves</em> outliers compared to the thresholds of other batches. The assumption here is that most batches consist of a majority of high quality cells such that the threshold value should follow some unimodal distribution across “typical” batches. If we observe a batch with an extreme threshold value, we may suspect that it contains a large number of low-quality cells that inflate the per-batch MAD. We demonstrate this process below for the <span class="citation">Grun et al. (<a href="#ref-grun2016denovo">2016</a>)</span> data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ercc.thresholds &lt;-<span class="st"> </span><span class="kw">attr</span>(discard.ercc, <span class="st">&quot;thresholds&quot;</span>)[<span class="st">&quot;higher&quot;</span>,]
 ercc.thresholds</code></pre></div>
-<pre><code>##     D10     D17      D2      D3      D7 
-##  73.611   7.600   6.011 113.106  15.217</code></pre>
+<pre><code>##        D10        D17         D2         D3         D7 
+##  73.610696   7.599947   6.010975 113.105828  15.216956</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(ercc.thresholds)[<span class="kw">isOutlier</span>(ercc.thresholds, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)]</code></pre></div>
 <pre><code>## [1] &quot;D10&quot; &quot;D3&quot;</code></pre>
 <p>If we cannot assume that most batches contain a majority of high-quality cells, then all bets are off; we must revert to the approach of picking an arbitrary threshold value (Section <a href="quality-control.html#fixed-qc">6.3.1</a>) and hoping for the best.</p>
@@ -1138,7 +1138,7 @@ Figure 6.8: Percentage of reads assigned to mitochondrial transcripts, plotted a
 <p>Note that <em>CellRanger</em> version 3 automatically performs cell calling using an algorithm similar to <code>emptyDrops()</code>. If we had started our analysis with the <strong>filtered</strong> count matrix, we could go straight to computing other QC metrics. We would not need to run <code>emptyDrops()</code> manually as shown here, and indeed, attempting to do so would lead to nonsensical results if not outright software errors. Nonetheless, it may still be desirable to load the <strong>unfiltered</strong> matrix and apply <code>emptyDrops()</code> ourselves, on occasions where more detailed inspection or control of the cell-calling statistics is desired.</p>
 </div>
 </div>
-<div id="removing-low-quality-cells" class="section level2">
+<div id="quality-control-discarded" class="section level2">
 <h2><span class="header-section-number">6.6</span> Removing low-quality cells</h2>
 <p>Once low-quality cells have been identified, we can choose to either remove them or mark them. Removal is the most straightforward option and is achieved by subsetting the <code>SingleCellExperiment</code> by column. In this case, we use the low-quality calls from Section <a href="quality-control.html#qc-batch">6.3.2.3</a> to generate a subsetted <code>SingleCellExperiment</code> that we would use for downstream analyses.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Keeping the columns we DON&#39;T want to discard.</span>
@@ -1192,7 +1192,7 @@ Figure 6.10: Average counts across all discarded and retained cells in the PBMC 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">marked &lt;-<span class="st"> </span>sce<span class="fl">.416</span>b
 marked<span class="op">$</span>discard &lt;-<span class="st"> </span>batch.reasons<span class="op">$</span>discard</code></pre></div>
 <p>The downside is that it shifts the burden of QC to the interpretation of the clusters, which is already the bottleneck in scRNA-seq data analysis (Chapters <a href="clustering.html#clustering">10</a>, <a href="marker-detection.html#marker-detection">11</a> and <a href="cell-type-annotation.html#cell-type-annotation">12</a>). Indeed, if we do not trust the QC metrics, we would have to distinguish between genuine cell types and low-quality cells based only on marker genes, and this is not always easy due to the tendency of the latter to “express” interesting genes (Section <a href="quality-control.html#quality-control-motivation">6.1</a>). Retention of low-quality cells also compromises the accuracy of the variance modelling, requiring, e.g., use of more PCs to offset the fact that the early PCs are driven by differences between low-quality and other cells.</p>
-<p>For routine analyses, we suggest performing removal by default to avoid complications from low-quality cells. This allows most of the population structure to be characterized with no - or, at least, fewer - concerns about its validity. Once the initial analysis is done, and if there are any concerns about discarded cell types (Section <a href="#quality-control-discarded"><strong>??</strong></a>), a more thorough re-analysis can be performed where the low-quality cells are only marked. This recovers cell types with low RNA content, high mitochondrial proportions, etc. that only need to be interpreted insofar as they “fill the gaps” in the initial analysis.</p>
+<p>For routine analyses, we suggest performing removal by default to avoid complications from low-quality cells. This allows most of the population structure to be characterized with no - or, at least, fewer - concerns about its validity. Once the initial analysis is done, and if there are any concerns about discarded cell types (Section <a href="quality-control.html#quality-control-discarded">6.6</a>), a more thorough re-analysis can be performed where the low-quality cells are only marked. This recovers cell types with low RNA content, high mitochondrial proportions, etc. that only need to be interpreted insofar as they “fill the gaps” in the initial analysis.</p>
 </div>
 <div id="session-info-1" class="section level2 unnumbered">
 <h2>Session Info</h2>

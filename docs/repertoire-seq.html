@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -853,7 +853,7 @@ trb.counts.prod &lt;-<span class="st"> </span><span class="kw">table</span>(<spa
 Figure 19.3: Proportion of cells in each cluster that express at least one productive sequence of the TCR <span class="math inline">\(\alpha\)</span> (dark) or <span class="math inline">\(\beta\)</span>-chains (light).
 </p>
 </div>
-<p>For completeness, we also count the number of cells in each cluster that have multiple sequences for a component (Figure <a href="#tcr-prop-cluster-multi"><strong>??</strong></a>). The percentages are clearly lower but this phenomenon is still surprisingly common.</p>
+<p>For completeness, we also count the number of cells in each cluster that have multiple sequences for a component (Figure <a href="repertoire-seq.html#fig:tcr-prop-cluster-multi">19.4</a>). The percentages are clearly lower but this phenomenon is still surprisingly common.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tra.counts.multi &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">colLabels</span>(sce.pbmc)[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRA) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>])
 trb.counts.multi &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">colLabels</span>(sce.pbmc)[<span class="kw">lengths</span>(sce.pbmc<span class="op">$</span>TRB) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>])
 <span class="kw">barplot</span>(<span class="kw">rbind</span>(<span class="dt">TRA=</span>tra.counts.multi<span class="op">/</span>ncells, <span class="dt">TRB=</span>trb.counts.multi<span class="op">/</span>ncells), 
@@ -899,7 +899,7 @@ keep</code></pre></div>
 <span class="co"># that satisfied our requirements.</span>
 <span class="kw">summary</span>(<span class="kw">mean</span>(keep))</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##     0.2     1.0     1.0     0.9     1.0     1.0    3067</code></pre>
+##  0.2500  1.0000  1.0000  0.9304  1.0000  1.0000    3067</code></pre>
 <p>Boolean statements are easily accommodated with standard methods. For example, we can identify sequences that are full-length, productive and have the largest UMI count in the cell. Another useful aspect of the <code>SplitDataFrameList</code>’s behavior is that we can use a <code>LogicalList</code> as an argument for subsetting, which will then subset at the sequence level, i.e., the rows of each per-cell <code>DataFrame</code>. (This contrasts with more conventional uses of a logical vector as the subset argument, which will simply subset at the cell level, i.e., the elements of the <code>SplitDataFrameList</code> itself.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">keep &lt;-<span class="st"> </span>tra[,<span class="st">&quot;full_length&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span> <span class="op">&amp;</span>
 <span class="st">    </span>tra[,<span class="st">&quot;productive&quot;</span>]<span class="op">==</span><span class="st">&quot;True&quot;</span> <span class="op">&amp;</span>
@@ -998,13 +998,13 @@ stats</code></pre></div>
 ##  Fisher&#39;s Exact Test for Count Data
 ## 
 ## data:  mat
-## p-value &lt;2e-16
+## p-value &lt; 2.2e-16
 ## alternative hypothesis: true odds ratio is not equal to 1
 ## 95 percent confidence interval:
-##  4.870 9.129
+##  4.869834 9.129173
 ## sample estimates:
 ## odds ratio 
-##       6.65</code></pre>
+##   6.650292</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Checking the identities of the relevant clusters. Note that &#39;cluster&#39; is also</span>
 <span class="co"># present as a colData entry in &#39;altExp(sce.pbmc)&#39;, which is why the</span>
 <span class="co"># &#39;other_fields=&quot;label&quot;&#39; argument works correctty.</span>
@@ -1068,26 +1068,26 @@ aap &lt;-<span class="st"> </span><span class="kw">aminoAcidProperties</span>(df
 properties &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;_AA_&quot;</span>, <span class="kw">colnames</span>(aap))
 <span class="kw">head</span>(aap[,properties])</code></pre></div>
 <pre><code>##                      cdr3_AA_LENGTH cdr3_AA_GRAVY cdr3_AA_BULK
-## AAACCTGAGATCTGAA-1               18        0.6889        13.42
-## AAACCTGAGGAACTGC-1               12        0.1083        14.68
-## AAACCTGAGGAGTCTG-1               16       -0.4250        14.52
-## AAACCTGAGGCTCTTA-1               14        0.4286        13.09
+## AAACCTGAGATCTGAA-1               18     0.6888889     13.41944
+## AAACCTGAGGAACTGC-1               12     0.1083333     14.68250
+## AAACCTGAGGAGTCTG-1               16    -0.4250000     14.51500
+## AAACCTGAGGCTCTTA-1               14     0.4285714     13.09429
 ## AAACCTGAGGCTCTTA-1.1             NA            NA           NA
-## AAACCTGTCAACGGGA-1               17       -0.2118        14.15
+## AAACCTGTCAACGGGA-1               17    -0.2117647     14.14941
 ##                      cdr3_AA_ALIPHATIC cdr3_AA_POLARITY cdr3_AA_CHARGE
-## AAACCTGAGATCTGAA-1              0.8167            7.806         0.9260
-## AAACCTGAGGAACTGC-1              0.8167            8.642        -1.0734
-## AAACCTGAGGAGTCTG-1              0.8562            8.794         0.9265
-## AAACCTGAGGCTCTTA-1              0.6286            7.979         0.9260
+## AAACCTGAGATCTGAA-1           0.8166667         7.805556      0.9260145
+## AAACCTGAGGAACTGC-1           0.8166667         8.641667     -1.0733532
+## AAACCTGAGGAGTCTG-1           0.8562500         8.793750      0.9265075
+## AAACCTGAGGCTCTTA-1           0.6285714         7.978571      0.9260145
 ## AAACCTGAGGCTCTTA-1.1                NA               NA             NA
-## AAACCTGTCAACGGGA-1              0.8059            8.324         2.0378
+## AAACCTGTCAACGGGA-1           0.8058824         8.323529      2.0378223
 ##                      cdr3_AA_BASIC cdr3_AA_ACIDIC cdr3_AA_AROMATIC
-## AAACCTGAGATCTGAA-1         0.05556         0.0000          0.05556
-## AAACCTGAGGAACTGC-1         0.08333         0.1667          0.08333
-## AAACCTGAGGAGTCTG-1         0.12500         0.0625          0.06250
-## AAACCTGAGGCTCTTA-1         0.07143         0.0000          0.07143
+## AAACCTGAGATCTGAA-1      0.05555556      0.0000000       0.05555556
+## AAACCTGAGGAACTGC-1      0.08333333      0.1666667       0.08333333
+## AAACCTGAGGAGTCTG-1      0.12500000      0.0625000       0.06250000
+## AAACCTGAGGCTCTTA-1      0.07142857      0.0000000       0.07142857
 ## AAACCTGAGGCTCTTA-1.1            NA             NA               NA
-## AAACCTGTCAACGGGA-1         0.17647         0.0000          0.17647</code></pre>
+## AAACCTGTCAACGGGA-1      0.17647059      0.0000000       0.17647059</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collected &lt;-<span class="st"> </span><span class="kw">list</span>()
 <span class="cf">for</span> (i <span class="cf">in</span> properties) {
     prop &lt;-<span class="st"> </span><span class="kw">colnames</span>(aap)[i]

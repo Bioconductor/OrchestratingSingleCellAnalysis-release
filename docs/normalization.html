@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -709,7 +709,7 @@ sce.zeisel &lt;-<span class="st"> </span>sce.zeisel[,<span class="op">!</span>qc
 lib.sf.zeisel &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.zeisel)
 <span class="kw">summary</span>(lib.sf.zeisel)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.180   0.557   0.865   1.000   1.283   4.178</code></pre>
+##  0.1797  0.5571  0.8648  1.0000  1.2827  4.1778</code></pre>
 <p>In the Zeisel brain data, the library size factors differ by up to 10-fold across cells (Figure <a href="normalization.html#fig:histlib">7.1</a>). This is typical of the variability in coverage in scRNA-seq data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(<span class="kw">log10</span>(lib.sf.zeisel), <span class="dt">xlab=</span><span class="st">&quot;Log10[Size factor]&quot;</span>, <span class="dt">col=</span><span class="st">&#39;grey80&#39;</span>)</code></pre></div>
 <div class="figure"><span id="fig:histlib"></span>
@@ -736,7 +736,7 @@ clust.zeisel &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">deconv.sf.zeisel &lt;-<span class="st"> </span><span class="kw">calculateSumFactors</span>(sce.zeisel, <span class="dt">cluster=</span>clust.zeisel)
 <span class="kw">summary</span>(deconv.sf.zeisel)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.135   0.466   0.818   1.000   1.319   4.687</code></pre>
+##  0.1349  0.4664  0.8182  1.0000  1.3195  4.6872</code></pre>
 <p>We use a pre-clustering step with <code>quickCluster()</code> where cells in each cluster are normalized separately and the size factors are rescaled to be comparable across clusters. This avoids the assumption that most genes are non-DE across the entire population - only a non-DE majority is required between pairs of clusters, which is a weaker assumption for highly heterogeneous populations. By default, <code>quickCluster()</code> will use an approximate algorithm for PCA based on methods from the <em><a href="https://CRAN.R-project.org/package=irlba">irlba</a></em> package. The approximation relies on stochastic initialization so we need to set the random seed (via <code>set.seed()</code>) for reproducibility.</p>
 <p>We see that the deconvolution size factors exhibit cell type-specific deviations from the library size factors in Figure <a href="normalization.html#fig:deconv-zeisel">7.2</a>. This is consistent with the presence of composition biases that are introduced by strong differential expression between cell types. Use of the deconvolution size factors adjusts for these biases to improve normalization accuracy for downstream applications.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(lib.sf.zeisel, deconv.sf.zeisel, <span class="dt">xlab=</span><span class="st">&quot;Library size factor&quot;</span>,
@@ -776,7 +776,7 @@ sce.richard</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.richard &lt;-<span class="st"> </span><span class="kw">computeSpikeFactors</span>(sce.richard, <span class="st">&quot;ERCC&quot;</span>)
 <span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.richard))</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.125   0.428   0.627   1.000   1.070  23.316</code></pre>
+##  0.1247  0.4282  0.6274  1.0000  1.0699 23.3161</code></pre>
 <p>We observe a positive correlation between the spike-in size factors and deconvolution size factors within each treatment condition (Figure <a href="normalization.html#fig:norm-spike-t">7.3</a>), indicating that they are capturing similar technical biases in sequencing depth and capture efficiency. However, we also observe that increasing stimulation of the T cell receptor - in terms of increasing affinity or time - results in a decrease in the spike-in factors relative to the library size factors. This is consistent with an increase in biosynthetic activity and total RNA content during stimulation, which reduces the relative spike-in coverage in each library (thereby decreasing the spike-in size factors) but increases the coverage of endogenous genes (thus increasing the library size factors).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">to.plot &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
     <span class="dt">DeconvFactor=</span><span class="kw">calculateSumFactors</span>(sce.richard),

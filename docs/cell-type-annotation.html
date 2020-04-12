@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -994,28 +994,28 @@ results &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw"
 <span class="kw">head</span>(results)</code></pre></div>
 <pre><code>##                           gene sets
 ## cells                      astrocytes_ependymal endothelial-mural interneurons
-##   Calb2_tdTpositive_cell_1               0.1353           0.04159       0.5289
-##   Calb2_tdTpositive_cell_2               0.1328           0.04763       0.4452
-##   Calb2_tdTpositive_cell_3               0.1084           0.08069       0.3439
-##   Calb2_tdTpositive_cell_4               0.1285           0.04869       0.5092
-##   Calb2_tdTpositive_cell_5               0.1612           0.06984       0.4807
-##   Calb2_tdTpositive_cell_6               0.1302           0.08934       0.3372
+##   Calb2_tdTpositive_cell_1            0.1352975        0.04158540    0.5288971
+##   Calb2_tdTpositive_cell_2            0.1327698        0.04763479    0.4452091
+##   Calb2_tdTpositive_cell_3            0.1084212        0.08069155    0.3438614
+##   Calb2_tdTpositive_cell_4            0.1284566        0.04869261    0.5092011
+##   Calb2_tdTpositive_cell_5            0.1611650        0.06983791    0.4807046
+##   Calb2_tdTpositive_cell_6            0.1301842        0.08934140    0.3372152
 ##                           gene sets
-## cells                      microglia oligodendrocytes pyramidal CA1
-##   Calb2_tdTpositive_cell_1   0.05451           0.1444        0.2242
-##   Calb2_tdTpositive_cell_2   0.02645           0.1226        0.1939
-##   Calb2_tdTpositive_cell_3   0.03534           0.1518        0.3009
-##   Calb2_tdTpositive_cell_4   0.05313           0.1499        0.2357
-##   Calb2_tdTpositive_cell_5   0.07673           0.1347        0.2032
-##   Calb2_tdTpositive_cell_6   0.03157           0.1568        0.3892
+## cells                       microglia oligodendrocytes pyramidal CA1
+##   Calb2_tdTpositive_cell_1 0.05451208        0.1444140     0.2241940
+##   Calb2_tdTpositive_cell_2 0.02645457        0.1226296     0.1938950
+##   Calb2_tdTpositive_cell_3 0.03533802        0.1518077     0.3008680
+##   Calb2_tdTpositive_cell_4 0.05312940        0.1499234     0.2356747
+##   Calb2_tdTpositive_cell_5 0.07673295        0.1346732     0.2032239
+##   Calb2_tdTpositive_cell_6 0.03156929        0.1568102     0.3892050
 ##                           gene sets
 ## cells                      pyramidal SS
-##   Calb2_tdTpositive_cell_1       0.3564
-##   Calb2_tdTpositive_cell_2       0.2850
-##   Calb2_tdTpositive_cell_3       0.5304
-##   Calb2_tdTpositive_cell_4       0.3601
-##   Calb2_tdTpositive_cell_5       0.3145
-##   Calb2_tdTpositive_cell_6       0.5414</code></pre>
+##   Calb2_tdTpositive_cell_1    0.3564303
+##   Calb2_tdTpositive_cell_2    0.2849649
+##   Calb2_tdTpositive_cell_3    0.5303762
+##   Calb2_tdTpositive_cell_4    0.3600607
+##   Calb2_tdTpositive_cell_5    0.3144749
+##   Calb2_tdTpositive_cell_6    0.5413657</code></pre>
 <p>We assign cell type identity to each cell in the test dataset by taking the marker set with the top AUC as the label for that cell. Our new labels mostly agree with the original annotation from <span class="citation">Tasic et al. (<a href="#ref-tasic2016adult">2016</a>)</span>, which is encouraging. The only exception involves misassignment of oligodendrocyte precursors to astrocytes, which may be understandable given that they are derived from a common lineage. In the absence of prior annotation, a more general diagnostic check is to compare the assigned labels to cluster identities, under the expectation that most cells of a single cluster would have the same label (or, if multiple labels are present, they should at least represent closely related cell states).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">new.labels &lt;-<span class="st"> </span><span class="kw">colnames</span>(results)[<span class="kw">max.col</span>(results)]
 tab &lt;-<span class="st"> </span><span class="kw">table</span>(new.labels, sce.tasic<span class="op">$</span>broad_type)
@@ -1193,31 +1193,36 @@ go.useful &lt;-<span class="st"> </span>go.out[go.out<span class="op">$</span>On
 ## GO:0019915                                                  lipid storage  BP
 ## GO:2001198                   regulation of dendritic cell differentiation  BP
 ## GO:0042098                                           T cell proliferation  BP
-##              N DE      P.DE
-## GO:0006641  96 10 1.954e-09
-## GO:0006119  86  9 1.233e-08
-## GO:0006639 119 10 1.598e-08
-## GO:0006638 121 10 1.877e-08
-## GO:0042775  51  7 8.011e-08
-## GO:0042773  52  7 9.202e-08
-## GO:0022408 184 11 1.037e-07
-## GO:0035148 173 10 5.460e-07
-## GO:0050729 134  9 5.819e-07
-## GO:0022904  71  7 8.152e-07
-## GO:0022900  75  7 1.188e-06
-## GO:0045333 151  9 1.585e-06
-## GO:0071404  15  4 3.364e-06
-## GO:0019432  34  5 4.344e-06
-## GO:0046460  37  5 6.687e-06
-## GO:0046463  37  5 6.687e-06
-## GO:1903707 145  8 1.078e-05
-## GO:0019915  70  6 1.160e-05
-## GO:2001198   7  3 1.267e-05
-## GO:0042098 197  9 1.385e-05</code></pre>
-<p>We see an enrichment for genes involved in lipid synthesis, cell adhesion and tube formation. Given that this is a mammary gland experiment, we might guess that cluster 2 contains luminal epithelial cells responsible for milk production and secretion. Indeed, a closer examination of the marker list indicates that this cluster upregulates milk proteins <em>Csn2</em> and <em>Csn3</em> (Figure <a href="#fig:violin-milk"><strong>??</strong></a>).</p>
+##              N DE         P.DE
+## GO:0006641  96 10 1.954065e-09
+## GO:0006119  86  9 1.233049e-08
+## GO:0006639 119 10 1.598370e-08
+## GO:0006638 121 10 1.877364e-08
+## GO:0042775  51  7 8.011490e-08
+## GO:0042773  52  7 9.201752e-08
+## GO:0022408 184 11 1.036530e-07
+## GO:0035148 173 10 5.459943e-07
+## GO:0050729 134  9 5.819025e-07
+## GO:0022904  71  7 8.152195e-07
+## GO:0022900  75  7 1.187579e-06
+## GO:0045333 151  9 1.584658e-06
+## GO:0071404  15  4 3.364151e-06
+## GO:0019432  34  5 4.344000e-06
+## GO:0046460  37  5 6.686910e-06
+## GO:0046463  37  5 6.686910e-06
+## GO:1903707 145  8 1.077922e-05
+## GO:0019915  70  6 1.160121e-05
+## GO:2001198   7  3 1.266611e-05
+## GO:0042098 197  9 1.385193e-05</code></pre>
+<p>We see an enrichment for genes involved in lipid synthesis, cell adhesion and tube formation. Given that this is a mammary gland experiment, we might guess that cluster 2 contains luminal epithelial cells responsible for milk production and secretion. Indeed, a closer examination of the marker list indicates that this cluster upregulates milk proteins <em>Csn2</em> and <em>Csn3</em> (Figure <a href="cell-type-annotation.html#fig:violin-milk">12.7</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotExpression</span>(sce.mam, <span class="dt">features=</span><span class="kw">c</span>(<span class="st">&quot;Csn2&quot;</span>, <span class="st">&quot;Csn3&quot;</span>), 
     <span class="dt">x=</span><span class="st">&quot;label&quot;</span>, <span class="dt">colour_by=</span><span class="st">&quot;label&quot;</span>)</code></pre></div>
-<p><img src="P2_W08.cell-annotation_files/figure-html/violin-milk-1.png" width="672" /></p>
+<div class="figure"><span id="fig:violin-milk"></span>
+<img src="P2_W08.cell-annotation_files/figure-html/violin-milk-1.png" alt="Distribution of log-expression values for _Csn2_ and _Csn3_ in each cluster." width="672" />
+<p class="caption">
+Figure 12.7: Distribution of log-expression values for <em>Csn2</em> and <em>Csn3</em> in each cluster.
+</p>
+</div>
 <p>Further inspection of interesting GO terms is achieved by extracting the relevant genes. This is usually desirable to confirm that the interpretation of the annotated biological process is appropriate. Many terms have overlapping gene sets, so a term may only be highly ranked because it shares genes with a more relevant term that represents the active pathway.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extract symbols for each GO term; done once.</span>
 tab &lt;-<span class="st"> </span><span class="kw">select</span>(org.Mm.eg.db, <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, 
@@ -1250,32 +1255,32 @@ adhesion &lt;-<span class="st"> </span><span class="kw">unique</span>(by.go[[<sp
 <span class="kw">dim</span>(aggregated) <span class="co"># rows are gene sets, columns are cells</span></code></pre></div>
 <pre><code>## [1] 22547  2772</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">aggregated[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##               [,1]   [,2]    [,3]   [,4]   [,5]
-## GO:0000002 0.39077 0.2717 0.09952 0.2353 0.2875
-## GO:0000003 0.26368 0.2700 0.21232 0.1856 0.2140
-## GO:0000009 0.00000 0.0000 0.00000 0.0000 0.0000
-## GO:0000010 0.00000 0.0000 0.00000 0.0000 0.0000
-## GO:0000012 0.36291 0.4778 0.18489 0.0000 0.3582
-## GO:0000014 0.07068 0.3256 0.11094 0.3550 0.3539
-## GO:0000015 0.53680 0.3006 0.33281 0.3550 0.5630
-## GO:0000016 0.00000 0.0000 0.00000 0.0000 0.0000
-## GO:0000018 0.26146 0.2756 0.06163 0.1353 0.1520
-## GO:0000019 0.00000 0.2220 0.00000 0.1613 0.2413</code></pre>
-<p>We can then identify “differential gene set activity” between clusters by looking for significant differences in the per-set averages of the relevant cells. For example, we observe that cluster 2 has the highest average expression for the triacylglycerol biosynthesis GO term (Figure <a href="cell-type-annotation.html#fig:lipid-synth-violin">12.7</a>), consistent with the proposed identity of those cells.</p>
+<pre><code>##                  [,1]      [,2]       [,3]      [,4]      [,5]
+## GO:0000002 0.39076554 0.2717466 0.09952105 0.2352755 0.2875358
+## GO:0000003 0.26368320 0.2700428 0.21231721 0.1855926 0.2140160
+## GO:0000009 0.00000000 0.0000000 0.00000000 0.0000000 0.0000000
+## GO:0000010 0.00000000 0.0000000 0.00000000 0.0000000 0.0000000
+## GO:0000012 0.36291414 0.4777945 0.18489379 0.0000000 0.3582459
+## GO:0000014 0.07068301 0.3256203 0.11093628 0.3549672 0.3539329
+## GO:0000015 0.53680346 0.3006211 0.33280883 0.3549672 0.5629899
+## GO:0000016 0.00000000 0.0000000 0.00000000 0.0000000 0.0000000
+## GO:0000018 0.26146000 0.2755616 0.06163126 0.1352633 0.1520237
+## GO:0000019 0.00000000 0.2220139 0.00000000 0.1613487 0.2413179</code></pre>
+<p>We can then identify “differential gene set activity” between clusters by looking for significant differences in the per-set averages of the relevant cells. For example, we observe that cluster 2 has the highest average expression for the triacylglycerol biosynthesis GO term (Figure <a href="cell-type-annotation.html#fig:lipid-synth-violin">12.8</a>), consistent with the proposed identity of those cells.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotColData</span>(sce.mam, <span class="dt">y=</span><span class="kw">I</span>(aggregated[<span class="st">&quot;GO:0019432&quot;</span>,]), <span class="dt">x=</span><span class="st">&quot;label&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:lipid-synth-violin"></span>
 <img src="P2_W08.cell-annotation_files/figure-html/lipid-synth-violin-1.png" alt="Distribution of average log-normalized expression for genes involved in triacylglycerol biosynthesis, for all cells in each cluster of the mammary gland dataset." width="672" />
 <p class="caption">
-Figure 12.7: Distribution of average log-normalized expression for genes involved in triacylglycerol biosynthesis, for all cells in each cluster of the mammary gland dataset.
+Figure 12.8: Distribution of average log-normalized expression for genes involved in triacylglycerol biosynthesis, for all cells in each cluster of the mammary gland dataset.
 </p>
 </div>
-<p>The obvious disadvantage of this approach is that not all genes in the set may exhibit the same pattern of differences. Non-DE genes will add noise to the per-set average, “diluting” the strength of any differences compared to an analysis that focuses directly on the DE genes (Figure <a href="cell-type-annotation.html#fig:thrsp-violin">12.8</a>). At worst, a gene set may contain subsets of DE genes that change in opposite directions, cancelling out any differences in the per-set average. This is not uncommon for gene sets that contain both positive and negative regulators of a particular biological process or pathway.</p>
+<p>The obvious disadvantage of this approach is that not all genes in the set may exhibit the same pattern of differences. Non-DE genes will add noise to the per-set average, “diluting” the strength of any differences compared to an analysis that focuses directly on the DE genes (Figure <a href="cell-type-annotation.html#fig:thrsp-violin">12.9</a>). At worst, a gene set may contain subsets of DE genes that change in opposite directions, cancelling out any differences in the per-set average. This is not uncommon for gene sets that contain both positive and negative regulators of a particular biological process or pathway.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Choose the top-ranking gene in GO:0019432.</span>
 <span class="kw">plotExpression</span>(sce.mam, <span class="st">&quot;Thrsp&quot;</span>, <span class="dt">x=</span><span class="st">&quot;label&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:thrsp-violin"></span>
 <img src="P2_W08.cell-annotation_files/figure-html/thrsp-violin-1.png" alt="Distribution of log-normalized expression values for _Thrsp_ across all cells in each cluster of the mammary gland dataset." width="672" />
 <p class="caption">
-Figure 12.8: Distribution of log-normalized expression values for <em>Thrsp</em> across all cells in each cluster of the mammary gland dataset.
+Figure 12.9: Distribution of log-normalized expression values for <em>Thrsp</em> across all cells in each cluster of the mammary gland dataset.
 </p>
 </div>
 <p>We could attempt to use the per-set averages to identify gene sets of interest via differential testing across all possible sets, e.g., with <code>findMarkers()</code>. However, the highest ranking gene sets in this approach tend to be very small and uninteresting because - by definition - the pitfalls mentioned above are avoided when there is only one gene in the set. This is compounded by the fact that the log-fold changes in the per-set averages are difficult to interpret. For these reasons, we generally reserve the use of this gene set summary statistic for visualization rather than any real statistical analysis.</p>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -812,8 +812,8 @@ Figure 15.2: Distribution of log-normalized expression values for <em>Acta2</em>
 dbl.dens &lt;-<span class="st"> </span><span class="kw">doubletCells</span>(sce.mam, <span class="dt">subset.row=</span>top.mam, 
     <span class="dt">d=</span><span class="kw">ncol</span>(<span class="kw">reducedDim</span>(sce.mam)))
 <span class="kw">summary</span>(dbl.dens)</code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##       0       8      21     395      49   39573</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##     0.00     7.63    21.04   395.42    49.30 39572.52</code></pre>
 <p>The highest doublet scores are concentrated in a single cluster of cells in the center of Figure <a href="doublet-detection.html#fig:denstsne">15.3</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.mam<span class="op">$</span>DoubletScore &lt;-<span class="st"> </span><span class="kw">log10</span>(dbl.dens<span class="op">+</span><span class="dv">1</span>)
 <span class="kw">plotTSNE</span>(sce.mam, <span class="dt">colour_by=</span><span class="st">&quot;DoubletScore&quot;</span>)</code></pre></div>

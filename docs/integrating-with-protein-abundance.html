@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -767,21 +767,21 @@ sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>discard]</code><
 <li><p>The simplest approach is to normalize on the total ADT counts, effectively the library size for the ADTs. Like in Section <a href="normalization.html#library-size-normalization">7.2</a>, these “ADT library size factors” are adequate for clustering but will introduce composition biases that interfere with interpretation of the fold-changes between clusters. While composition biases are unlikely to compromise exploratory analyses like clustering, they may complicate interpretation of log-fold changes between clusters, especially for relatively subtle (e.g., ~2-fold) changes in the abundances of markers associated with functional activity rather than cell type.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sf.lib &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce))
 <span class="kw">summary</span>(sf.lib)</code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.027   0.524   0.905   1.000   1.266  22.817</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##  0.02668  0.52418  0.90485  1.00000  1.26625 22.81740</code></pre>
 <p>If we interpret the total count as the arithmetic mean of counts in each cell, we might instead consider the related approach of taking the geometric mean of all counts as the size factor for each cell <span class="citation">(Stoeckius, Hafemeister, et al. <a href="#ref-stoeckius2017simultaneous">2017</a>)</span>. The geometric mean is a reasonable estimator of the scaling biases for large counts with the added benefit that it mitigates the effects of composition biases by dampening the effects of one or two highly abundant proteins. While more robust than the ADT library size factors, these geometric mean-based factors are still not entirely correct and will progressively become less accurate as upregulation increases in strength.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sf.geo &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce), <span class="dt">geometric=</span><span class="ot">TRUE</span>)
 <span class="kw">summary</span>(sf.geo)</code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.07    0.66    0.85    1.00    1.07   45.48</code></pre></li>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##  0.06928  0.65857  0.84750  1.00000  1.07244 45.48399</code></pre></li>
 <li><p>Ideally, we would like to compute size factors that adjust for the composition biases. This usually requires an assumption that most ADTs are not differentially expressed between cell types/states. At first glance, this appears to be a strong assumption - the target proteins were specifically chosen as they exhibit interesting heterogeneity across the population, meaning that a non-differential majority across ADTs would be unlikely. However, we can still make it work by assuming that (i) each cell only expresses a minority of the targeted proteins and (ii) the ambient contamination in each library is the same in terms of the number of molecules captured by each droplet. We can then compute size factors to equalize the coverage of these contaminating ADTs, thus eliminating cell-to-cell differences in capture efficiency. This is loosely based on a similar approach for normalization of ChIP-seq data based on background enrichment <span class="citation">(Lun and Smyth <a href="#ref-lun2016csaw">2016</a>)</span>.</p>
-<p>If possible, we would prefer to obtain an estimate of the ambient profile from the barcodes that were identified as empty droplets (Section <a href="#qc-droplet"><strong>??</strong></a>). In this case, though, this information has already been discarded from the provided dataset; we instead use a proxy profile constructed from the average of all cells, under the assumption that all cell types are equally likely to contribute to the ambient profile. We define size factors using a <em><a href="https://bioconductor.org/packages/3.11/DESeq">DESeq</a></em>-like approach based on the median of the ratio of each cell’s counts to the ambient profile.</p>
+<p>If possible, we would prefer to obtain an estimate of the ambient profile from the barcodes that were identified as empty droplets (Section <a href="quality-control.html#qc-droplets">6.5</a>). In this case, though, this information has already been discarded from the provided dataset; we instead use a proxy profile constructed from the average of all cells, under the assumption that all cell types are equally likely to contribute to the ambient profile. We define size factors using a <em><a href="https://bioconductor.org/packages/3.11/DESeq">DESeq</a></em>-like approach based on the median of the ratio of each cell’s counts to the ambient profile.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Replace &#39;ambient&#39; with actual ambient profile, if available.</span>
 ambient &lt;-<span class="st"> </span><span class="kw">rowMeans</span>(<span class="kw">counts</span>(<span class="kw">altExp</span>(sce)))
 sf.amb &lt;-<span class="st"> </span><span class="kw">medianSizeFactors</span>(<span class="kw">altExp</span>(sce), <span class="dt">reference=</span>ambient)
 <span class="kw">summary</span>(sf.amb)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.59    0.83    1.00    1.14   41.80</code></pre>
+##  0.0030  0.5927  0.8282  1.0000  1.1439 41.7972</code></pre>
 <p>In one subpopulation, the DESeq-like size factors are consistently larger than the ADT library size factors, whereas the opposite is true for most of the other subpopulations (Figure <a href="integrating-with-protein-abundance.html#fig:comp-bias-norm">18.2</a>). This is consistent with the presence of composition biases due to differential abundance of the targeted proteins between subpopulations. Here, composition biases would introduce a spurious 2-fold change in normalized ADT abundance if the library size factors were used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Coloring by cluster to highlight the composition biases.</span>
 <span class="co"># We set k=20 to get fewer, broader clusters for a clearer picture.</span>
@@ -805,7 +805,7 @@ Figure 18.2: DESeq-like size factors for each cell in the PBMC dataset, compared
 sf.control &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(<span class="kw">altExp</span>(sce), <span class="dt">subset_row=</span>controls) 
 <span class="kw">summary</span>(sf.control)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.69    0.88    1.00    1.14   44.02</code></pre>
+##  0.0000  0.6854  0.8757  1.0000  1.1423 44.0155</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(sf.amb, sf.control, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>, 
     <span class="dt">xlab=</span><span class="st">&quot;DESeq-like size factors (tag)&quot;</span>,
     <span class="dt">ylab=</span><span class="st">&quot;Control size factors (tag)&quot;</span>)
@@ -1066,8 +1066,8 @@ loaded via a namespace (and not attached):
  [4] RColorBrewer_1.1-2     httr_1.4.1             tools_4.0.0           
  [7] R6_2.4.1               irlba_2.3.3            HDF5Array_1.15.13     
 [10] vipor_0.4.5            uwot_0.1.8             DBI_1.1.0             
-[13] colorspace_1.4-1       withr_2.1.2            tidyselect_1.0.0      
-[16] gridExtra_2.3          processx_3.4.2         bit_1.1-15.2          
+[13] colorspace_1.4-1       withr_2.1.2            gridExtra_2.3         
+[16] tidyselect_1.0.0       processx_3.4.2         bit_1.1-15.2          
 [19] curl_4.3               compiler_4.0.0         cli_2.0.2             
 [22] BiocNeighbors_1.5.2    labeling_0.3           bookdown_0.18         
 [25] scales_1.1.0           callr_3.4.3            rappdirs_0.3.1        

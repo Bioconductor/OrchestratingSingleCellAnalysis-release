@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -730,7 +730,7 @@ snn.gr &lt;-<span class="st"> </span><span class="kw">buildSNNGraph</span>(sce.n
 <h2><span class="header-section-number">17.2</span> Obtaining pseudo-times</h2>
 <div id="cluster-based-minimum-spanning-tree" class="section level3">
 <h3><span class="header-section-number">17.2.1</span> Cluster-based minimum spanning tree</h3>
-<p>The <em><a href="https://bioconductor.org/packages/3.11/TSCAN">TSCAN</a></em> package employs a simple yet effective approach to trajectory reconstruction. It clusters cells to summarize the data into a smaller set of discrete units, computes cluster centroids by averaging the cell coordinates and then forms the minimum spanning tree (MST) across centroids. The MST is simply an undirected acyclic graph that passes through each centroid exactly once and can be thought of as the most parsimonious structure that captures the transitions between clusters. We demonstrate below on the Nestorowa dataset (Figure <a href="trajectory-analysis.html#fig:tscan-nest-mst">17.2</a>), computing the centroids in the low-dimensional space to take advantage of data compaction and denoising (Chapter <a href="#reduced-dimensions"><strong>??</strong></a>).</p>
+<p>The <em><a href="https://bioconductor.org/packages/3.11/TSCAN">TSCAN</a></em> package employs a simple yet effective approach to trajectory reconstruction. It clusters cells to summarize the data into a smaller set of discrete units, computes cluster centroids by averaging the cell coordinates and then forms the minimum spanning tree (MST) across centroids. The MST is simply an undirected acyclic graph that passes through each centroid exactly once and can be thought of as the most parsimonious structure that captures the transitions between clusters. We demonstrate below on the Nestorowa dataset (Figure <a href="trajectory-analysis.html#fig:tscan-nest-mst">17.2</a>), computing the centroids in the low-dimensional space to take advantage of data compaction and denoising (Chapter <a href="dimensionality-reduction.html#dimensionality-reduction">9</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># </span><span class="al">TODO</span><span class="co">: get the TSCAN authors to allow me to plug in existing</span>
 <span class="co"># dimensionality reduction and clustering results, rather than</span>
 <span class="co"># forcing users to go along with their defaults.</span>
@@ -773,11 +773,11 @@ Figure 17.3: <span class="math inline">\(t\)</span>-SNE plot of the Nestorowa HS
 </div>
 <div id="principal-curves" class="section level3">
 <h3><span class="header-section-number">17.2.2</span> Principal curves</h3>
-<p>To identify a trajectory, one might imagine simply “fitting” a one-dimensional curve so that it passes through the cloud of cells in the high-dimensional expression space. This is the idea behind principal curves <span class="citation">(<span class="citeproc-not-found" data-reference-id="hastie1989principal"><strong>???</strong></span>)</span>, effectively a non-linear generalization of PCA where the axes of most variation are allowed to bend. We use the <em><a href="https://bioconductor.org/packages/3.11/slingshot">slingshot</a></em> package <span class="citation">(<span class="citeproc-not-found" data-reference-id="street2018slingshot"><strong>???</strong></span>)</span> to fit a principal curve to the PC coordinates, which yields a pseudotime ordering of cells based on their relative positions when projected onto the curve.</p>
+<p>To identify a trajectory, one might imagine simply “fitting” a one-dimensional curve so that it passes through the cloud of cells in the high-dimensional expression space. This is the idea behind principal curves <span class="citation">(Hastie and Stuetzle <a href="#ref-hastie1989principal">1989</a>)</span>, effectively a non-linear generalization of PCA where the axes of most variation are allowed to bend. We use the <em><a href="https://bioconductor.org/packages/3.11/slingshot">slingshot</a></em> package <span class="citation">(Street et al. <a href="#ref-street2018slingshot">2018</a>)</span> to fit a principal curve to the PC coordinates, which yields a pseudotime ordering of cells based on their relative positions when projected onto the curve.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(slingshot)
 sce.sling &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce.nest, <span class="dt">reducedDim=</span><span class="st">&#39;PCA&#39;</span>)
 <span class="kw">head</span>(sce.sling<span class="op">$</span>slingPseudotime_<span class="dv">1</span>)</code></pre></div>
-<pre><code>## [1] 89.44 76.34 87.88 76.93 82.41 72.10</code></pre>
+<pre><code>## [1] 89.44417 76.33613 87.88466 76.93112 82.40780 72.09984</code></pre>
 <p>Here, we fitted the principal curve to the PC space for the same reasons as described above. We can then visualize the literal path taken by the fitted curve in that space (Figure <a href="trajectory-analysis.html#fig:traj-princurve-pca-nest">17.4</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Setting up the colors.</span>
 <span class="kw">library</span>(RColorBrewer)
@@ -793,7 +793,7 @@ plotcol &lt;-<span class="st"> </span>colors[<span class="kw">cut</span>(sce.sli
 Figure 17.4: Plot of the first 2 PCs in the Nestorowa HSC dataset, where each point is a cell and is colored by the <em>slingshot</em> pseudotime ordering. The path taken by the fitted principal curve is shown in black.
 </p>
 </div>
-<p>For other dimensionality reduction results, we color by the pseudotime ordering to identify the direction of the trajectory (Figure <a href="#traj-princurve-umap-nest"><strong>??</strong></a>). This is effectively a continuous generalization of the coloring by cluster assignment observed in other chapters.</p>
+<p>For other dimensionality reduction results, we color by the pseudotime ordering to identify the direction of the trajectory (Figure <a href="trajectory-analysis.html#fig:traj-princurve-umap-nest">17.5</a>). This is effectively a continuous generalization of the coloring by cluster assignment observed in other chapters.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scater)
 sce.sling &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.sling, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)
 
@@ -802,10 +802,16 @@ sce.sling &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.slin
 sce.sling<span class="op">$</span>cell.type &lt;-<span class="st"> </span>sce.sling<span class="op">$</span>FACS &lt;-<span class="st"> </span><span class="ot">NULL</span>
 
 <span class="kw">library</span>(viridis)
-gg &lt;-<span class="st"> </span><span class="kw">ggcells</span>(sce.sling, <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>UMAP<span class="fl">.1</span>, 
+<span class="kw">ggcells</span>(sce.sling, <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>UMAP<span class="fl">.1</span>, 
         <span class="dt">y=</span>UMAP<span class="fl">.2</span>, <span class="dt">col=</span>slingPseudotime_<span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">     </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">scale_color_viridis</span>()</code></pre></div>
-<p>The previous <code>slingshot()</code> call assumed that all cells in the dataset were part of a single one-dimensional trajectory, which fails to consider more complex events like bifurcations. To accommodate this, we use our previously computed cluster assignments to build a rough sketch for the global structure in the form of a MST across the cluster centroids. Each path through the MST from a designated root node is treated as a lineage; principal curves are then simultaneously fitted to all lineages, with some averaging across curves to encourage consistency in regions that are common to multiple lineages. This allows <code>slingshot()</code> to capture branching events based on divergence in the principal curves (Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.5</a>).</p>
+<span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">scale_color_viridis</span>()</code></pre></div>
+<div class="figure"><span id="fig:traj-princurve-umap-nest"></span>
+<img src="P2_W13.trajectory_files/figure-html/traj-princurve-umap-nest-1.png" alt="UMAP plot of the Nestorowa HSC dataset, where each point is a cell and is colored by the _slingshot_ pseudotime ordering." width="672" />
+<p class="caption">
+Figure 17.5: UMAP plot of the Nestorowa HSC dataset, where each point is a cell and is colored by the <em>slingshot</em> pseudotime ordering.
+</p>
+</div>
+<p>The previous <code>slingshot()</code> call assumed that all cells in the dataset were part of a single one-dimensional trajectory, which fails to consider more complex events like bifurcations. To accommodate this, we use our previously computed cluster assignments to build a rough sketch for the global structure in the form of a MST across the cluster centroids. Each path through the MST from a designated root node is treated as a lineage; principal curves are then simultaneously fitted to all lineages, with some averaging across curves to encourage consistency in regions that are common to multiple lineages. This allows <code>slingshot()</code> to capture branching events based on divergence in the principal curves (Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.6</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.sling2 &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce.nest, <span class="dt">cluster=</span><span class="kw">colLabels</span>(sce.nest), <span class="dt">reducedDim=</span><span class="st">&#39;PCA&#39;</span>)
 
 <span class="kw">plot</span>(<span class="kw">reducedDim</span>(sce.sling2, <span class="st">&quot;PCA&quot;</span>), <span class="dt">col=</span><span class="st">&quot;grey80&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">asp =</span> <span class="dv">1</span>)
@@ -813,7 +819,7 @@ gg &lt;-<span class="st"> </span><span class="kw">ggcells</span>(sce.sling, <spa
 <div class="figure"><span id="fig:traj-princurve-clustered-nest"></span>
 <img src="P2_W13.trajectory_files/figure-html/traj-princurve-clustered-nest-1.png" alt="Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black." width="672" />
 <p class="caption">
-Figure 17.5: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
+Figure 17.6: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
 </p>
 </div>
 <p>When operating in this mode, <code>slingshot()</code> produces one pseudotime ordering for each principal curve. Cells not assigned to a particular curve will be assigned <code>NA</code> values for that curve’s ordering. It is straightforward to determine whether a particular cell is shared across multiple curves or is unique to a subset of curves (i.e., occurs after branching).</p>
@@ -827,7 +833,7 @@ assignments &lt;-<span class="st"> </span><span class="kw">do.call</span>(paste0
 <pre><code>## assignments
 ## 001 010 011 100 101 110 111 
 ##  39 222  12 428   2   1 952</code></pre>
-<p>For larger datasets, we can speed up the algorithm by approximating each principal curve with a fixed number of points. By default, <code>slingshot()</code> uses one point per cell to define the curve, which is unnecessarily precise when the number of cells is large. Indeed, the approximated curves in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest-approx">17.6</a> are quite similar to those in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.5</a>.</p>
+<p>For larger datasets, we can speed up the algorithm by approximating each principal curve with a fixed number of points. By default, <code>slingshot()</code> uses one point per cell to define the curve, which is unnecessarily precise when the number of cells is large. Indeed, the approximated curves in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest-approx">17.7</a> are quite similar to those in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.6</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.sling3 &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce.nest, <span class="dt">cluster=</span><span class="kw">colLabels</span>(sce.nest), 
     <span class="dt">reducedDim=</span><span class="st">&#39;PCA&#39;</span>, <span class="dt">approx_points=</span><span class="dv">100</span>)
 
@@ -836,7 +842,7 @@ assignments &lt;-<span class="st"> </span><span class="kw">do.call</span>(paste0
 <div class="figure"><span id="fig:traj-princurve-clustered-nest-approx"></span>
 <img src="P2_W13.trajectory_files/figure-html/traj-princurve-clustered-nest-approx-1.png" alt="Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black." width="672" />
 <p class="caption">
-Figure 17.6: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
+Figure 17.7: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
 </p>
 </div>
 </div>
@@ -933,8 +939,14 @@ loaded via a namespace (and not attached):
 </div>
 <h3> Bibliography</h3>
 <div id="refs" class="references">
+<div id="ref-hastie1989principal">
+<p>Hastie, T., and W. Stuetzle. 1989. “Principal Curves.” <em>J Am Stat Assoc</em> 84 (406): 502–16.</p>
+</div>
 <div id="ref-nestorowa2016singlecell">
 <p>Nestorowa, S., F. K. Hamey, B. Pijuan Sala, E. Diamanti, M. Shepherd, E. Laurenti, N. K. Wilson, D. G. Kent, and B. Gottgens. 2016. “A single-cell resolution map of mouse hematopoietic stem and progenitor cell differentiation.” <em>Blood</em> 128 (8): 20–31.</p>
+</div>
+<div id="ref-street2018slingshot">
+<p>Street, K., D. Risso, R. B. Fletcher, D. Das, J. Ngai, N. Yosef, E. Purdom, and S. Dudoit. 2018. “Slingshot: cell lineage and pseudotime inference for single-cell transcriptomics.” <em>BMC Genomics</em> 19 (1): 477.</p>
 </div>
 </div>
             </section>

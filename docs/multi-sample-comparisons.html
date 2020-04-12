@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -729,7 +729,7 @@ merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <sp
 ## colData names(13): batch cell ... sizeFactor label
 ## reducedDimNames(3): corrected TSNE UMAP
 ## altExpNames(0):</code></pre>
-<p>The differential analyses in this chapter will be predicated on many of the pre-processing steps covered previously. For brevity, we will not explicitly repeat them here, only noting that we have already merged cells from all samples into the same coordinate system (Chapter <a href="filtered-human-pbmcs-10x-genomics.html#data-integration">26.8</a>) and clustered the merged dataset to obtain a common partitioning across all samples (Chapter <a href="clustering.html#clustering">10</a>). A brief inspection of the results indicates that clusters contain similar contributions from all batches with only modest differences associated with td-Tomato expression (Figure <a href="#fig:tsne-initial"><strong>??</strong></a>).</p>
+<p>The differential analyses in this chapter will be predicated on many of the pre-processing steps covered previously. For brevity, we will not explicitly repeat them here, only noting that we have already merged cells from all samples into the same coordinate system (Chapter <a href="filtered-human-pbmcs-10x-genomics.html#data-integration">26.8</a>) and clustered the merged dataset to obtain a common partitioning across all samples (Chapter <a href="clustering.html#clustering">10</a>). A brief inspection of the results indicates that clusters contain similar contributions from all batches with only modest differences associated with td-Tomato expression (Figure <a href="multi-sample-comparisons.html#fig:tsne-initial">14.1</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scater)
 <span class="kw">table</span>(<span class="kw">colLabels</span>(merged), merged<span class="op">$</span>tomato)</code></pre></div>
 <pre><code>##     
@@ -794,7 +794,12 @@ merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <sp
     <span class="kw">plotTSNE</span>(merged, <span class="dt">colour_by=</span><span class="kw">data.frame</span>(<span class="dt">pool=</span><span class="kw">factor</span>(merged<span class="op">$</span>pool))),
     <span class="dt">ncol=</span><span class="dv">2</span>
 )</code></pre></div>
-<p><img src="P2_W10.sample-comparisons_files/figure-html/tsne-initial-1.png" width="672" /></p>
+<div class="figure"><span id="fig:tsne-initial"></span>
+<img src="P2_W10.sample-comparisons_files/figure-html/tsne-initial-1.png" alt="$t$-SNE plot of the WT chimeric dataset, where each point represents a cell and is colored according to td-Tomato expression (left) or batch of origin (right). Cluster numbers are superimposed based on the median coordinate of cells assigned to that cluster." width="672" />
+<p class="caption">
+Figure 14.1: <span class="math inline">\(t\)</span>-SNE plot of the WT chimeric dataset, where each point represents a cell and is colored according to td-Tomato expression (left) or batch of origin (right). Cluster numbers are superimposed based on the median coordinate of cells assigned to that cluster.
+</p>
+</div>
 <p>Ordinarily, we would be obliged to perform marker detection to assign biological meaning to these clusters. For simplicity, we will skip this step by directly using the cell type labels provided by <span class="citation">Pijuan-Sala et al. (<a href="#ref-pijuansala2019single">2019</a>)</span>. These were obtained by mapping the cells in this dataset to a larger, pre-annotated “atlas” of mouse early embryonic development. While broadly consistent, many of our clusters map to multiple labels (Figure @ref(fig:heat-cluster-label}), which reflects the difficulties in unambiguously resolving cell types undergoing differentiation.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">by.label &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">colLabels</span>(merged), merged<span class="op">$</span>celltype.mapped)
 pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(<span class="kw">log2</span>(by.label<span class="op">+</span><span class="dv">1</span>), <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>, <span class="dt">cluster_rows=</span><span class="ot">FALSE</span>,
@@ -802,7 +807,7 @@ pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(<span class="
 <div class="figure"><span id="fig:heat-cluster-label"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/heat-cluster-label-1.png" alt="Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log~2~-count for each combination." width="672" />
 <p class="caption">
-Figure 14.1: Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log<sub>2</sub>-count for each combination.
+Figure 14.2: Heatmap showing the abundance of cells with each combination of cluster (row) and cell type label (column). The color scale represents the log<sub>2</sub>-count for each combination.
 </p>
 </div>
 </div>
@@ -829,7 +834,7 @@ summed</code></pre></div>
 <p>At this point, it is worth reflecting on the motivations behind the use of pseudo-bulking:</p>
 <ul>
 <li>Larger counts are more amenable to standard DE analysis pipelines designed for bulk RNA-seq data. Normalization is more straightforward and certain statistical approximations are more accurate e.g., the saddlepoint approximation for quasi-likelihood methods or normality for linear models.</li>
-<li>Collapsing cells into samples reflects the fact that our biological replication occurs at the sample level <span class="citation">(Lun and Marioni <a href="#ref-lun2017overcoming">2017</a>)</span>. Each sample is represented no more than once for each condition, avoiding problems from unmodelled correlations between samples. Supplying the per-cell counts directly to a DE analysis pipeline would imply that each cell is an independent biological replicate, which is not true from an experimental perspective. (A mixed effects model can handle this variance structure but involves extra <a href="https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html">statistical and computational complexity</a> for little benefit, see <span class="citation">(<span class="citeproc-not-found" data-reference-id="crowell2019discovery"><strong>???</strong></span>)</span>.)</li>
+<li>Collapsing cells into samples reflects the fact that our biological replication occurs at the sample level <span class="citation">(Lun and Marioni <a href="#ref-lun2017overcoming">2017</a>)</span>. Each sample is represented no more than once for each condition, avoiding problems from unmodelled correlations between samples. Supplying the per-cell counts directly to a DE analysis pipeline would imply that each cell is an independent biological replicate, which is not true from an experimental perspective. (A mixed effects model can handle this variance structure but involves extra <a href="https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html">statistical and computational complexity</a> for little benefit, see <span class="citation">Crowell et al. (<a href="#ref-crowell2019discovery">2019</a>)</span>.)</li>
 <li>Variance between cells within each sample is masked, provided it does not affect variance across (replicate) samples. This avoids penalizing DEGs that are not uniformly up- or down-regulated for all cells in all samples of one condition. Masking is generally desirable as DEGs - unlike marker genes - do not need to have low within-sample variance to be interesting, e.g., if the treatment effect is consistent across replicate populations but heterogeneous on a per-cell basis. (Of course, high per-cell variability will still result in weaker DE if it affects the variability across populations, while homogeneous per-cell responses will result in stronger DE due to a larger population-level log-fold change. These effects are also largely desirable.)</li>
 </ul>
 </div>
@@ -881,7 +886,7 @@ y</code></pre></div>
 </div>
 <div id="pre-processing" class="section level4">
 <h4><span class="header-section-number">14.3.2.2</span> Pre-processing</h4>
-<p>A typical step in bulk RNA-seq data analyses is to remove samples with very low library sizes due to failed library preparation or sequencing. The very low counts in these samples can be troublesome in downstream steps such as normalization (Chapter <a href="normalization.html#normalization">7</a>) or for some statistical approximations used in the DE analysis. In our situation, this is equivalent to removing label-sample combinations that have very few or lowly-sequenced cells. The exact definition of “very low” will vary, but in this case, we remove combinations containing fewer than 20 cells <span class="citation">(<span class="citeproc-not-found" data-reference-id="crowell2019discovery"><strong>???</strong></span>)</span>. Alternatively, we could apply the outlier-based strategy described in Chapter <a href="quality-control.html#quality-control">6</a>, but this makes the strong assumption that all label-sample combinations have similar numbers of cells that are sequenced to similar depth.</p>
+<p>A typical step in bulk RNA-seq data analyses is to remove samples with very low library sizes due to failed library preparation or sequencing. The very low counts in these samples can be troublesome in downstream steps such as normalization (Chapter <a href="normalization.html#normalization">7</a>) or for some statistical approximations used in the DE analysis. In our situation, this is equivalent to removing label-sample combinations that have very few or lowly-sequenced cells. The exact definition of “very low” will vary, but in this case, we remove combinations containing fewer than 20 cells <span class="citation">(Crowell et al. <a href="#ref-crowell2019discovery">2019</a>)</span>. Alternatively, we could apply the outlier-based strategy described in Chapter <a href="quality-control.html#quality-control">6</a>, but this makes the strong assumption that all label-sample combinations have similar numbers of cells that are sequenced to similar depth.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">discarded &lt;-<span class="st"> </span>current<span class="op">$</span>ncells <span class="op">&lt;</span><span class="st"> </span><span class="dv">20</span>
 y &lt;-<span class="st"> </span>y[,<span class="op">!</span>discarded]
 <span class="kw">summary</span>(discarded)</code></pre></div>
@@ -938,7 +943,7 @@ design</code></pre></div>
 ## 
 ## attr(,&quot;contrasts&quot;)$`factor(tomato)`
 ## [1] &quot;contr.treatment&quot;</code></pre>
-<p>We estimate the negative binomial (NB) dispersions with <code>estimateDisp()</code>. The role of the NB dispersion is to model the mean-variance trend (Figure <a href="multi-sample-comparisons.html#fig:bcvplot">14.2</a>), which is not easily accommodated by QL dispersions alone due to the quadratic nature of the NB mean-variance trend.</p>
+<p>We estimate the negative binomial (NB) dispersions with <code>estimateDisp()</code>. The role of the NB dispersion is to model the mean-variance trend (Figure <a href="multi-sample-comparisons.html#fig:bcvplot">14.3</a>), which is not easily accommodated by QL dispersions alone due to the quadratic nature of the NB mean-variance trend.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y, design)
 <span class="kw">summary</span>(y<span class="op">$</span>trended.dispersion)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -947,10 +952,10 @@ design</code></pre></div>
 <div class="figure"><span id="fig:bcvplot"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/bcvplot-1.png" alt="Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively." width="672" />
 <p class="caption">
-Figure 14.2: Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively.
+Figure 14.3: Biological coefficient of variation (BCV) for each gene as a function of the average abundance. The BCV is computed as the square root of the NB dispersion after empirical Bayes shrinkage towards the trend. Trended and common BCV estimates are shown in blue and red, respectively.
 </p>
 </div>
-<p>We also estimate the quasi-likelihood dispersions with <code>glmQLFit()</code> <span class="citation">(Chen, Lun, and Smyth <a href="#ref-chen2016reads">2016</a>)</span>. This fits a GLM to the counts for each gene and estimates the QL dispersion from the GLM deviance. We set <code>robust=TRUE</code> to avoid distortions from highly variable clusters <span class="citation">(Phipson et al. <a href="#ref-phipson2016robust">2016</a>)</span>. The QL dispersion models the uncertainty and variability of the per-gene variance (Figure <a href="multi-sample-comparisons.html#fig:qlplot">14.3</a>) - which is not well handled by the NB dispersions, so the two dispersion types complement each other in the final analysis.</p>
+<p>We also estimate the quasi-likelihood dispersions with <code>glmQLFit()</code> <span class="citation">(Chen, Lun, and Smyth <a href="#ref-chen2016reads">2016</a>)</span>. This fits a GLM to the counts for each gene and estimates the QL dispersion from the GLM deviance. We set <code>robust=TRUE</code> to avoid distortions from highly variable clusters <span class="citation">(Phipson et al. <a href="#ref-phipson2016robust">2016</a>)</span>. The QL dispersion models the uncertainty and variability of the per-gene variance (Figure <a href="multi-sample-comparisons.html#fig:qlplot">14.4</a>) - which is not well handled by the NB dispersions, so the two dispersion types complement each other in the final analysis.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y, design, <span class="dt">robust=</span><span class="ot">TRUE</span>)
 <span class="kw">summary</span>(fit<span class="op">$</span>var.prior)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -962,7 +967,7 @@ Figure 14.2: Biological coefficient of variation (BCV) for each gene as a functi
 <div class="figure"><span id="fig:qlplot"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/qlplot-1.png" alt="QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red)." width="672" />
 <p class="caption">
-Figure 14.3: QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red).
+Figure 14.4: QL dispersion estimates for each gene as a function of abundance. Raw estimates (black) are shrunk towards the trend (blue) to yield squeezed estimates (red).
 </p>
 </div>
 <p>We test for differences in expression due to injection using <code>glmQLFTest()</code>. DEGs are defined as those with non-zero log-fold changes at a false discovery rate of 5%. Very few genes are significantly DE, indicating that injection has little effect on the transcriptome of mesenchyme cells. (Note that this logic is somewhat circular, as a large transcriptional effect may have caused cells of this type to be re-assigned to a different label. We discuss this in more detail in Section <a href="multi-sample-comparisons.html#de-da-duality">14.5.1</a> below.)</p>
@@ -1055,7 +1060,7 @@ down.de &lt;-<span class="st"> </span>is.de <span class="op">&lt;</span><span cl
 ##       0.61538       0.57692       0.57692       0.57692       0.46154 
 ##         Wfdc2         Hbb-y         Grb10 B930036N10Rik         Pink1 
 ##       0.19231       0.11538       0.11538       0.07692       0.07692</code></pre>
-<p>We further identify label-specific DE genes that are significant in our label of interest yet not DE in any other label. As hypothesis tests are not typically geared towards identifying genes that are not DE, we use an <em>ad hoc</em> approach where we consider a gene to be consistent with the null hypothesis for a label if it fails to be detected even at a generous FDR threshold of 50%. We demonstrate this approach below by identifying injection-induced DE genes that are unique to the allantois, though differences in power between labels suggest that this should be interpreted with some caution; for example, Figure <a href="multi-sample-comparisons.html#fig:exprs-unique-de-allantois">14.4</a> shows that the top-ranked allantois-specific gene exhibits some evidence of DE in other labels but was not detected for various reasons like low abundance or insufficient replicates.</p>
+<p>We further identify label-specific DE genes that are significant in our label of interest yet not DE in any other label. As hypothesis tests are not typically geared towards identifying genes that are not DE, we use an <em>ad hoc</em> approach where we consider a gene to be consistent with the null hypothesis for a label if it fails to be detected even at a generous FDR threshold of 50%. We demonstrate this approach below by identifying injection-induced DE genes that are unique to the allantois, though differences in power between labels suggest that this should be interpreted with some caution; for example, Figure <a href="multi-sample-comparisons.html#fig:exprs-unique-de-allantois">14.5</a> shows that the top-ranked allantois-specific gene exhibits some evidence of DE in other labels but was not detected for various reasons like low abundance or insufficient replicates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remotely.de &lt;-<span class="st"> </span><span class="kw">decideTestsPerLabel</span>(de.results, <span class="dt">threshold=</span><span class="fl">0.5</span>)
 not.de &lt;-<span class="st"> </span>remotely.de<span class="op">==</span><span class="dv">0</span> <span class="op">|</span><span class="st"> </span><span class="kw">is.na</span>(remotely.de)
 
@@ -1082,7 +1087,7 @@ de.allantois &lt;-<span class="st"> </span>de.allantois[<span class="kw">rowname
 <div class="figure"><span id="fig:exprs-unique-de-allantois"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/exprs-unique-de-allantois-1.png" alt="Distribution of summed log-expression values for each label in the chimeric embryo dataset. Each facet represents a label with distributions stratified by injection status." width="960" />
 <p class="caption">
-Figure 14.4: Distribution of summed log-expression values for each label in the chimeric embryo dataset. Each facet represents a label with distributions stratified by injection status.
+Figure 14.5: Distribution of summed log-expression values for each label in the chimeric embryo dataset. Each facet represents a label with distributions stratified by injection status.
 </p>
 </div>
 <p>We also list the labels that were skipped due to the absence of replicates or contrasts. If it is necessary to extract statistics in the absence of replicates, several strategies can be applied such as reducing the complexity of the model or using a predefined value for the NB dispersion. We refer readers to the <em><a href="https://bioconductor.org/packages/3.11/edgeR">edgeR</a></em> user’s guide for more details.</p>
@@ -1158,7 +1163,7 @@ y.ab &lt;-<span class="st"> </span>y.ab[keep,]
 <p>Unlike DE analyses, we do not perform an additional normalization step with <code>calcNormFactors()</code>. This means that we are only normalizing based on the “library size”, i.e., the total number of cells in each sample. Any changes we detect between conditions will subsequently represent differences in the proportion of cells in each cluster. The motivation behind this decision is discussed in more detail in Section <a href="multi-sample-comparisons.html#composition-effects">14.4.3</a>.</p>
 <p>We formulate the design matrix with a blocking factor for the batch of origin for each sample and an additive term for the td-Tomato status (i.e., injection effect). Here, the log-fold change in our model refers to the change in cell abundance after injection, rather than the change in gene expression.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="kw">factor</span>(pool) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(tomato), y.ab<span class="op">$</span>samples)</code></pre></div>
-<p>We use the <code>estimateDisp()</code> function to estimate the NB dipersion for each cluster (Figure <a href="multi-sample-comparisons.html#fig:abplotbcv">14.5</a>). We turn off the trend as we do not have enough points for its stable estimation.</p>
+<p>We use the <code>estimateDisp()</code> function to estimate the NB dipersion for each cluster (Figure <a href="multi-sample-comparisons.html#fig:abplotbcv">14.6</a>). We turn off the trend as we do not have enough points for its stable estimation.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y.ab &lt;-<span class="st"> </span><span class="kw">estimateDisp</span>(y.ab, design, <span class="dt">trend=</span><span class="st">&quot;none&quot;</span>)
 <span class="kw">summary</span>(y.ab<span class="op">$</span>common.dispersion)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -1167,10 +1172,10 @@ y.ab &lt;-<span class="st"> </span>y.ab[keep,]
 <div class="figure"><span id="fig:abplotbcv"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/abplotbcv-1.png" alt="Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red." width="672" />
 <p class="caption">
-Figure 14.5: Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red.
+Figure 14.6: Biological coefficient of variation (BCV) for each label with respect to its average abundance. BCVs are defined as the square root of the NB dispersion. Common dispersion estimates are shown in red.
 </p>
 </div>
-<p>We repeat this process with the QL dispersion, again disabling the trend (Figure <a href="multi-sample-comparisons.html#fig:abplotql">14.6</a>).</p>
+<p>We repeat this process with the QL dispersion, again disabling the trend (Figure <a href="multi-sample-comparisons.html#fig:abplotql">14.7</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit.ab &lt;-<span class="st"> </span><span class="kw">glmQLFit</span>(y.ab, design, <span class="dt">robust=</span><span class="ot">TRUE</span>, <span class="dt">abundance.trend=</span><span class="ot">FALSE</span>)
 <span class="kw">summary</span>(fit.ab<span class="op">$</span>var.prior)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -1182,7 +1187,7 @@ Figure 14.5: Biological coefficient of variation (BCV) for each label with respe
 <div class="figure"><span id="fig:abplotql"></span>
 <img src="P2_W10.sample-comparisons_files/figure-html/abplotql-1.png" alt="QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue." width="672" />
 <p class="caption">
-Figure 14.6: QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue.
+Figure 14.7: QL dispersion estimates for each label with respect to its average abundance. Quarter-root values of the raw estimates are shown in black while the shrunken estimates are shown in red. Shrinkage is performed towards the common dispersion in blue.
 </p>
 </div>
 <p>We test for differences in abundance between td-Tomato-positive and negative samples using <code>glmQLFTest()</code>. We see that extra-embryonic ectoderm is strongly depleted in the injected cells. This is consistent with the expectation that cells injected into the blastocyst should not contribute to extra-embryonic tissue. The injected cells also contribute more to the mesenchyme, which may also be of interest.</p>
@@ -1697,6 +1702,9 @@ loaded via a namespace (and not attached):
 <div id="refs" class="references">
 <div id="ref-chen2016reads">
 <p>Chen, Y., A. T. Lun, and G. K. Smyth. 2016. “From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.” <em>F1000Res</em> 5: 1438.</p>
+</div>
+<div id="ref-crowell2019discovery">
+<p>Crowell, H. L., C. Soneson, P.-L. Germain, D. Calini, L. Collin, C. Raposo, D. Malhotra, and M. D. Robinson. 2019. “On the Discovery of Population-Specific State Transitions from Multi-Sample Multi-Condition Single-Cell Rna Sequencing Data.” <em>bioRxiv</em>. doi:<a href="https://doi.org/10.1101/713412">10.1101/713412</a>.</p>
 </div>
 <div id="ref-finak2014opencyto">
 <p>Finak, G., J. Frelinger, W. Jiang, E. W. Newell, J. Ramey, M. M. Davis, S. A. Kalams, S. C. De Rosa, and R. Gottardo. 2014. “OpenCyto: an open source infrastructure for scalable, robust, reproducible, and automated, end-to-end flow cytometry data analysis.” <em>PLoS Comput. Biol.</em> 10 (8): e1003806.</p>

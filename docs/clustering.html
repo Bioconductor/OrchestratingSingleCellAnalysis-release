@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.5.2" data-path="quality-control.html"><a href="quality-control.html#testing-for-empty-droplets"><i class="fa fa-check"></i><b>6.5.2</b> Testing for empty droplets</a></li>
 <li class="chapter" data-level="6.5.3" data-path="quality-control.html"><a href="quality-control.html#relationship-with-other-qc-metrics"><i class="fa fa-check"></i><b>6.5.3</b> Relationship with other QC metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#removing-low-quality-cells"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
+<li class="chapter" data-level="6.6" data-path="quality-control.html"><a href="quality-control.html#quality-control-discarded"><i class="fa fa-check"></i><b>6.6</b> Removing low-quality cells</a></li>
 <li class="chapter" data-level="6.7" data-path="quality-control.html"><a href="quality-control.html#marking-qc"><i class="fa fa-check"></i><b>6.7</b> Marking low-quality cells</a></li>
 <li class="chapter" data-level="" data-path="quality-control.html"><a href="quality-control.html#session-info-1"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -947,27 +947,27 @@ Figure 10.8: <span class="math inline">\(t\)</span>-SNE plot of the 10X PBMC dat
 tab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">wcss=</span>clust.kmeans2<span class="op">$</span>withinss, <span class="dt">ncells=</span>ncells)
 tab<span class="op">$</span>rms &lt;-<span class="st"> </span><span class="kw">sqrt</span>(tab<span class="op">$</span>wcss<span class="op">/</span>tab<span class="op">$</span>ncells)
 tab</code></pre></div>
-<pre><code>##     wcss ncells   rms
-## 1   2872    153 4.333
-## 2   4204    172 4.944
-## 3   1443     47 5.542
-## 4   4275    254 4.103
-## 5   1711    125 3.700
-## 6   3055    207 3.842
-## 7   1633    160 3.194
-## 8   2160    334 2.543
-## 9   7027    204 5.869
-## 10  2858    442 2.543
-## 11  4259    163 5.112
-## 12  2289     68 5.802
-## 13  2112    192 3.317
-## 14  6391    271 4.856
-## 15  1603    113 3.767
-## 16 12400    168 8.591
-## 17  1823    124 3.834
-## 18  7026    420 4.090
-## 19  2591     45 7.587
-## 20  3640    260 3.742</code></pre>
+<pre><code>##         wcss ncells      rms
+## 1   2872.081    153 4.332641
+## 2   4204.124    172 4.943944
+## 3   1443.475     47 5.541862
+## 4   4275.279    254 4.102659
+## 5   1711.482    125 3.700251
+## 6   3054.815    207 3.841557
+## 7   1632.526    160 3.194259
+## 8   2159.987    334 2.543035
+## 9   7026.528    204 5.868881
+## 10  2858.314    442 2.542985
+## 11  4259.492    163 5.111932
+## 12  2288.852     68 5.801688
+## 13  2111.912    192 3.316555
+## 14  6391.151    271 4.856293
+## 15  1603.372    113 3.766847
+## 16 12399.822    168 8.591185
+## 17  1823.082    124 3.834354
+## 18  7026.462    420 4.090192
+## 19  2590.561     45 7.587359
+## 20  3639.745    260 3.741526</code></pre>
 <p>(As an aside, the RMSDs of the clusters are poorly correlated with their sizes in Figure <a href="clustering.html#fig:tsne-clust-kmeans-best">10.8</a>. This highlights the risks of attempting to quantitatively interpret the sizes of visual clusters in <span class="math inline">\(t\)</span>-SNE plots.)</p>
 <p>To explore the relationships between <span class="math inline">\(k\)</span>-means clusters, a natural approach is to compute distances between their centroids. This directly lends itself to visualization as a tree after hierarchical clustering (Figure <a href="clustering.html#fig:kmeans-tree">10.9</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cent.tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(clust.kmeans2<span class="op">$</span>centers), <span class="st">&quot;ward.D2&quot;</span>)
@@ -997,7 +997,7 @@ kgraph.clusters &lt;-<span class="st"> </span><span class="kw">clusterSNNGraph</
 Figure 10.10: <span class="math inline">\(t\)</span>-SNE plot of the PBMC dataset, where each point represents a cell and is coloured according to the identity of the assigned cluster from combined <span class="math inline">\(k\)</span>-means/graph-based clustering.
 </p>
 </div>
-<p>The obvious benefit of this approach over direct graph-based clustering is the speed improvement. We avoid the need to identifying nearest neighbors for each cell and the construction of a large intermediate graph, while benefiting from the relative interpretability of graph-based clusters compared to those from <span class="math inline">\(k\)</span>-means. This approach also mitigates the “inflation” effect discussed in Section <a href="#fig:clustering-graph"><strong>??</strong></a>. Each centroid serves as a representative of a region of space that is roughly similar in volume, ameliorating differences in cell density that can cause (potentially undesirable) differences in resolution.</p>
+<p>The obvious benefit of this approach over direct graph-based clustering is the speed improvement. We avoid the need to identifying nearest neighbors for each cell and the construction of a large intermediate graph, while benefiting from the relative interpretability of graph-based clusters compared to those from <span class="math inline">\(k\)</span>-means. This approach also mitigates the “inflation” effect discussed in Section <a href="clustering.html#clustering-graph">10.3</a>. Each centroid serves as a representative of a region of space that is roughly similar in volume, ameliorating differences in cell density that can cause (potentially undesirable) differences in resolution.</p>
 <p>The choice of the number of <span class="math inline">\(k\)</span>-means clusters (defined here by the <code>kmeans.clusters=</code> argument) determines the trade-off between speed and fidelity. Larger values provide a more faithful representation of the underlying distribution of cells, at the cost of requiring more computational work by the second-stage clustering procedure. Note that the second step operates on the centroids, so increasing <code>kmeans.clusters=</code> may have further implications if the second-stage procedure is sensitive to the total number of input observations. For example, increasing the number of centroids would require an concomitant increase in <code>k=</code> (the number of neighbors in graph construction) to maintain the same level of resolution in the final output.</p>
 </div>
 </div>
