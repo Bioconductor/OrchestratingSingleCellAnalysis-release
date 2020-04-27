@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-12" />
+<meta name="date" content="2020-04-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -341,8 +341,12 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="15" data-path="doublet-detection.html"><a href="doublet-detection.html"><i class="fa fa-check"></i><b>15</b> Doublet detection</a><ul>
 <li class="chapter" data-level="15.1" data-path="doublet-detection.html"><a href="doublet-detection.html#overview-5"><i class="fa fa-check"></i><b>15.1</b> Overview</a></li>
 <li class="chapter" data-level="15.2" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-with-clusters"><i class="fa fa-check"></i><b>15.2</b> Doublet detection with clusters</a></li>
-<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-by-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a></li>
-<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-in-multiplexed-experiments"><i class="fa fa-check"></i><b>15.4</b> Doublet detection in multiplexed experiments</a></li>
+<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a></li>
+<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-in-multiplexed-experiments"><i class="fa fa-check"></i><b>15.4</b> Doublet detection in multiplexed experiments</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="doublet-detection.html"><a href="doublet-detection.html#background-7"><i class="fa fa-check"></i><b>15.4.1</b> Background</a></li>
+<li class="chapter" data-level="15.4.2" data-path="doublet-detection.html"><a href="doublet-detection.html#identifying-inter-sample-doublets"><i class="fa fa-check"></i><b>15.4.2</b> Identifying inter-sample doublets</a></li>
+<li class="chapter" data-level="15.4.3" data-path="doublet-detection.html"><a href="doublet-detection.html#guilt-by-association-for-unmarked-doublets"><i class="fa fa-check"></i><b>15.4.3</b> Guilt by association for unmarked doublets</a></li>
+</ul></li>
 <li class="chapter" data-level="15.5" data-path="doublet-detection.html"><a href="doublet-detection.html#further-comments-1"><i class="fa fa-check"></i><b>15.5</b> Further comments</a></li>
 <li class="chapter" data-level="" data-path="doublet-detection.html"><a href="doublet-detection.html#session-info-10"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -798,7 +802,7 @@ dec.pbmc[<span class="kw">order</span>(dec.pbmc<span class="op">$</span>bio, <sp
 ## S100A9    1.94951   4.58859  0.827542   3.76105 9.35449e-209 6.12719e-205
 ## S100A8    1.71828   4.45723  0.819402   3.63783 2.60467e-199 1.27954e-195
 ## HLA-DRA   2.09694   3.72690  0.823663   2.90324 1.69875e-126 2.38432e-123
-## CD74      2.89840   3.30912  0.793203   2.51592 7.30210e-103 6.83268e-100
+## CD74      2.89840   3.30912  0.793203   2.51592 7.30210e-103 6.83267e-100
 ## ...           ...       ...       ...       ...          ...          ...
 ## PTMA      3.83013  0.471105  0.740525 -0.269420     0.993177            1
 ## HLA-B     4.50161  0.475348  0.755807 -0.280459     0.994059            1
@@ -849,8 +853,8 @@ dec.spike<span class="fl">.416</span>b[<span class="kw">order</span>(dec.spike<s
 ##               mean     total      tech       bio      p.value          FDR
 ##          &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;numeric&gt;    &lt;numeric&gt;
 ## Lyz2       6.61097   13.8497   1.57131   12.2784 1.48993e-186 1.54156e-183
-## Ccl9       6.67846   13.1869   1.50035   11.6866 2.21855e-185 2.19979e-182
-## Top2a      5.81024   14.1787   2.54776   11.6310  3.80015e-65  1.13040e-62
+## Ccl9       6.67846   13.1869   1.50035   11.6866 2.21856e-185 2.19979e-182
+## Top2a      5.81024   14.1787   2.54776   11.6310  3.80016e-65  1.13040e-62
 ## Cd200r3    4.83180   15.5613   4.22984   11.3314  9.46221e-24  6.08574e-22
 ## Ccnb2      5.97776   13.1393   2.30177   10.8375  3.68706e-69  1.20193e-66
 ## ...            ...       ...       ...       ...          ...          ...
@@ -908,8 +912,8 @@ Figure 8.4: Variance of normalized log-expression values for each gene in the PB
 ## Lyz2      6.61235   13.8619   1.58416   12.2777  0.00000e+00  0.00000e+00
 ## Ccl9      6.67841   13.2599   1.44553   11.8143  0.00000e+00  0.00000e+00
 ## Top2a     5.81275   14.0192   2.74571   11.2734 3.89855e-137 8.43398e-135
-## Cd200r3   4.83305   15.5909   4.31892   11.2719  1.17783e-54  7.00722e-53
-## Ccnb2     5.97999   13.0256   2.46647   10.5591 1.20380e-151 2.98404e-149
+## Cd200r3   4.83305   15.5909   4.31892   11.2719  1.17783e-54  7.00721e-53
+## Ccnb2     5.97999   13.0256   2.46647   10.5591 1.20380e-151 2.98405e-149
 ## Hbb-bt    4.91683   14.6539   4.12156   10.5323  2.52639e-49  1.34197e-47</code></pre>
 <p>The use of a batch-specific trend fit is useful as it accommodates differences in the mean-variance trends between batches. This is especially important if batches exhibit systematic technical differences, e.g., differences in coverage or in the amount of spike-in RNA added. In this case, there are only minor differences between the trends in Figure <a href="feature-selection.html#fig:blocked-fit">8.5</a>, which indicates that the experiment was tightly replicated across plates. The analysis of each plate yields estimates of the biological and technical components for each gene, which are averaged across plates to take advantage of information from multiple batches.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
@@ -1121,69 +1125,68 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] scater_1.15.29              ggplot2_3.3.0              
- [3] ensembldb_2.11.3            AnnotationFilter_1.11.0    
+ [1] scater_1.15.33              ggplot2_3.3.0              
+ [3] ensembldb_2.11.4            AnnotationFilter_1.11.0    
  [5] GenomicFeatures_1.39.7      AnnotationDbi_1.49.1       
- [7] AnnotationHub_2.19.8        BiocFileCache_1.11.4       
- [9] dbplyr_1.4.2                msigdbr_7.0.1              
-[11] scran_1.15.26               SingleCellExperiment_1.9.3 
-[13] SummarizedExperiment_1.17.5 DelayedArray_0.13.8        
+ [7] AnnotationHub_2.19.12       BiocFileCache_1.11.6       
+ [9] dbplyr_1.4.3                msigdbr_7.0.1              
+[11] scran_1.15.32               SingleCellExperiment_1.9.3 
+[13] SummarizedExperiment_1.17.5 DelayedArray_0.13.12       
 [15] matrixStats_0.56.0          Biobase_2.47.3             
-[17] GenomicRanges_1.39.3        GenomeInfoDb_1.23.16       
-[19] IRanges_2.21.8              S4Vectors_0.25.14          
+[17] GenomicRanges_1.39.3        GenomeInfoDb_1.23.17       
+[19] IRanges_2.21.8              S4Vectors_0.25.15          
 [21] BiocGenerics_0.33.3         OSCAUtils_0.0.2            
-[23] BiocStyle_2.15.6           
+[23] BiocStyle_2.15.8           
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
  [3] ellipsis_0.3.0                XVector_0.27.2               
- [5] BiocNeighbors_1.5.2           bit64_0.9-7                  
- [7] interactiveDisplayBase_1.25.0 fansi_0.4.1                  
- [9] codetools_0.2-16              knitr_1.28                   
-[11] Rsamtools_2.3.7               shiny_1.4.0.2                
-[13] BiocManager_1.30.10           compiler_4.0.0               
-[15] httr_1.4.1                    dqrng_0.2.1                  
-[17] lazyeval_0.2.2                assertthat_0.2.1             
-[19] Matrix_1.2-18                 fastmap_1.0.1                
-[21] limma_3.43.5                  cli_2.0.2                    
-[23] later_1.0.0                   BiocSingular_1.3.2           
-[25] htmltools_0.4.0               prettyunits_1.1.1            
-[27] tools_4.0.0                   rsvd_1.0.3                   
-[29] igraph_1.2.5                  gtable_0.3.0                 
-[31] glue_1.3.2                    GenomeInfoDbData_1.2.2       
-[33] dplyr_0.8.5                   rappdirs_0.3.1               
-[35] Rcpp_1.0.4                    vctrs_0.2.4                  
-[37] Biostrings_2.55.7             rtracklayer_1.47.0           
-[39] DelayedMatrixStats_1.9.1      xfun_0.12                    
-[41] stringr_1.4.0                 ps_1.3.2                     
-[43] mime_0.9                      lifecycle_0.2.0              
-[45] irlba_2.3.3                   statmod_1.4.34               
-[47] XML_3.99-0.3                  edgeR_3.29.1                 
-[49] zlibbioc_1.33.1               scales_1.1.0                 
-[51] ProtGenerics_1.19.3           hms_0.5.3                    
-[53] promises_1.1.0                yaml_2.2.1                   
-[55] curl_4.3                      memoise_1.1.0                
-[57] gridExtra_2.3                 biomaRt_2.43.4               
-[59] stringi_1.4.6                 RSQLite_2.2.0                
-[61] BiocVersion_3.11.1            highr_0.8                    
-[63] BiocParallel_1.21.2           rlang_0.4.5                  
-[65] pkgconfig_2.0.3               bitops_1.0-6                 
-[67] evaluate_0.14                 lattice_0.20-40              
-[69] purrr_0.3.3                   GenomicAlignments_1.23.2     
-[71] bit_1.1-15.2                  processx_3.4.2               
-[73] tidyselect_1.0.0              magrittr_1.5                 
-[75] bookdown_0.18                 R6_2.4.1                     
-[77] DBI_1.1.0                     withr_2.1.2                  
-[79] pillar_1.4.3                  RCurl_1.98-1.1               
-[81] tibble_3.0.0                  crayon_1.3.4                 
-[83] rmarkdown_2.1                 viridis_0.5.1                
-[85] progress_1.2.2                locfit_1.5-9.4               
-[87] grid_4.0.0                    blob_1.2.1                   
-[89] callr_3.4.3                   digest_0.6.25                
-[91] xtable_1.8-4                  httpuv_1.5.2                 
-[93] openssl_1.4.1                 munsell_0.5.0                
-[95] beeswarm_0.2.3                viridisLite_0.3.0            
-[97] vipor_0.4.5                   askpass_1.1                  </code></pre>
+ [5] BiocNeighbors_1.5.7           bit64_0.9-7                  
+ [7] interactiveDisplayBase_1.25.0 codetools_0.2-16             
+ [9] knitr_1.28                    Rsamtools_2.3.7              
+[11] shiny_1.4.0.2                 BiocManager_1.30.10          
+[13] compiler_4.0.0                httr_1.4.1                   
+[15] dqrng_0.2.1                   lazyeval_0.2.2               
+[17] assertthat_0.2.1              Matrix_1.2-18                
+[19] fastmap_1.0.1                 limma_3.43.8                 
+[21] later_1.0.0                   BiocSingular_1.3.2           
+[23] htmltools_0.4.0               prettyunits_1.1.1            
+[25] tools_4.0.0                   rsvd_1.0.3                   
+[27] igraph_1.2.5                  gtable_0.3.0                 
+[29] glue_1.4.0                    GenomeInfoDbData_1.2.3       
+[31] dplyr_0.8.5                   rappdirs_0.3.1               
+[33] Rcpp_1.0.4.6                  vctrs_0.2.4                  
+[35] Biostrings_2.55.7             rtracklayer_1.47.0           
+[37] DelayedMatrixStats_1.9.1      xfun_0.13                    
+[39] stringr_1.4.0                 ps_1.3.2                     
+[41] mime_0.9                      lifecycle_0.2.0              
+[43] irlba_2.3.3                   statmod_1.4.34               
+[45] XML_3.99-0.3                  edgeR_3.29.1                 
+[47] zlibbioc_1.33.1               scales_1.1.0                 
+[49] ProtGenerics_1.19.3           hms_0.5.3                    
+[51] promises_1.1.0                yaml_2.2.1                   
+[53] curl_4.3                      memoise_1.1.0                
+[55] gridExtra_2.3                 biomaRt_2.43.6               
+[57] stringi_1.4.6                 RSQLite_2.2.0                
+[59] BiocVersion_3.11.1            highr_0.8                    
+[61] BiocParallel_1.21.3           rlang_0.4.5                  
+[63] pkgconfig_2.0.3               bitops_1.0-6                 
+[65] evaluate_0.14                 lattice_0.20-41              
+[67] purrr_0.3.4                   GenomicAlignments_1.23.2     
+[69] bit_1.1-15.2                  processx_3.4.2               
+[71] tidyselect_1.0.0              magrittr_1.5                 
+[73] bookdown_0.18                 R6_2.4.1                     
+[75] DBI_1.1.0                     withr_2.2.0                  
+[77] pillar_1.4.3                  RCurl_1.98-1.2               
+[79] tibble_3.0.1                  crayon_1.3.4                 
+[81] rmarkdown_2.1                 viridis_0.5.1                
+[83] progress_1.2.2                locfit_1.5-9.4               
+[85] grid_4.0.0                    blob_1.2.1                   
+[87] callr_3.4.3                   digest_0.6.25                
+[89] xtable_1.8-4                  httpuv_1.5.2                 
+[91] openssl_1.4.1                 munsell_0.5.0                
+[93] beeswarm_0.2.3                viridisLite_0.3.0            
+[95] vipor_0.4.5                   askpass_1.1                  </code></pre>
 </div>
 
 </div>

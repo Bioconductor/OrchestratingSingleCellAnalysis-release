@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-12" />
+<meta name="date" content="2020-04-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -341,8 +341,12 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="15" data-path="doublet-detection.html"><a href="doublet-detection.html"><i class="fa fa-check"></i><b>15</b> Doublet detection</a><ul>
 <li class="chapter" data-level="15.1" data-path="doublet-detection.html"><a href="doublet-detection.html#overview-5"><i class="fa fa-check"></i><b>15.1</b> Overview</a></li>
 <li class="chapter" data-level="15.2" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-with-clusters"><i class="fa fa-check"></i><b>15.2</b> Doublet detection with clusters</a></li>
-<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-by-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a></li>
-<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-in-multiplexed-experiments"><i class="fa fa-check"></i><b>15.4</b> Doublet detection in multiplexed experiments</a></li>
+<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a></li>
+<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-in-multiplexed-experiments"><i class="fa fa-check"></i><b>15.4</b> Doublet detection in multiplexed experiments</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="doublet-detection.html"><a href="doublet-detection.html#background-7"><i class="fa fa-check"></i><b>15.4.1</b> Background</a></li>
+<li class="chapter" data-level="15.4.2" data-path="doublet-detection.html"><a href="doublet-detection.html#identifying-inter-sample-doublets"><i class="fa fa-check"></i><b>15.4.2</b> Identifying inter-sample doublets</a></li>
+<li class="chapter" data-level="15.4.3" data-path="doublet-detection.html"><a href="doublet-detection.html#guilt-by-association-for-unmarked-doublets"><i class="fa fa-check"></i><b>15.4.3</b> Guilt by association for unmarked doublets</a></li>
+</ul></li>
 <li class="chapter" data-level="15.5" data-path="doublet-detection.html"><a href="doublet-detection.html#further-comments-1"><i class="fa fa-check"></i><b>15.5</b> Further comments</a></li>
 <li class="chapter" data-level="" data-path="doublet-detection.html"><a href="doublet-detection.html#session-info-10"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -721,10 +725,10 @@ merged &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(merged, <sp
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">merged</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 14699 19426 
-## metadata(1): merge.info
+## metadata(2): merge.info pca.info
 ## assays(3): reconstructed counts logcounts
 ## rownames(14699): Xkr4 Rp1 ... Vmn2r122 CAAA01147332.1
-## rowData names(3): ENSEMBL SYMBOL rotation
+## rowData names(3): rotation ENSEMBL SYMBOL
 ## colnames(19426): cell_9769 cell_9770 ... cell_30701 cell_30702
 ## colData names(13): batch cell ... sizeFactor label
 ## reducedDimNames(3): corrected TSNE UMAP
@@ -823,10 +827,10 @@ summed &lt;-<span class="st"> </span><span class="kw">aggregateAcrossCells</span
 summed</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 14699 186 
-## metadata(1): merge.info
+## metadata(2): merge.info pca.info
 ## assays(1): counts
 ## rownames(14699): Xkr4 Rp1 ... Vmn2r122 CAAA01147332.1
-## rowData names(3): ENSEMBL SYMBOL rotation
+## rowData names(3): rotation ENSEMBL SYMBOL
 ## colnames: NULL
 ## colData names(16): batch cell ... sample ncells
 ## reducedDimNames(3): corrected TSNE UMAP
@@ -1632,68 +1636,67 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] DropletUtils_1.7.13         MouseGastrulationData_1.1.0
- [3] scran_1.15.26               edgeR_3.29.1               
- [5] limma_3.43.5                scater_1.15.29             
+ [1] DropletUtils_1.7.17         MouseGastrulationData_1.1.3
+ [3] scran_1.15.32               edgeR_3.29.1               
+ [5] limma_3.43.8                scater_1.15.33             
  [7] ggplot2_3.3.0               BiocSingular_1.3.2         
  [9] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
-[11] DelayedArray_0.13.8         matrixStats_0.56.0         
+[11] DelayedArray_0.13.12        matrixStats_0.56.0         
 [13] Biobase_2.47.3              GenomicRanges_1.39.3       
-[15] GenomeInfoDb_1.23.16        IRanges_2.21.8             
-[17] S4Vectors_0.25.14           BiocGenerics_0.33.3        
-[19] OSCAUtils_0.0.2             BiocStyle_2.15.6           
+[15] GenomeInfoDb_1.23.17        IRanges_2.21.8             
+[17] S4Vectors_0.25.15           BiocGenerics_0.33.3        
+[19] OSCAUtils_0.0.2             BiocStyle_2.15.8           
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
  [3] ellipsis_0.3.0                XVector_0.27.2               
- [5] BiocNeighbors_1.5.2           farver_2.0.3                 
+ [5] BiocNeighbors_1.5.7           farver_2.0.3                 
  [7] bit64_0.9-7                   interactiveDisplayBase_1.25.0
- [9] AnnotationDbi_1.49.1          fansi_0.4.1                  
-[11] R.methodsS3_1.8.0             codetools_0.2-16             
-[13] splines_4.0.0                 knitr_1.28                   
-[15] dbplyr_1.4.2                  R.oo_1.23.0                  
-[17] pheatmap_1.0.12               HDF5Array_1.15.13            
-[19] shiny_1.4.0.2                 BiocManager_1.30.10          
-[21] compiler_4.0.0                httr_1.4.1                   
-[23] dqrng_0.2.1                   assertthat_0.2.1             
-[25] Matrix_1.2-18                 fastmap_1.0.1                
-[27] cli_2.0.2                     later_1.0.0                  
-[29] htmltools_0.4.0               tools_4.0.0                  
-[31] rsvd_1.0.3                    igraph_1.2.5                 
-[33] gtable_0.3.0                  glue_1.3.2                   
-[35] GenomeInfoDbData_1.2.2        dplyr_0.8.5                  
-[37] rappdirs_0.3.1                Rcpp_1.0.4                   
-[39] vctrs_0.2.4                   ExperimentHub_1.13.5         
-[41] DelayedMatrixStats_1.9.1      xfun_0.12                    
-[43] stringr_1.4.0                 ps_1.3.2                     
-[45] mime_0.9                      lifecycle_0.2.0              
-[47] irlba_2.3.3                   statmod_1.4.34               
-[49] AnnotationHub_2.19.8          zlibbioc_1.33.1              
-[51] scales_1.1.0                  promises_1.1.0               
-[53] rhdf5_2.31.9                  RColorBrewer_1.1-2           
-[55] yaml_2.2.1                    curl_4.3                     
-[57] memoise_1.1.0                 gridExtra_2.3                
-[59] stringi_1.4.6                 RSQLite_2.2.0                
-[61] BiocVersion_3.11.1            highr_0.8                    
-[63] BiocParallel_1.21.2           rlang_0.4.5                  
-[65] pkgconfig_2.0.3               bitops_1.0-6                 
-[67] evaluate_0.14                 lattice_0.20-40              
-[69] Rhdf5lib_1.9.2                purrr_0.3.3                  
-[71] labeling_0.3                  cowplot_1.0.0                
-[73] bit_1.1-15.2                  processx_3.4.2               
-[75] tidyselect_1.0.0              magrittr_1.5                 
-[77] bookdown_0.18                 R6_2.4.1                     
-[79] DBI_1.1.0                     pillar_1.4.3                 
-[81] withr_2.1.2                   RCurl_1.98-1.1               
-[83] tibble_3.0.0                  crayon_1.3.4                 
-[85] BiocFileCache_1.11.4          rmarkdown_2.1                
-[87] viridis_0.5.1                 locfit_1.5-9.4               
-[89] grid_4.0.0                    blob_1.2.1                   
-[91] callr_3.4.3                   digest_0.6.25                
-[93] xtable_1.8-4                  httpuv_1.5.2                 
-[95] R.utils_2.9.2                 munsell_0.5.0                
-[97] beeswarm_0.2.3                viridisLite_0.3.0            
-[99] vipor_0.4.5                  </code></pre>
+ [9] AnnotationDbi_1.49.1          R.methodsS3_1.8.0            
+[11] codetools_0.2-16              splines_4.0.0                
+[13] knitr_1.28                    dbplyr_1.4.3                 
+[15] R.oo_1.23.0                   pheatmap_1.0.12              
+[17] shiny_1.4.0.2                 HDF5Array_1.15.18            
+[19] BiocManager_1.30.10           compiler_4.0.0               
+[21] httr_1.4.1                    dqrng_0.2.1                  
+[23] assertthat_0.2.1              Matrix_1.2-18                
+[25] fastmap_1.0.1                 later_1.0.0                  
+[27] htmltools_0.4.0               tools_4.0.0                  
+[29] rsvd_1.0.3                    igraph_1.2.5                 
+[31] gtable_0.3.0                  glue_1.4.0                   
+[33] GenomeInfoDbData_1.2.3        dplyr_0.8.5                  
+[35] rappdirs_0.3.1                Rcpp_1.0.4.6                 
+[37] vctrs_0.2.4                   ExperimentHub_1.13.8         
+[39] DelayedMatrixStats_1.9.1      xfun_0.13                    
+[41] stringr_1.4.0                 ps_1.3.2                     
+[43] mime_0.9                      lifecycle_0.2.0              
+[45] irlba_2.3.3                   statmod_1.4.34               
+[47] AnnotationHub_2.19.12         zlibbioc_1.33.1              
+[49] scales_1.1.0                  promises_1.1.0               
+[51] rhdf5_2.31.10                 RColorBrewer_1.1-2           
+[53] yaml_2.2.1                    curl_4.3                     
+[55] memoise_1.1.0                 gridExtra_2.3                
+[57] stringi_1.4.6                 RSQLite_2.2.0                
+[59] BiocVersion_3.11.1            highr_0.8                    
+[61] BiocParallel_1.21.3           rlang_0.4.5                  
+[63] pkgconfig_2.0.3               bitops_1.0-6                 
+[65] evaluate_0.14                 lattice_0.20-41              
+[67] Rhdf5lib_1.9.3                purrr_0.3.4                  
+[69] labeling_0.3                  cowplot_1.0.0                
+[71] bit_1.1-15.2                  processx_3.4.2               
+[73] tidyselect_1.0.0              magrittr_1.5                 
+[75] bookdown_0.18                 R6_2.4.1                     
+[77] DBI_1.1.0                     pillar_1.4.3                 
+[79] withr_2.2.0                   RCurl_1.98-1.2               
+[81] tibble_3.0.1                  crayon_1.3.4                 
+[83] BiocFileCache_1.11.6          rmarkdown_2.1                
+[85] viridis_0.5.1                 locfit_1.5-9.4               
+[87] grid_4.0.0                    blob_1.2.1                   
+[89] callr_3.4.3                   digest_0.6.25                
+[91] xtable_1.8-4                  httpuv_1.5.2                 
+[93] R.utils_2.9.2                 munsell_0.5.0                
+[95] beeswarm_0.2.3                viridisLite_0.3.0            
+[97] vipor_0.4.5                  </code></pre>
 </div>
 
 </div>

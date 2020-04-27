@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-12" />
+<meta name="date" content="2020-04-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -341,8 +341,12 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="15" data-path="doublet-detection.html"><a href="doublet-detection.html"><i class="fa fa-check"></i><b>15</b> Doublet detection</a><ul>
 <li class="chapter" data-level="15.1" data-path="doublet-detection.html"><a href="doublet-detection.html#overview-5"><i class="fa fa-check"></i><b>15.1</b> Overview</a></li>
 <li class="chapter" data-level="15.2" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-with-clusters"><i class="fa fa-check"></i><b>15.2</b> Doublet detection with clusters</a></li>
-<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-by-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a></li>
-<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-in-multiplexed-experiments"><i class="fa fa-check"></i><b>15.4</b> Doublet detection in multiplexed experiments</a></li>
+<li class="chapter" data-level="15.3" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-simulation"><i class="fa fa-check"></i><b>15.3</b> Doublet detection by simulation</a></li>
+<li class="chapter" data-level="15.4" data-path="doublet-detection.html"><a href="doublet-detection.html#doublet-detection-in-multiplexed-experiments"><i class="fa fa-check"></i><b>15.4</b> Doublet detection in multiplexed experiments</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="doublet-detection.html"><a href="doublet-detection.html#background-7"><i class="fa fa-check"></i><b>15.4.1</b> Background</a></li>
+<li class="chapter" data-level="15.4.2" data-path="doublet-detection.html"><a href="doublet-detection.html#identifying-inter-sample-doublets"><i class="fa fa-check"></i><b>15.4.2</b> Identifying inter-sample doublets</a></li>
+<li class="chapter" data-level="15.4.3" data-path="doublet-detection.html"><a href="doublet-detection.html#guilt-by-association-for-unmarked-doublets"><i class="fa fa-check"></i><b>15.4.3</b> Guilt by association for unmarked doublets</a></li>
+</ul></li>
 <li class="chapter" data-level="15.5" data-path="doublet-detection.html"><a href="doublet-detection.html#further-comments-1"><i class="fa fa-check"></i><b>15.5</b> Further comments</a></li>
 <li class="chapter" data-level="" data-path="doublet-detection.html"><a href="doublet-detection.html#session-info-10"><i class="fa fa-check"></i>Session Info</a></li>
 </ul></li>
@@ -906,7 +910,7 @@ mnn.out &lt;-<span class="st"> </span><span class="kw">fastMNN</span>(pbmc3k, pb
 mnn.out</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 13431 6791 
-## metadata(1): merge.info
+## metadata(2): merge.info pca.info
 ## assays(1): reconstructed
 ## rownames(13431): ENSG00000239945 ENSG00000228463 ... ENSG00000198695
 ##   ENSG00000198727
@@ -1173,44 +1177,43 @@ attached base packages:
 
 other attached packages:
  [1] fossil_0.4.0                shapefiles_0.7             
- [3] foreign_0.8-77              maps_3.3.0                 
+ [3] foreign_0.8-78              maps_3.3.0                 
  [5] sp_1.4-1                    pheatmap_1.0.12            
- [7] scater_1.15.29              ggplot2_3.3.0              
- [9] scran_1.15.26               batchelor_1.3.14           
+ [7] scater_1.15.33              ggplot2_3.3.0              
+ [9] scran_1.15.32               batchelor_1.3.16           
 [11] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
 [13] Biobase_2.47.3              GenomicRanges_1.39.3       
-[15] GenomeInfoDb_1.23.16        HDF5Array_1.15.13          
-[17] rhdf5_2.31.9                DelayedArray_0.13.8        
-[19] IRanges_2.21.8              S4Vectors_0.25.14          
+[15] GenomeInfoDb_1.23.17        HDF5Array_1.15.18          
+[17] rhdf5_2.31.10               DelayedArray_0.13.12       
+[19] IRanges_2.21.8              S4Vectors_0.25.15          
 [21] BiocGenerics_0.33.3         matrixStats_0.56.0         
-[23] OSCAUtils_0.0.2             BiocStyle_2.15.6           
+[23] OSCAUtils_0.0.2             BiocStyle_2.15.8           
 
 loaded via a namespace (and not attached):
  [1] bitops_1.0-6             RColorBrewer_1.1-2       tools_4.0.0             
  [4] R6_2.4.1                 irlba_2.3.3              vipor_0.4.5             
- [7] colorspace_1.4-1         withr_2.1.2              tidyselect_1.0.0        
+ [7] colorspace_1.4-1         withr_2.2.0              tidyselect_1.0.0        
 [10] gridExtra_2.3            processx_3.4.2           compiler_4.0.0          
-[13] cli_2.0.2                BiocNeighbors_1.5.2      labeling_0.3            
-[16] bookdown_0.18            scales_1.1.0             callr_3.4.3             
-[19] stringr_1.4.0            digest_0.6.25            rmarkdown_2.1           
-[22] XVector_0.27.2           pkgconfig_2.0.3          htmltools_0.4.0         
-[25] limma_3.43.5             highr_0.8                rlang_0.4.5             
-[28] DelayedMatrixStats_1.9.1 farver_2.0.3             BiocParallel_1.21.2     
-[31] dplyr_0.8.5              RCurl_1.98-1.1           magrittr_1.5            
-[34] BiocSingular_1.3.2       GenomeInfoDbData_1.2.2   Matrix_1.2-18           
-[37] Rcpp_1.0.4               ggbeeswarm_0.6.0         munsell_0.5.0           
-[40] Rhdf5lib_1.9.2           fansi_0.4.1              viridis_0.5.1           
-[43] lifecycle_0.2.0          stringi_1.4.6            yaml_2.2.1              
-[46] edgeR_3.29.1             zlibbioc_1.33.1          Rtsne_0.15              
-[49] grid_4.0.0               dqrng_0.2.1              crayon_1.3.4            
-[52] lattice_0.20-40          beachmat_2.3.2           cowplot_1.0.0           
-[55] locfit_1.5-9.4           knitr_1.28               ps_1.3.2                
-[58] pillar_1.4.3             igraph_1.2.5             codetools_0.2-16        
-[61] glue_1.3.2               evaluate_0.14            BiocManager_1.30.10     
-[64] vctrs_0.2.4              gtable_0.3.0             purrr_0.3.3             
-[67] assertthat_0.2.1         xfun_0.12                rsvd_1.0.3              
-[70] viridisLite_0.3.0        tibble_3.0.0             beeswarm_0.2.3          
-[73] statmod_1.4.34           ellipsis_0.3.0          </code></pre>
+[13] BiocNeighbors_1.5.7      labeling_0.3             bookdown_0.18           
+[16] scales_1.1.0             callr_3.4.3              stringr_1.4.0           
+[19] digest_0.6.25            rmarkdown_2.1            XVector_0.27.2          
+[22] pkgconfig_2.0.3          htmltools_0.4.0          limma_3.43.8            
+[25] highr_0.8                rlang_0.4.5              DelayedMatrixStats_1.9.1
+[28] farver_2.0.3             BiocParallel_1.21.3      dplyr_0.8.5             
+[31] RCurl_1.98-1.2           magrittr_1.5             BiocSingular_1.3.2      
+[34] GenomeInfoDbData_1.2.3   Matrix_1.2-18            Rcpp_1.0.4.6            
+[37] ggbeeswarm_0.6.0         munsell_0.5.0            Rhdf5lib_1.9.3          
+[40] viridis_0.5.1            lifecycle_0.2.0          stringi_1.4.6           
+[43] yaml_2.2.1               edgeR_3.29.1             zlibbioc_1.33.1         
+[46] Rtsne_0.15               grid_4.0.0               dqrng_0.2.1             
+[49] crayon_1.3.4             lattice_0.20-41          beachmat_2.3.2          
+[52] cowplot_1.0.0            locfit_1.5-9.4           knitr_1.28              
+[55] ps_1.3.2                 pillar_1.4.3             igraph_1.2.5            
+[58] codetools_0.2-16         glue_1.4.0               evaluate_0.14           
+[61] BiocManager_1.30.10      vctrs_0.2.4              gtable_0.3.0            
+[64] purrr_0.3.4              assertthat_0.2.1         xfun_0.13               
+[67] rsvd_1.0.3               viridisLite_0.3.0        tibble_3.0.1            
+[70] beeswarm_0.2.3           statmod_1.4.34           ellipsis_0.3.0          </code></pre>
 </div>
 
 </div>
