@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-26" />
+<meta name="date" content="2020-05-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -363,7 +363,6 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="17.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#obtaining-pseudo-times"><i class="fa fa-check"></i><b>17.2</b> Obtaining pseudo-times</a><ul>
 <li class="chapter" data-level="17.2.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#cluster-based-minimum-spanning-tree"><i class="fa fa-check"></i><b>17.2.1</b> Cluster-based minimum spanning tree</a></li>
 <li class="chapter" data-level="17.2.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#principal-curves"><i class="fa fa-check"></i><b>17.2.2</b> Principal curves</a></li>
-<li class="chapter" data-level="17.2.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#whatever-monocle-does-nowadays"><i class="fa fa-check"></i><b>17.2.3</b> Whatever monocle does nowadays</a></li>
 </ul></li>
 <li class="chapter" data-level="17.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#characterizing-trajectories"><i class="fa fa-check"></i><b>17.3</b> Characterizing trajectories</a><ul>
 <li class="chapter" data-level="17.3.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-along-a-trajectory"><i class="fa fa-check"></i><b>17.3.1</b> Changes along a trajectory</a></li>
@@ -1371,7 +1370,7 @@ sce.tal1</code></pre></div>
 ## colData names(9): cell barcode ... pool sizeFactor
 ## reducedDimNames(1): pca.corrected
 ## altExpNames(0):</code></pre>
-<p>We will perform a DE analysis between WT and KO cells labelled as “neural crest”. We observe that the strongest DEGs are the hemoglobins, which are downregulated in the injected cells. This is rather surprising as cells undergoing neuronal development should not express hemoglobins in the first place. The most sober explanation is that the background samples contain more hemoglobin transcripts in the ambient solution due to leakage from erythrocytes (or their precursors) during sorting and dissociation.</p>
+<p>We will perform a DE analysis between WT and KO cells labelled as “neural crest”. We observe that the strongest DEGs are the hemoglobins, which are downregulated in the injected cells. This is rather surprising as these cells are distinct from the erythroid lineage and should not express hemoglobins at all. The most sober explanation is that the background samples contain more hemoglobin transcripts in the ambient solution due to leakage from erythrocytes (or their precursors) during sorting and dissociation.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summed.tal1 &lt;-<span class="st"> </span><span class="kw">aggregateAcrossCells</span>(sce.tal1, 
     <span class="dt">ids=</span><span class="kw">DataFrame</span>(<span class="dt">sample=</span>sce.tal1<span class="op">$</span>sample,
         <span class="dt">label=</span>sce.tal1<span class="op">$</span>celltype.mapped)
@@ -1417,6 +1416,7 @@ res.neural &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit.
 ## Cdkn1c  -8.8645  4.961   814.9 8.800e-173 1.171e-169
 ## Uba52   -0.8797  8.386   424.2  1.866e-92  2.208e-89
 ## Grb10   -1.4034  6.583   401.4  1.139e-87  1.213e-84</code></pre>
+<p>As an aside, it is worth mentioning that the “replicates” in this study are more technical than biological, so some exaggeration of the significance of the effects is to be expected. Nonetheless, it is a useful dataset to demonstrate some strategies for mitigating issues caused by ambient contamination.</p>
 </div>
 <div id="discarding-ambient-degs" class="section level3">
 <h3><span class="header-section-number">14.6.2</span> Discarding ambient DEGs</h3>
@@ -1448,12 +1448,14 @@ ambient &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, amb
 ## Rp1      0  1  0  1
 ## Sox17   76 76 31 53
 ## Gm37323  0  0  0  0</code></pre>
-<p>For each sample, we determine the maximum proportion of the count for each gene that could be attributed to ambient contamination. This is done by scaling the ambient profile in <code>ambient</code> and computing the <span class="math inline">\(p\)</span>-value for observing a count equal to or lower than that in <code>summed.neural</code>; we then identify the maximum scaling factor for a given threshold on the (combined) <span class="math inline">\(p\)</span>-value. The scaled ambient profile represents the upper bound of the contribution to each sample from ambient contamination. We deliberately use an upper bound so that our next step will aggressively remove any gene that is potentially problematic.</p>
+<p>For each sample, we determine the maximum proportion of the count for each gene that could be attributed to ambient contamination. This is done by scaling the ambient profile in <code>ambient</code> to obtain a per-gene expected count from ambient contamination, with which we compute the <span class="math inline">\(p\)</span>-value for observing a count equal to or lower than that in <code>summed.neural</code>. We perform this for a range of scaling factors and identify the largest factor that yields a <span class="math inline">\(p\)</span>-value above a given threshold. The scaled ambient profile represents the upper bound of the contribution to each sample from ambient contamination. We deliberately use an upper bound so that our next step will aggressively remove any gene that is potentially problematic.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Looping over all samples and computing the maximum proportion of </span>
 <span class="co"># counts explained by ambient contamination in each sample.</span>
-max.ambient &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">seq_len</span>(<span class="kw">ncol</span>(ambient)), <span class="cf">function</span>(i) {
-    <span class="kw">maximumAmbience</span>(<span class="kw">counts</span>(summed.neural)[,i], ambient[,i], <span class="dt">mode=</span><span class="st">&quot;proportion&quot;</span>)
-})
+max.ambient &lt;-<span class="st"> </span><span class="kw">list</span>()
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_len</span>(<span class="kw">ncol</span>(ambient))) {
+    max.ambient[[i]] &lt;-<span class="st"> </span><span class="kw">maximumAmbience</span>(<span class="kw">counts</span>(summed.neural)[,i], 
+        ambient[,i], <span class="dt">mode=</span><span class="st">&quot;proportion&quot;</span>)
+}
 
 max.ambient &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, max.ambient)
 <span class="kw">dimnames</span>(max.ambient) &lt;-<span class="st"> </span><span class="kw">dimnames</span>(ambient)
@@ -1526,7 +1528,7 @@ subtracted[is.hbb,]</code></pre></div>
 ## Hba-x      1    1    0    0
 ## Hba-a1     0    0  365  452
 ## Hba-a2     0    0  314  329</code></pre>
-<p>Another tempting approach is to use interaction models to implicitly subtract the ambient effect during GLM fitting. The assumption would be that, for genuine DEGs, the log-fold change within cells is larger in magnitude than those in the ambient solution (where the effect would be diluted by contributions from cell types where the gene is not DE). However, this is not always the case; a DE analysis of the ambient counts indicates that the hemoglobin log-fold change is actually stronger in the neural crest cells compared to the ambient solution, which leads to the rather awkward conclusion that the WT neural crest cells are expressing hemoglobin beyond that explained by ambient contamination. In addition, per-gene subtraction will fail to consistently detect DEGs that occur in all cell types as there is no longer a dilution effect being applied to the log-fold change in the ambient solution.</p>
+<p>Another tempting approach is to use interaction models to implicitly subtract the ambient effect during GLM fitting. The assumption is that, for a genuine DEG, the log-fold change within cells is larger in magnitude than that in the ambient solution. This is based on the expectation that any DE in the latter is “diluted” by contributions from cell types where that gene is not DE. Unfortunately, this is not always the case; a DE analysis of the ambient counts indicates that the hemoglobin log-fold change is actually stronger in the neural crest cells compared to the ambient solution, which leads to the rather awkward conclusion that the WT neural crest cells are expressing hemoglobin beyond that explained by ambient contamination.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Re-using keep.neural to simplify comparison.</span>
 y.ambient &lt;-<span class="st"> </span><span class="kw">DGEList</span>(ambient)
 y.ambient &lt;-<span class="st"> </span>y.ambient[keep.neural,]
@@ -1552,6 +1554,8 @@ res.ambient &lt;-<span class="st"> </span><span class="kw">glmQLFTest</span>(fit
 ## Hba-a1  -4.659 10.733  9903      0   0
 ## Alas2   -4.556  6.227  1842      0   0
 ## Hba-a2  -4.519  9.479  7410      0   0</code></pre>
+<p>One possible explanation is that erythrocyte fragments are present in the cell-containing libraries but are not used to estimate the ambient profile, presumably because the UMI counts are too high for fragment-containing libraries to be treated as empty. Technically speaking, this is not incorrect as, after all, those libraries are not actually empty (Section <a href="quality-control.html#qc-droplets">6.5</a>). In effect, every cell in the WT sample is a fractional multiplet with partial erythrocyte identity from the included fragments, which results in stronger log-fold changes between genotypes for hemoglobin compared to those for the ambient solution.</p>
+<p>That aside, there are other issues with implicit subtraction in the fitted GLM that warrant caution with its use. This strategy precludes detection of DEGs that are common to all cell types as there is no longer a dilution effect being applied to the log-fold change in the ambient solution. It requires inclusion of the ambient profiles in the model, which is cause for at least some concern as they are unlikely to have the same degree of variability as the cell-derived pseudo-bulk profiles. Interpretation is also complicated by the fact that we are only interested in log-fold changes that are more extreme in the cells compared to the ambient solution; a non-zero interaction term is not sufficient for removing spurious DE.</p>
 <!--
 Full interaction code, in case anyone's unconvinced.
 
@@ -1559,11 +1563,11 @@ Full interaction code, in case anyone's unconvinced.
 ```r
 s <- factor(rep(1:4, 2))
 new.geno <- rep(rep(c("KO", "WT"), each=2), 2)
-ambient <- rep(c("N", "Y"), each=4)
-design.amb <- model.matrix(~0 + s + new.geno:ambient)
+is.ambient <- rep(c("N", "Y"), each=4)
+design.amb <- model.matrix(~0 + s + new.geno:is.ambient)
 
 # Get to full rank:
-design.amb <- design.amb[,!grepl("ambientY", colnames(design.amb))] 
+design.amb <- design.amb[,!grepl("is.ambientY", colnames(design.amb))] 
 
 # Syntactically valid colnames:
 colnames(design.amb) <- make.names(colnames(design.amb)) 
@@ -1572,20 +1576,21 @@ design.amb
 
 
 ```r
+y.amb <- DGEList(cbind(counts(summed.neural), ambient)
 y.amb <- y.amb[filterByExpr(y.amb, group=s),]
 y.amb <- calcNormFactors(y.amb)
 y.amb <- estimateDisp(y.amb, design.amb)
 fit.amb <- glmQLFit(y.amb, design.amb, robust=TRUE)    
 
-res.ko <- glmTreat(fit.amb, coef="new.genoKO.ambientN")
+res.ko <- glmTreat(fit.amb, coef="new.genoKO.is.ambientN")
 summary(decideTests(res.ko))
 topTags(res.ko, n=10)
 
-res.wt <- glmTreat(fit.amb, coef="new.genoWT.ambientN")
+res.wt <- glmTreat(fit.amb, coef="new.genoWT.is.ambientN")
 summary(decideTests(res.wt))
 topTags(res.wt, n=10)
 
-con <- makeContrasts(new.genoKO.ambientN - new.genoWT.ambientN, levels=design.amb)
+con <- makeContrasts(new.genoKO.is.ambientN - new.genoWT.is.ambientN, levels=design.amb)
 res.amb <- glmTreat(fit.amb, contrast=con)
 summary(decideTests(res.amb))
 topTags(res.amb, n=10)
@@ -1615,13 +1620,13 @@ head(final, 10)
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch-dev/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch-dev/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1636,27 +1641,27 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] DropletUtils_1.7.17         MouseGastrulationData_1.1.3
- [3] scran_1.15.32               edgeR_3.29.1               
- [5] limma_3.43.8                scater_1.15.33             
- [7] ggplot2_3.3.0               BiocSingular_1.3.2         
- [9] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
-[11] DelayedArray_0.13.12        matrixStats_0.56.0         
-[13] Biobase_2.47.3              GenomicRanges_1.39.3       
-[15] GenomeInfoDb_1.23.17        IRanges_2.21.8             
-[17] S4Vectors_0.25.15           BiocGenerics_0.33.3        
-[19] OSCAUtils_0.0.2             BiocStyle_2.15.8           
+ [1] DropletUtils_1.8.0          MouseGastrulationData_1.1.3
+ [3] scran_1.16.0                edgeR_3.30.0               
+ [5] limma_3.44.1                scater_1.16.0              
+ [7] ggplot2_3.3.0               BiocSingular_1.4.0         
+ [9] SingleCellExperiment_1.10.1 SummarizedExperiment_1.18.1
+[11] DelayedArray_0.14.0         matrixStats_0.56.0         
+[13] Biobase_2.48.0              GenomicRanges_1.40.0       
+[15] GenomeInfoDb_1.24.0         IRanges_2.22.1             
+[17] S4Vectors_0.26.0            BiocGenerics_0.34.0        
+[19] OSCAUtils_0.0.2             BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
- [3] ellipsis_0.3.0                XVector_0.27.2               
- [5] BiocNeighbors_1.5.7           farver_2.0.3                 
- [7] bit64_0.9-7                   interactiveDisplayBase_1.25.0
- [9] AnnotationDbi_1.49.1          R.methodsS3_1.8.0            
+ [3] ellipsis_0.3.0                XVector_0.28.0               
+ [5] BiocNeighbors_1.6.0           farver_2.0.3                 
+ [7] bit64_0.9-7                   interactiveDisplayBase_1.26.0
+ [9] AnnotationDbi_1.50.0          R.methodsS3_1.8.0            
 [11] codetools_0.2-16              splines_4.0.0                
 [13] knitr_1.28                    dbplyr_1.4.3                 
 [15] R.oo_1.23.0                   pheatmap_1.0.12              
-[17] shiny_1.4.0.2                 HDF5Array_1.15.18            
+[17] shiny_1.4.0.2                 HDF5Array_1.16.0             
 [19] BiocManager_1.30.10           compiler_4.0.0               
 [21] httr_1.4.1                    dqrng_0.2.1                  
 [23] assertthat_0.2.1              Matrix_1.2-18                
@@ -1666,37 +1671,36 @@ loaded via a namespace (and not attached):
 [31] gtable_0.3.0                  glue_1.4.0                   
 [33] GenomeInfoDbData_1.2.3        dplyr_0.8.5                  
 [35] rappdirs_0.3.1                Rcpp_1.0.4.6                 
-[37] vctrs_0.2.4                   ExperimentHub_1.13.8         
-[39] DelayedMatrixStats_1.9.1      xfun_0.13                    
+[37] vctrs_0.2.4                   ExperimentHub_1.14.0         
+[39] DelayedMatrixStats_1.10.0     xfun_0.13                    
 [41] stringr_1.4.0                 ps_1.3.2                     
 [43] mime_0.9                      lifecycle_0.2.0              
 [45] irlba_2.3.3                   statmod_1.4.34               
-[47] AnnotationHub_2.19.12         zlibbioc_1.33.1              
+[47] AnnotationHub_2.20.0          zlibbioc_1.34.0              
 [49] scales_1.1.0                  promises_1.1.0               
-[51] rhdf5_2.31.10                 RColorBrewer_1.1-2           
+[51] rhdf5_2.32.0                  RColorBrewer_1.1-2           
 [53] yaml_2.2.1                    curl_4.3                     
 [55] memoise_1.1.0                 gridExtra_2.3                
 [57] stringi_1.4.6                 RSQLite_2.2.0                
 [59] BiocVersion_3.11.1            highr_0.8                    
-[61] BiocParallel_1.21.3           rlang_0.4.5                  
+[61] BiocParallel_1.22.0           rlang_0.4.6                  
 [63] pkgconfig_2.0.3               bitops_1.0-6                 
 [65] evaluate_0.14                 lattice_0.20-41              
-[67] Rhdf5lib_1.9.3                purrr_0.3.4                  
-[69] labeling_0.3                  cowplot_1.0.0                
-[71] bit_1.1-15.2                  processx_3.4.2               
-[73] tidyselect_1.0.0              magrittr_1.5                 
-[75] bookdown_0.18                 R6_2.4.1                     
-[77] DBI_1.1.0                     pillar_1.4.3                 
-[79] withr_2.2.0                   RCurl_1.98-1.2               
-[81] tibble_3.0.1                  crayon_1.3.4                 
-[83] BiocFileCache_1.11.6          rmarkdown_2.1                
-[85] viridis_0.5.1                 locfit_1.5-9.4               
-[87] grid_4.0.0                    blob_1.2.1                   
-[89] callr_3.4.3                   digest_0.6.25                
-[91] xtable_1.8-4                  httpuv_1.5.2                 
-[93] R.utils_2.9.2                 munsell_0.5.0                
-[95] beeswarm_0.2.3                viridisLite_0.3.0            
-[97] vipor_0.4.5                  </code></pre>
+[67] Rhdf5lib_1.10.0               purrr_0.3.4                  
+[69] labeling_0.3                  bit_1.1-15.2                 
+[71] processx_3.4.2                tidyselect_1.0.0             
+[73] magrittr_1.5                  bookdown_0.18                
+[75] R6_2.4.1                      DBI_1.1.0                    
+[77] pillar_1.4.3                  withr_2.2.0                  
+[79] RCurl_1.98-1.2                tibble_3.0.1                 
+[81] crayon_1.3.4                  BiocFileCache_1.12.0         
+[83] rmarkdown_2.1                 viridis_0.5.1                
+[85] locfit_1.5-9.4                grid_4.0.0                   
+[87] blob_1.2.1                    callr_3.4.3                  
+[89] digest_0.6.25                 xtable_1.8-4                 
+[91] httpuv_1.5.2                  R.utils_2.9.2                
+[93] munsell_0.5.0                 beeswarm_0.2.3               
+[95] viridisLite_0.3.0             vipor_0.4.5                  </code></pre>
 </div>
 
 </div>

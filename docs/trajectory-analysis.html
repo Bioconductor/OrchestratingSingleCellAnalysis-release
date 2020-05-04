@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-26" />
+<meta name="date" content="2020-05-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -363,7 +363,6 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="17.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#obtaining-pseudo-times"><i class="fa fa-check"></i><b>17.2</b> Obtaining pseudo-times</a><ul>
 <li class="chapter" data-level="17.2.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#cluster-based-minimum-spanning-tree"><i class="fa fa-check"></i><b>17.2.1</b> Cluster-based minimum spanning tree</a></li>
 <li class="chapter" data-level="17.2.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#principal-curves"><i class="fa fa-check"></i><b>17.2.2</b> Principal curves</a></li>
-<li class="chapter" data-level="17.2.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#whatever-monocle-does-nowadays"><i class="fa fa-check"></i><b>17.2.3</b> Whatever monocle does nowadays</a></li>
 </ul></li>
 <li class="chapter" data-level="17.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#characterizing-trajectories"><i class="fa fa-check"></i><b>17.3</b> Characterizing trajectories</a><ul>
 <li class="chapter" data-level="17.3.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-along-a-trajectory"><i class="fa fa-check"></i><b>17.3.1</b> Changes along a trajectory</a></li>
@@ -771,7 +770,122 @@ Figure 17.3: <span class="math inline">\(t\)</span>-SNE plot of the Nestorowa HS
 </p>
 </div>
 <p>We obtain a pseudotime ordering by projecting the cells onto the MST. In other words, we move each cell onto the edge of the MST to which it is closest; the pseudotime is then calculated as the distance along the MST from this new position to a “root node”. For our purposes, we will arbitrarily pick one of the endpoint nodes as the root, though a more careful choice based on the biological annotation of each node may yield more relevant orderings (e.g., picking a node corresponding to a more pluripotent state).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Figure out how to plug into TSCAN&#39;s ordering system.</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># </span><span class="al">TODO</span><span class="co">: for the love of god, we definitely need to move this into a function!</span>
+.map2edges &lt;-<span class="st"> </span><span class="cf">function</span>(points, center, edge.ends, previous) {
+    all.distances &lt;-<span class="st"> </span><span class="kw">list</span>()
+    all.pseudo &lt;-<span class="st"> </span><span class="kw">list</span>()
+    edge.len &lt;-<span class="st"> </span><span class="kw">list</span>()
+
+    <span class="co"># Computing distance of each point from each edge.</span>
+    <span class="co"># Edges defined from &#39;center&#39; to &#39;edge.ends&#39;.</span>
+    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">rownames</span>(edge.ends)) {
+        edge.end &lt;-<span class="st"> </span>edge.ends[i,]
+        delta &lt;-<span class="st"> </span>center <span class="op">-</span><span class="st"> </span>edge.end
+        max.d &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">sum</span>(delta<span class="op">^</span><span class="dv">2</span>))
+        delta &lt;-<span class="st"> </span>delta<span class="op">/</span>max.d
+
+        centered &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">t</span>(points) <span class="op">-</span><span class="st"> </span>center)
+        proj &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(centered <span class="op">%*%</span><span class="st"> </span>delta)
+        proj &lt;-<span class="st"> </span><span class="kw">pmax</span>(<span class="dv">0</span>, <span class="kw">pmin</span>(proj, max.d))
+        mapped &lt;-<span class="st"> </span><span class="kw">outer</span>(proj, delta)
+
+        dist &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">rowSums</span>((centered <span class="op">-</span><span class="st"> </span>mapped)<span class="op">^</span><span class="dv">2</span>))
+        all.distances[[i]] &lt;-<span class="st"> </span>dist
+        all.pseudo[[i]] &lt;-<span class="st"> </span>proj
+        edge.len[[i]] &lt;-<span class="st"> </span>max.d
+    }
+
+    all.distances &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, all.distances)
+    all.pseudo &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, all.pseudo)
+    chosen &lt;-<span class="st"> </span><span class="kw">colnames</span>(all.distances)[<span class="kw">max.col</span>(<span class="op">-</span>all.distances)]
+
+    <span class="co"># Flipping the distance of points to the previous node,</span>
+    <span class="co"># in order to enforce a directional pseudo-time.</span>
+    dist.previous &lt;-<span class="st"> </span><span class="dv">0</span>
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(previous)) {
+        on.previous &lt;-<span class="st"> </span>chosen<span class="op">==</span>previous
+        dist.previous &lt;-<span class="st"> </span>edge.len[[previous]]
+        previous.proj &lt;-<span class="st"> </span>dist.previous <span class="op">-</span><span class="st"> </span>all.pseudo[on.previous,previous,drop=<span class="ot">FALSE</span>]
+
+        <span class="cf">if</span> (<span class="kw">all</span>(on.previous)) {
+            <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">dist=</span>dist.previous, <span class="dt">pseudo=</span><span class="kw">list</span>(previous.proj)))
+        }
+    }
+
+    <span class="co"># Filling out the branches, where points are NA for a branch&#39;s</span>
+    <span class="co"># pseudo-time if they were assigned to another branch.</span>
+    output &lt;-<span class="st"> </span><span class="kw">list</span>()
+    <span class="cf">for</span> (leftover <span class="cf">in</span> <span class="kw">setdiff</span>(<span class="kw">rownames</span>(edge.ends), previous)) {
+        empty &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA_real_</span>, <span class="kw">nrow</span>(points))
+        <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(previous)) {
+            empty[on.previous] &lt;-<span class="st"> </span>previous.proj
+        }
+        current &lt;-<span class="st"> </span>chosen<span class="op">==</span>leftover
+        empty[current] &lt;-<span class="st"> </span>all.pseudo[current,leftover]
+        output[[leftover]] &lt;-<span class="st"> </span>empty
+    }
+
+    <span class="kw">list</span>(<span class="dt">dist=</span>dist.previous, <span class="dt">pseudo=</span>output)
+}
+
+originals &lt;-<span class="st"> </span><span class="kw">reducedDim</span>(sce.nest, <span class="st">&quot;PCA&quot;</span>)
+cluster &lt;-<span class="st"> </span><span class="kw">colLabels</span>(sce.nest)
+starting.cluster &lt;-<span class="st"> </span><span class="kw">names</span>(igraph<span class="op">::</span><span class="kw">V</span>(mst)[igraph<span class="op">::</span><span class="kw">degree</span>(mst)<span class="op">==</span><span class="dv">1</span>])[<span class="dv">1</span>]
+collated &lt;-<span class="st"> </span><span class="kw">list</span>()
+
+latest &lt;-<span class="st"> </span>starting.cluster
+parents &lt;-<span class="st"> </span><span class="ot">NA_character_</span> 
+progress &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">rep</span>(<span class="ot">NA_real_</span>, <span class="kw">length</span>(cluster)))
+cumulative &lt;-<span class="st"> </span><span class="dv">0</span>
+
+<span class="cf">while</span> (<span class="kw">length</span>(latest)) {
+    new.latest &lt;-<span class="st"> </span>new.parents &lt;-<span class="st"> </span><span class="kw">character</span>(<span class="dv">0</span>)
+    new.progress &lt;-<span class="st"> </span><span class="kw">list</span>()
+    new.cumulative &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">0</span>)
+
+    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(latest)) {
+        curnode &lt;-<span class="st"> </span>latest[i]
+        all.neighbors &lt;-<span class="st"> </span><span class="kw">names</span>(igraph<span class="op">::</span><span class="kw">adjacent_vertices</span>(mst, curnode, <span class="dt">mode=</span><span class="st">&quot;all&quot;</span>)[[<span class="dv">1</span>]])
+        in.cluster &lt;-<span class="st"> </span>cluster<span class="op">==</span>curnode 
+
+        mapped &lt;-<span class="st"> </span><span class="kw">.map2edges</span>(originals[in.cluster,,<span class="dt">drop=</span><span class="ot">FALSE</span>], <span class="dt">center=</span>centroids[curnode,], 
+            <span class="dt">edge.ends=</span>centroids[all.neighbors,,<span class="dt">drop=</span><span class="ot">FALSE</span>], <span class="dt">previous=</span>parents[i])
+        edge.len &lt;-<span class="st"> </span>mapped<span class="op">$</span>dist
+        pseudo &lt;-<span class="st"> </span>mapped<span class="op">$</span>pseudo
+
+        collected.progress &lt;-<span class="st"> </span><span class="kw">list</span>()
+        <span class="cf">for</span> (j <span class="cf">in</span> <span class="kw">seq_along</span>(pseudo)) {
+            sofar &lt;-<span class="st"> </span>progress[[i]] <span class="co"># yes, using &#39;i&#39; here.</span>
+            sofar[in.cluster] &lt;-<span class="st"> </span>pseudo[[j]] <span class="op">+</span><span class="st"> </span>cumulative[i]
+            collected.progress[[j]] &lt;-<span class="st"> </span>sofar
+        }
+
+        all.children &lt;-<span class="st"> </span><span class="kw">setdiff</span>(all.neighbors, parents[i])
+        <span class="cf">if</span> (<span class="kw">length</span>(all.children)<span class="op">==</span><span class="dv">0</span>) {
+            collated[[curnode]] &lt;-<span class="st"> </span>collected.progress[[<span class="dv">1</span>]]
+        } <span class="cf">else</span> {
+            new.latest &lt;-<span class="st"> </span><span class="kw">c</span>(new.latest, all.children)
+            new.parents &lt;-<span class="st"> </span><span class="kw">c</span>(new.parents, <span class="kw">rep</span>(curnode, <span class="kw">length</span>(all.children)))
+            new.progress &lt;-<span class="st"> </span><span class="kw">c</span>(new.progress, collected.progress)
+            new.cumulative &lt;-<span class="st"> </span><span class="kw">c</span>(new.cumulative, <span class="kw">rep</span>(cumulative[i] <span class="op">+</span><span class="st"> </span>edge.len, <span class="kw">length</span>(all.children)))
+        }
+    }
+
+    latest &lt;-<span class="st"> </span>new.latest
+    parents &lt;-<span class="st"> </span>new.parents
+    progress &lt;-<span class="st"> </span>new.progress
+    cumulative &lt;-<span class="st"> </span>new.cumulative
+}
+tscan.pseudo &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, collated)
+
+<span class="kw">plotTSNE</span>(sce.nest, <span class="dt">colour_by=</span><span class="kw">I</span>(<span class="kw">rowMeans</span>(tscan.pseudo, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)), <span class="dt">text_by=</span><span class="st">&quot;label&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">data=</span>stuff, <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>X1, <span class="dt">y=</span>X2, <span class="dt">group=</span>group))</code></pre></div>
+<div class="figure"><span id="fig:tscan-nest-pseudo"></span>
+<img src="P2_W13.trajectory_files/figure-html/tscan-nest-pseudo-1.png" alt="$t$-SNE plot of the Nestorowa HSC dataset, where each point is a cell and is colored according to its pseudo-time value. The MST obtained using a _TSCAN_-like algorithm is overlaid on top." width="672" />
+<p class="caption">
+Figure 17.4: <span class="math inline">\(t\)</span>-SNE plot of the Nestorowa HSC dataset, where each point is a cell and is colored according to its pseudo-time value. The MST obtained using a <em>TSCAN</em>-like algorithm is overlaid on top.
+</p>
+</div>
 <p><em><a href="https://bioconductor.org/packages/3.11/TSCAN">TSCAN</a></em> gains several advantages from using clusters to form the MST. The most obvious is that of computational speed as calculations are performed over clusters rather than cells. The relative coarseness of clusters protects against the per-cell noise that would otherwise reduce the stability of the MST. The interpretation of the MST is also relatively straightforward as it uses the same clusters as the rest of the analysis, allowing us to recycle previous knowledge about the biological annotations assigned to each cluster.</p>
 <p>However, the reliance on clustering is also a double-edged sword. If the clusters are not sufficiently granular, it is possible for <em><a href="https://bioconductor.org/packages/3.11/TSCAN">TSCAN</a></em> to overlook a trajectory if the entirety of the trajectory occurs in a single cluster. In addition, the MST does poorly at handling more complex events like cycles (e.g., the cell cycle, obviously) or bubbles (e.g., multiple differentation paths to the same terminal cell type). Whether or not this is a problem depends on the complexity of the global structure of the population of interest.</p>
 </div>
@@ -782,7 +896,7 @@ Figure 17.3: <span class="math inline">\(t\)</span>-SNE plot of the Nestorowa HS
 sce.sling &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce.nest, <span class="dt">reducedDim=</span><span class="st">&#39;PCA&#39;</span>)
 <span class="kw">head</span>(sce.sling<span class="op">$</span>slingPseudotime_<span class="dv">1</span>)</code></pre></div>
 <pre><code>## [1] 89.44417 76.33613 87.88466 76.93112 82.40780 72.09984</code></pre>
-<p>Here, we fitted the principal curve to the PC space for the same reasons as described above. We can then visualize the literal path taken by the fitted curve in that space (Figure <a href="trajectory-analysis.html#fig:traj-princurve-pca-nest">17.4</a>).</p>
+<p>Here, we fitted the principal curve to the PC space for the same reasons as described above. We can then visualize the literal path taken by the fitted curve in that space (Figure <a href="trajectory-analysis.html#fig:traj-princurve-pca-nest">17.5</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Setting up the colors.</span>
 <span class="kw">library</span>(RColorBrewer)
 colors &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">brewer.pal</span>(<span class="dv">11</span>,<span class="st">&#39;Spectral&#39;</span>)[<span class="op">-</span><span class="dv">6</span>])(<span class="dv">100</span>)
@@ -794,10 +908,10 @@ plotcol &lt;-<span class="st"> </span>colors[<span class="kw">cut</span>(sce.sli
 <div class="figure"><span id="fig:traj-princurve-pca-nest"></span>
 <img src="P2_W13.trajectory_files/figure-html/traj-princurve-pca-nest-1.png" alt="Plot of the first 2 PCs in the Nestorowa HSC dataset, where each point is a cell and is colored by the _slingshot_ pseudotime ordering. The path taken by the fitted principal curve is shown in black." width="672" />
 <p class="caption">
-Figure 17.4: Plot of the first 2 PCs in the Nestorowa HSC dataset, where each point is a cell and is colored by the <em>slingshot</em> pseudotime ordering. The path taken by the fitted principal curve is shown in black.
+Figure 17.5: Plot of the first 2 PCs in the Nestorowa HSC dataset, where each point is a cell and is colored by the <em>slingshot</em> pseudotime ordering. The path taken by the fitted principal curve is shown in black.
 </p>
 </div>
-<p>For other dimensionality reduction results, we color by the pseudotime ordering to identify the direction of the trajectory (Figure <a href="trajectory-analysis.html#fig:traj-princurve-umap-nest">17.5</a>). This is effectively a continuous generalization of the coloring by cluster assignment observed in other chapters.</p>
+<p>For other dimensionality reduction results, we color by the pseudotime ordering to identify the direction of the trajectory (Figure <a href="trajectory-analysis.html#fig:traj-princurve-umap-nest">17.6</a>). This is effectively a continuous generalization of the coloring by cluster assignment observed in other chapters.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scater)
 sce.sling &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce.sling, <span class="dt">dimred=</span><span class="st">&quot;PCA&quot;</span>)
 
@@ -812,10 +926,10 @@ sce.sling<span class="op">$</span>cell.type &lt;-<span class="st"> </span>sce.sl
 <div class="figure"><span id="fig:traj-princurve-umap-nest"></span>
 <img src="P2_W13.trajectory_files/figure-html/traj-princurve-umap-nest-1.png" alt="UMAP plot of the Nestorowa HSC dataset, where each point is a cell and is colored by the _slingshot_ pseudotime ordering." width="672" />
 <p class="caption">
-Figure 17.5: UMAP plot of the Nestorowa HSC dataset, where each point is a cell and is colored by the <em>slingshot</em> pseudotime ordering.
+Figure 17.6: UMAP plot of the Nestorowa HSC dataset, where each point is a cell and is colored by the <em>slingshot</em> pseudotime ordering.
 </p>
 </div>
-<p>The previous <code>slingshot()</code> call assumed that all cells in the dataset were part of a single one-dimensional trajectory, which fails to consider more complex events like bifurcations. To accommodate this, we use our previously computed cluster assignments to build a rough sketch for the global structure in the form of a MST across the cluster centroids. Each path through the MST from a designated root node is treated as a lineage; principal curves are then simultaneously fitted to all lineages, with some averaging across curves to encourage consistency in regions that are common to multiple lineages. This allows <code>slingshot()</code> to capture branching events based on divergence in the principal curves (Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.6</a>).</p>
+<p>The previous <code>slingshot()</code> call assumed that all cells in the dataset were part of a single one-dimensional trajectory, which fails to consider more complex events like bifurcations. To accommodate this, we use our previously computed cluster assignments to build a rough sketch for the global structure in the form of a MST across the cluster centroids. Each path through the MST from a designated root node is treated as a lineage; principal curves are then simultaneously fitted to all lineages, with some averaging across curves to encourage consistency in regions that are common to multiple lineages. This allows <code>slingshot()</code> to capture branching events based on divergence in the principal curves (Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.7</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.sling2 &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce.nest, <span class="dt">cluster=</span><span class="kw">colLabels</span>(sce.nest), <span class="dt">reducedDim=</span><span class="st">&#39;PCA&#39;</span>)
 
 <span class="kw">plot</span>(<span class="kw">reducedDim</span>(sce.sling2, <span class="st">&quot;PCA&quot;</span>), <span class="dt">col=</span><span class="st">&quot;grey80&quot;</span>, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">asp =</span> <span class="dv">1</span>)
@@ -823,21 +937,16 @@ Figure 17.5: UMAP plot of the Nestorowa HSC dataset, where each point is a cell 
 <div class="figure"><span id="fig:traj-princurve-clustered-nest"></span>
 <img src="P2_W13.trajectory_files/figure-html/traj-princurve-clustered-nest-1.png" alt="Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black." width="672" />
 <p class="caption">
-Figure 17.6: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
+Figure 17.7: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
 </p>
 </div>
-<p>When operating in this mode, <code>slingshot()</code> produces one pseudotime ordering for each principal curve. Cells not assigned to a particular curve will be assigned <code>NA</code> values for that curve’s ordering. It is straightforward to determine whether a particular cell is shared across multiple curves or is unique to a subset of curves (i.e., occurs after branching).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">curve.data &lt;-<span class="st"> </span><span class="kw">colData</span>(sce.sling2)
-curve.data &lt;-<span class="st"> </span>curve.data[,<span class="kw">grepl</span>(<span class="st">&quot;slingPseudotime&quot;</span>, <span class="kw">colnames</span>(curve.data))]
-
-<span class="co"># Converting to integer codes: 1 for present, 0 for absent.</span>
-is.present &lt;-<span class="st"> </span><span class="kw">lapply</span>(curve.data, <span class="cf">function</span>(x) <span class="kw">as.integer</span>(<span class="op">!</span><span class="kw">is.na</span>(x)))
-assignments &lt;-<span class="st"> </span><span class="kw">do.call</span>(paste0, is.present)
-<span class="kw">table</span>(assignments)</code></pre></div>
-<pre><code>## assignments
-## 001 010 011 100 101 110 111 
-##  39 222  12 428   2   1 952</code></pre>
-<p>For larger datasets, we can speed up the algorithm by approximating each principal curve with a fixed number of points. By default, <code>slingshot()</code> uses one point per cell to define the curve, which is unnecessarily precise when the number of cells is large. Indeed, the approximated curves in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest-approx">17.7</a> are quite similar to those in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.6</a>.</p>
+<p>When operating in this mode, <code>slingshot()</code> produces one pseudotime ordering for each principal curve. Cells not assigned to a particular curve will be assigned <code>NA</code> values for that curve’s ordering. We can use <code>slingshotBranchID()</code> to determine whether a particular cell is shared across multiple curves or is unique to a subset of curves (i.e., is located “after” branching). In this case, we can see that most cells jump directly from a global common segment (<code>1,2,3</code>) to one of the curves (<code>1</code>, <code>2</code>, <code>3</code>) without any further hierarchy, i.e., no noticeable internal branch points.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">curve.assignments &lt;-<span class="st"> </span><span class="kw">slingBranchID</span>(sce.sling2)
+<span class="kw">table</span>(curve.assignments)</code></pre></div>
+<pre><code>## curve.assignments
+##     1   1,2 1,2,3   1,3     2   2,3     3 
+##   435     6   892     2   222    39    60</code></pre>
+<p>For larger datasets, we can speed up the algorithm by approximating each principal curve with a fixed number of points. By default, <code>slingshot()</code> uses one point per cell to define the curve, which is unnecessarily precise when the number of cells is large. Indeed, the approximated curves in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest-approx">17.8</a> are quite similar to those in Figure <a href="trajectory-analysis.html#fig:traj-princurve-clustered-nest">17.7</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.sling3 &lt;-<span class="st"> </span><span class="kw">slingshot</span>(sce.nest, <span class="dt">cluster=</span><span class="kw">colLabels</span>(sce.nest), 
     <span class="dt">reducedDim=</span><span class="st">&#39;PCA&#39;</span>, <span class="dt">approx_points=</span><span class="dv">100</span>)
 
@@ -846,12 +955,9 @@ assignments &lt;-<span class="st"> </span><span class="kw">do.call</span>(paste0
 <div class="figure"><span id="fig:traj-princurve-clustered-nest-approx"></span>
 <img src="P2_W13.trajectory_files/figure-html/traj-princurve-clustered-nest-approx-1.png" alt="Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black." width="672" />
 <p class="caption">
-Figure 17.7: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
+Figure 17.8: Plot of the first 2 PCs in the Nestorowa HSC dataset, where the paths taken by the fitted principal curves are shown in black.
 </p>
 </div>
-</div>
-<div id="whatever-monocle-does-nowadays" class="section level3">
-<h3><span class="header-section-number">17.2.3</span> Whatever monocle does nowadays</h3>
 </div>
 </div>
 <div id="characterizing-trajectories" class="section level2">

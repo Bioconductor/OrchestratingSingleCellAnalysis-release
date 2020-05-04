@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-04-26" />
+<meta name="date" content="2020-05-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -363,7 +363,6 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="17.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#obtaining-pseudo-times"><i class="fa fa-check"></i><b>17.2</b> Obtaining pseudo-times</a><ul>
 <li class="chapter" data-level="17.2.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#cluster-based-minimum-spanning-tree"><i class="fa fa-check"></i><b>17.2.1</b> Cluster-based minimum spanning tree</a></li>
 <li class="chapter" data-level="17.2.2" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#principal-curves"><i class="fa fa-check"></i><b>17.2.2</b> Principal curves</a></li>
-<li class="chapter" data-level="17.2.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#whatever-monocle-does-nowadays"><i class="fa fa-check"></i><b>17.2.3</b> Whatever monocle does nowadays</a></li>
 </ul></li>
 <li class="chapter" data-level="17.3" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#characterizing-trajectories"><i class="fa fa-check"></i><b>17.3</b> Characterizing trajectories</a><ul>
 <li class="chapter" data-level="17.3.1" data-path="trajectory-analysis.html"><a href="trajectory-analysis.html#changes-along-a-trajectory"><i class="fa fa-check"></i><b>17.3.1</b> Changes along a trajectory</a></li>
@@ -707,7 +706,7 @@ sce<span class="fl">.416</span>b<span class="op">$</span>block &lt;-<span class=
 <li>The proportion of reads mapped to spike-in transcripts is calculated relative to the total count across all features (including spike-ins) for each cell. As the same amount of spike-in RNA should have been added to each cell, any enrichment in spike-in counts is symptomatic of loss of endogenous RNA. Thus, high proportions are indicative of poor-quality cells where endogenous RNA has been lost due to, e.g., partial cell lysis or RNA degradation during dissociation.</li>
 <li>In the absence of spike-in transcripts, the proportion of reads mapped to genes in the mitochondrial genome can be used. High proportions are indicative of poor-quality cells <span class="citation">(Islam et al. <a href="#ref-islam2014quantitative">2014</a>; Ilicic et al. <a href="#ref-ilicic2016classification">2016</a>)</span>, presumably because of loss of cytoplasmic RNA from perforated cells. The reasoning is that, in the presence of modest damage, the holes in the cell membrane permit efflux of individual transcript molecules but are too small to allow mitochondria to escape, leading to a relative enrichment of mitochondrial transcripts.</li>
 </ul>
-<p>For each cell, we calculate these QC metrics using the <code>perCellQCMetrics()</code> function from the <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> package <span class="citation">(McCarthy et al. <a href="#ref-mccarthy2017scater">2017</a>)</span>. The <code>sum</code> column contains the total count for each cell, the <code>detected</code> column contains the number of detected genes, <code>subsets_Mito_percent</code> contains the percentage of reads mapped to mitochondrial transcripts (based on Ensembl annotation) and <code>altexps_ERCC_percent</code> contains the percentage of reads mapped to ERCC transcripts.</p>
+<p>For each cell, we calculate these QC metrics using the <code>perCellQCMetrics()</code> function from the <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> package <span class="citation">(McCarthy et al. <a href="#ref-mccarthy2017scater">2017</a>)</span>. The <code>sum</code> column contains the total count for each cell and the <code>detected</code> column contains the number of detected genes. The <code>subsets_Mito_percent</code> column contains the percentage of reads mapped to mitochondrial transcripts. (For demonstration purposes, we show two different approaches of determining the genomic location of each transcript.) Finally, the <code>altexps_ERCC_percent</code> column contains the percentage of reads mapped to ERCC transcripts.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Retrieving the mitochondrial transcripts using genomic locations included in</span>
 <span class="co"># the row-level annotation for the SingleCellExperiment.</span>
 location &lt;-<span class="st"> </span><span class="kw">rowRanges</span>(sce<span class="fl">.416</span>b)
@@ -777,7 +776,7 @@ df</code></pre></div>
 ## 190            41116                     7             2.102562   1955519
 ## 191             1883                     7             3.350892     56194
 ## 192            16289                     7             0.843271   1931645</code></pre>
-<p>Alternatively, users may prefer to use the <code>addPerCellQC()</code> function. This automatically appends the per-cell QC statistics to the <code>colData</code> of the <code>SingleCellExperiment</code> object, allowing us to retain all relevant information in a single object for later manipulation.</p>
+<p>Alternatively, users may prefer to use the <code>addPerCellQC()</code> function. This computes and appends the per-cell QC statistics to the <code>colData</code> of the <code>SingleCellExperiment</code> object, allowing us to retain all relevant information in a single object for later manipulation.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce<span class="fl">.416</span>b &lt;-<span class="st"> </span><span class="kw">addPerCellQC</span>(sce<span class="fl">.416</span>b, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))
 <span class="kw">colnames</span>(<span class="kw">colData</span>(sce<span class="fl">.416</span>b))</code></pre></div>
 <pre><code>##  [1] &quot;Source Name&quot;              &quot;cell line&quot;               
@@ -820,18 +819,18 @@ discard &lt;-<span class="st"> </span>qc.lib <span class="op">|</span><span clas
 <div id="identifying-outliers" class="section level4">
 <h4><span class="header-section-number">6.3.2.1</span> Identifying outliers</h4>
 <p>To obtain an adaptive threshold, we assume that most of the dataset consists of high-quality cells. We then identify cells that are outliers for the various QC metrics, based on the median absolute deviation (MAD) from the median value of each metric across all cells. Specifically, a value is considered an outlier if it is more than 3 MADs from the median in the “problematic” direction. This is loosely motivated by the fact that such a filter will retain 99% of non-outlier values that follow a normal distribution.</p>
-<p>For the 416B data, we identify cells with log-transformed library sizes that are more than 3 MADs below the median. A log-transformation is used to improve resolution at small values when <code>type=&quot;lower&quot;</code>. In particular, it guarantees that the threshold is not a negative value, which would be meaningless for quality control on these metrics. Moreover, these metrics can occasionally exhibit a heavy right tail, and the log-transformation makes the distribution seem more normal to justify the 99% rationale mentioned above.</p>
+<p>For the 416B data, we identify cells with log-transformed library sizes that are more than 3 MADs below the median. A log-transformation is used to improve resolution at small values when <code>type=&quot;lower&quot;</code>. Specifically, it guarantees that the threshold is not a negative value, which would be meaningless for a non-negative metric. Furthermore, it is not uncommon for the distribution of library sizes to exhibit a heavy right tail; the log-transformation avoids inflation of the MAD in a manner that might compromise outlier detection on the left tail. (More generally, it makes the distribution seem more normal to justify the 99% rationale mentioned above.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc.lib2 &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(df<span class="op">$</span>sum, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</code></pre></div>
 <p>We do the same for the log-transformed number of expressed genes.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc.nexprs2 &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(df<span class="op">$</span>detected, <span class="dt">log=</span><span class="ot">TRUE</span>, <span class="dt">type=</span><span class="st">&quot;lower&quot;</span>)</code></pre></div>
-<p><code>isOutlier()</code> will also return the exact filter thresholds for each metric in the attributes of the output vector. These is useful for checking whether the automatically selected thresholds are appropriate.</p>
+<p><code>isOutlier()</code> will also return the exact filter thresholds for each metric in the attributes of the output vector. These are useful for checking whether the automatically selected thresholds are appropriate.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attr</span>(qc.lib2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
 <pre><code>##    lower   higher 
 ## 434082.9      Inf</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attr</span>(qc.nexprs2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
 <pre><code>##    lower   higher 
 ## 5231.468      Inf</code></pre>
-<p>We identify outliers for the proportion-based metrics in a similar manner. Here, no transformation is performed as we are aiming to identify and remove large outliers that should already be clearly distinguishable from zero.</p>
+<p>We identify outliers for the proportion-based metrics with the same function. These distributions frequently exhibit a heavy right tail, but unlike the two previous metrics, it is the right tail itself that contains the putative low-quality cells. Thus, we do not perform any transformation to shrink the tail - rather, our hope is that the cells in the tail are identified as large outliers. (While it is theoretically possible to obtain a meaningless threshold above 100%, this is rare enough to not be of practical concern.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc.spike2 &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(df<span class="op">$</span>altexps_ERCC_percent, <span class="dt">type=</span><span class="st">&quot;higher&quot;</span>)
 <span class="kw">attr</span>(qc.spike2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
 <pre><code>##    lower   higher 
@@ -840,7 +839,7 @@ discard &lt;-<span class="st"> </span>qc.lib <span class="op">|</span><span clas
 <span class="kw">attr</span>(qc.mito2, <span class="st">&quot;thresholds&quot;</span>)</code></pre></div>
 <pre><code>##    lower   higher 
 ##     -Inf 11.91734</code></pre>
-<p>A cell that is an outlier for any of these metrics is considered to be of low-quality and discarded.</p>
+<p>A cell that is an outlier for any of these metrics is considered to be of low quality and discarded.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">discard2 &lt;-<span class="st"> </span>qc.lib2 <span class="op">|</span><span class="st"> </span>qc.nexprs2 <span class="op">|</span><span class="st"> </span>qc.spike2 <span class="op">|</span><span class="st"> </span>qc.mito2
 
 <span class="co"># Summarize the number of cells removed for each reason.</span>
