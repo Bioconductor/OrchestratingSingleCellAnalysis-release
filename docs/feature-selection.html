@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 8 Feature selection | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 8 Feature selection | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1024,19 +1024,19 @@ cd8.sets &lt;-<span class="st"> </span>c7.sets[<span class="kw">grep</span>(<spa
 cd8.genes &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol <span class="op">%in%</span><span class="st"> </span>cd8.sets<span class="op">$</span>human_gene_symbol
 <span class="kw">summary</span>(cd8.genes)</code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
-## logical   32866     828</code></pre>
+## logical   32869     825</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using GSE11924 to distinguish between T helper subtypes</span>
 th.sets &lt;-<span class="st"> </span>c7.sets[<span class="kw">grep</span>(<span class="st">&quot;GSE11924&quot;</span>, c7.sets<span class="op">$</span>gs_name),]
 th.genes &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol <span class="op">%in%</span><span class="st"> </span>th.sets<span class="op">$</span>human_gene_symbol
 <span class="kw">summary</span>(th.genes)</code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
-## logical   31781    1913</code></pre>
+## logical   31786    1908</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using GSE11961 to distinguish between B cell subtypes</span>
 b.sets &lt;-<span class="st"> </span>c7.sets[<span class="kw">grep</span>(<span class="st">&quot;GSE11961&quot;</span>, c7.sets<span class="op">$</span>gs_name),]
 b.genes &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>Symbol <span class="op">%in%</span><span class="st"> </span>b.sets<span class="op">$</span>human_gene_symbol
 <span class="kw">summary</span>(b.genes)</code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
-## logical   28158    5536</code></pre>
+## logical   28185    5509</code></pre>
 <p>Of course, the downside of focusing on pre-defined genes is that it will limit our capacity to detect novel or unexpected aspects of variation. Thus, this kind of focused analysis should be complementary to (rather than a replacement for) the unsupervised feature selection strategies discussed previously.</p>
 <p>Alternatively, we can also invert this reasoning to remove genes that are unlikely to be of interest prior to downstream analyses, thus avoiding unwanted variation that interferes with downstream interpretation. Common candidates for removal include ribosomal protein genes or mitochondrial genes; for immune cell subsets, we might also be inclined to remove immunoglobulin genes and T cell receptor genes, where clonal expression introduces (possibly irrelevant) population structure.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identifying ribosomal proteins:</span>
@@ -1048,7 +1048,7 @@ c2.sets &lt;-<span class="st"> </span><span class="kw">msigdbr</span>(<span clas
 ribo.set &lt;-<span class="st"> </span>c2.sets[c2.sets<span class="op">$</span>gs_name<span class="op">==</span><span class="st">&quot;KEGG_RIBOSOME&quot;</span>,]<span class="op">$</span>human_gene_symbol
 ribo.discard &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce.pbmc) <span class="op">%in%</span><span class="st"> </span>ribo.set
 <span class="kw">sum</span>(ribo.discard)</code></pre></div>
-<pre><code>## [1] 86</code></pre>
+<pre><code>## [1] 87</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(AnnotationHub)
 edb &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73881&quot;</span>]]
 anno &lt;-<span class="st"> </span><span class="kw">select</span>(edb, <span class="dt">keys=</span><span class="kw">rowData</span>(sce.pbmc)<span class="op">$</span>ID, <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, 
@@ -1103,13 +1103,13 @@ sce.pbmc.original &lt;-<span class="st"> </span><span class="kw">altExp</span>(s
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1124,59 +1124,59 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] scater_1.15.33              ggplot2_3.3.0              
- [3] ensembldb_2.11.4            AnnotationFilter_1.11.0    
- [5] GenomicFeatures_1.39.7      AnnotationDbi_1.49.1       
- [7] AnnotationHub_2.19.12       BiocFileCache_1.11.6       
- [9] dbplyr_1.4.3                msigdbr_7.0.1              
-[11] scran_1.15.32               SingleCellExperiment_1.9.3 
-[13] SummarizedExperiment_1.17.5 DelayedArray_0.13.12       
-[15] matrixStats_0.56.0          Biobase_2.47.3             
-[17] GenomicRanges_1.39.3        GenomeInfoDb_1.23.17       
-[19] IRanges_2.21.8              S4Vectors_0.25.15          
-[21] BiocGenerics_0.33.3         OSCAUtils_0.0.2            
-[23] BiocStyle_2.15.8           
+ [1] scater_1.16.0               ggplot2_3.3.0              
+ [3] ensembldb_2.12.1            AnnotationFilter_1.12.0    
+ [5] GenomicFeatures_1.40.0      AnnotationDbi_1.50.0       
+ [7] AnnotationHub_2.20.0        BiocFileCache_1.12.0       
+ [9] dbplyr_1.4.3                msigdbr_7.1.1              
+[11] scran_1.16.0                SingleCellExperiment_1.10.1
+[13] SummarizedExperiment_1.18.1 DelayedArray_0.14.0        
+[15] matrixStats_0.56.0          Biobase_2.48.0             
+[17] GenomicRanges_1.40.0        GenomeInfoDb_1.24.0        
+[19] IRanges_2.22.1              S4Vectors_0.26.0           
+[21] BiocGenerics_0.34.0         OSCAUtils_0.0.2            
+[23] BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
- [3] ellipsis_0.3.0                XVector_0.27.2               
- [5] BiocNeighbors_1.5.7           bit64_0.9-7                  
- [7] interactiveDisplayBase_1.25.0 codetools_0.2-16             
- [9] knitr_1.28                    Rsamtools_2.3.7              
+ [3] ellipsis_0.3.1                XVector_0.28.0               
+ [5] BiocNeighbors_1.6.0           bit64_0.9-7                  
+ [7] interactiveDisplayBase_1.26.0 codetools_0.2-16             
+ [9] knitr_1.28                    Rsamtools_2.4.0              
 [11] shiny_1.4.0.2                 BiocManager_1.30.10          
 [13] compiler_4.0.0                httr_1.4.1                   
 [15] dqrng_0.2.1                   lazyeval_0.2.2               
 [17] assertthat_0.2.1              Matrix_1.2-18                
-[19] fastmap_1.0.1                 limma_3.43.8                 
-[21] later_1.0.0                   BiocSingular_1.3.2           
+[19] fastmap_1.0.1                 limma_3.44.1                 
+[21] later_1.0.0                   BiocSingular_1.4.0           
 [23] htmltools_0.4.0               prettyunits_1.1.1            
 [25] tools_4.0.0                   rsvd_1.0.3                   
 [27] igraph_1.2.5                  gtable_0.3.0                 
-[29] glue_1.4.0                    GenomeInfoDbData_1.2.3       
+[29] glue_1.4.1                    GenomeInfoDbData_1.2.3       
 [31] dplyr_0.8.5                   rappdirs_0.3.1               
-[33] Rcpp_1.0.4.6                  vctrs_0.2.4                  
-[35] Biostrings_2.55.7             rtracklayer_1.47.0           
-[37] DelayedMatrixStats_1.9.1      xfun_0.13                    
-[39] stringr_1.4.0                 ps_1.3.2                     
+[33] Rcpp_1.0.4.6                  vctrs_0.3.0                  
+[35] Biostrings_2.56.0             rtracklayer_1.48.0           
+[37] DelayedMatrixStats_1.10.0     xfun_0.13                    
+[39] stringr_1.4.0                 ps_1.3.3                     
 [41] mime_0.9                      lifecycle_0.2.0              
 [43] irlba_2.3.3                   statmod_1.4.34               
-[45] XML_3.99-0.3                  edgeR_3.29.1                 
-[47] zlibbioc_1.33.1               scales_1.1.0                 
-[49] ProtGenerics_1.19.3           hms_0.5.3                    
+[45] XML_3.99-0.3                  edgeR_3.30.0                 
+[47] zlibbioc_1.34.0               scales_1.1.1                 
+[49] ProtGenerics_1.20.0           hms_0.5.3                    
 [51] promises_1.1.0                yaml_2.2.1                   
 [53] curl_4.3                      memoise_1.1.0                
-[55] gridExtra_2.3                 biomaRt_2.43.6               
+[55] gridExtra_2.3                 biomaRt_2.44.0               
 [57] stringi_1.4.6                 RSQLite_2.2.0                
 [59] BiocVersion_3.11.1            highr_0.8                    
-[61] BiocParallel_1.21.3           rlang_0.4.5                  
+[61] BiocParallel_1.22.0           rlang_0.4.6                  
 [63] pkgconfig_2.0.3               bitops_1.0-6                 
 [65] evaluate_0.14                 lattice_0.20-41              
-[67] purrr_0.3.4                   GenomicAlignments_1.23.2     
+[67] purrr_0.3.4                   GenomicAlignments_1.24.0     
 [69] bit_1.1-15.2                  processx_3.4.2               
-[71] tidyselect_1.0.0              magrittr_1.5                 
-[73] bookdown_0.18                 R6_2.4.1                     
+[71] tidyselect_1.1.0              magrittr_1.5                 
+[73] bookdown_0.19                 R6_2.4.1                     
 [75] DBI_1.1.0                     withr_2.2.0                  
-[77] pillar_1.4.3                  RCurl_1.98-1.2               
+[77] pillar_1.4.4                  RCurl_1.98-1.2               
 [79] tibble_3.0.1                  crayon_1.3.4                 
 [81] rmarkdown_2.1                 viridis_0.5.1                
 [83] progress_1.2.2                locfit_1.5-9.4               

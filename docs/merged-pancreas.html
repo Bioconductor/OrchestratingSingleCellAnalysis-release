@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 32 Merged human pancreas datasets | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 32 Merged human pancreas datasets | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -711,10 +711,10 @@ top.grun &lt;-<span class="st"> </span><span class="kw">getTopHVGs</span>(dec.gr
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.grun</code></pre></div>
 <pre><code>## class: SingleCellExperiment 
-## dim: 17556 1063 
+## dim: 17548 1063 
 ## metadata(0):
 ## assays(2): counts logcounts
-## rownames(17556): ENSG00000268895 ENSG00000121410 ... ENSG00000074755
+## rownames(17548): ENSG00000268895 ENSG00000121410 ... ENSG00000074755
 ##   ENSG00000036549
 ## rowData names(2): symbol chr
 ## colnames(1063): D2ex_1 D2ex_2 ... D17TGFB_94 D17TGFB_95
@@ -813,14 +813,14 @@ tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt"
 tab</code></pre></div>
 <pre><code>##        Batch
 ## Cluster   1   2
-##      1  243 281
-##      2  308 257
+##      1  239 281
+##      2  312 257
 ##      3  200 837
 ##      4   56 193
 ##      5   37   1
 ##      6   24 108
-##      7  105 379
-##      8   67  92
+##      7  109 391
+##      8   63  80
 ##      9   18 115
 ##      10   0  17
 ##      11   5  19</code></pre>
@@ -974,25 +974,25 @@ tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt"
 tab</code></pre></div>
 <pre><code>##        Batch
 ## Cluster Grun Lawlor Muraro Seger
-##      1   311     28    256   383
-##      2   154    227    271   140
-##      3    94    244    386   177
-##      4   226     17    253   152
-##      5     0      0      0    43
+##      1    77     33    677   211
+##      2   311     26    254   383
+##      3   104    244    390   180
+##      4   225     16    246   138
+##      5   125    203    158   108
 ##      6    56     17    196   109
-##      7     0      0      0    42
-##      8    77      9     76    11
-##      9     0      0      0    50
-##      10   24     18    107    55
-##      11   27      0      1     0
-##      12   48     12    573   187
-##      13    0      1     16     4
-##      14   20     18    118   157
-##      15    0      0      0   209
-##      16   21      5     27    35
+##      7     0      0      0    43
+##      8     0      0      0    42
+##      9     0      2     17     4
+##      10   69     12     82    16
+##      11   24     19    108    55
+##      12    0      0      0    50
+##      13   27      0      1     0
+##      14   22      6     34    49
+##      15   18     18    117   157
+##      16    0      0      0   208
 ##      17    0      0      0    26
 ##      18    0      0      0   108
-##      19    0      0      0   185
+##      19    0      0      0   186
 ##      20    5      8     19    17</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mnn.pancreas &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(mnn.pancreas, <span class="dt">dimred=</span><span class="st">&quot;corrected&quot;</span>)
 gridExtra<span class="op">::</span><span class="kw">grid.arrange</span>(
@@ -1065,9 +1065,9 @@ tab</code></pre></div>
 ## clusters Grun Lawlor Muraro Seger
 ##       1   246     20    278   187
 ##       2   200    239    835   862
-##       3   171    254    472   294
+##       3   171    254    473   294
 ##       4   315     27    260   387
-##       5    57     17    194   108
+##       5    57     17    193   108
 ##       6    24     18    107    55
 ##       7    26      0      0     0
 ##       8     5      9     19    17
@@ -1103,7 +1103,7 @@ proposed[proposed<span class="op">==</span><span class="st">&quot;psc&quot;</spa
 ##   alpha                     1 1851   23    7    1    0    0    1    3    0
 ##   beta                      3    3  919    4    0    2    0    1    7    1
 ##   co-expression             0    1   38    0    0    0    0    0    0    0
-##   delta                     0    1    4    2  307    0    0    1    1    0
+##   delta                     0    1    5    2  306    0    0    1    1    0
 ##   ductal                    7    0    4  613    0    5    0    0    1   10
 ##   endothelial               0    0    0    0    0    1    0   33    0    0
 ##   epsilon                   0    0    1    0    0    0    0    0    7    0
@@ -1123,13 +1123,13 @@ proposed[proposed<span class="op">==</span><span class="st">&quot;psc&quot;</spa
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1145,41 +1145,53 @@ attached base packages:
 
 other attached packages:
  [1] fossil_0.4.0                shapefiles_0.7             
- [3] foreign_0.8-78              maps_3.3.0                 
- [5] sp_1.4-1                    scater_1.15.31             
- [7] ggplot2_3.3.0               scran_1.15.29              
- [9] batchelor_1.3.16            SingleCellExperiment_1.9.3 
-[11] SummarizedExperiment_1.17.5 DelayedArray_0.13.12       
-[13] matrixStats_0.56.0          Biobase_2.47.3             
-[15] GenomicRanges_1.39.3        GenomeInfoDb_1.23.17       
-[17] IRanges_2.21.8              S4Vectors_0.25.15          
-[19] BiocGenerics_0.33.3         OSCAUtils_0.0.2            
-[21] BiocStyle_2.15.8           
+ [3] foreign_0.8-79              maps_3.3.0                 
+ [5] sp_1.4-1                    scater_1.16.0              
+ [7] ggplot2_3.3.0               scran_1.16.0               
+ [9] batchelor_1.4.0             SingleCellExperiment_1.10.1
+[11] SummarizedExperiment_1.18.1 DelayedArray_0.14.0        
+[13] matrixStats_0.56.0          Biobase_2.48.0             
+[15] GenomicRanges_1.40.0        GenomeInfoDb_1.24.0        
+[17] IRanges_2.22.1              S4Vectors_0.26.0           
+[19] BiocGenerics_0.34.0         OSCAUtils_0.0.2            
+[21] BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
- [1] viridis_0.5.1            edgeR_3.29.1             BiocSingular_1.3.2      
- [4] viridisLite_0.3.0        DelayedMatrixStats_1.9.1 assertthat_0.2.1        
- [7] statmod_1.4.34           highr_0.8                BiocManager_1.30.10     
-[10] dqrng_0.2.1              GenomeInfoDbData_1.2.3   vipor_0.4.5             
-[13] yaml_2.2.1               pillar_1.4.3             lattice_0.20-41         
-[16] glue_1.4.0               limma_3.43.8             digest_0.6.25           
-[19] XVector_0.27.2           colorspace_1.4-1         cowplot_1.0.0           
-[22] htmltools_0.4.0          Matrix_1.2-18            pkgconfig_2.0.3         
-[25] bookdown_0.18            zlibbioc_1.33.1          purrr_0.3.4             
-[28] scales_1.1.0             processx_3.4.2           Rtsne_0.15              
-[31] BiocParallel_1.21.2      tibble_3.0.1             farver_2.0.3            
-[34] ellipsis_0.3.0           withr_2.2.0              magrittr_1.5            
-[37] crayon_1.3.4             evaluate_0.14            ps_1.3.2                
-[40] beeswarm_0.2.3           tools_4.0.0              lifecycle_0.2.0         
-[43] stringr_1.4.0            munsell_0.5.0            locfit_1.5-9.4          
-[46] irlba_2.3.3              callr_3.4.3              compiler_4.0.0          
-[49] rsvd_1.0.3               rlang_0.4.5              grid_4.0.0              
-[52] RCurl_1.98-1.2           BiocNeighbors_1.5.5      igraph_1.2.5            
-[55] labeling_0.3             bitops_1.0-6             rmarkdown_2.1           
-[58] gtable_0.3.0             codetools_0.2-16         R6_2.4.1                
-[61] gridExtra_2.3            knitr_1.28               dplyr_0.8.5             
-[64] stringi_1.4.6            ggbeeswarm_0.6.0         Rcpp_1.0.4.6            
-[67] vctrs_0.2.4              tidyselect_1.0.0         xfun_0.13               </code></pre>
+ [1] viridis_0.5.1             edgeR_3.30.0             
+ [3] BiocSingular_1.4.0        viridisLite_0.3.0        
+ [5] DelayedMatrixStats_1.10.0 assertthat_0.2.1         
+ [7] statmod_1.4.34            highr_0.8                
+ [9] BiocManager_1.30.10       dqrng_0.2.1              
+[11] GenomeInfoDbData_1.2.3    vipor_0.4.5              
+[13] yaml_2.2.1                pillar_1.4.4             
+[15] lattice_0.20-41           glue_1.4.1               
+[17] limma_3.44.1              digest_0.6.25            
+[19] XVector_0.28.0            colorspace_1.4-1         
+[21] cowplot_1.0.0             htmltools_0.4.0          
+[23] Matrix_1.2-18             pkgconfig_2.0.3          
+[25] bookdown_0.19             zlibbioc_1.34.0          
+[27] purrr_0.3.4               scales_1.1.1             
+[29] processx_3.4.2            Rtsne_0.15               
+[31] BiocParallel_1.22.0       tibble_3.0.1             
+[33] farver_2.0.3              ellipsis_0.3.1           
+[35] withr_2.2.0               magrittr_1.5             
+[37] crayon_1.3.4              evaluate_0.14            
+[39] ps_1.3.3                  beeswarm_0.2.3           
+[41] tools_4.0.0               lifecycle_0.2.0          
+[43] stringr_1.4.0             munsell_0.5.0            
+[45] locfit_1.5-9.4            irlba_2.3.3              
+[47] callr_3.4.3               compiler_4.0.0           
+[49] rsvd_1.0.3                rlang_0.4.6              
+[51] grid_4.0.0                RCurl_1.98-1.2           
+[53] BiocNeighbors_1.6.0       igraph_1.2.5             
+[55] labeling_0.3              bitops_1.0-6             
+[57] rmarkdown_2.1             gtable_0.3.0             
+[59] codetools_0.2-16          R6_2.4.1                 
+[61] gridExtra_2.3             knitr_1.28               
+[63] dplyr_0.8.5               stringi_1.4.6            
+[65] ggbeeswarm_0.6.0          Rcpp_1.0.4.6             
+[67] vctrs_0.3.0               tidyselect_1.1.0         
+[69] xfun_0.13                </code></pre>
 </div>
 
 </div>

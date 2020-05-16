@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 Quality Control | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 Quality Control | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -704,7 +704,7 @@ sce<span class="fl">.416</span>b<span class="op">$</span>block &lt;-<span class=
 <li>The library size is defined as the total sum of counts across all relevant features for each cell. Here, we will consider the relevant features to be the endogenous genes. Cells with small library sizes are of low quality as the RNA has been lost at some point during library preparation, either due to cell lysis or inefficient cDNA capture and amplification.</li>
 <li>The number of expressed features in each cell is defined as the number of endogenous genes with non-zero counts for that cell. Any cell with very few expressed genes is likely to be of poor quality as the diverse transcript population has not been successfully captured.</li>
 <li>The proportion of reads mapped to spike-in transcripts is calculated relative to the total count across all features (including spike-ins) for each cell. As the same amount of spike-in RNA should have been added to each cell, any enrichment in spike-in counts is symptomatic of loss of endogenous RNA. Thus, high proportions are indicative of poor-quality cells where endogenous RNA has been lost due to, e.g., partial cell lysis or RNA degradation during dissociation.</li>
-<li>In the absence of spike-in transcripts, the proportion of reads mapped to genes in the mitochondrial genome can be used. High proportions are indicative of poor-quality cells <span class="citation">(Islam et al. <a href="#ref-islam2014quantitative">2014</a>; Ilicic et al. <a href="#ref-ilicic2016classification">2016</a>)</span>, presumably because of loss of cytoplasmic RNA from perforated cells. The reasoning is that, in the presence of modest damage, the holes in the cell membrane permit efflux of individual transcript molecules but are too small to allow mitochondria to escape, leading to a relative enrichment of mitochondrial transcripts.</li>
+<li>In the absence of spike-in transcripts, the proportion of reads mapped to genes in the mitochondrial genome can be used. High proportions are indicative of poor-quality cells <span class="citation">(Islam et al. <a href="#ref-islam2014quantitative">2014</a>; Ilicic et al. <a href="#ref-ilicic2016classification">2016</a>)</span>, presumably because of loss of cytoplasmic RNA from perforated cells. The reasoning is that, in the presence of modest damage, the holes in the cell membrane permit efflux of individual transcript molecules but are too small to allow mitochondria to escape, leading to a relative enrichment of mitochondrial transcripts. For single-nuclei RNA-seq experiments, high proportions are also useful as they can mark cells where the cytoplasm has not been successfully stripped.</li>
 </ul>
 <p>For each cell, we calculate these QC metrics using the <code>perCellQCMetrics()</code> function from the <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> package <span class="citation">(McCarthy et al. <a href="#ref-mccarthy2017scater">2017</a>)</span>. The <code>sum</code> column contains the total count for each cell and the <code>detected</code> column contains the number of detected genes. The <code>subsets_Mito_percent</code> column contains the percentage of reads mapped to mitochondrial transcripts. (For demonstration purposes, we show two different approaches of determining the genomic location of each transcript.) Finally, the <code>altexps_ERCC_percent</code> column contains the percentage of reads mapped to ERCC transcripts.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Retrieving the mitochondrial transcripts using genomic locations included in</span>
@@ -713,12 +713,12 @@ location &lt;-<span class="st"> </span><span class="kw">rowRanges</span>(sce<spa
 is.mito &lt;-<span class="st"> </span><span class="kw">any</span>(<span class="kw">seqnames</span>(location)<span class="op">==</span><span class="st">&quot;MT&quot;</span>)
 
 <span class="co"># ALTERNATIVELY: using resources in AnnotationHub to retrieve chromosomal</span>
-<span class="co"># locations given the Ensembl IDs. Same result.</span>
+<span class="co"># locations given the Ensembl IDs; this should yield the same result.</span>
 <span class="kw">library</span>(AnnotationHub)
 ens.mm.v97 &lt;-<span class="st"> </span><span class="kw">AnnotationHub</span>()[[<span class="st">&quot;AH73905&quot;</span>]]
 chr.loc &lt;-<span class="st"> </span><span class="kw">mapIds</span>(ens.mm.v97, <span class="dt">keys=</span><span class="kw">rownames</span>(sce<span class="fl">.416</span>b),
     <span class="dt">keytype=</span><span class="st">&quot;GENEID&quot;</span>, <span class="dt">column=</span><span class="st">&quot;SEQNAME&quot;</span>)
-is.mito &lt;-<span class="st"> </span><span class="kw">which</span>(chr.loc<span class="op">==</span><span class="st">&quot;MT&quot;</span>)
+is.mito.alt &lt;-<span class="st"> </span><span class="kw">which</span>(chr.loc<span class="op">==</span><span class="st">&quot;MT&quot;</span>)
 
 <span class="kw">library</span>(scater)
 df &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce<span class="fl">.416</span>b, <span class="dt">subsets=</span><span class="kw">list</span>(<span class="dt">Mito=</span>is.mito))
@@ -869,7 +869,7 @@ discard &lt;-<span class="st"> </span>qc.lib <span class="op">|</span><span clas
 <h4><span class="header-section-number">6.3.2.3</span> Considering experimental factors</h4>
 <p>More complex studies may involve batches of cells generated with different experimental parameters (e.g., sequencing depth). In such cases, the adaptive strategy should be applied to each batch separately. It makes little sense to compute medians and MADs from a mixture distribution containing samples from multiple batches. For example, if the sequencing coverage is lower in one batch compared to the others, it will drag down the median and inflate the MAD. This will reduce the suitability of the adaptive threshold for the other batches.</p>
 <p>If each batch is represented by its own <code>SingleCellExperiment</code>, the <code>isOutlier()</code> function can be directly applied to each batch as shown above. However, if cells from all batches have been merged into a single <code>SingleCellExperiment</code>, the <code>batch=</code> argument should be used to ensure that outliers are identified <em>within</em> each batch. This allows <code>isOutlier()</code> to accommodate systematic differences in the QC metrics across batches.</p>
-<p>We will again illustrate using the 416B dataset, which contains two experimental factors - plate of origin and oncogene induction status. We combine these factors together and use this in the <code>batch=</code> argument to <code>isOutlier()</code> via <code>quickPerCellQC()</code>. This results in the removal of more cells as the MAD is no longer inflated by (i) systematic differences in sequencing depth between batches and (ii) differences in number of genes expressed upon oncogene induction.</p>
+<p>We will again illustrate using the 416B dataset, which contains two experimental factors - plate of origin and oncogene induction status. We combine these factors together and use this in the <code>batch=</code> argument to <code>isOutlier()</code> via <code>quickPerCellQC()</code>. This results in the removal of slightly more cells as the MAD is no longer inflated by (i) systematic differences in sequencing depth between batches and (ii) differences in number of genes expressed upon oncogene induction.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">batch &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce<span class="fl">.416</span>b<span class="op">$</span>phenotype, <span class="st">&quot;-&quot;</span>, sce<span class="fl">.416</span>b<span class="op">$</span>Plate)
 batch.reasons &lt;-<span class="st"> </span><span class="kw">quickPerCellQC</span>(df, <span class="dt">percent_subsets=</span><span class="kw">c</span>(<span class="st">&quot;subsets_Mito_percent&quot;</span>,
     <span class="st">&quot;altexps_ERCC_percent&quot;</span>), <span class="dt">batch=</span>batch)
@@ -925,14 +925,14 @@ outlying &lt;-<span class="st"> </span><span class="kw">adjOutlyingness</span>(s
 multi.outlier &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(outlying, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>)
 <span class="kw">summary</span>(multi.outlier)</code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
-## logical     183       9</code></pre>
+## logical     182      10</code></pre>
 <p>This and related approaches like PCA-based outlier detection and support vector machines can provide more power to distinguish low-quality cells from high-quality counterparts <span class="citation">(Ilicic et al. <a href="#ref-ilicic2016classification">2016</a>)</span> as they can exploit patterns across many QC metrics. However, this comes at some cost to interpretability, as the reason for removing a given cell may not always be obvious.</p>
 <p>For completeness, we note that outliers can also be identified from the gene expression profiles, rather than QC metrics. We consider this to be a risky strategy as it can remove high-quality cells in rare populations.</p>
 </div>
 </div>
 <div id="quality-control-plots" class="section level2">
 <h2><span class="header-section-number">6.4</span> Checking diagnostic plots</h2>
-<p>It is good practice to inspect the distributions of QC metrics (Figure <a href="quality-control.html#fig:qc-dist-416b">6.2</a>) to identify possible problems. In the most ideal case, we would see normal distributions that would justify the 3 MAD threshold used in outlier detection. A large proportion of cells in another mode suggests that the QC metrics might be correlated with some biological state, potentially leading to the loss of distinct cell types during filtering. Batches with systematically poor values for any metric can also be quickly identified for further troubleshooting or outright removal, as done in Figure <a href="quality-control.html#fig:qc-plot-pancreas">6.1</a> above.</p>
+<p>It is good practice to inspect the distributions of QC metrics (Figure <a href="quality-control.html#fig:qc-dist-416b">6.2</a>) to identify possible problems. In the most ideal case, we would see normal distributions that would justify the 3 MAD threshold used in outlier detection. A large proportion of cells in another mode suggests that the QC metrics might be correlated with some biological state, potentially leading to the loss of distinct cell types during filtering; or that there were inconsistencies with library preparation for a subset of cells, a not-uncommon phenomenon in plate-based protocols. Batches with systematically poor values for any metric can then be quickly identified for further troubleshooting or outright removal, much like in Figure <a href="quality-control.html#fig:qc-plot-pancreas">6.1</a> above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colData</span>(sce<span class="fl">.416</span>b) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">colData</span>(sce<span class="fl">.416</span>b), df)
 sce<span class="fl">.416</span>b<span class="op">$</span>block &lt;-<span class="st"> </span><span class="kw">factor</span>(sce<span class="fl">.416</span>b<span class="op">$</span>block)
 sce<span class="fl">.416</span>b<span class="op">$</span>phenotype &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;induced&quot;</span>, sce<span class="fl">.416</span>b<span class="op">$</span>phenotype),
@@ -971,7 +971,7 @@ Figure 6.2: Distribution of QC metrics for each batch and phenotype in the 416B 
 Figure 6.3: Percentage of reads assigned to mitochondrial transcripts, plotted against the library size for each phenotype and batch.
 </p>
 </div>
-<p>Comparison of the ERCC and mitochondrial percentages can also be informative (Figure <a href="quality-control.html#fig:qc-mito2-416b">6.4</a>). Low-quality cells with small mitochondrial percentages, large spike-in percentages and small library sizes are likely to be stripped nuclei, i.e., they have been so extensively damaged that they have lost all cytoplasmic content. Conversely, cells with high mitochondrial percentages and low ERCC percentages may represent undamaged cells that are metabolically active.</p>
+<p>Comparison of the ERCC and mitochondrial percentages can also be informative (Figure <a href="quality-control.html#fig:qc-mito2-416b">6.4</a>). Low-quality cells with small mitochondrial percentages, large spike-in percentages and small library sizes are likely to be stripped nuclei, i.e., they have been so extensively damaged that they have lost all cytoplasmic content. On the other hand, cells with high mitochondrial percentages and low ERCC percentages may represent undamaged cells that are metabolically active. This interpretation also applies for single-nuclei studies but our focus is reversed: the stripped nuclei become the libraries of interest while the undamaged cells are considered to be low quality.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotColData</span>(sce<span class="fl">.416</span>b, <span class="dt">x=</span><span class="st">&quot;altexps_ERCC_percent&quot;</span>, <span class="dt">y=</span><span class="st">&quot;subsets_Mito_percent&quot;</span>,
     <span class="dt">colour_by=</span><span class="st">&quot;discard&quot;</span>, <span class="dt">other_fields=</span><span class="kw">c</span>(<span class="st">&quot;block&quot;</span>, <span class="st">&quot;phenotype&quot;</span>)) <span class="op">+</span>
 <span class="st">    </span><span class="kw">facet_grid</span>(block<span class="op">~</span>phenotype) <span class="op">+</span><span class="st"> </span>
@@ -982,7 +982,7 @@ Figure 6.3: Percentage of reads assigned to mitochondrial transcripts, plotted a
 Figure 6.4: Percentage of reads assigned to mitochondrial transcripts, plotted against the percentage of reads assigned to ERCC transcripts for each phenotype and batch.
 </p>
 </div>
-<p>For larger experiments, a more typical example of such plots is provided in Figure <a href="quality-control.html#fig:qc-mito-spike-zeisel">6.5</a> using data from a mouse brain dataset <span class="citation">(Zeisel et al. <a href="#ref-zeisel2015brain">2015</a>)</span>. We can see that these metrics exhibit weak correlations to each other, presumably a manifestation of a common underlying effect of cell damage. The weakness of the correlations highlights the utility of using several metrics to capture different aspects of technical quality. (Of course, the flipside is that these metrics may also represent different aspects of biology, increasing the risk of discarding entire cell types as discussed in Section <a href="quality-control.html#outlier-assumptions">6.3.2.2</a>.)</p>
+<p>For larger experiments, a more typical example of such plots is provided in Figure <a href="quality-control.html#fig:qc-mito-spike-zeisel">6.5</a> using data from a mouse brain dataset <span class="citation">(Zeisel et al. <a href="#ref-zeisel2015brain">2015</a>)</span>. We can see that these metrics exhibit weak correlations to each other, presumably a manifestation of a common underlying effect of cell damage. The weakness of the correlations motivates the use of several metrics to capture different aspects of technical quality. Of course, the flipside is that these metrics may also represent different aspects of biology, increasing the risk of discarding entire cell types as discussed in Section <a href="quality-control.html#outlier-assumptions">6.3.2.2</a>.</p>
 <button class="aaron-collapse">
 View history
 </button>
@@ -997,8 +997,8 @@ sce.zeisel &lt;-<span class="st"> </span><span class="kw">aggregateAcrossFeature
 
 <span class="co">#--- gene-annotation ---#</span>
 <span class="kw">library</span>(org.Mm.eg.db)
-<span class="kw">rowData</span>(sce.zeisel) &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel),
-    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)
+<span class="kw">rowData</span>(sce.zeisel)<span class="op">$</span>Ensembl &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, 
+    <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel), <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)
 
 <span class="co">#--- quality-control ---#</span>
 stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.zeisel, <span class="dt">subsets=</span><span class="kw">list</span>(
@@ -1203,13 +1203,13 @@ marked<span class="op">$</span>discard &lt;-<span class="st"> </span>batch.reaso
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1224,64 +1224,64 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] org.Hs.eg.db_3.10.0         edgeR_3.29.1               
- [3] limma_3.43.8                Matrix_1.2-18              
- [5] DropletUtils_1.7.17         robustbase_0.93-6          
- [7] scRNAseq_2.1.7              scater_1.15.33             
- [9] ggplot2_3.3.0               ensembldb_2.11.4           
-[11] AnnotationFilter_1.11.0     GenomicFeatures_1.39.7     
-[13] AnnotationDbi_1.49.1        AnnotationHub_2.19.12      
-[15] BiocFileCache_1.11.6        dbplyr_1.4.3               
-[17] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
-[19] DelayedArray_0.13.12        matrixStats_0.56.0         
-[21] Biobase_2.47.3              GenomicRanges_1.39.3       
-[23] GenomeInfoDb_1.23.17        IRanges_2.21.8             
-[25] S4Vectors_0.25.15           BiocGenerics_0.33.3        
-[27] OSCAUtils_0.0.2             BiocStyle_2.15.8           
+ [1] org.Hs.eg.db_3.11.1         edgeR_3.30.0               
+ [3] limma_3.44.1                Matrix_1.2-18              
+ [5] DropletUtils_1.8.0          robustbase_0.93-6          
+ [7] scRNAseq_2.2.0              scater_1.16.0              
+ [9] ggplot2_3.3.0               ensembldb_2.12.1           
+[11] AnnotationFilter_1.12.0     GenomicFeatures_1.40.0     
+[13] AnnotationDbi_1.50.0        AnnotationHub_2.20.0       
+[15] BiocFileCache_1.12.0        dbplyr_1.4.3               
+[17] SingleCellExperiment_1.10.1 SummarizedExperiment_1.18.1
+[19] DelayedArray_0.14.0         matrixStats_0.56.0         
+[21] Biobase_2.48.0              GenomicRanges_1.40.0       
+[23] GenomeInfoDb_1.24.0         IRanges_2.22.1             
+[25] S4Vectors_0.26.0            BiocGenerics_0.34.0        
+[27] OSCAUtils_0.0.2             BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
   [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
-  [3] ellipsis_0.3.0                XVector_0.27.2               
-  [5] BiocNeighbors_1.5.7           farver_2.0.3                 
-  [7] bit64_0.9-7                   interactiveDisplayBase_1.25.0
+  [3] ellipsis_0.3.1                XVector_0.28.0               
+  [5] BiocNeighbors_1.6.0           farver_2.0.3                 
+  [7] bit64_0.9-7                   interactiveDisplayBase_1.26.0
   [9] R.methodsS3_1.8.0             codetools_0.2-16             
- [11] knitr_1.28                    Rsamtools_2.3.7              
- [13] R.oo_1.23.0                   HDF5Array_1.15.18            
+ [11] knitr_1.28                    Rsamtools_2.4.0              
+ [13] R.oo_1.23.0                   HDF5Array_1.16.0             
  [15] shiny_1.4.0.2                 BiocManager_1.30.10          
  [17] compiler_4.0.0                httr_1.4.1                   
  [19] dqrng_0.2.1                   assertthat_0.2.1             
  [21] fastmap_1.0.1                 lazyeval_0.2.2               
- [23] later_1.0.0                   BiocSingular_1.3.2           
+ [23] later_1.0.0                   BiocSingular_1.4.0           
  [25] htmltools_0.4.0               prettyunits_1.1.1            
  [27] tools_4.0.0                   igraph_1.2.5                 
  [29] rsvd_1.0.3                    gtable_0.3.0                 
- [31] glue_1.4.0                    GenomeInfoDbData_1.2.3       
+ [31] glue_1.4.1                    GenomeInfoDbData_1.2.3       
  [33] dplyr_0.8.5                   rappdirs_0.3.1               
- [35] Rcpp_1.0.4.6                  vctrs_0.2.4                  
- [37] Biostrings_2.55.7             ExperimentHub_1.13.8         
- [39] rtracklayer_1.47.0            DelayedMatrixStats_1.9.1     
+ [35] Rcpp_1.0.4.6                  vctrs_0.3.0                  
+ [37] Biostrings_2.56.0             ExperimentHub_1.14.0         
+ [39] rtracklayer_1.48.0            DelayedMatrixStats_1.10.0    
  [41] xfun_0.13                     stringr_1.4.0                
- [43] ps_1.3.2                      mime_0.9                     
+ [43] ps_1.3.3                      mime_0.9                     
  [45] lifecycle_0.2.0               irlba_2.3.3                  
  [47] statmod_1.4.34                XML_3.99-0.3                 
- [49] DEoptimR_1.0-8                zlibbioc_1.33.1              
- [51] scales_1.1.0                  hms_0.5.3                    
- [53] promises_1.1.0                ProtGenerics_1.19.3          
- [55] rhdf5_2.31.10                 yaml_2.2.1                   
+ [49] DEoptimR_1.0-8                zlibbioc_1.34.0              
+ [51] scales_1.1.1                  hms_0.5.3                    
+ [53] promises_1.1.0                ProtGenerics_1.20.0          
+ [55] rhdf5_2.32.0                  yaml_2.2.1                   
  [57] curl_4.3                      memoise_1.1.0                
- [59] gridExtra_2.3                 biomaRt_2.43.6               
+ [59] gridExtra_2.3                 biomaRt_2.44.0               
  [61] stringi_1.4.6                 RSQLite_2.2.0                
  [63] BiocVersion_3.11.1            highr_0.8                    
- [65] scran_1.15.32                 BiocParallel_1.21.3          
- [67] rlang_0.4.5                   pkgconfig_2.0.3              
+ [65] scran_1.16.0                  BiocParallel_1.22.0          
+ [67] rlang_0.4.6                   pkgconfig_2.0.3              
  [69] bitops_1.0-6                  evaluate_0.14                
- [71] lattice_0.20-41               Rhdf5lib_1.9.3               
- [73] purrr_0.3.4                   GenomicAlignments_1.23.2     
+ [71] lattice_0.20-41               Rhdf5lib_1.10.0              
+ [73] purrr_0.3.4                   GenomicAlignments_1.24.0     
  [75] labeling_0.3                  cowplot_1.0.0                
  [77] bit_1.1-15.2                  processx_3.4.2               
- [79] tidyselect_1.0.0              magrittr_1.5                 
- [81] bookdown_0.18                 R6_2.4.1                     
- [83] DBI_1.1.0                     pillar_1.4.3                 
+ [79] tidyselect_1.1.0              magrittr_1.5                 
+ [81] bookdown_0.19                 R6_2.4.1                     
+ [83] DBI_1.1.0                     pillar_1.4.4                 
  [85] withr_2.2.0                   RCurl_1.98-1.2               
  [87] tibble_3.0.1                  crayon_1.3.4                 
  [89] rmarkdown_2.1                 viridis_0.5.1                

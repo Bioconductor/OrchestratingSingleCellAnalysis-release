@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 24 Zeisel mouse brain (STRT-Seq) | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 24 Zeisel mouse brain (STRT-Seq) | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -678,8 +678,8 @@ sce.zeisel &lt;-<span class="st"> </span><span class="kw">aggregateAcrossFeature
     <span class="dt">id=</span><span class="kw">sub</span>(<span class="st">&quot;_loc[0-9]+$&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce.zeisel)))</code></pre></div>
 <p>We also fetch the Ensembl gene IDs, just in case we need them later.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(org.Mm.eg.db)
-<span class="kw">rowData</span>(sce.zeisel) &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel),
-    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)</code></pre></div>
+<span class="kw">rowData</span>(sce.zeisel)<span class="op">$</span>Ensembl &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, 
+    <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel), <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)</code></pre></div>
 </div>
 <div id="quality-control-4" class="section level2">
 <h2><span class="header-section-number">24.3</span> Quality control</h2>
@@ -728,7 +728,7 @@ Figure 24.2: Percentage of mitochondrial reads in each cell in the Zeisel brain 
 <pre><code>##              low_lib_size            low_n_features high_altexps_ERCC_percent 
 ##                         0                         3                        65 
 ##   high_subsets_Mt_percent                   discard 
-##                         0                        68</code></pre>
+##                       128                       189</code></pre>
 </div>
 <div id="normalization-3" class="section level2">
 <h2><span class="header-section-number">24.4</span> Normalization</h2>
@@ -739,7 +739,7 @@ sce.zeisel &lt;-<span class="st"> </span><span class="kw">computeSumFactors</spa
 sce.zeisel &lt;-<span class="st"> </span><span class="kw">logNormCounts</span>(sce.zeisel)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">sizeFactors</span>(sce.zeisel))</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.135   0.466   0.818   1.000   1.319   4.687</code></pre>
+##   0.119   0.486   0.831   1.000   1.321   4.509</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">librarySizeFactors</span>(sce.zeisel), <span class="kw">sizeFactors</span>(sce.zeisel), <span class="dt">pch=</span><span class="dv">16</span>,
     <span class="dt">xlab=</span><span class="st">&quot;Library size factors&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Deconvolution factors&quot;</span>, <span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:unref-zeisel-norm"></span>
@@ -784,7 +784,7 @@ sce.zeisel &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce.zei
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">colLabels</span>(sce.zeisel))</code></pre></div>
 <pre><code>## 
 ##   1   2   3   4   5   6   7   8   9  10  11  12  13  14 
-## 283 231 258 141 616 169 105 187 544  75  33 204  56  35</code></pre>
+## 283 451 114 143 599 167 191 128 350  70 199  58  39  24</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotTSNE</span>(sce.zeisel, <span class="dt">colour_by=</span><span class="st">&quot;label&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:unref-zeisel-tsne"></span>
 <img src="P3_W02.zeisel-brain_files/figure-html/unref-zeisel-tsne-1.png" alt="Obligatory $t$-SNE plot of the Zeisel brain dataset, where each point represents a cell and is colored according to the assigned cluster." width="672" />
@@ -802,28 +802,28 @@ marker.set &lt;-<span class="st"> </span>markers[[<span class="st">&quot;1&quot;
 <pre><code>## DataFrame with 10 rows and 8 columns
 ##                Top      p.value          FDR summary.logFC   logFC.2   logFC.3
 ##          &lt;integer&gt;    &lt;numeric&gt;    &lt;numeric&gt;     &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
-## Atp1a3           1 6.51084e-276 2.58337e-272       3.40014   3.27538 0.0437054
-## Fabp3            1 1.15584e-127 3.01720e-125       2.12444   2.08998 1.1002207
-## Gad1             1 7.15111e-234 1.28973e-230       4.53472   4.45504 4.5347207
-## Gad2             1 8.67275e-211 1.14706e-207       4.13745   4.13745 4.2262499
-## Ndrg4            1  0.00000e+00  0.00000e+00       3.79113   3.65041 1.0427839
-## Slc32a1          1 3.93549e-109 6.34766e-107       1.89859   1.91373 1.9200583
-## Syngr3           1 1.00547e-140 3.56204e-138       2.43861   2.40178 1.1562077
-## Atp6v1g2         2 5.39259e-203 6.29315e-200       2.48181   2.47403 0.1865289
-## Pfkm             2 1.30548e-114 2.51452e-112       1.89554   1.40227 0.5206674
-## Slc6a1           2 1.28578e-161 6.37716e-159       3.53995   3.21899 3.1868525
+## Atp1a3           1 1.45982e-282 7.24035e-279       3.45669 0.0398568 0.0893943
+## Celf4            1 2.27030e-246 4.50404e-243       3.10465 0.3886716 0.6145023
+## Gad1             1 7.44925e-232 1.34351e-228       4.57719 4.5392751 4.3003280
+## Gad2             1 2.88086e-207 3.57208e-204       4.25393 4.2322487 3.8884654
+## Mllt11           1 1.72982e-249 3.81309e-246       2.88363 0.5782719 1.4933128
+## Ndrg4            1  0.00000e+00  0.00000e+00       3.84337 0.8887239 1.0183408
+## Slc32a1          1 2.38276e-110 4.04030e-108       1.92859 1.9196173 1.8252062
+## Syngr3           1 3.68257e-143 1.30462e-140       2.55531 1.0981258 1.1994793
+## Atp6v1g2         2 3.04451e-204 3.55295e-201       2.50875 0.0981706 0.5203760
+## Napb             2 1.10402e-231 1.82522e-228       2.81533 0.1774508 0.3046901
 ##            logFC.4   logFC.5
 ##          &lt;numeric&gt; &lt;numeric&gt;
-## Atp1a3    1.180740   3.40014
-## Fabp3     0.568442   2.12444
-## Gad1      3.992858   4.44742
-## Gad2      3.730733   4.15313
-## Ndrg4     1.147802   3.79113
-## Slc32a1   1.777612   1.89935
-## Syngr3    1.119706   2.43861
-## Atp6v1g2  0.597905   2.48181
-## Pfkm      0.552720   1.56984
-## Slc6a1    3.045826   2.86794</code></pre>
+## Atp1a3    1.241388   3.45669
+## Celf4     0.869334   3.10465
+## Gad1      4.050305   4.47236
+## Gad2      3.769556   4.16902
+## Mllt11    0.951649   2.88363
+## Ndrg4     1.140041   3.84337
+## Slc32a1   1.804311   1.92426
+## Syngr3    1.188856   2.47696
+## Atp6v1g2  0.616391   2.50875
+## Napb      0.673772   2.81533</code></pre>
 <p>Figure <a href="zeisel-mouse-brain-strt-seq.html#fig:unref-zeisel-heat-cell">24.6</a> indicates that most of the top markers are strongly DE in cells of cluster 1 compared to some or all of the other clusters. We can use these markers to identify cells from cluster 1 in validation studies with an independent population of cells. A quick look at the markers suggest that cluster 1 represents interneurons based on expression of <em>Gad1</em> and <em>Slc6a1</em> <span class="citation">(Zeng et al. <a href="#ref-zeng2012largescale">2012</a>)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">top.markers &lt;-<span class="st"> </span><span class="kw">rownames</span>(marker.set)[marker.set<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>]
 <span class="kw">plotHeatmap</span>(sce.zeisel, <span class="dt">features=</span>top.markers, <span class="dt">order_columns_by=</span><span class="st">&quot;label&quot;</span>)</code></pre></div>
@@ -850,13 +850,13 @@ Figure 24.7: Heatmap of the log-fold changes of the top markers for cluster 1 co
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -871,16 +871,16 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] pheatmap_1.0.12             BiocSingular_1.3.2         
- [3] scran_1.15.29               org.Mm.eg.db_3.10.0        
- [5] AnnotationDbi_1.49.1        scater_1.15.31             
- [7] ggplot2_3.3.0               scRNAseq_2.1.7             
- [9] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
-[11] DelayedArray_0.13.12        matrixStats_0.56.0         
-[13] Biobase_2.47.3              GenomicRanges_1.39.3       
-[15] GenomeInfoDb_1.23.17        IRanges_2.21.8             
-[17] S4Vectors_0.25.15           BiocGenerics_0.33.3        
-[19] BiocStyle_2.15.8            OSCAUtils_0.0.2            
+ [1] pheatmap_1.0.12             BiocSingular_1.4.0         
+ [3] scran_1.16.0                org.Mm.eg.db_3.11.1        
+ [5] AnnotationDbi_1.50.0        scater_1.16.0              
+ [7] ggplot2_3.3.0               scRNAseq_2.2.0             
+ [9] SingleCellExperiment_1.10.1 SummarizedExperiment_1.18.1
+[11] DelayedArray_0.14.0         matrixStats_0.56.0         
+[13] Biobase_2.48.0              GenomicRanges_1.40.0       
+[15] GenomeInfoDb_1.24.0         IRanges_2.22.1             
+[17] S4Vectors_0.26.0            BiocGenerics_0.34.0        
+[19] BiocStyle_2.16.0            OSCAUtils_0.0.2            
 
 loaded via a namespace (and not attached):
  [1] bitops_1.0-6                  bit64_0.9-7                  
@@ -888,47 +888,47 @@ loaded via a namespace (and not attached):
  [5] tools_4.0.0                   R6_2.4.1                     
  [7] irlba_2.3.3                   vipor_0.4.5                  
  [9] DBI_1.1.0                     colorspace_1.4-1             
-[11] withr_2.2.0                   tidyselect_1.0.0             
+[11] withr_2.2.0                   tidyselect_1.1.0             
 [13] gridExtra_2.3                 processx_3.4.2               
 [15] bit_1.1-15.2                  curl_4.3                     
-[17] compiler_4.0.0                BiocNeighbors_1.5.5          
-[19] labeling_0.3                  bookdown_0.18                
-[21] scales_1.1.0                  callr_3.4.3                  
+[17] compiler_4.0.0                BiocNeighbors_1.6.0          
+[19] labeling_0.3                  bookdown_0.19                
+[21] scales_1.1.1                  callr_3.4.3                  
 [23] rappdirs_0.3.1                stringr_1.4.0                
 [25] digest_0.6.25                 rmarkdown_2.1                
-[27] XVector_0.27.2                pkgconfig_2.0.3              
-[29] htmltools_0.4.0               limma_3.43.8                 
+[27] XVector_0.28.0                pkgconfig_2.0.3              
+[29] htmltools_0.4.0               limma_3.44.1                 
 [31] highr_0.8                     dbplyr_1.4.3                 
-[33] fastmap_1.0.1                 rlang_0.4.5                  
+[33] fastmap_1.0.1                 rlang_0.4.6                  
 [35] RSQLite_2.2.0                 shiny_1.4.0.2                
-[37] DelayedMatrixStats_1.9.1      farver_2.0.3                 
-[39] BiocParallel_1.21.2           dplyr_0.8.5                  
+[37] DelayedMatrixStats_1.10.0     farver_2.0.3                 
+[39] BiocParallel_1.22.0           dplyr_0.8.5                  
 [41] RCurl_1.98-1.2                magrittr_1.5                 
 [43] GenomeInfoDbData_1.2.3        Matrix_1.2-18                
 [45] Rcpp_1.0.4.6                  ggbeeswarm_0.6.0             
 [47] munsell_0.5.0                 viridis_0.5.1                
-[49] lifecycle_0.2.0               edgeR_3.29.1                 
+[49] lifecycle_0.2.0               edgeR_3.30.0                 
 [51] stringi_1.4.6                 yaml_2.2.1                   
-[53] zlibbioc_1.33.1               Rtsne_0.15                   
-[55] BiocFileCache_1.11.6          AnnotationHub_2.19.11        
+[53] zlibbioc_1.34.0               Rtsne_0.15                   
+[55] BiocFileCache_1.12.0          AnnotationHub_2.20.0         
 [57] grid_4.0.0                    blob_1.2.1                   
 [59] dqrng_0.2.1                   promises_1.1.0               
-[61] ExperimentHub_1.13.7          crayon_1.3.4                 
+[61] ExperimentHub_1.14.0          crayon_1.3.4                 
 [63] lattice_0.20-41               cowplot_1.0.0                
 [65] locfit_1.5-9.4                knitr_1.28                   
-[67] ps_1.3.2                      pillar_1.4.3                 
+[67] ps_1.3.3                      pillar_1.4.4                 
 [69] igraph_1.2.5                  codetools_0.2-16             
-[71] glue_1.4.0                    BiocVersion_3.11.1           
+[71] glue_1.4.1                    BiocVersion_3.11.1           
 [73] evaluate_0.14                 BiocManager_1.30.10          
-[75] vctrs_0.2.4                   httpuv_1.5.2                 
+[75] vctrs_0.3.0                   httpuv_1.5.2                 
 [77] gtable_0.3.0                  purrr_0.3.4                  
 [79] assertthat_0.2.1              xfun_0.13                    
 [81] rsvd_1.0.3                    mime_0.9                     
 [83] xtable_1.8-4                  later_1.0.0                  
 [85] viridisLite_0.3.0             tibble_3.0.1                 
 [87] beeswarm_0.2.3                memoise_1.1.0                
-[89] statmod_1.4.34                ellipsis_0.3.0               
-[91] interactiveDisplayBase_1.25.0</code></pre>
+[89] statmod_1.4.34                ellipsis_0.3.1               
+[91] interactiveDisplayBase_1.26.0</code></pre>
 </div>
 
 </div>

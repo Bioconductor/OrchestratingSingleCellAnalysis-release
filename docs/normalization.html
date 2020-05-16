@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 7 Normalization | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 7 Normalization | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -682,8 +682,8 @@ sce.zeisel &lt;-<span class="st"> </span><span class="kw">aggregateAcrossFeature
 
 <span class="co">#--- gene-annotation ---#</span>
 <span class="kw">library</span>(org.Mm.eg.db)
-<span class="kw">rowData</span>(sce.zeisel) &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel),
-    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)
+<span class="kw">rowData</span>(sce.zeisel)<span class="op">$</span>Ensembl &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, 
+    <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel), <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)
 
 <span class="co">#--- quality-control ---#</span>
 stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.zeisel, <span class="dt">subsets=</span><span class="kw">list</span>(
@@ -694,13 +694,13 @@ sce.zeisel &lt;-<span class="st"> </span>sce.zeisel[,<span class="op">!</span>qc
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce.zeisel </code></pre></div>
 <pre><code>## class: SingleCellExperiment 
-## dim: 19839 2937 
+## dim: 19839 2816 
 ## metadata(0):
 ## assays(1): counts
 ## rownames(19839): 0610005C13Rik 0610007N19Rik ... Zzef1 Zzz3
-## rowData names(1): value
-## colnames(2937): 1772071015_C02 1772071017_G12 ... 1772066098_A12
-##   1772058148_F03
+## rowData names(2): featureType Ensembl
+## colnames(2816): 1772071015_C02 1772071017_G12 ... 1772063068_D01
+##   1772066098_A12
 ## colData names(10): tissue group # ... level1class level2class
 ## reducedDimNames(0):
 ## altExpNames(2): ERCC repeat</code></pre>
@@ -712,7 +712,7 @@ sce.zeisel &lt;-<span class="st"> </span>sce.zeisel[,<span class="op">!</span>qc
 lib.sf.zeisel &lt;-<span class="st"> </span><span class="kw">librarySizeFactors</span>(sce.zeisel)
 <span class="kw">summary</span>(lib.sf.zeisel)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##  0.1797  0.5571  0.8648  1.0000  1.2827  4.1778</code></pre>
+##  0.1757  0.5680  0.8680  1.0000  1.2783  4.0839</code></pre>
 <p>In the Zeisel brain data, the library size factors differ by up to 10-fold across cells (Figure <a href="normalization.html#fig:histlib">7.1</a>). This is typical of the variability in coverage in scRNA-seq data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(<span class="kw">log10</span>(lib.sf.zeisel), <span class="dt">xlab=</span><span class="st">&quot;Log10[Size factor]&quot;</span>, <span class="dt">col=</span><span class="st">&#39;grey80&#39;</span>)</code></pre></div>
 <div class="figure"><span id="fig:histlib"></span>
@@ -734,12 +734,12 @@ Figure 7.1: Distribution of size factors derived from the library size in the Ze
 clust.zeisel &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce.zeisel) 
 <span class="kw">table</span>(clust.zeisel)</code></pre></div>
 <pre><code>## clust.zeisel
-##   1   2   3   4   5   6   7   8   9  10  11  12 
-## 243 386 147 322 179 401 362 158 105 222 173 239</code></pre>
+##   1   2   3   4   5   6   7   8   9  10  11  12  13  14 
+## 170 254 441 178 393 148 219 240 189 123 112 103 135 111</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">deconv.sf.zeisel &lt;-<span class="st"> </span><span class="kw">calculateSumFactors</span>(sce.zeisel, <span class="dt">cluster=</span>clust.zeisel)
 <span class="kw">summary</span>(deconv.sf.zeisel)</code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##  0.1349  0.4664  0.8182  1.0000  1.3195  4.6872</code></pre>
+##  0.1186  0.4860  0.8314  1.0000  1.3209  4.5090</code></pre>
 <p>We use a pre-clustering step with <code>quickCluster()</code> where cells in each cluster are normalized separately and the size factors are rescaled to be comparable across clusters. This avoids the assumption that most genes are non-DE across the entire population - only a non-DE majority is required between pairs of clusters, which is a weaker assumption for highly heterogeneous populations. By default, <code>quickCluster()</code> will use an approximate algorithm for PCA based on methods from the <em><a href="https://CRAN.R-project.org/package=irlba">irlba</a></em> package. The approximation relies on stochastic initialization so we need to set the random seed (via <code>set.seed()</code>) for reproducibility.</p>
 <p>We see that the deconvolution size factors exhibit cell type-specific deviations from the library size factors in Figure <a href="normalization.html#fig:deconv-zeisel">7.2</a>. This is consistent with the presence of composition biases that are introduced by strong differential expression between cell types. Use of the deconvolution size factors adjusts for these biases to improve normalization accuracy for downstream applications.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(lib.sf.zeisel, deconv.sf.zeisel, <span class="dt">xlab=</span><span class="st">&quot;Library size factor&quot;</span>,
@@ -890,13 +890,13 @@ Figure 7.6: PCA plot of pool-and-split libraries in the SORT-seq CellBench data,
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -911,65 +911,65 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] BiocFileCache_1.11.6        dbplyr_1.4.3               
- [3] ensembldb_2.11.4            AnnotationFilter_1.11.0    
- [5] GenomicFeatures_1.39.7      AnnotationDbi_1.49.1       
- [7] scRNAseq_2.1.7              scran_1.15.32              
- [9] scater_1.15.33              ggplot2_3.3.0              
-[11] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
-[13] DelayedArray_0.13.12        matrixStats_0.56.0         
-[15] Biobase_2.47.3              GenomicRanges_1.39.3       
-[17] GenomeInfoDb_1.23.17        IRanges_2.21.8             
-[19] S4Vectors_0.25.15           BiocGenerics_0.33.3        
-[21] OSCAUtils_0.0.2             BiocStyle_2.15.8           
+ [1] BiocFileCache_1.12.0        dbplyr_1.4.3               
+ [3] ensembldb_2.12.1            AnnotationFilter_1.12.0    
+ [5] GenomicFeatures_1.40.0      AnnotationDbi_1.50.0       
+ [7] scRNAseq_2.2.0              scran_1.16.0               
+ [9] scater_1.16.0               ggplot2_3.3.0              
+[11] SingleCellExperiment_1.10.1 SummarizedExperiment_1.18.1
+[13] DelayedArray_0.14.0         matrixStats_0.56.0         
+[15] Biobase_2.48.0              GenomicRanges_1.40.0       
+[17] GenomeInfoDb_1.24.0         IRanges_2.22.1             
+[19] S4Vectors_0.26.0            BiocGenerics_0.34.0        
+[21] OSCAUtils_0.0.2             BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
   [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
-  [3] ellipsis_0.3.0                XVector_0.27.2               
-  [5] BiocNeighbors_1.5.7           farver_2.0.3                 
-  [7] bit64_0.9-7                   interactiveDisplayBase_1.25.0
+  [3] ellipsis_0.3.1                XVector_0.28.0               
+  [5] BiocNeighbors_1.6.0           farver_2.0.3                 
+  [7] bit64_0.9-7                   interactiveDisplayBase_1.26.0
   [9] R.methodsS3_1.8.0             codetools_0.2-16             
- [11] knitr_1.28                    Rsamtools_2.3.7              
- [13] R.oo_1.23.0                   HDF5Array_1.15.18            
+ [11] knitr_1.28                    Rsamtools_2.4.0              
+ [13] R.oo_1.23.0                   HDF5Array_1.16.0             
  [15] shiny_1.4.0.2                 BiocManager_1.30.10          
  [17] compiler_4.0.0                httr_1.4.1                   
  [19] dqrng_0.2.1                   lazyeval_0.2.2               
  [21] assertthat_0.2.1              Matrix_1.2-18                
- [23] fastmap_1.0.1                 limma_3.43.8                 
- [25] later_1.0.0                   BiocSingular_1.3.2           
+ [23] fastmap_1.0.1                 limma_3.44.1                 
+ [25] later_1.0.0                   BiocSingular_1.4.0           
  [27] htmltools_0.4.0               prettyunits_1.1.1            
  [29] tools_4.0.0                   rsvd_1.0.3                   
  [31] igraph_1.2.5                  gtable_0.3.0                 
- [33] glue_1.4.0                    GenomeInfoDbData_1.2.3       
+ [33] glue_1.4.1                    GenomeInfoDbData_1.2.3       
  [35] dplyr_0.8.5                   rappdirs_0.3.1               
- [37] Rcpp_1.0.4.6                  vctrs_0.2.4                  
- [39] Biostrings_2.55.7             rtracklayer_1.47.0           
- [41] ExperimentHub_1.13.8          DelayedMatrixStats_1.9.1     
+ [37] Rcpp_1.0.4.6                  vctrs_0.3.0                  
+ [39] Biostrings_2.56.0             rtracklayer_1.48.0           
+ [41] ExperimentHub_1.14.0          DelayedMatrixStats_1.10.0    
  [43] xfun_0.13                     stringr_1.4.0                
- [45] ps_1.3.2                      mime_0.9                     
+ [45] ps_1.3.3                      mime_0.9                     
  [47] lifecycle_0.2.0               irlba_2.3.3                  
  [49] statmod_1.4.34                XML_3.99-0.3                 
- [51] AnnotationHub_2.19.12         edgeR_3.29.1                 
- [53] zlibbioc_1.33.1               scales_1.1.0                 
- [55] ProtGenerics_1.19.3           hms_0.5.3                    
- [57] promises_1.1.0                rhdf5_2.31.10                
+ [51] AnnotationHub_2.20.0          edgeR_3.30.0                 
+ [53] zlibbioc_1.34.0               scales_1.1.1                 
+ [55] ProtGenerics_1.20.0           hms_0.5.3                    
+ [57] promises_1.1.0                rhdf5_2.32.0                 
  [59] yaml_2.2.1                    curl_4.3                     
  [61] memoise_1.1.0                 gridExtra_2.3                
- [63] biomaRt_2.43.6                stringi_1.4.6                
+ [63] biomaRt_2.44.0                stringi_1.4.6                
  [65] RSQLite_2.2.0                 BiocVersion_3.11.1           
- [67] highr_0.8                     BiocParallel_1.21.3          
- [69] rlang_0.4.5                   pkgconfig_2.0.3              
+ [67] highr_0.8                     BiocParallel_1.22.0          
+ [69] rlang_0.4.6                   pkgconfig_2.0.3              
  [71] bitops_1.0-6                  evaluate_0.14                
- [73] lattice_0.20-41               Rhdf5lib_1.9.3               
+ [73] lattice_0.20-41               Rhdf5lib_1.10.0              
  [75] purrr_0.3.4                   labeling_0.3                 
- [77] GenomicAlignments_1.23.2      cowplot_1.0.0                
+ [77] GenomicAlignments_1.24.0      cowplot_1.0.0                
  [79] bit_1.1-15.2                  processx_3.4.2               
- [81] tidyselect_1.0.0              magrittr_1.5                 
- [83] bookdown_0.18                 R6_2.4.1                     
- [85] DBI_1.1.0                     pillar_1.4.3                 
+ [81] tidyselect_1.1.0              magrittr_1.5                 
+ [83] bookdown_0.19                 R6_2.4.1                     
+ [85] DBI_1.1.0                     pillar_1.4.4                 
  [87] withr_2.2.0                   RCurl_1.98-1.2               
  [89] tibble_3.0.1                  crayon_1.3.4                 
- [91] DropletUtils_1.7.17           rmarkdown_2.1                
+ [91] DropletUtils_1.8.0            rmarkdown_2.1                
  [93] viridis_0.5.1                 progress_1.2.2               
  [95] locfit_1.5-9.4                grid_4.0.0                   
  [97] blob_1.2.1                    callr_3.4.3                  

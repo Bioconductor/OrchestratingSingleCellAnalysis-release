@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 19 Analyzing repertoire sequencing data | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 19 Analyzing repertoire sequencing data | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1070,27 +1070,7 @@ df.A &lt;-<span class="st"> </span><span class="kw">extractDataFrame</span>(sce.
 aap &lt;-<span class="st"> </span><span class="kw">aminoAcidProperties</span>(df.A, <span class="dt">seq=</span><span class="st">&quot;cdr3&quot;</span>)
 properties &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;_AA_&quot;</span>, <span class="kw">colnames</span>(aap))
 <span class="kw">head</span>(aap[,properties])</code></pre></div>
-<pre><code>##                      cdr3_AA_LENGTH cdr3_AA_GRAVY cdr3_AA_BULK
-## AAACCTGAGATCTGAA-1               18     0.6888889     13.41944
-## AAACCTGAGGAACTGC-1               12     0.1083333     14.68250
-## AAACCTGAGGAGTCTG-1               16    -0.4250000     14.51500
-## AAACCTGAGGCTCTTA-1               14     0.4285714     13.09429
-## AAACCTGAGGCTCTTA-1.1             NA            NA           NA
-## AAACCTGTCAACGGGA-1               17    -0.2117647     14.14941
-##                      cdr3_AA_ALIPHATIC cdr3_AA_POLARITY cdr3_AA_CHARGE
-## AAACCTGAGATCTGAA-1           0.8166667         7.805556      0.9260145
-## AAACCTGAGGAACTGC-1           0.8166667         8.641667     -1.0733532
-## AAACCTGAGGAGTCTG-1           0.8562500         8.793750      0.9265075
-## AAACCTGAGGCTCTTA-1           0.6285714         7.978571      0.9260145
-## AAACCTGAGGCTCTTA-1.1                NA               NA             NA
-## AAACCTGTCAACGGGA-1           0.8058824         8.323529      2.0378223
-##                      cdr3_AA_BASIC cdr3_AA_ACIDIC cdr3_AA_AROMATIC
-## AAACCTGAGATCTGAA-1      0.05555556      0.0000000       0.05555556
-## AAACCTGAGGAACTGC-1      0.08333333      0.1666667       0.08333333
-## AAACCTGAGGAGTCTG-1      0.12500000      0.0625000       0.06250000
-## AAACCTGAGGCTCTTA-1      0.07142857      0.0000000       0.07142857
-## AAACCTGAGGCTCTTA-1.1            NA             NA               NA
-## AAACCTGTCAACGGGA-1      0.17647059      0.0000000       0.17647059</code></pre>
+<pre><code>## data frame with 0 columns and 6 rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collected &lt;-<span class="st"> </span><span class="kw">list</span>()
 <span class="cf">for</span> (i <span class="cf">in</span> properties) {
     prop &lt;-<span class="st"> </span><span class="kw">colnames</span>(aap)[i]
@@ -1105,18 +1085,7 @@ properties &lt;-<span class="st"> </span><span class="kw">grep</span>(<span clas
 
 collected &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, collected)
 collected</code></pre></div>
-<pre><code>## DataFrame with 9 rows and 2 columns
-##                         Delta     p.value
-##                     &lt;numeric&gt;   &lt;numeric&gt;
-## cdr3_AA_LENGTH    -1.00000000 3.06864e-06
-## cdr3_AA_GRAVY     -0.01590909 6.97870e-01
-## cdr3_AA_BULK       0.50125000 3.89143e-11
-## cdr3_AA_ALIPHATIC  0.06428571 8.22883e-05
-## cdr3_AA_POLARITY  -0.08064893 1.33808e-03
-## cdr3_AA_CHARGE    -0.99761076 2.41862e-14
-## cdr3_AA_BASIC      0.00641026 1.00025e-03
-## cdr3_AA_ACIDIC     0.07142857 3.40111e-14
-## cdr3_AA_AROMATIC   0.02456140 1.84476e-07</code></pre>
+<pre><code>## NULL</code></pre>
 </div>
 </div>
 <div id="analyzing-the-immunoglobulin-repertoire" class="section level2">
@@ -1167,13 +1136,13 @@ any.counts &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, 
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1188,45 +1157,59 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] alakazam_0.3.0              scater_1.15.33             
- [3] ggplot2_3.3.0               BiocFileCache_1.11.6       
- [5] dbplyr_1.4.3                SingleCellExperiment_1.9.3 
- [7] SummarizedExperiment_1.17.5 DelayedArray_0.13.12       
- [9] matrixStats_0.56.0          Biobase_2.47.3             
-[11] GenomicRanges_1.39.3        GenomeInfoDb_1.23.17       
-[13] IRanges_2.21.8              S4Vectors_0.25.15          
-[15] BiocGenerics_0.33.3         OSCAUtils_0.0.2            
-[17] BiocStyle_2.15.8           
+ [1] alakazam_1.0.1              scater_1.16.0              
+ [3] ggplot2_3.3.0               BiocFileCache_1.12.0       
+ [5] dbplyr_1.4.3                SingleCellExperiment_1.10.1
+ [7] SummarizedExperiment_1.18.1 DelayedArray_0.14.0        
+ [9] matrixStats_0.56.0          Biobase_2.48.0             
+[11] GenomicRanges_1.40.0        GenomeInfoDb_1.24.0        
+[13] IRanges_2.22.1              S4Vectors_0.26.0           
+[15] BiocGenerics_0.34.0         OSCAUtils_0.0.2            
+[17] BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-147             bitops_1.0-6             bit64_0.9-7             
- [4] progress_1.2.2           httr_1.4.1               tools_4.0.0             
- [7] R6_2.4.1                 irlba_2.3.3              vipor_0.4.5             
-[10] DBI_1.1.0                lazyeval_0.2.2           colorspace_1.4-1        
-[13] ade4_1.7-15              withr_2.2.0              tidyselect_1.0.0        
-[16] gridExtra_2.3            prettyunits_1.1.1        processx_3.4.2          
-[19] bit_1.1-15.2             curl_4.3                 compiler_4.0.0          
-[22] BiocNeighbors_1.5.7      labeling_0.3             bookdown_0.18           
-[25] scales_1.1.0             readr_1.3.1              callr_3.4.3             
-[28] rappdirs_0.3.1           stringr_1.4.0            digest_0.6.25           
-[31] rmarkdown_2.1            XVector_0.27.2           pkgconfig_2.0.3         
-[34] htmltools_0.4.0          highr_0.8                rlang_0.4.5             
-[37] RSQLite_2.2.0            DelayedMatrixStats_1.9.1 farver_2.0.3            
-[40] BiocParallel_1.21.3      dplyr_0.8.5              RCurl_1.98-1.2          
-[43] magrittr_1.5             BiocSingular_1.3.2       GenomeInfoDbData_1.2.3  
-[46] Matrix_1.2-18            Rcpp_1.0.4.6             ggbeeswarm_0.6.0        
-[49] munsell_0.5.0            ape_5.3                  viridis_0.5.1           
-[52] lifecycle_0.2.0          stringi_1.4.6            yaml_2.2.1              
-[55] MASS_7.3-51.5            zlibbioc_1.33.1          grid_4.0.0              
-[58] blob_1.2.1               crayon_1.3.4             lattice_0.20-41         
-[61] cowplot_1.0.0            hms_0.5.3                knitr_1.28              
-[64] ps_1.3.2                 pillar_1.4.3             igraph_1.2.5            
-[67] seqinr_3.6-1             codetools_0.2-16         glue_1.4.0              
-[70] evaluate_0.14            BiocManager_1.30.10      vctrs_0.2.4             
-[73] tidyr_1.0.2              gtable_0.3.0             purrr_0.3.4             
-[76] assertthat_0.2.1         xfun_0.13                rsvd_1.0.3              
-[79] viridisLite_0.3.0        tibble_3.0.1             beeswarm_0.2.3          
-[82] memoise_1.1.0            ellipsis_0.3.0          </code></pre>
+ [1] nlme_3.1-147              bitops_1.0-6             
+ [3] bit64_0.9-7               progress_1.2.2           
+ [5] httr_1.4.1                tools_4.0.0              
+ [7] R6_2.4.1                  irlba_2.3.3              
+ [9] vipor_0.4.5               DBI_1.1.0                
+[11] lazyeval_0.2.2            colorspace_1.4-1         
+[13] ade4_1.7-15               withr_2.2.0              
+[15] tidyselect_1.1.0          gridExtra_2.3            
+[17] prettyunits_1.1.1         processx_3.4.2           
+[19] bit_1.1-15.2              curl_4.3                 
+[21] compiler_4.0.0            BiocNeighbors_1.6.0      
+[23] labeling_0.3              bookdown_0.19            
+[25] scales_1.1.1              readr_1.3.1              
+[27] callr_3.4.3               rappdirs_0.3.1           
+[29] stringr_1.4.0             digest_0.6.25            
+[31] rmarkdown_2.1             XVector_0.28.0           
+[33] pkgconfig_2.0.3           htmltools_0.4.0          
+[35] highr_0.8                 rlang_0.4.6              
+[37] RSQLite_2.2.0             DelayedMatrixStats_1.10.0
+[39] farver_2.0.3              BiocParallel_1.22.0      
+[41] dplyr_0.8.5               RCurl_1.98-1.2           
+[43] magrittr_1.5              BiocSingular_1.4.0       
+[45] GenomeInfoDbData_1.2.3    Matrix_1.2-18            
+[47] Rcpp_1.0.4.6              ggbeeswarm_0.6.0         
+[49] munsell_0.5.0             ape_5.3                  
+[51] viridis_0.5.1             lifecycle_0.2.0          
+[53] stringi_1.4.6             yaml_2.2.1               
+[55] MASS_7.3-51.6             zlibbioc_1.34.0          
+[57] grid_4.0.0                blob_1.2.1               
+[59] crayon_1.3.4              lattice_0.20-41          
+[61] cowplot_1.0.0             hms_0.5.3                
+[63] knitr_1.28                ps_1.3.3                 
+[65] pillar_1.4.4              igraph_1.2.5             
+[67] seqinr_3.6-1              codetools_0.2-16         
+[69] glue_1.4.1                evaluate_0.14            
+[71] BiocManager_1.30.10       vctrs_0.3.0              
+[73] tidyr_1.0.3               gtable_0.3.0             
+[75] purrr_0.3.4               assertthat_0.2.1         
+[77] xfun_0.13                 rsvd_1.0.3               
+[79] viridisLite_0.3.0         tibble_3.0.1             
+[81] beeswarm_0.2.3            memoise_1.1.0            
+[83] ellipsis_0.3.1           </code></pre>
 </div>
 
 </div>

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 12 Cell type annotation | Orchestrating Single-Cell Analysis with Bioconductor</title>
   <meta name="description" content="Online companion to ‘Orchestrating Single-Cell Analysis with Bioconductor’ manuscript by the Bioconductor team." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 12 Cell type annotation | Orchestrating Single-Cell Analysis with Bioconductor" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -937,8 +937,8 @@ sce.zeisel &lt;-<span class="st"> </span><span class="kw">aggregateAcrossFeature
 
 <span class="co">#--- gene-annotation ---#</span>
 <span class="kw">library</span>(org.Mm.eg.db)
-<span class="kw">rowData</span>(sce.zeisel) &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel),
-    <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)
+<span class="kw">rowData</span>(sce.zeisel)<span class="op">$</span>Ensembl &lt;-<span class="st"> </span><span class="kw">mapIds</span>(org.Mm.eg.db, 
+    <span class="dt">keys=</span><span class="kw">rownames</span>(sce.zeisel), <span class="dt">keytype=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">column=</span><span class="st">&quot;ENSEMBL&quot;</span>)
 
 <span class="co">#--- quality-control ---#</span>
 stats &lt;-<span class="st"> </span><span class="kw">perCellQCMetrics</span>(sce.zeisel, <span class="dt">subsets=</span><span class="kw">list</span>(
@@ -961,11 +961,11 @@ markers.z &lt;-<span class="st"> </span><span class="kw">getTopMarkers</span>(wi
     <span class="dt">pairwise=</span><span class="ot">FALSE</span>, <span class="dt">n=</span><span class="dv">50</span>)
 <span class="kw">lengths</span>(markers.z)</code></pre></div>
 <pre><code>## astrocytes_ependymal    endothelial-mural         interneurons 
-##                   74                   88                  120 
+##                   79                   83                  118 
 ##            microglia     oligodendrocytes        pyramidal CA1 
-##                   70                   80                  124 
+##                   69                   81                  125 
 ##         pyramidal SS 
-##                  147</code></pre>
+##                  149</code></pre>
 <p>Our test dataset will be another brain scRNA-seq experiment from <span class="citation">Tasic et al. (<a href="#ref-tasic2016adult">2016</a>)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scRNAseq)
 sce.tasic &lt;-<span class="st"> </span><span class="kw">TasicBrainData</span>()
@@ -997,28 +997,28 @@ results &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw"
 <span class="kw">head</span>(results)</code></pre></div>
 <pre><code>##                           gene sets
 ## cells                      astrocytes_ependymal endothelial-mural interneurons
-##   Calb2_tdTpositive_cell_1            0.1352975        0.04158540    0.5288971
-##   Calb2_tdTpositive_cell_2            0.1327698        0.04763479    0.4452091
-##   Calb2_tdTpositive_cell_3            0.1084212        0.08069155    0.3438614
-##   Calb2_tdTpositive_cell_4            0.1284566        0.04869261    0.5092011
-##   Calb2_tdTpositive_cell_5            0.1611650        0.06983791    0.4807046
-##   Calb2_tdTpositive_cell_6            0.1301842        0.08934140    0.3372152
+##   Calb2_tdTpositive_cell_1            0.1386528        0.04264310    0.5306093
+##   Calb2_tdTpositive_cell_2            0.1366283        0.04884635    0.4538357
+##   Calb2_tdTpositive_cell_3            0.1087323        0.07269892    0.3458998
+##   Calb2_tdTpositive_cell_4            0.1321658        0.04993108    0.5112665
+##   Calb2_tdTpositive_cell_5            0.1512892        0.07161420    0.4929771
+##   Calb2_tdTpositive_cell_6            0.1342012        0.09161375    0.3378310
 ##                           gene sets
 ## cells                       microglia oligodendrocytes pyramidal CA1
-##   Calb2_tdTpositive_cell_1 0.05451208        0.1444140     0.2241940
-##   Calb2_tdTpositive_cell_2 0.02645457        0.1226296     0.1938950
-##   Calb2_tdTpositive_cell_3 0.03533802        0.1518077     0.3008680
-##   Calb2_tdTpositive_cell_4 0.05312940        0.1499234     0.2356747
-##   Calb2_tdTpositive_cell_5 0.07673295        0.1346732     0.2032239
-##   Calb2_tdTpositive_cell_6 0.03156929        0.1568102     0.3892050
+##   Calb2_tdTpositive_cell_1 0.04845394        0.1317958     0.2317668
+##   Calb2_tdTpositive_cell_2 0.02682648        0.1211293     0.2062570
+##   Calb2_tdTpositive_cell_3 0.03583482        0.1567204     0.3218726
+##   Calb2_tdTpositive_cell_4 0.05387632        0.1480893     0.2546714
+##   Calb2_tdTpositive_cell_5 0.06655747        0.1385766     0.2088478
+##   Calb2_tdTpositive_cell_6 0.03201310        0.1552946     0.4010508
 ##                           gene sets
 ## cells                      pyramidal SS
-##   Calb2_tdTpositive_cell_1    0.3564303
-##   Calb2_tdTpositive_cell_2    0.2849649
-##   Calb2_tdTpositive_cell_3    0.5303762
-##   Calb2_tdTpositive_cell_4    0.3600607
-##   Calb2_tdTpositive_cell_5    0.3144749
-##   Calb2_tdTpositive_cell_6    0.5413657</code></pre>
+##   Calb2_tdTpositive_cell_1    0.3476778
+##   Calb2_tdTpositive_cell_2    0.2762466
+##   Calb2_tdTpositive_cell_3    0.5244492
+##   Calb2_tdTpositive_cell_4    0.3505890
+##   Calb2_tdTpositive_cell_5    0.3009582
+##   Calb2_tdTpositive_cell_6    0.5392798</code></pre>
 <p>We assign cell type identity to each cell in the test dataset by taking the marker set with the top AUC as the label for that cell. Our new labels mostly agree with the original annotation from <span class="citation">Tasic et al. (<a href="#ref-tasic2016adult">2016</a>)</span>, which is encouraging. The only exception involves misassignment of oligodendrocyte precursors to astrocytes, which may be understandable given that they are derived from a common lineage. In the absence of prior annotation, a more general diagnostic check is to compare the assigned labels to cluster identities, under the expectation that most cells of a single cluster would have the same label (or, if multiple labels are present, they should at least represent closely related cell states).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">new.labels &lt;-<span class="st"> </span><span class="kw">colnames</span>(results)[<span class="kw">max.col</span>(results)]
 tab &lt;-<span class="st"> </span><span class="kw">table</span>(new.labels, sce.tasic<span class="op">$</span>broad_type)
@@ -1041,11 +1041,11 @@ tab</code></pre></div>
 ##   pyramidal SS                          810         0               0
 ##                       
 ## new.labels             Oligodendrocyte Precursor Cell Unclassified
-##   astrocytes_ependymal                             21            4
+##   astrocytes_ependymal                             20            4
 ##   endothelial-mural                                 0            2
 ##   interneurons                                      0           15
 ##   microglia                                         0            1
-##   oligodendrocytes                                  1            0
+##   oligodendrocytes                                  2            0
 ##   pyramidal SS                                      0           60</code></pre>
 <p>Another simple diagnostic metric is the difference <span class="math inline">\(\Delta_{AUC}\)</span> between the maximum and median AUCs for each cell. An umambiguous assignment should manifest as a large <span class="math inline">\(\Delta_{AUC}\)</span> for that cell (Figure <a href="cell-type-annotation.html#fig:aucell-boxplots">12.5</a>), while small differences indicate that the assignment is uncertain. If necessary, we can remove uncertain assignments by applying a minimum threshold on the <span class="math inline">\(\Delta_{AUC}\)</span>, e.g., to achieve greater agreement with the clustering results or prior annotation. The example below identifies small outlier <span class="math inline">\(\Delta_{AUC}\)</span> values under the assumption that most cells are correctly assigned and that there is only modest heterogeneity within each label.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scater)
@@ -1055,9 +1055,9 @@ discard &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(deltas, 
 <span class="kw">table</span>(new.labels[discard])</code></pre></div>
 <pre><code>## 
 ## astrocytes_ependymal    endothelial-mural         interneurons 
-##                   25                    3                    8 
+##                   24                    1                    7 
 ##     oligodendrocytes         pyramidal SS 
-##                    9                   20</code></pre>
+##                   10                   16</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>))
 <span class="kw">boxplot</span>(<span class="kw">split</span>(deltas, new.labels), <span class="dt">las=</span><span class="dv">2</span>)
 <span class="kw">points</span>(<span class="kw">attr</span>(discard, <span class="st">&quot;thresholds&quot;</span>)[<span class="dv">1</span>,], <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">4</span>, <span class="dt">cex=</span><span class="dv">2</span>)</code></pre></div>
@@ -1294,13 +1294,13 @@ Figure 12.9: Distribution of log-normalized expression values for <em>Thrsp</em>
 View session info
 </button>
 <div class="aaron-content">
-<pre><code>R Under development (unstable) (2020-03-23 r78035)
+<pre><code>R version 4.0.0 Patched (2020-05-01 r78341)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
 Matrix products: default
-BLAS:   /home/luna/Software/R/trunk/lib/libRblas.so
-LAPACK: /home/luna/Software/R/trunk/lib/libRlapack.so
+BLAS:   /home/luna/Software/R/R-4-0-branch/lib/libRblas.so
+LAPACK: /home/luna/Software/R/R-4-0-branch/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1315,62 +1315,62 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] limma_3.43.8                org.Mm.eg.db_3.10.0        
- [3] BiocFileCache_1.11.6        dbplyr_1.4.3               
- [5] DelayedMatrixStats_1.9.1    scater_1.15.33             
- [7] ggplot2_3.3.0               AUCell_1.9.9               
- [9] GSEABase_1.49.1             graph_1.65.3               
-[11] annotate_1.65.1             XML_3.99-0.3               
-[13] AnnotationDbi_1.49.1        scRNAseq_2.1.7             
-[15] scran_1.15.32               fossil_0.4.0               
-[17] shapefiles_0.7              foreign_0.8-78             
+ [1] limma_3.44.1                org.Mm.eg.db_3.11.1        
+ [3] BiocFileCache_1.12.0        dbplyr_1.4.3               
+ [5] DelayedMatrixStats_1.10.0   scater_1.16.0              
+ [7] ggplot2_3.3.0               AUCell_1.10.0              
+ [9] GSEABase_1.50.0             graph_1.66.0               
+[11] annotate_1.66.0             XML_3.99-0.3               
+[13] AnnotationDbi_1.50.0        scRNAseq_2.2.0             
+[15] scran_1.16.0                fossil_0.4.0               
+[17] shapefiles_0.7              foreign_0.8-79             
 [19] maps_3.3.0                  sp_1.4-1                   
-[21] pheatmap_1.0.12             SingleR_1.1.14             
-[23] SingleCellExperiment_1.9.3  SummarizedExperiment_1.17.5
-[25] DelayedArray_0.13.12        matrixStats_0.56.0         
-[27] Biobase_2.47.3              GenomicRanges_1.39.3       
-[29] GenomeInfoDb_1.23.17        IRanges_2.21.8             
-[31] S4Vectors_0.25.15           BiocGenerics_0.33.3        
-[33] OSCAUtils_0.0.2             BiocStyle_2.15.8           
+[21] pheatmap_1.0.12             SingleR_1.2.2              
+[23] SingleCellExperiment_1.10.1 SummarizedExperiment_1.18.1
+[25] DelayedArray_0.14.0         matrixStats_0.56.0         
+[27] Biobase_2.48.0              GenomicRanges_1.40.0       
+[29] GenomeInfoDb_1.24.0         IRanges_2.22.1             
+[31] S4Vectors_0.26.0            BiocGenerics_0.34.0        
+[33] OSCAUtils_0.0.2             BiocStyle_2.16.0           
 
 loaded via a namespace (and not attached):
  [1] ggbeeswarm_0.6.0              colorspace_1.4-1             
- [3] ellipsis_0.3.0                XVector_0.27.2               
- [5] BiocNeighbors_1.5.7           farver_2.0.3                 
- [7] bit64_0.9-7                   interactiveDisplayBase_1.25.0
+ [3] ellipsis_0.3.1                XVector_0.28.0               
+ [5] BiocNeighbors_1.6.0           farver_2.0.3                 
+ [7] bit64_0.9-7                   interactiveDisplayBase_1.26.0
  [9] R.methodsS3_1.8.0             codetools_0.2-16             
-[11] knitr_1.28                    GO.db_3.10.0                 
+[11] knitr_1.28                    GO.db_3.11.1                 
 [13] R.oo_1.23.0                   shiny_1.4.0.2                
 [15] BiocManager_1.30.10           compiler_4.0.0               
 [17] httr_1.4.1                    dqrng_0.2.1                  
 [19] assertthat_0.2.1              Matrix_1.2-18                
 [21] fastmap_1.0.1                 later_1.0.0                  
-[23] BiocSingular_1.3.2            htmltools_0.4.0              
+[23] BiocSingular_1.4.0            htmltools_0.4.0              
 [25] tools_4.0.0                   rsvd_1.0.3                   
 [27] igraph_1.2.5                  gtable_0.3.0                 
-[29] glue_1.4.0                    GenomeInfoDbData_1.2.3       
+[29] glue_1.4.1                    GenomeInfoDbData_1.2.3       
 [31] dplyr_0.8.5                   rappdirs_0.3.1               
-[33] Rcpp_1.0.4.6                  vctrs_0.2.4                  
-[35] ExperimentHub_1.13.8          xfun_0.13                    
-[37] stringr_1.4.0                 ps_1.3.2                     
+[33] Rcpp_1.0.4.6                  vctrs_0.3.0                  
+[35] ExperimentHub_1.14.0          xfun_0.13                    
+[37] stringr_1.4.0                 ps_1.3.3                     
 [39] mime_0.9                      lifecycle_0.2.0              
 [41] irlba_2.3.3                   statmod_1.4.34               
-[43] AnnotationHub_2.19.12         edgeR_3.29.1                 
-[45] zlibbioc_1.33.1               scales_1.1.0                 
+[43] AnnotationHub_2.20.0          edgeR_3.30.0                 
+[45] zlibbioc_1.34.0               scales_1.1.1                 
 [47] promises_1.1.0                RColorBrewer_1.1-2           
 [49] yaml_2.2.1                    curl_4.3                     
 [51] memoise_1.1.0                 gridExtra_2.3                
 [53] stringi_1.4.6                 RSQLite_2.2.0                
 [55] BiocVersion_3.11.1            highr_0.8                    
-[57] BiocParallel_1.21.3           rlang_0.4.5                  
+[57] BiocParallel_1.22.0           rlang_0.4.6                  
 [59] pkgconfig_2.0.3               bitops_1.0-6                 
 [61] evaluate_0.14                 lattice_0.20-41              
 [63] purrr_0.3.4                   labeling_0.3                 
 [65] cowplot_1.0.0                 bit_1.1-15.2                 
-[67] processx_3.4.2                tidyselect_1.0.0             
-[69] magrittr_1.5                  bookdown_0.18                
+[67] processx_3.4.2                tidyselect_1.1.0             
+[69] magrittr_1.5                  bookdown_0.19                
 [71] R6_2.4.1                      DBI_1.1.0                    
-[73] pillar_1.4.3                  withr_2.2.0                  
+[73] pillar_1.4.4                  withr_2.2.0                  
 [75] RCurl_1.98-1.2                tibble_3.0.1                 
 [77] crayon_1.3.4                  rmarkdown_2.1                
 [79] viridis_0.5.1                 locfit_1.5-9.4               
